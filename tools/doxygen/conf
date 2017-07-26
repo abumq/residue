@@ -1,0 +1,7 @@
+PROJECT_NAME=Residue
+PROJECT_BRIEF="Efficient real-time centralized logging"
+OUTPUT_DIRECTORY=build/doc
+INPUT=tools/doxygen/README_DOXYGEN.md include/Residue.h
+USE_MDFILE_AS_MAINPAGE=tools/doxygen/README_DOXYGEN.md
+HTML_EXTRA_STYLESHEET=tools/doxygen/customdoxygen.css
+LAYOUT_FILE=tools/doxygen/DoxygenLayout.xml

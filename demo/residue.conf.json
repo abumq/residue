@@ -1,0 +1,52 @@
+{
+    "admin_port": 8776,
+    "connect_port": 8777,
+    "token_port": 8778,
+    "logging_port": 8779,
+    "server_key": "E421D442B34E6AEA1914C019F81601F35C2D123AEE426DB37C99055EA060A099",
+    "server_rsa_private_key": "private.key",
+    "server_rsa_public_key": "public.key",
+    "server_rsa_secret": "",
+    "default_key_size": 256,
+    "accept_input": false,
+    "authorize_loggers_with_no_access_code": false,
+    "allow_plain_connection": false,
+    "allow_unknown_loggers": false,
+    "allow_unknown_clients": false,
+    "check_tokens": true,
+    "allow_plain_log_request": false,
+    "immediate_flush": false,
+    "compression": true,
+    "allow_bulk_log_request": true,
+    "max_items_in_bulk": 50,
+    "allow_pinging_dead_client": false,
+    "client_integrity_task_interval": 3600,
+    "token_age": 3600,
+    "client_age": 3600,
+    "non_acknowledged_client_age": 300,
+    "client_integrity_task_interval": 300,
+    "dispatch_delay": 1,
+    "archived_log_directory": "%original/backups/%logger/",
+    "archived_log_filename": "mylogs-%hour-00-%wday-%level.log",
+    "archived_log_compressed_filename": "%logger-%hour-00-%wday.tar.gz",
+    "known_clients_endpoint": "http://localhost:8000/",
+    "known_loggers_endpoint": "http://localhost:8000/",
+    "known_clients": [
+    ],
+    "known_loggers": [
+        {
+            "logger_id": "residue",
+            "configuration_file": "configurations/residue-Logger.conf"
+        },
+        {
+            "logger_id": "default",
+            "configuration_file": "configurations/default-Logger.conf",
+            "access_codes": [
+                {
+                    "code": "E3F5CFADC66EA13F3D5EECCEE256C0EE",
+                    "token_age": 3600
+                }
+            ]
+        }
+    ]
+}

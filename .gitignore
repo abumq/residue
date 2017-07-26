@@ -1,0 +1,7 @@
+logs/*
+.DS_Store
+CMakeLists.txt.user
+CMakeFiles/*
+build/*
+samples/clients/java
+download-keys-from-live-server.sh

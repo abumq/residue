@@ -1,0 +1,11 @@
+connection.json
+__debug*
+tmp.key
+iv.key
+connect.enc
+connect.ack.json
+token.enc
+connect.base64.enc
+connect.decrypted
+requests_*.json
+tokens/*
