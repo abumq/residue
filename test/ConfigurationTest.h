@@ -103,7 +103,6 @@ protected:
                               "allow_plain_log_request": true,
                               "immediate_flush": true,
                               "allow_bulk_log_request": true,
-                              "allow_pinging_dead_client": false,
                               "client_integrity_task_interval": 500,
                               "client_age": 0,
                               "token_age": 25,
@@ -208,7 +207,6 @@ TEST_F(ConfigurationTest, CheckValues)
     ASSERT_TRUE(conf->hasFlag(Configuration::Flag::AUTHORIZE_LOGGERS_WITH_NO_ACCESS_CODE));
     ASSERT_TRUE(conf->hasFlag(Configuration::Flag::CHECK_TOKENS));
     ASSERT_TRUE(conf->hasFlag(Configuration::Flag::ALLOW_PLAIN_LOG_REQUEST));
-    ASSERT_FALSE(conf->hasFlag(Configuration::Flag::ALLOW_PINGING_DEAD_CLIENT));
     ASSERT_FALSE(conf->hasLoggerFlag("residue", Configuration::Flag::ALLOW_PLAIN_LOG_REQUEST));
     ASSERT_TRUE(conf->hasLoggerFlag("muflihun", Configuration::Flag::ALLOW_PLAIN_LOG_REQUEST));
     ASSERT_FALSE(conf->isKnownLoggerForClient("missing-client", "muflihun"));
@@ -250,7 +248,6 @@ TEST_F(ConfigurationTest, Save)
     ASSERT_EQ(conf2->hasFlag(Configuration::Flag::AUTHORIZE_LOGGERS_WITH_NO_ACCESS_CODE), conf->hasFlag(Configuration::Flag::AUTHORIZE_LOGGERS_WITH_NO_ACCESS_CODE));
     ASSERT_EQ(conf2->hasFlag(Configuration::Flag::CHECK_TOKENS), conf->hasFlag(Configuration::Flag::CHECK_TOKENS));
     ASSERT_EQ(conf2->hasFlag(Configuration::Flag::ALLOW_PLAIN_LOG_REQUEST), conf->hasFlag(Configuration::Flag::ALLOW_PLAIN_LOG_REQUEST));
-    ASSERT_EQ(conf2->hasFlag(Configuration::Flag::ALLOW_PINGING_DEAD_CLIENT), conf->hasFlag(Configuration::Flag::ALLOW_PINGING_DEAD_CLIENT));
     ASSERT_EQ(conf2->hasLoggerFlag("residue", Configuration::Flag::ALLOW_PLAIN_LOG_REQUEST), conf->hasLoggerFlag("residue", Configuration::Flag::ALLOW_PLAIN_LOG_REQUEST));
     ASSERT_EQ(conf2->hasLoggerFlag("muflihun", Configuration::Flag::ALLOW_PLAIN_LOG_REQUEST), conf->hasLoggerFlag("muflihun", Configuration::Flag::ALLOW_PLAIN_LOG_REQUEST));
     ASSERT_FALSE(conf2->isKnownLoggerForClient("missing-client", "muflihun"));

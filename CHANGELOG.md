@@ -1,5 +1,9 @@
 # Change Log
 
+## [Unreleased]
+### Updated
+- Removed `allow_pinging_dead_client` config
+
 ## [1.0.0-beta.12] - 27-07-2017
 ### Added
 - Ability to specify key size for each client
