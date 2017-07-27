@@ -11,7 +11,9 @@ if [ "$RESIDUE_SRC_KEY" = "" ];then
     exit;
 fi
 
-result=$(cat $file | $RIPE -d --aes --key $RESIDUE_SRC_KEY --base64)
+RESIDUE_SRC_IV=f1002847d4c7c8a714a765f3fef232eb
+
+result=$(cat $file | $RIPE -d --aes --key $RESIDUE_SRC_KEY --iv $RESIDUE_SRC_IV --base64)
 
 if [ -f $newfile ]; then
    orig=`cat $newfile`
