@@ -9,11 +9,12 @@ option (debug "Enable debug logging" OFF)
 option (build_static_lib "Build residue as a static library (as opposed to default, i.e, shared)" OFF)
 option (build_sample_app "Builds detailed-cmake sample" OFF)
 option (profiling "Turns profiling on for various scenarios" OFF)
+option (compile-server "Turn it on when you have source code available for the server" OFF)
 option (BUILD_SHARED_LIBS "build shared libraries" OFF)
 
 set (RESIDUE_MAJOR "1")
 set (RESIDUE_MINOR "0")
-set (RESIDUE_PATCH "0-beta.11")
+set (RESIDUE_PATCH "0-beta.12")
 set (RESIDUE_VERSION "${RESIDUE_MAJOR}.${RESIDUE_MINOR}.${RESIDUE_PATCH}")
 set (RESIDUE_SOVERSION "${RESIDUE_MAJOR}.${RESIDUE_MINOR}.${RESIDUE_PATCH}")
 set (RESIDUE_NAME "Residue")
@@ -165,9 +166,6 @@ if (build_sample_app)
     add_subdirectory (samples/clients/c++/detailed-cmake/)
 endif()
 
-
-############# RESIDUE CORE LIB (STATIC) ###############
-
 # Packaging config.
 set (CPACK_PACKAGE_NAME "Residue")
 set (CPACK_PACKAGE_VERSION_MAJOR ${RESIDUE_MAJOR})
@@ -187,6 +185,11 @@ configure_file (
 include_directories (${CMAKE_BINARY_DIR})
 include_directories (${CMAKE_SOURCE_DIR})
 
+
+
+############# RESIDUE CORE LIB (STATIC) ###############
+
+if (compile-server)
 set(SOURCE_FILES
     src/Url.cc
     src/Utils.cc
@@ -279,7 +282,6 @@ target_link_libraries (residue-bin residue-core)
 set_target_properties (residue-bin PROPERTIES OUTPUT_NAME "residue")
 install (TARGETS residue-bin DESTINATION bin)
 
-
 #############################################
 
 # Reference all headers, to make certain IDEs happy.
@@ -314,4 +316,5 @@ if (test)
     target_link_libraries (residue-unit-tests residue-core)
 
     add_test (NAME residueUnitTests COMMAND residue-unit-tests)
+endif()
 endif()
