@@ -11,19 +11,21 @@ if [ "$RESIDUE_SRC_KEY" = "" ];then
     exit;
 fi
 
-RESIDUE_SRC_IV=f1002847d4c7c8a714a765f3fef232eb
-
-result=$(cat $file | $RIPE -d --aes --key $RESIDUE_SRC_KEY --iv $RESIDUE_SRC_IV --base64)
+result=$(cat $file | $RIPE -d --aes --key $RESIDUE_SRC_KEY --base64 | ripe -e --hex)
 
 if [ -f $newfile ]; then
-   orig=`cat $newfile`
+   orig=`cat $newfile | ripe -e --hex`
    if [ "$orig" = "$result" ];then
        echo "Ignoring for same file"
    else
        echo "$orig" > "$newfile.bk"
-       echo "$result" > $newfile
+       echo "$result" > $newfile.hex
+       cat $newfile.hex | ripe -d --hex > $newfile
+       rm $newfile.hex
    fi
 else
-   echo "$result" > $newfile
+   echo "$result" > $newfile.hex
+   cat $newfile.hex | ripe -d --hex > $newfile
+   rm $newfile.hex
 fi
 
