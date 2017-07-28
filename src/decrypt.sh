@@ -16,12 +16,11 @@ result=$(cat $file | $RIPE -d --aes --key $RESIDUE_SRC_KEY --base64 | $RIPE -e -
 if [ -f $newfile ]; then
    orig=`cat $newfile | $RIPE -e --hex`
    if [ "$orig" != "$result" ];then
-       echo "$file contains local changes, ignoring..."
-       exit;
-       #echo "$orig" > "$newfile.bk"
-       #echo "$result" > $newfile.hex
-       #cat $newfile.hex | $RIPE -d --hex > $newfile
-       #rm $newfile.hex
+       echo "Updating $file... (orig file backedup)"
+       echo "$orig" > "$newfile.bk"
+       echo "$result" > $newfile.hex
+       cat $newfile.hex | $RIPE -d --hex > $newfile
+       rm $newfile.hex
    fi
 else
    echo "Updating $file..."
