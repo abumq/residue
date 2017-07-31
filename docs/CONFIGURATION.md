@@ -66,7 +66,7 @@ Default: `true`
 
 Default: `true`
 
-### `authorize_loggers_with_no_access_code`
+### `allow_default_access_code`
 [Boolean] Specifies whether all the loggers with no access codes are automatically allowed or not. If allowed, Easylogging++ default configurations are used.
 
 Default: `true`
@@ -183,7 +183,7 @@ Default: `0` (Forever)
 
 This age is used in following scenarios:
 
- * If [`authorize_loggers_with_no_access_code`](#authorize_loggers_with_no_access_code) is `true` and token with unknown access code is requested, this is the age of the token.
+ * If [`allow_default_access_code`](#allow_default_access_code) is `true` and token with unknown access code is requested, this is the age of the token.
  * If no access code is specified with access code, this is the age of that token.
 
 Minimum: `15`

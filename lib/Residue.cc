@@ -27,6 +27,7 @@ const std::size_t Residue::DEFAULT_KEY_SIZE = 2048;
 const std::string Residue::LOCALHOST = "127.0.0.1";
 const int Residue::DEFAULT_PORT = 8777;
 const unsigned int Residue::PING_THRESHOLD = 15; // minimum client_age
+const std::string Residue::DEFAULT_ACCESS_CODE = "default";
 
 using json = nlohmann::json;
 using boost::asio::ip::tcp;
@@ -916,7 +917,7 @@ std::string Residue::getToken(const std::string& loggerId) const
 
 void Residue::obtainToken(const std::string& loggerId)
 {
-    std::string accessCode;
+    std::string accessCode = DEFAULT_ACCESS_CODE;
     if (m_accessCodeMap != nullptr
             && m_accessCodeMap->find(loggerId) != m_accessCodeMap->end()) {
         accessCode = m_accessCodeMap->at(loggerId);
@@ -926,7 +927,7 @@ void Residue::obtainToken(const std::string& loggerId)
 
 void Residue::obtainToken(const std::string& loggerId, const std::string& accessCode)
 {
-    if (accessCode.empty() && !hasFlag(Flag::AUTHORIZE_LOGGERS_WITH_NO_ACCESS_CODE)) {
+    if (accessCode == DEFAULT_ACCESS_CODE && !hasFlag(Flag::ALLOW_DEFAULT_ACCESS_CODE)) {
         throw ResidueException("Loggers without access code are not allowed by the server [Logger ID: " + loggerId + "]");
     }
     reslog(reslog::info) << "Obtaining token for [" << loggerId << "]";

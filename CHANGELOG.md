@@ -5,6 +5,9 @@
 - Removed `allow_pinging_dead_client` config
 - New configs `timestamp_validity` and `requires_timestamp`
 
+### Changed
+- Changed `authorize_loggers_with_no_access_code` to `allow_default_access_code`
+
 ### Library Changes
 - Fixed compression flag
 

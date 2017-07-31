@@ -9,7 +9,7 @@
     "server_rsa_secret": "",
     "default_key_size": 256,
     "accept_input": false,
-    "authorize_loggers_with_no_access_code": true,
+    "allow_default_access_code": true,
     "allow_plain_connection": true,
     "allow_unknown_loggers": true,
     "allow_unknown_clients": true,

@@ -95,7 +95,7 @@ protected:
                               "token_port": 87781,
                               "logging_port": 87791,
                               "server_key": "048CB7050312DB329788CE1533C294A1F248F8A1BD6F611D7516803EDE271C65",
-                              "authorize_loggers_with_no_access_code": true,
+                              "allow_default_access_code": true,
                               "allow_unknown_loggers": true,
                               "allow_unknown_clients": false,
                               "accept_input": false,
@@ -204,7 +204,7 @@ TEST_F(ConfigurationTest, CheckValues)
     ASSERT_FALSE(conf->hasFlag(Configuration::Flag::ACCEPT_INPUT));
     ASSERT_TRUE(conf->hasFlag(Configuration::Flag::ALLOW_UNKNOWN_LOGGERS));
     ASSERT_FALSE(conf->hasFlag(Configuration::Flag::ALLOW_UNKNOWN_CLIENTS));
-    ASSERT_TRUE(conf->hasFlag(Configuration::Flag::AUTHORIZE_LOGGERS_WITH_NO_ACCESS_CODE));
+    ASSERT_TRUE(conf->hasFlag(Configuration::Flag::ALLOW_DEFAULT_ACCESS_CODE));
     ASSERT_TRUE(conf->hasFlag(Configuration::Flag::CHECK_TOKENS));
     ASSERT_TRUE(conf->hasFlag(Configuration::Flag::ALLOW_PLAIN_LOG_REQUEST));
     ASSERT_FALSE(conf->hasLoggerFlag("residue", Configuration::Flag::ALLOW_PLAIN_LOG_REQUEST));
@@ -245,7 +245,7 @@ TEST_F(ConfigurationTest, Save)
     ASSERT_EQ(conf2->hasFlag(Configuration::Flag::ACCEPT_INPUT), conf->hasFlag(Configuration::Flag::ACCEPT_INPUT));
     ASSERT_EQ(conf2->hasFlag(Configuration::Flag::ALLOW_UNKNOWN_LOGGERS), conf->hasFlag(Configuration::Flag::ALLOW_UNKNOWN_LOGGERS));
     ASSERT_EQ(conf2->hasFlag(Configuration::Flag::ALLOW_UNKNOWN_CLIENTS), conf->hasFlag(Configuration::Flag::ALLOW_UNKNOWN_CLIENTS));
-    ASSERT_EQ(conf2->hasFlag(Configuration::Flag::AUTHORIZE_LOGGERS_WITH_NO_ACCESS_CODE), conf->hasFlag(Configuration::Flag::AUTHORIZE_LOGGERS_WITH_NO_ACCESS_CODE));
+    ASSERT_EQ(conf2->hasFlag(Configuration::Flag::ALLOW_DEFAULT_ACCESS_CODE), conf->hasFlag(Configuration::Flag::ALLOW_DEFAULT_ACCESS_CODE));
     ASSERT_EQ(conf2->hasFlag(Configuration::Flag::CHECK_TOKENS), conf->hasFlag(Configuration::Flag::CHECK_TOKENS));
     ASSERT_EQ(conf2->hasFlag(Configuration::Flag::ALLOW_PLAIN_LOG_REQUEST), conf->hasFlag(Configuration::Flag::ALLOW_PLAIN_LOG_REQUEST));
     ASSERT_EQ(conf2->hasLoggerFlag("residue", Configuration::Flag::ALLOW_PLAIN_LOG_REQUEST), conf->hasLoggerFlag("residue", Configuration::Flag::ALLOW_PLAIN_LOG_REQUEST));

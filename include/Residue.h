@@ -54,7 +54,7 @@ public:
     enum Flag : unsigned int {
         NONE = 0,
         ALLOW_UNKNOWN_LOGGERS = 1,
-        AUTHORIZE_LOGGERS_WITH_NO_ACCESS_CODE = 4,
+        ALLOW_DEFAULT_ACCESS_CODE = 4,
         ALLOW_PLAIN_LOG_REQUEST = 8,
         ALLOW_BULK_LOG_REQUEST = 16,
         ALLOW_PINGING_DEAD_CLIENT = 32,
@@ -93,6 +93,11 @@ public:
     /// we should send ping request or not
     ///
     static const unsigned int PING_THRESHOLD;
+
+    ///
+    /// \brief Default access code value if allowed
+    ///
+    static const std::string DEFAULT_ACCESS_CODE;
 
     ///
     /// \brief See setInternalLoggingLevel(int)
