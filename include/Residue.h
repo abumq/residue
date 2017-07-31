@@ -58,7 +58,7 @@ public:
         ALLOW_PLAIN_LOG_REQUEST = 8,
         ALLOW_BULK_LOG_REQUEST = 16,
         ALLOW_PINGING_DEAD_CLIENT = 32,
-        COMPRESSION = 512,
+        COMPRESSION = 256,
     };
 
 #ifdef RESIDUE_PROFILING
