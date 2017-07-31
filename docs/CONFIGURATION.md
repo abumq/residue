@@ -91,6 +91,15 @@ Default: `true`
 
 Default: `true`
 
+### `requires_timestamp`
+[Boolean] Specifies whether timestamp is absolutely required or not. Timestamp is `_t` value for each incoming requests.
+
+This does not affect admin requests, timestamps for admin requests is always required.
+
+See [`timestamp_validity`](#timestamp_validity)
+
+Default: `false`
+
 ### `compression`
 [Boolean] Specifies whether compression is enabled or not.
 
@@ -134,6 +143,13 @@ If client sends more requests than this all the extra requests are ignored by se
 Default: `5`
 
 You may be interested in [`compression`](#compression)
+
+### `timestamp_validity`
+[Integer] Integer value in seconds that specifies validity of timestamp `_t` in request
+
+Minimum: `30`
+
+Default: `120`
 
 ### `client_age`
 [Integer] Value (in seconds) that defines the age of a client. After this age, client is considered *dead*. Clients library can `PING` request just before dying to bring it back to life provided it's not already dead. After client is dead, it needs to reconnect and obtain a new key.

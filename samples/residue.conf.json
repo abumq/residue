@@ -22,6 +22,8 @@
     "allow_pinging_dead_client": false,
     "token_age": 3600,
     "client_age": 300,
+	"timestamp_validity": 120,
+	"requires_timestamp": true,
     "non_acknowledged_client_age": 300,
     "client_integrity_task_interval": 300,
     "dispatch_delay": 1,

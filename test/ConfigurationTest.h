@@ -276,7 +276,7 @@ TEST_F(ConfigurationTest, KnownLoggersRequestAllowed)
                                             "key_size":256,
                                             "_t": 999
                                         })");
-    ConnectionRequest connectionReq;
+    ConnectionRequest connectionReq(registry.configuration());
     connectionReq.setDateReceived(1000);
     connectionReq.deserialize(std::move(connectionRequestStr));
     Client client(&connectionReq);
@@ -299,7 +299,7 @@ TEST_F(ConfigurationTest, KnownLoggersRequestAllowed)
     auto runTests = [&](const std::map<std::string, bool>& testCases) {
         for (auto& t : testCases) {
             std::string r1 = createLogRequest(t.first);
-            LogRequest logRequest;
+            LogRequest logRequest(registry.configuration());
             logRequest.setDateReceived(Utils::now());
             logRequest.deserialize(std::move(r1));
             logRequest.setClient(&client);

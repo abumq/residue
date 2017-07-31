@@ -3,6 +3,7 @@
 ## [Unreleased]
 ### Updated
 - Removed `allow_pinging_dead_client` config
+- New configs `timestamp_validity` and `requires_timestamp`
 
 ### Library Changes
 - Fixed compression flag
