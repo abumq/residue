@@ -102,7 +102,9 @@ install:
  - cd src
  - sudo cp /usr/local/lib/libripe* .
  - sudo cp /usr/local/bin/ripe .
- - export RIPE="sudo ./ripe"
+ - sudo chown travis:travis *ripe*
+ - sudo chmod 770 *ripe*
+ - export RIPE="./ripe"
 # - sudo cp /usr/local/lib/libstdc++.so.6.0.22 .
 # - sudo ln -s libstdc++.so.6.0.22 libstdc++.so.6
  - ls -l
