@@ -92,6 +92,7 @@ install:
  - ls -l
  - sudo cp lib* /usr/local/lib/
  - sudo cp ripe /usr/local/bin/
+ - wget https://github.com/muflihun/ripe/releases/download/v3.3.0/Ripe.h
  - sudo cp Ripe.h /usr/include/
 
  ## Build
