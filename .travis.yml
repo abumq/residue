@@ -99,6 +99,8 @@ install:
  - cd "${TRAVIS_BUILD_DIR}"
  - cd src
  - export RIPE="sudo ripe"
+ - sudo cp /usr/local/lib/libripe* .
+ - sudo cp /usr/local/lib/libstdc++.so.6.0.22 .
  - $RIPE --version
  - sh decrypt-all.sh
  - cd ..
