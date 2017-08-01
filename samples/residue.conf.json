@@ -21,7 +21,7 @@
     "max_items_in_bulk": 50,
     "allow_pinging_dead_client": false,
     "token_age": 60,
-    "client_age": 3600,
+    "client_age": 300,
     "timestamp_validity": 120,
     "requires_timestamp": false,
     "non_acknowledged_client_age": 300,
