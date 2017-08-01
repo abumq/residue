@@ -98,7 +98,8 @@ install:
  ## Build
  - cd "${TRAVIS_BUILD_DIR}"
  - cd src
- - ripe --version
+ - export RIPE="sudo ripe"
+ - $RIPE --version
  - sh decrypt-all.sh
  - cd ..
  - mkdir build
