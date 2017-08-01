@@ -930,7 +930,7 @@ void Residue::obtainToken(const std::string& loggerId, const std::string& access
     if (accessCode == DEFAULT_ACCESS_CODE && !hasFlag(Flag::ALLOW_DEFAULT_ACCESS_CODE)) {
         throw ResidueException("Loggers without access code are not allowed by the server [Logger ID: " + loggerId + "]");
     }
-    reslog(reslog::info) << "Obtaining token for [" << loggerId << "]";
+    reslog(reslog::debug) << "Obtaining token for [" << loggerId << "] using [" << accessCode << "]";
     json j;
     j["_t"] = getTimestamp();
     j["logger_id"] = loggerId;
