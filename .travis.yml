@@ -42,12 +42,12 @@ matrix:
     - sudo apt-get install -y libboost-system-dev libgtest-dev
     - sudo apt-get install --only-upgrade cmake
     
-  - os: osx
-    compiler: clang
-    osx_image: xcode8
-     - sudo port install boost
-     - g++ -v
-     - cmake -v
+#  - os: osx
+#    compiler: clang
+#    osx_image: xcode8
+#     - sudo port install boost
+#     - g++ -v
+#     - cmake -v
     
 install:
  - cmake --version 
@@ -104,6 +104,7 @@ install:
  - sudo cp /usr/local/lib/libripe* .
 # - sudo cp /usr/local/lib/libstdc++.so.6.0.22 .
 # - sudo ln -s libstdc++.so.6.0.22 libstdc++.so.6
+ - ls -l
  - $RIPE --version
  - sh decrypt-all.sh
  - cd ..

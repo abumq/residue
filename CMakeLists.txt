@@ -22,7 +22,7 @@ set (RESIDUE_NAME "Residue")
 add_definitions (-DRESIDUE_VERSION="${RESIDUE_VERSION}")
 add_definitions (-DRESIDUE_SOVERSION="${RESIDUE_SOVERSION}")
 
-set(CMAKE_MACOSX_RPATH 1)
+# set(CMAKE_MACOSX_RPATH 1)
 
 # We need C++11
 macro (require_cpp11)
