@@ -68,32 +68,31 @@ install:
  - make
  - sudo make install
  # Crypto++ (We dont need this for residue, we need it for ripe)
- - wget https://raw.githubusercontent.com/muflihun/muflihun.github.io/master/downloads/cryptocpp.tar.gz
- - tar xf cryptocpp.tar.gz
- - cd cryptopp-CRYPTOPP_5_6_5
- - wget https://raw.githubusercontent.com/muflihun/muflihun.github.io/master/downloads/pem_pack.zip
- - unzip pem_pack.zip
- - cmake .
- - make
- - sudo make install
+# - wget https://raw.githubusercontent.com/muflihun/muflihun.github.io/master/downloads/cryptocpp.tar.gz
+# - tar xf cryptocpp.tar.gz
+# - cd cryptopp-CRYPTOPP_5_6_5
+# - wget https://raw.githubusercontent.com/muflihun/muflihun.github.io/master/downloads/pem_pack.zip
+# - unzip pem_pack.zip
+# - cmake .
+# - make
+# - sudo make install
 ## Ripe
- - wget https://github.com/muflihun/ripe/archive/develop.zip
- - unzip develop.zip
- - cd ripe-develop
- - cmake .
- - make
- - ls -l
- - sudo make install
+# - wget https://github.com/muflihun/ripe/archive/develop.zip
+# - unzip develop.zip
+# - cd ripe-develop
+# - cmake .
+# - make
+# - ls -l
+# - sudo make install
 
 ## Ripe Binaries
-# - echo $RIPE_TAR
-# - wget -O ripe-bin.tar.gz https://github.com/muflihun/ripe/releases/download/v2.4.1/$RIPE_TAR.tar.gz
-# - tar xfz ripe-bin.tar.gz
-# - cd $RIPE_TAR
-# - wget https://raw.githubusercontent.com/muflihun/ripe/v2.4.1/include/Ripe.h
-# - ls -l
-# - sudo cp libripe.so /usr/local/lib/
-# - sudo cp Ripe.h /usr/include/
+ - wget -O ripe-bin.tar.gz https://github.com/muflihun/ripe/releases/download/v3.3.0/ripe-3.3.0-x86_64-linux.tar.gz
+ - tar xfz ripe-bin.tar.gz
+ - cd ripe-3.3.0-x86_64-linux
+ - ls -l
+ - sudo cp lib* /usr/local/lib/
+ - sudo cp ripe /usr/local/bin/
+ - sudo cp Ripe.h /usr/include/
 
  ## Build
  - cd "${TRAVIS_BUILD_DIR}"
