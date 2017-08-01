@@ -1,6 +1,6 @@
 language: cpp
 dist: trusty
-sudo: false
+sudo: required
 matrix:
   include:
   - os: linux
@@ -52,7 +52,8 @@ matrix:
 install:
  - cmake --version 
  - uname -a
- # GTest
+
+## GTest
  - wget -O gtest.tar.gz https://github.com/google/googletest/archive/release-1.7.0.tar.gz
  - tar xf gtest.tar.gz
  - cd googletest-release-1.7.0
@@ -62,14 +63,16 @@ install:
  - sudo cp -a include/gtest /usr/include
  - sudo cp -a libgtest_main.* libgtest.* /usr/lib/
  - cd ..
- ## Easylogging++
+
+## Easylogging++
  - wget https://github.com/muflihun/easyloggingpp/archive/develop.zip
  - unzip develop.zip
  - cd easyloggingpp-develop
  - cmake .
  - make
  - sudo make install
-# Crypto++ (We dont need this for residue, we need it for ripe)
+
+## Crypto++ (We dont need this for residue, we need it for ripe)
  - wget https://raw.githubusercontent.com/muflihun/muflihun.github.io/master/downloads/cryptocpp.tar.gz
  - tar xf cryptocpp.tar.gz
  - cd cryptopp-CRYPTOPP_5_6_5
@@ -78,26 +81,19 @@ install:
  - cmake .
  - make
  - sudo make install
+
 ## Ripe
- - wget https://github.com/muflihun/ripe/archive/develop.zip
- - unzip develop.zip
- - cd ripe-develop
+ - RIPE_VERSION=3.3.0
+ - wget -O ripe-code.zip https://github.com/muflihun/ripe/archive/v$RIPE_VERSION.zip
+ - unzip ripe-code.zip
+ - cd ripe-$RIPE_VERSION
  - cmake .
  - make
  - ls -l
- - make install
+ - sudo make install
+ - ripe --version
 
-## Ripe Binaries
-# - wget -O ripe-bin.tar.gz https://github.com/muflihun/ripe/releases/download/v3.3.0/ripe-3.3.0-x86_64-linux.tar.gz
-# - tar xfz ripe-bin.tar.gz
-# - cd ripe-3.3.0-x86_64-linux
-# - ls -l
-# - sudo cp lib* /usr/local/lib/
-# - sudo cp ripe /usr/local/bin/
-# - wget https://github.com/muflihun/ripe/releases/download/v3.3.0/Ripe.h
-# - sudo cp Ripe.h /usr/include/
-
- ## Build
+## Build
  - cd "${TRAVIS_BUILD_DIR}"
  - cd src
  - export RIPE="ripe"
