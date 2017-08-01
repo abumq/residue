@@ -102,13 +102,16 @@ install:
  - wget https://github.com/muflihun/ripe/releases/download/v$RIPE_VERSION/Ripe.h
  - sudo cp Ripe.h /usr/include/
 
-## Build
- - cd "${TRAVIS_BUILD_DIR}"
- - cd src
+## Set env variable for ripe
  - echo $LD_LIBRARY_PATH
  - export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:/usr/local/lib
  - export RIPE="sudo ripe"
  - $RIPE --version
+
+## Build
+ - cd "${TRAVIS_BUILD_DIR}"
+ - cd src
+ - echo $RIPE
  - sh decrypt-all.sh
  - cd ..
  - mkdir build
