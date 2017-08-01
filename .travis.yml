@@ -21,7 +21,7 @@ matrix:
         sources: ['ubuntu-toolchain-r-test']
         packages: [g++-4.9, valgrind]
     before_install:
-    - CXX=g++-4.9
+    - CXX=$COMPILER
     - sudo add-apt-repository ppa:kubuntu-ppa/backports -y
     - sudo apt-get -qq update
     - sudo apt-get install -y libboost-system-dev libgtest-dev
@@ -36,7 +36,37 @@ matrix:
         sources: ['ubuntu-toolchain-r-test']
         packages: [g++-5, valgrind]
     before_install:
-    - CXX=g++-5
+    - CXX=$COMPILER
+    - sudo add-apt-repository ppa:kubuntu-ppa/backports -y
+    - sudo apt-get -qq update
+    - sudo apt-get install -y libboost-system-dev libgtest-dev
+    - sudo apt-get install --only-upgrade cmake
+    
+  - os: linux
+    compiler: gcc
+    env:
+      - COMPILER=g++-6
+    addons:
+      apt:
+        sources: ['ubuntu-toolchain-r-test']
+        packages: [g++-6, valgrind]
+    before_install:
+    - CXX=$COMPILER
+    - sudo add-apt-repository ppa:kubuntu-ppa/backports -y
+    - sudo apt-get -qq update
+    - sudo apt-get install -y libboost-system-dev libgtest-dev
+    - sudo apt-get install --only-upgrade cmake
+    
+  - os: linux
+    compiler: gcc
+    env:
+      - COMPILER=g++-7
+    addons:
+      apt:
+        sources: ['ubuntu-toolchain-r-test']
+        packages: [g++-7, valgrind]
+    before_install:
+    - CXX=$COMPILER
     - sudo add-apt-repository ppa:kubuntu-ppa/backports -y
     - sudo apt-get -qq update
     - sudo apt-get install -y libboost-system-dev libgtest-dev
