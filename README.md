@@ -2,9 +2,9 @@
 
 ![banner]
 
-[![Build Status](https://travis-matrix-badges.herokuapp.com/repos/muflihun/residue/branches/develop)](https://travis-ci.org/muflihun/residue) (`develop`)
+[![Build Status](https://img.shields.io/travis/muflihun/residue/master.svg)](https://travis-ci.org/muflihun/residue) (`master`)
 
-[![Build Status](https://travis-matrix-badges.herokuapp.com/repos/muflihun/residue/branches/master)](https://travis-ci.org/muflihun/residue) (`master`)
+[![Build Status](https://img.shields.io/travis/muflihun/residue/develop.svg)](https://travis-ci.org/muflihun/residue) (`develop`)
 
 [![Version](https://img.shields.io/github/release/muflihun/residue.svg)](https://github.com/muflihun/residue/releases/latest)
 
