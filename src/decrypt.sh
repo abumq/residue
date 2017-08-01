@@ -4,6 +4,8 @@ newfile="${file%????}"
 if [ "$RIPE" = "" ];then
     RIPE="ripe"
 fi
+echo "RIPE = $RIPE"
+echo "LD_LIBRARY_PATH = $LD_LIBRARY_PATH"
 
 
 if [ "$RESIDUE_SRC_KEY" = "" ];then
