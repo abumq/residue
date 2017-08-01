@@ -108,6 +108,7 @@ install:
 # - sudo cp /usr/local/lib/libstdc++.so.6.0.22 .
 # - sudo ln -s libstdc++.so.6.0.22 libstdc++.so.6
  - ls -l
+ - ./ripe --version
  - $RIPE --version
  - sh decrypt-all.sh
  - cd ..
