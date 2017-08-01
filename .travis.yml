@@ -106,8 +106,7 @@ install:
  - cd "${TRAVIS_BUILD_DIR}"
  - cd src
  - echo $LD_LIBRARY_PATH
- - LD_LIBRARY_PATH=$LD_LIBRARY_PATH:/usr/local/lib
- - export LD_LIBRARY_PATH
+ - export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:/usr/local/lib
  - export RIPE="sudo ripe"
  - $RIPE --version
  - sh decrypt-all.sh
