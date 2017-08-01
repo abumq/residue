@@ -8,6 +8,9 @@
 ### Changed
 - Changed `authorize_loggers_with_no_access_code` to `allow_default_access_code`
 
+### Fixed
+- Healing the connection will respond with flags and other connection response items
+
 ### Library Changes
 - Fixed compression flag
 - Internal logging level helper enum class
