@@ -13,6 +13,22 @@ matrix:
     - g++ -v
     
   - os: linux
+    compiler: clang
+    env:
+      - COMPILER=g++-4.9
+    addons:
+      apt:
+        sources: ['ubuntu-toolchain-r-test']
+        packages: [clang-3.8, valgrind]
+    before_install:
+    - CXX=$COMPILER
+    - sudo add-apt-repository ppa:kubuntu-ppa/backports -y
+    - sudo apt-get -qq update
+    - sudo apt-get install -y libboost-system-dev libgtest-dev
+    - sudo apt-get install --only-upgrade cmake
+    - clang --version
+    
+  - os: linux
     compiler: gcc
     env:
       - COMPILER=g++-4.9
