@@ -92,7 +92,8 @@ install:
  - ls -l
  - sudo make install
  - echo $LD_LIBRARY_PATH
- - LD_LIBRARY_PATH=/usr/local/lib
+ - LD_LIBRARY_PATH=$LD_LIBRARY_PATH:/usr/local/lib
+ - export LD_LIBRARY_PATH
  - ripe --version
 
 ## Build
