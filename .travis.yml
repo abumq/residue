@@ -119,7 +119,7 @@ install:
  - cd build
  - cmake -Dcompile-server=ON -Dtest=ON -Dtravis=ON ..
 
-script: "sudo make VERBOSE=1 && ./residue-unit-tests"
+script: "sudo LD_LIBRARY_PATH=$LD_LIBRARY_PATH make VERBOSE=1 && ./residue-unit-tests"
 branches:
   only:
     - master
