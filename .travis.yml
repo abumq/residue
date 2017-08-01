@@ -42,10 +42,8 @@ matrix:
     - sudo apt-get install -y libboost-system-dev libgtest-dev
     - sudo apt-get install --only-upgrade cmake
     
-#  - os: osx
-#    osx_image: xcode8
-#    env:
-#      - RIPE_TAR=ripe-2.4.1-darwin-x86_64
+  - os: osx
+    osx_image: xcode8
     
 install:
  - cmake --version 
@@ -67,41 +65,41 @@ install:
  - cmake .
  - make
  - sudo make install
- # Crypto++ (We dont need this for residue, we need it for ripe)
-# - wget https://raw.githubusercontent.com/muflihun/muflihun.github.io/master/downloads/cryptocpp.tar.gz
-# - tar xf cryptocpp.tar.gz
-# - cd cryptopp-CRYPTOPP_5_6_5
-# - wget https://raw.githubusercontent.com/muflihun/muflihun.github.io/master/downloads/pem_pack.zip
-# - unzip pem_pack.zip
-# - cmake .
-# - make
-# - sudo make install
+# Crypto++ (We dont need this for residue, we need it for ripe)
+ - wget https://raw.githubusercontent.com/muflihun/muflihun.github.io/master/downloads/cryptocpp.tar.gz
+ - tar xf cryptocpp.tar.gz
+ - cd cryptopp-CRYPTOPP_5_6_5
+ - wget https://raw.githubusercontent.com/muflihun/muflihun.github.io/master/downloads/pem_pack.zip
+ - unzip pem_pack.zip
+ - cmake .
+ - make
+ - sudo make install
 ## Ripe
-# - wget https://github.com/muflihun/ripe/archive/develop.zip
-# - unzip develop.zip
-# - cd ripe-develop
-# - cmake .
-# - make
-# - ls -l
-# - sudo make install
+ - wget https://github.com/muflihun/ripe/archive/develop.zip
+ - unzip develop.zip
+ - cd ripe-develop
+ - cmake .
+ - make
+ - ls -l
+ - sudo make install
 
 ## Ripe Binaries
- - wget -O ripe-bin.tar.gz https://github.com/muflihun/ripe/releases/download/v3.3.0/ripe-3.3.0-x86_64-linux.tar.gz
- - tar xfz ripe-bin.tar.gz
- - cd ripe-3.3.0-x86_64-linux
- - ls -l
- - sudo cp lib* /usr/local/lib/
- - sudo cp ripe /usr/local/bin/
- - wget https://github.com/muflihun/ripe/releases/download/v3.3.0/Ripe.h
- - sudo cp Ripe.h /usr/include/
+# - wget -O ripe-bin.tar.gz https://github.com/muflihun/ripe/releases/download/v3.3.0/ripe-3.3.0-x86_64-linux.tar.gz
+# - tar xfz ripe-bin.tar.gz
+# - cd ripe-3.3.0-x86_64-linux
+# - ls -l
+# - sudo cp lib* /usr/local/lib/
+# - sudo cp ripe /usr/local/bin/
+# - wget https://github.com/muflihun/ripe/releases/download/v3.3.0/Ripe.h
+# - sudo cp Ripe.h /usr/include/
 
  ## Build
  - cd "${TRAVIS_BUILD_DIR}"
  - cd src
  - export RIPE="sudo ripe"
- - sudo cp /usr/local/lib/libripe* .
- - sudo cp /usr/local/lib/libstdc++.so.6.0.22 .
- - sudo ln -s libstdc++.so.6.0.22 libstdc++.so.6
+# - sudo cp /usr/local/lib/libripe* .
+# - sudo cp /usr/local/lib/libstdc++.so.6.0.22 .
+# - sudo ln -s libstdc++.so.6.0.22 libstdc++.so.6
  - $RIPE --version
  - sh decrypt-all.sh
  - cd ..
