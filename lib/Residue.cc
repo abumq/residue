@@ -14,6 +14,7 @@
 #include <cstdlib>
 #include <memory>
 #include <chrono>
+#include <functional>
 #include <tuple>
 #include <boost/asio.hpp>
 #include <Ripe.h>
