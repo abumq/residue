@@ -236,7 +236,7 @@ int main(int argc, char* argv[]) {
     return 0;
 #endif
 
-    Residue::setInternalLoggingLevel(Residue::InternalLoggingLevel::info);
+    // Residue::setInternalLoggingLevel(Residue::InternalLoggingLevel::info);
 
     // Here we are using Easylogging++ macros to send log requests to Residue
     // Nothing will be logged locally as connecting (Residue::connect) will "uninstall" the default
