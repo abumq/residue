@@ -98,7 +98,7 @@ install:
  ## Build
  - cd "${TRAVIS_BUILD_DIR}"
  - cd src
- - which ripe 
+ - ripe --version
  - sh decrypt-all.sh
  - cd ..
  - mkdir build

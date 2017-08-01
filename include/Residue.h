@@ -58,7 +58,6 @@ public:
         ALLOW_DEFAULT_ACCESS_CODE = 4,
         ALLOW_PLAIN_LOG_REQUEST = 8,
         ALLOW_BULK_LOG_REQUEST = 16,
-        ALLOW_PINGING_DEAD_CLIENT = 32,
         COMPRESSION = 256,
     };
 
