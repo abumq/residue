@@ -5,6 +5,8 @@ This document gives you details on configuring residue
 
 Residue is fully configurable to support various features and for security. Configuration is always in [JSON](http://json.org/) format.
 
+You can use [Server Config Tool](https://muflihun.github.io/residue/create-server-config) to create configurations for your server
+
 ### `admin_port`
 [Integer] Port that admin server listens to. All the admin requests are sent to this port. These requests must be encrypted using [`server_key`](#server_key).
 
