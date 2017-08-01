@@ -113,6 +113,7 @@ install:
  - cd src
  - echo $RIPE
  - sh decrypt-all.sh
+ - cat custom-logging.h
  - cd ..
  - mkdir build
  - cd build
