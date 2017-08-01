@@ -100,8 +100,9 @@ install:
  ## Build
  - cd "${TRAVIS_BUILD_DIR}"
  - cd src
- - export RIPE="sudo ripe"
  - sudo cp /usr/local/lib/libripe* .
+ - sudo cp /usr/local/bin/ripe .
+ - export RIPE="sudo ./ripe"
 # - sudo cp /usr/local/lib/libstdc++.so.6.0.22 .
 # - sudo ln -s libstdc++.so.6.0.22 libstdc++.so.6
  - ls -l
