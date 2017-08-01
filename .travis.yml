@@ -85,7 +85,7 @@ install:
  - cmake .
  - make
  - ls -l
- - sudo make install
+ - make install
 
 ## Ripe Binaries
 # - wget -O ripe-bin.tar.gz https://github.com/muflihun/ripe/releases/download/v3.3.0/ripe-3.3.0-x86_64-linux.tar.gz
@@ -100,15 +100,7 @@ install:
  ## Build
  - cd "${TRAVIS_BUILD_DIR}"
  - cd src
- - sudo cp /usr/local/lib/libripe* .
- - sudo cp /usr/local/bin/ripe .
- - sudo chown travis:travis *ripe*
- - sudo chmod 770 *ripe*
- - export RIPE="./ripe"
-# - sudo cp /usr/local/lib/libstdc++.so.6.0.22 .
-# - sudo ln -s libstdc++.so.6.0.22 libstdc++.so.6
- - ls -l
- - ./ripe --version
+ - export RIPE="ripe"
  - $RIPE --version
  - sh decrypt-all.sh
  - cd ..
