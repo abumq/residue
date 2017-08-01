@@ -10,6 +10,7 @@
 
 ### Library Changes
 - Fixed compression flag
+- Internal logging level helper enum class
 
 ## [1.0.0-beta.12] - 27-07-2017
 ### Added

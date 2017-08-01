@@ -236,7 +236,7 @@ int main(int argc, char* argv[]) {
     return 0;
 #endif
 
-    Residue::setInternalLoggingLevel(1); // debug logging
+    Residue::setInternalLoggingLevel(Residue::InternalLoggingLevel::info);
 
     // Here we are using Easylogging++ macros to send log requests to Residue
     // Nothing will be logged locally as connecting (Residue::connect) will "uninstall" the default
@@ -248,7 +248,7 @@ int main(int argc, char* argv[]) {
     // using default logger - note we did not provide any access code for it
     CLOG(INFO, "default") << "Test using default logger";
 
-#if 0 // more logging
+#if 1 // more logging
     // You can reconnect whenever you like
     // Residue::reconnect();
 
@@ -305,8 +305,9 @@ int main(int argc, char* argv[]) {
         t.join();
     };
 
-    std::cout << "Disconnecting..." << std::endl;
 #endif
+
+    std::cout << "Disconnecting..." << std::endl;
 
     // This is important, we are manually disconnecting from the residue server
     // The program will not finish until all the log messages are sent to the server

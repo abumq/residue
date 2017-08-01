@@ -13,6 +13,7 @@
 #ifndef Residue_h
 #define Residue_h
 
+#include <cstdint>
 #include <ctime>
 #include <atomic>
 #include <deque>
@@ -61,6 +62,15 @@ public:
         COMPRESSION = 256,
     };
 
+    enum class InternalLoggingLevel : std::int8_t {
+        crazy = 0,
+        debug = 1,
+        info = 2,
+        warning = 3,
+        error = 4,
+        none = 5
+    };
+
 #ifdef RESIDUE_PROFILING
     unsigned long queue_ms;
     unsigned long dispatch_ms;
@@ -100,7 +110,7 @@ public:
     static const std::string DEFAULT_ACCESS_CODE;
 
     ///
-    /// \brief See setInternalLoggingLevel(int)
+    /// \brief See setInternalLoggingLevel(InternalLoggingLevel)
     ///
     static volatile int s_internalLoggingLevel;
 
@@ -469,6 +479,15 @@ public:
     static inline void setInternalLoggingLevel(int level)
     {
         Residue::s_internalLoggingLevel = level;
+    }
+
+    ///
+    /// \brief Helper function to set logging level for debugging/info
+    /// \see setInternalLoggingLevel(int)
+    ///
+    static inline void setInternalLoggingLevel(InternalLoggingLevel level)
+    {
+        setInternalLoggingLevel(static_cast<int>(level));
     }
 
     ///
