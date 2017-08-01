@@ -20,7 +20,7 @@
     "allow_bulk_log_request": true,
     "max_items_in_bulk": 50,
     "allow_pinging_dead_client": false,
-    "token_age": 3600,
+    "token_age": 60,
     "client_age": 300,
     "timestamp_validity": 120,
     "requires_timestamp": false,
@@ -61,11 +61,11 @@
             "allow_plain_log_request": true,
             "access_codes": [
                 {
-                    "code": "a2dcb"
+                    "code": "a2dcb",
+                    "token_age": 6000
                 },
                 {
-                    "code": "eif89",
-                    "token_age": 60
+                    "code": "eif89"
                 },
                 {
                     "code": "a2dc3",

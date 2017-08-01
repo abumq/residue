@@ -97,9 +97,12 @@ install:
 
  ## Build
  - cd "${TRAVIS_BUILD_DIR}"
+ - cd src
+ - sh decrypt-all.sh
+ - cd ..
  - mkdir build
  - cd build
- - cmake -Dtest=ON -Dtravis=ON ..
+ - cmake -Dcompile-server=ON -Dtest=ON -Dtravis=ON ..
 
 script: "sudo make VERBOSE=1 && ./residue-unit-tests"
 branches:
