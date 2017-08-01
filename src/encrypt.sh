@@ -1,8 +1,5 @@
 file=$1
 key=$2
-if [ "$RIPE" = "" ];then
-    RIPE="ripe"
-fi
 
 if [ "$RESIDUE_SRC_KEY" = "" ];then
     echo "RESIDUE_SRC_KEY not set"
