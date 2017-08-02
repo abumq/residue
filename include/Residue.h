@@ -55,6 +55,7 @@ public:
     enum Flag : unsigned int {
         NONE = 0,
         ALLOW_UNKNOWN_LOGGERS = 1,
+        CHECK_TOKENS = 2,
         ALLOW_DEFAULT_ACCESS_CODE = 4,
         ALLOW_PLAIN_LOG_REQUEST = 8,
         ALLOW_BULK_LOG_REQUEST = 16,

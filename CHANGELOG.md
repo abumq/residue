@@ -3,6 +3,7 @@
 ## [Unreleased]
 ### Library Changes
 - Fixed issue with logging DEBUG when built with Release build (use Easylogging++ v9.95.0+)
+- Use of `CHECK_TOKENS` server flag to reduce overhead of pulling token when not needed
 
 ## [1.0.0-beta.13] - 02-08-2017
 ### Updated

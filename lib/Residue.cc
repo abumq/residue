@@ -757,17 +757,20 @@ std::string Residue::requestToJson(RequestTuple&& request)
         j["app"] = m_applicationId;
     }
 
-    std::string token = getToken(loggerId);
-    if (token.empty()) {
-        obtainToken(loggerId);
+    if (hasFlag(Flag::CHECK_TOKENS)) {
+        std::string token = getToken(loggerId);
+        if (token.empty()) {
+            obtainToken(loggerId);
+        }
+        token = getToken(loggerId);
+
+        j["token"] = token;
     }
-    token = getToken(loggerId);
 
     if (m_plainRequest && hasFlag(Flag::ALLOW_PLAIN_LOG_REQUEST)) {
         j["client_id"] = m_clientId;
     }
 
-    j["token"] = token;
     j["thread"] = threadId;
     j["datetime"] = date;
     j["logger"] = loggerId;
