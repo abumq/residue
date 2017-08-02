@@ -1,6 +1,6 @@
 # Change Log
 
-## [Unreleased]
+## [1.0.0-beta.12] - 02-08-2017
 ### Updated
 - Removed `allow_pinging_dead_client` config
 - New configs `timestamp_validity` and `requires_timestamp`
@@ -10,6 +10,7 @@
 
 ### Fixed
 - Healing the connection will respond with flags and other connection response items
+- Fixed release build
 
 ### Library Changes
 - Fixed compression flag
