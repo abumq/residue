@@ -548,7 +548,7 @@ void Residue::reset()
                                                 try {
                                                     s_tokenClient->connect();
                                                     if (!s_tokenClient->connected()) {
-                                                        addError("Failed to connect. (Port: " + std::to_string(m_tokenPort) + ") " + s_loggingClient->lastError());
+                                                        addError("Failed to connect. (Port: " + std::to_string(m_tokenPort) + ") " + s_tokenClient->lastError());
                                                         throw ResidueException(m_errors.at(m_errors.size() - 1));
                                                     }
                                                 } catch (const ResidueException& e) {
