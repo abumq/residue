@@ -188,53 +188,60 @@ include_directories (${CMAKE_BINARY_DIR})
 include_directories (${CMAKE_SOURCE_DIR})
 
 
+############# SERVER ###############
+
+if (compile-server)
+    set (SOURCE_FILES
+        src/Url.cc
+        src/Utils.cc
+        src/Configuration.cc
+        src/Registry.cc
+        src/RequestHandler.cc
+        src/TokenRequestHandler.cc
+        src/LogRequestHandler.cc
+        src/ConnectionRequestHandler.cc
+        src/AdminRequestHandler.cc
+        src/Session.cc
+        src/JsonObject.cc
+        src/Request.cc
+        src/Response.cc
+        src/AdminRequest.cc
+        src/ConnectionRequest.cc
+        src/ConnectionResponse.cc
+        src/LogRequest.cc
+        src/TokenRequest.cc
+        src/Server.cc
+        src/UserLogBuilder.cc
+        src/Token.cc
+        src/Client.cc
+        src/TokenResponse.cc
+        src/ClientIntegrityTask.cc
+        src/LogRotator.cc
+        src/Task.cc
+        src/CommandHandler.cc
+        src/Tar.cc
+    )
+
+    set (REQUIRED_LIBS
+        ${RIPE_LIBRARY}
+        ${Boost_LIBRARIES}
+        ${CMAKE_THREAD_LIBS_INIT}
+    )
 
 ############# RESIDUE CORE LIB (STATIC) ###############
 
-if (compile-server)
-set(SOURCE_FILES
-    src/Url.cc
-    src/Utils.cc
-    src/Configuration.cc
-    src/Registry.cc
-    src/RequestHandler.cc
-    src/TokenRequestHandler.cc
-    src/LogRequestHandler.cc
-    src/ConnectionRequestHandler.cc
-    src/AdminRequestHandler.cc
-    src/Session.cc
-    src/JsonObject.cc
-    src/Request.cc
-    src/Response.cc
-    src/AdminRequest.cc
-    src/ConnectionRequest.cc
-    src/ConnectionResponse.cc
-    src/LogRequest.cc
-    src/TokenRequest.cc
-    src/Server.cc
-    src/UserLogBuilder.cc
-    src/Token.cc
-    src/Client.cc
-    src/TokenResponse.cc
-    src/ClientIntegrityTask.cc
-    src/LogRotator.cc
-    src/Task.cc
-    src/CommandHandler.cc
-    src/Tar.cc
-)
+#add_library (residue-core ${SOURCE_FILES})
 
-add_library (residue-core ${SOURCE_FILES})
+#set_target_properties (residue-core PROPERTIES
+#    VERSION ${RESIDUE_VERSION}
+#    SOVERSION ${RESIDUE_SOVERSION}
+#)
 
-set_target_properties (residue-core PROPERTIES
-    VERSION ${RESIDUE_VERSION}
-    SOVERSION ${RESIDUE_SOVERSION}
-)
-
-target_link_libraries (residue-core
-    ${RIPE_LIBRARY}
-    ${Boost_LIBRARIES}
-    ${CMAKE_THREAD_LIBS_INIT}
-)
+#target_link_libraries (residue-core
+#    ${RIPE_LIBRARY}
+#    ${Boost_LIBRARIES}
+#    ${CMAKE_THREAD_LIBS_INIT}
+#)
 
 # Set RPATH to library install path.
 set (CMAKE_INSTALL_RPATH "${CMAKE_INSTALL_PREFIX}/lib")
@@ -242,33 +249,34 @@ set (CMAKE_INSTALL_RPATH "${CMAKE_INSTALL_PREFIX}/lib")
 
 ############# CONFIG VALIDATOR TOOL ###############
 
-add_executable (config-validator-bin
-    tools/config-validator/config-validator.cc
-    ${EASYLOGGINGPP_INCLUDE_DIR}/easylogging++.cc
-)
+#add_executable (config-validator-bin
+#    tools/config-validator/config-validator.cc
+#    ${EASYLOGGINGPP_INCLUDE_DIR}/easylogging++.cc
+#)
 
-target_compile_definitions (config-validator-bin PRIVATE
-    ELPP_NO_DEFAULT_LOG_FILE
-    ELPP_NO_LOG_TO_FILE
-    AUTO_INITIALIZE_EASYLOGGINGPP
-    ELPP_DEFAULT_LOGGING_FLAGS=4096
-    ELPP_STL_LOGGING
-)
+#target_compile_definitions (config-validator-bin PRIVATE
+#    ELPP_NO_DEFAULT_LOG_FILE
+#    ELPP_NO_LOG_TO_FILE
+#    AUTO_INITIALIZE_EASYLOGGINGPP
+#    ELPP_DEFAULT_LOGGING_FLAGS=4096
+#    ELPP_STL_LOGGING
+#)
 
-target_link_libraries (config-validator-bin ${RIPE_LIBRARY} residue-core)
+#target_link_libraries (config-validator-bin ${RIPE_LIBRARY} residue-core)
 
-set_target_properties (config-validator-bin PROPERTIES
-    OUTPUT_NAME "config-validator"
-    VERSION ${RESIDUE_VERSION}
-    SOVERSION ${RESIDUE_SOVERSION}
-)
+#set_target_properties (config-validator-bin PROPERTIES
+#    OUTPUT_NAME "config-validator"
+#    VERSION ${RESIDUE_VERSION}
+#    SOVERSION ${RESIDUE_SOVERSION}
+#)
 
-# install (TARGETS config-validator-bin DESTINATION bin)
+# -- DO NOT UNCOMMENT install (TARGETS config-validator-bin DESTINATION bin)
 
 
 ############# RESIDUE BINARY ###############
 
 add_executable (residue-bin
+    ${SOURCE_FILES}
     src/main.cc
     ${EASYLOGGINGPP_INCLUDE_DIR}/easylogging++.cc
 )
@@ -282,7 +290,17 @@ target_compile_definitions (residue-bin PUBLIC
     ELPP_DEFAULT_LOG_FILE="/tmp/logs/residue_default_logger.log"
 )
 
-target_link_libraries (residue-bin residue-core)
+set_target_properties (residue-bin PROPERTIES
+    VERSION ${RESIDUE_VERSION}
+    SOVERSION ${RESIDUE_SOVERSION}
+    OUTPUT_NAME "residue"
+)
+
+target_link_libraries (residue-bin
+    ${REQUIRED_LIBS}
+)
+
+# target_link_libraries (residue-bin residue-core)
 
 set_target_properties (residue-bin PROPERTIES OUTPUT_NAME "residue")
 install (TARGETS residue-bin DESTINATION bin)
@@ -304,6 +322,7 @@ if (test)
     enable_testing()
 
     add_executable (residue-unit-tests
+        ${SOURCE_FILES}
         test/main.cc
         ${EASYLOGGINGPP_INCLUDE_DIR}/easylogging++.cc
     )
@@ -318,7 +337,11 @@ if (test)
     target_link_libraries (residue-unit-tests gtest gtest_main)
 
     # Extra linking for the project.
-    target_link_libraries (residue-unit-tests residue-core)
+#    target_link_libraries (residue-unit-tests residue-core)
+
+    target_link_libraries (residue-unit-tests
+        ${REQUIRED_LIBS}
+    )
 
     add_test (NAME residueUnitTests COMMAND residue-unit-tests)
 endif()
