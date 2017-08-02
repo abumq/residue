@@ -25,7 +25,7 @@ void displayErrors()
 
 int main(int argc, char* argv[]) {
 
-#if 0 // minimal sample with unknown logger
+#if 1 // minimal sample with unknown logger
     try {
         Residue::connect("localhost", Residue::DEFAULT_PORT);
     } catch (const ResidueException& e) {
@@ -39,6 +39,8 @@ int main(int argc, char* argv[]) {
         std::cout << "Failed!" << std::endl;
         displayErrors();
     }
+    LOG(DEBUG) << "Debug 1";
+    LOG(ERROR) << "Error 1";
     CLOG(INFO, "sample-app-unknown-logger") << "user is zooming";
     Residue::disconnect();
     return 0;
@@ -136,7 +138,7 @@ int main(int argc, char* argv[]) {
     // in (you just need to make sure that accessCodes in still in scope when you
     // call Residue::connect()
 
-#if 0
+#if 1
     //
     // Optional: Providing "--bulk" option enables bulk dispatch for residue which means each log request
     // will be sent to the server in batch of bulk size. See following links for details
