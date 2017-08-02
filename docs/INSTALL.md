@@ -6,10 +6,10 @@ This document shows you steps to install reside on your machine. You can install
 
 # Dependencies
   * C++11 (or higher)
-  * [Ripe](https://github.com/muflihun/ripe) v2.4.1
-  * Boost 1.59 or higher [Components: system]
-  * [Easylogging++](https://github.com/muflihun/easyloggingpp) v9.94.2
-  * [CMake Toolchains](https://cmake.org/) 2.8.12
+  * [Ripe](https://github.com/muflihun/ripe) v3.3.0
+  * Boost v1.59 or higher [Components: system]
+  * [Easylogging++](https://github.com/muflihun/easyloggingpp) v9.95.0
+  * [CMake Toolchains](https://cmake.org/) v2.8.12
  
 # Get Code
 You can either [download code from master branch](https://github.com/muflihun/residue/archive/master.zip) or clone it using `git`:

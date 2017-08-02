@@ -1,6 +1,8 @@
 # Change Log
 
 ## [Unreleased]
+### Library Changes
+- Fixed issue with logging DEBUG when built with Release build (use Easylogging++ v9.95.0+)
 
 ## [1.0.0-beta.13] - 02-08-2017
 ### Updated
