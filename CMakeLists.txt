@@ -274,8 +274,11 @@ add_executable (residue-bin
 )
 
 target_compile_definitions (residue-bin PUBLIC
+    ELPP_FORCE_USE_STD_THREAD
     ELPP_THREAD_SAFE
     ELPP_STL_LOGGING
+    ELPP_STACKTRACE
+    ELPP_FEATURE_CRASH_LOG
     ELPP_DEFAULT_LOG_FILE="/tmp/logs/residue_default_logger.log"
 )
 
