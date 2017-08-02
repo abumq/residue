@@ -276,6 +276,7 @@ add_executable (residue-bin
 target_compile_definitions (residue-bin PUBLIC
     ELPP_FORCE_USE_STD_THREAD
     ELPP_THREAD_SAFE
+    ELPP_UNICODE
     ELPP_STL_LOGGING
     ELPP_STACKTRACE
     ELPP_FEATURE_CRASH_LOG
