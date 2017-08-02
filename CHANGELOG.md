@@ -1,6 +1,6 @@
 # Change Log
 
-## [1.0.0-beta.12] - 02-08-2017
+## [1.0.0-beta.13] - 02-08-2017
 ### Updated
 - Removed `allow_pinging_dead_client` config
 - New configs `timestamp_validity` and `requires_timestamp`
