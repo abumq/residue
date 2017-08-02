@@ -83,7 +83,7 @@ Please note following important points:
 
  * With each log request, library should check whether token on server is still valid or not (you can use `life` and `date_created`. If token is not valid on server, first obtain a new token (using access code map provided by the user in `connect()` function) and then send the request.
 
- * With each log request, first check whether client is still alive or not, if it's not dead yet, send a ping request. If you find out that client died in the server, reconnect before sending requests.
+ * With each log request, first check whether client is still alive or not, if it's not dead yet, send a touch request. If you find out that client died in the server, reconnect before sending requests.
  
 All of this is done under the hood and user should not know the details of it.
 

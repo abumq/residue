@@ -9,7 +9,7 @@ You need 2 things to connect to residue
 1. `Residue.h` header file - this contains API for connecting to residue server
 2. `libresidue` shared library - you will need to link your application to this library in order to successfully compile.
 
-You may be interested in [compiling static library](https://github.com/muflihun/residue/blob/master/docs/INSTALL.md#static-library)
+You may be interested in [compiling static library](/docs/INSTALL.md#static-library)
 
 ### 2. Define `ELPP_THREAD_SAFE`
 Make sure you define `ELPP_THREAD_SAFE` preprocessor at compile level (whole application takes this affect)
