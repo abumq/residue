@@ -95,7 +95,7 @@ protected:
                               "token_port": 87781,
                               "logging_port": 87791,
                               "server_key": "048CB7050312DB329788CE1533C294A1F248F8A1BD6F611D7516803EDE271C65",
-                              "authorize_loggers_with_no_access_code": true,
+                              "allow_default_access_code": true,
                               "allow_unknown_loggers": true,
                               "allow_unknown_clients": false,
                               "accept_input": false,
@@ -103,7 +103,6 @@ protected:
                               "allow_plain_log_request": true,
                               "immediate_flush": true,
                               "allow_bulk_log_request": true,
-                              "allow_pinging_dead_client": false,
                               "client_integrity_task_interval": 500,
                               "client_age": 0,
                               "token_age": 25,
@@ -205,10 +204,9 @@ TEST_F(ConfigurationTest, CheckValues)
     ASSERT_FALSE(conf->hasFlag(Configuration::Flag::ACCEPT_INPUT));
     ASSERT_TRUE(conf->hasFlag(Configuration::Flag::ALLOW_UNKNOWN_LOGGERS));
     ASSERT_FALSE(conf->hasFlag(Configuration::Flag::ALLOW_UNKNOWN_CLIENTS));
-    ASSERT_TRUE(conf->hasFlag(Configuration::Flag::AUTHORIZE_LOGGERS_WITH_NO_ACCESS_CODE));
+    ASSERT_TRUE(conf->hasFlag(Configuration::Flag::ALLOW_DEFAULT_ACCESS_CODE));
     ASSERT_TRUE(conf->hasFlag(Configuration::Flag::CHECK_TOKENS));
     ASSERT_TRUE(conf->hasFlag(Configuration::Flag::ALLOW_PLAIN_LOG_REQUEST));
-    ASSERT_FALSE(conf->hasFlag(Configuration::Flag::ALLOW_PINGING_DEAD_CLIENT));
     ASSERT_FALSE(conf->hasLoggerFlag("residue", Configuration::Flag::ALLOW_PLAIN_LOG_REQUEST));
     ASSERT_TRUE(conf->hasLoggerFlag("muflihun", Configuration::Flag::ALLOW_PLAIN_LOG_REQUEST));
     ASSERT_FALSE(conf->isKnownLoggerForClient("missing-client", "muflihun"));
@@ -247,10 +245,9 @@ TEST_F(ConfigurationTest, Save)
     ASSERT_EQ(conf2->hasFlag(Configuration::Flag::ACCEPT_INPUT), conf->hasFlag(Configuration::Flag::ACCEPT_INPUT));
     ASSERT_EQ(conf2->hasFlag(Configuration::Flag::ALLOW_UNKNOWN_LOGGERS), conf->hasFlag(Configuration::Flag::ALLOW_UNKNOWN_LOGGERS));
     ASSERT_EQ(conf2->hasFlag(Configuration::Flag::ALLOW_UNKNOWN_CLIENTS), conf->hasFlag(Configuration::Flag::ALLOW_UNKNOWN_CLIENTS));
-    ASSERT_EQ(conf2->hasFlag(Configuration::Flag::AUTHORIZE_LOGGERS_WITH_NO_ACCESS_CODE), conf->hasFlag(Configuration::Flag::AUTHORIZE_LOGGERS_WITH_NO_ACCESS_CODE));
+    ASSERT_EQ(conf2->hasFlag(Configuration::Flag::ALLOW_DEFAULT_ACCESS_CODE), conf->hasFlag(Configuration::Flag::ALLOW_DEFAULT_ACCESS_CODE));
     ASSERT_EQ(conf2->hasFlag(Configuration::Flag::CHECK_TOKENS), conf->hasFlag(Configuration::Flag::CHECK_TOKENS));
     ASSERT_EQ(conf2->hasFlag(Configuration::Flag::ALLOW_PLAIN_LOG_REQUEST), conf->hasFlag(Configuration::Flag::ALLOW_PLAIN_LOG_REQUEST));
-    ASSERT_EQ(conf2->hasFlag(Configuration::Flag::ALLOW_PINGING_DEAD_CLIENT), conf->hasFlag(Configuration::Flag::ALLOW_PINGING_DEAD_CLIENT));
     ASSERT_EQ(conf2->hasLoggerFlag("residue", Configuration::Flag::ALLOW_PLAIN_LOG_REQUEST), conf->hasLoggerFlag("residue", Configuration::Flag::ALLOW_PLAIN_LOG_REQUEST));
     ASSERT_EQ(conf2->hasLoggerFlag("muflihun", Configuration::Flag::ALLOW_PLAIN_LOG_REQUEST), conf->hasLoggerFlag("muflihun", Configuration::Flag::ALLOW_PLAIN_LOG_REQUEST));
     ASSERT_FALSE(conf2->isKnownLoggerForClient("missing-client", "muflihun"));
@@ -279,7 +276,7 @@ TEST_F(ConfigurationTest, KnownLoggersRequestAllowed)
                                             "key_size":256,
                                             "_t": 999
                                         })");
-    ConnectionRequest connectionReq;
+    ConnectionRequest connectionReq(registry.configuration());
     connectionReq.setDateReceived(1000);
     connectionReq.deserialize(std::move(connectionRequestStr));
     Client client(&connectionReq);
@@ -302,7 +299,7 @@ TEST_F(ConfigurationTest, KnownLoggersRequestAllowed)
     auto runTests = [&](const std::map<std::string, bool>& testCases) {
         for (auto& t : testCases) {
             std::string r1 = createLogRequest(t.first);
-            LogRequest logRequest;
+            LogRequest logRequest(registry.configuration());
             logRequest.setDateReceived(Utils::now());
             logRequest.deserialize(std::move(r1));
             logRequest.setClient(&client);

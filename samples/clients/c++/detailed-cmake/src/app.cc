@@ -54,7 +54,7 @@ int main(int argc, char* argv[]) {
 #else
 
     // Manually set configurations via API
-#   if 1 // enable known client - review the privateKeyFile location (try running this sample from root)
+#   if 0 // enable known client - review the privateKeyFile location (try running this sample from root)
     // OPTIONAL:
     // If you are provided some details about client ID from server and you have uploaded
     // RSA public key to the server then you can let server known about this and you may get
@@ -77,7 +77,7 @@ int main(int argc, char* argv[]) {
 #   endif
 
 
-#   if 1 // Enable server key
+#   if 0 // Enable server key
     // Notice, the bigger the server key, the slower server will respond (but it's more secure)
     std::string serverPublicKeyFile = "samples/clients/netcat/server-1024-public.pem";
     std::fstream fs2(serverPublicKeyFile, std::ios::in);
@@ -236,6 +236,8 @@ int main(int argc, char* argv[]) {
     return 0;
 #endif
 
+    // Residue::setInternalLoggingLevel(Residue::InternalLoggingLevel::info);
+
     // Here we are using Easylogging++ macros to send log requests to Residue
     // Nothing will be logged locally as connecting (Residue::connect) will "uninstall" the default
     // log dispatcher and installs it's own dispatcher. If you want to know more about this technique
@@ -243,6 +245,10 @@ int main(int argc, char* argv[]) {
     LOG(INFO) << "Test";
     VLOG(1) << "Verbose log level-1";
 
+    // using default logger - note we did not provide any access code for it
+    CLOG(INFO, "default") << "Test using default logger";
+
+#if 1 // more logging
     // You can reconnect whenever you like
     // Residue::reconnect();
 
@@ -298,6 +304,8 @@ int main(int argc, char* argv[]) {
         // We wait for all the threads to finish
         t.join();
     };
+
+#endif
 
     std::cout << "Disconnecting..." << std::endl;
 

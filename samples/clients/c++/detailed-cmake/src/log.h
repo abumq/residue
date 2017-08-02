@@ -11,4 +11,5 @@
 #   else
 #      include "include/Residue.h"
 #endif
+
 #endif // LOG_H

@@ -26,7 +26,7 @@ TEST(AdminRequestTest, DeserializeTest)
                       "rsa_public_key": "blah"
                       }
                       )");
-    AdminRequest r;
+    AdminRequest r(nullptr);
     r.setDateReceived(Utils::now());
     r.deserialize(ss.str());
     ASSERT_FALSE(r.isValid());

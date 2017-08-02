@@ -9,7 +9,7 @@
     "server_rsa_secret": "",
     "default_key_size": 256,
     "accept_input": false,
-    "authorize_loggers_with_no_access_code": true,
+    "allow_default_access_code": true,
     "allow_plain_connection": true,
     "allow_unknown_loggers": true,
     "allow_unknown_clients": true,
@@ -20,8 +20,10 @@
     "allow_bulk_log_request": true,
     "max_items_in_bulk": 50,
     "allow_pinging_dead_client": false,
-    "token_age": 3600,
+    "token_age": 60,
     "client_age": 300,
+    "timestamp_validity": 120,
+    "requires_timestamp": false,
     "non_acknowledged_client_age": 300,
     "client_integrity_task_interval": 300,
     "dispatch_delay": 1,
@@ -48,7 +50,7 @@
         {
             "logger_id": "sample-app",
             "configuration_file": "samples/configurations/sample-app-Logger.conf",
-            "rotation_freq": "hourly",
+            "rotation_freq": "never",
             "archived_log_filename": "mylogs-%hour-00-%wday-%level.log",
             "archived_log_compressed_filename": "%hour-00-%wday-%month-%year.tar.gz",
             "archived_log_directory": "%original/backups/%logger/",
@@ -59,11 +61,11 @@
             "allow_plain_log_request": true,
             "access_codes": [
                 {
-                    "code": "a2dcb"
+                    "code": "a2dcb",
+                    "token_age": 6000
                 },
                 {
-                    "code": "eif89",
-                    "token_age": 60
+                    "code": "eif89"
                 },
                 {
                     "code": "a2dc3",

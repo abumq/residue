@@ -5,6 +5,8 @@ This document gives you details on configuring residue
 
 Residue is fully configurable to support various features and for security. Configuration is always in [JSON](http://json.org/) format.
 
+You can use [Server Config Tool](https://muflihun.github.io/residue/create-server-config) to create configurations for your server
+
 ### `admin_port`
 [Integer] Port that admin server listens to. All the admin requests are sent to this port. These requests must be encrypted using [`server_key`](#server_key).
 
@@ -66,7 +68,7 @@ Default: `true`
 
 Default: `true`
 
-### `authorize_loggers_with_no_access_code`
+### `allow_default_access_code`
 [Boolean] Specifies whether all the loggers with no access codes are automatically allowed or not. If allowed, Easylogging++ default configurations are used.
 
 Default: `true`
@@ -90,6 +92,15 @@ Default: `true`
 [Boolean] Specifies whether to flush logger immediately after writing to it or not. Performance of the server is not affected with turning it on as we use separate thread for logging.
 
 Default: `true`
+
+### `requires_timestamp`
+[Boolean] Specifies whether timestamp is absolutely required or not. Timestamp is `_t` value for each incoming requests.
+
+This does not affect admin requests, timestamps for admin requests is always required.
+
+See [`timestamp_validity`](#timestamp_validity)
+
+Default: `false`
 
 ### `compression`
 [Boolean] Specifies whether compression is enabled or not.
@@ -135,6 +146,13 @@ Default: `5`
 
 You may be interested in [`compression`](#compression)
 
+### `timestamp_validity`
+[Integer] Integer value in seconds that specifies validity of timestamp `_t` in request
+
+Minimum: `30`
+
+Default: `120`
+
 ### `client_age`
 [Integer] Value (in seconds) that defines the age of a client. After this age, client is considered *dead*. Clients library can `PING` request just before dying to bring it back to life provided it's not already dead. After client is dead, it needs to reconnect and obtain a new key.
 
@@ -167,7 +185,7 @@ Default: `0` (Forever)
 
 This age is used in following scenarios:
 
- * If [`authorize_loggers_with_no_access_code`](#authorize_loggers_with_no_access_code) is `true` and token with unknown access code is requested, this is the age of the token.
+ * If [`allow_default_access_code`](#allow_default_access_code) is `true` and token with unknown access code is requested, this is the age of the token.
  * If no access code is specified with access code, this is the age of that token.
 
 Minimum: `15`

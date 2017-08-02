@@ -1,5 +1,21 @@
 # Change Log
 
+## [1.0.0-beta.13] - 02-08-2017
+### Updated
+- Removed `allow_pinging_dead_client` config
+- New configs `timestamp_validity` and `requires_timestamp`
+
+### Changed
+- Changed `authorize_loggers_with_no_access_code` to `allow_default_access_code`
+
+### Fixed
+- Healing the connection will respond with flags and other connection response items
+- Fixed release build
+
+### Library Changes
+- Fixed compression flag
+- Internal logging level helper enum class
+
 ## [1.0.0-beta.12] - 27-07-2017
 ### Added
 - Ability to specify key size for each client

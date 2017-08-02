@@ -21,7 +21,7 @@ matrix:
         sources: ['ubuntu-toolchain-r-test']
         packages: [g++-4.9, valgrind]
     before_install:
-    - CXX=g++-4.9
+    - CXX=$COMPILER
     - sudo add-apt-repository ppa:kubuntu-ppa/backports -y
     - sudo apt-get -qq update
     - sudo apt-get install -y libboost-system-dev libgtest-dev
@@ -36,21 +36,54 @@ matrix:
         sources: ['ubuntu-toolchain-r-test']
         packages: [g++-5, valgrind]
     before_install:
-    - CXX=g++-5
+    - CXX=$COMPILER
+    - sudo add-apt-repository ppa:kubuntu-ppa/backports -y
+    - sudo apt-get -qq update
+    - sudo apt-get install -y libboost-system-dev libgtest-dev
+    - sudo apt-get install --only-upgrade cmake
+    
+  - os: linux
+    compiler: gcc
+    env:
+      - COMPILER=g++-6
+    addons:
+      apt:
+        sources: ['ubuntu-toolchain-r-test']
+        packages: [g++-6, valgrind]
+    before_install:
+    - CXX=$COMPILER
+    - sudo add-apt-repository ppa:kubuntu-ppa/backports -y
+    - sudo apt-get -qq update
+    - sudo apt-get install -y libboost-system-dev libgtest-dev
+    - sudo apt-get install --only-upgrade cmake
+    
+  - os: linux
+    compiler: gcc
+    env:
+      - COMPILER=g++-7
+    addons:
+      apt:
+        sources: ['ubuntu-toolchain-r-test']
+        packages: [g++-7, valgrind]
+    before_install:
+    - CXX=$COMPILER
     - sudo add-apt-repository ppa:kubuntu-ppa/backports -y
     - sudo apt-get -qq update
     - sudo apt-get install -y libboost-system-dev libgtest-dev
     - sudo apt-get install --only-upgrade cmake
     
 #  - os: osx
+#    compiler: clang
 #    osx_image: xcode8
-#    env:
-#      - RIPE_TAR=ripe-2.4.1-darwin-x86_64
+#     - sudo port install boost
+#     - g++ -v
+#     - cmake -v
     
 install:
  - cmake --version 
  - uname -a
- # GTest
+
+## GTest
  - wget -O gtest.tar.gz https://github.com/google/googletest/archive/release-1.7.0.tar.gz
  - tar xf gtest.tar.gz
  - cd googletest-release-1.7.0
@@ -60,14 +93,16 @@ install:
  - sudo cp -a include/gtest /usr/include
  - sudo cp -a libgtest_main.* libgtest.* /usr/lib/
  - cd ..
- ## Easylogging++
+
+## Easylogging++
  - wget https://github.com/muflihun/easyloggingpp/archive/develop.zip
  - unzip develop.zip
  - cd easyloggingpp-develop
  - cmake .
  - make
  - sudo make install
- # Crypto++ (We dont need this for residue, we need it for ripe)
+
+## Crypto++ (We dont need this for residue, we need it for ripe)
  - wget https://raw.githubusercontent.com/muflihun/muflihun.github.io/master/downloads/cryptocpp.tar.gz
  - tar xf cryptocpp.tar.gz
  - cd cryptopp-CRYPTOPP_5_6_5
@@ -76,30 +111,43 @@ install:
  - cmake .
  - make
  - sudo make install
+
 ## Ripe
- - wget https://github.com/muflihun/ripe/archive/develop.zip
- - unzip develop.zip
- - cd ripe-develop
+ - RIPE_VERSION=3.3.0
+ - wget -O ripe-code.zip https://github.com/muflihun/ripe/archive/v$RIPE_VERSION.zip
+ - unzip ripe-code.zip
+ - cd ripe-$RIPE_VERSION
  - cmake .
  - make
  - ls -l
  - sudo make install
 
 ## Ripe Binaries
-# - echo $RIPE_TAR
-# - wget -O ripe-bin.tar.gz https://github.com/muflihun/ripe/releases/download/v2.4.1/$RIPE_TAR.tar.gz
+# - wget -O ripe-bin.tar.gz https://github.com/muflihun/ripe/releases/download/v$RIPE_VERSION/ripe-$RIPE_VERSION-x86_64-linux.tar.gz
 # - tar xfz ripe-bin.tar.gz
-# - cd $RIPE_TAR
-# - wget https://raw.githubusercontent.com/muflihun/ripe/v2.4.1/include/Ripe.h
+# - cd ripe-$RIPE_VERSION-x86_64-linux
 # - ls -l
-# - sudo cp libripe.so /usr/local/lib/
+# - sudo cp lib* /usr/local/lib/
+# - sudo cp ripe /usr/local/bin/
+# - wget https://github.com/muflihun/ripe/releases/download/v$RIPE_VERSION/Ripe.h
 # - sudo cp Ripe.h /usr/include/
 
- ## Build
+## Set env variable for ripe
+ - echo $LD_LIBRARY_PATH
+ - export LD_LIBRARY_PATH=/usr/local/lib:$LD_LIBRARY_PATH
+ - export RIPE="sudo LD_LIBRARY_PATH=$LD_LIBRARY_PATH ripe"
+ - $RIPE --version
+
+## Build
  - cd "${TRAVIS_BUILD_DIR}"
+ - cd src
+ - echo $RIPE
+ - sh decrypt-all.sh
+ - cat custom-logging.h
+ - cd ..
  - mkdir build
  - cd build
- - cmake -Dtest=ON -Dtravis=ON ..
+ - cmake -Dcompile-server=ON -Dtest=ON -Dtravis=ON ..
 
 script: "sudo make VERBOSE=1 && ./residue-unit-tests"
 branches:
