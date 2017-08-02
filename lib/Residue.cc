@@ -27,7 +27,7 @@ INITIALIZE_EASYLOGGINGPP
 const std::size_t Residue::DEFAULT_KEY_SIZE = 2048;
 const std::string Residue::LOCALHOST = "127.0.0.1";
 const int Residue::DEFAULT_PORT = 8777;
-const unsigned int Residue::PING_THRESHOLD = 15; // minimum client_age
+const unsigned int Residue::TOUCH_THRESHOLD = 15; // minimum client_age
 const std::string Residue::DEFAULT_ACCESS_CODE = "default";
 
 using json = nlohmann::json;
@@ -354,8 +354,8 @@ void Residue::healthCheck() noexcept
             // We ignore these errors as we have
             // log messages from the reset()
         }
-    } else if (shouldSendPing()) {
-        sendPing();
+    } else if (shouldTouch()) {
+        touch();
     }
 }
 
@@ -792,22 +792,22 @@ std::string Residue::requestToJson(RequestTuple&& request)
     return j.dump();
 }
 
-bool Residue::shouldSendPing() const noexcept
+bool Residue::shouldTouch() const noexcept
 {
     if (m_age == 0) {
-        // Always alive so don't need to send ping
+        // Always alive so don't need to touch the client
         return false;
     }
     unsigned long now = std::chrono::system_clock::now().time_since_epoch() / std::chrono::seconds(1);
-    return m_age - (now - m_dateCreated) < Residue::PING_THRESHOLD;
+    return m_age - (now - m_dateCreated) < Residue::TOUCH_THRESHOLD;
 }
 
-void Residue::sendPing() noexcept
+void Residue::touch() noexcept
 {
-    reslog(reslog::debug) << "Pinging...";
+    reslog(reslog::debug) << "Touching...";
     m_connecting = true;
     json j;
-    int type = 3; // 3 = PING
+    int type = 3; // 3 = TOUCH
     j["type"] = type;
     j["_t"] = getTimestamp();
     j["client_id"] = m_clientId;
@@ -816,12 +816,12 @@ void Residue::sendPing() noexcept
     try {
         request = Ripe::prepareData(jsonRequest.c_str(), m_key, m_clientId.c_str());
     } catch (const std::exception& e) {
-        reslog(reslog::error) << "Failed to prepare request (PING): " << e.what();
+        reslog(reslog::error) << "Failed to prepare request (TOUCH): " << e.what();
     }
 
     s_connectionClient->send(std::move(request), true, [&](std::string&& response, bool hasError, std::string&& errorText) -> void {
         if (hasError) {
-            reslog(reslog::error) << "Failed to ping. Network error. " + errorText;
+            reslog(reslog::error) << "Failed to touch. Network error. " + errorText;
         } else {
             if (response.find("{") != std::string::npos) {
                 // Error
@@ -843,12 +843,12 @@ void Residue::sendPing() noexcept
                 try {
                     std::string decryptedResponse = Ripe::decryptAES(response, m_key, iv, true);
                     j = json::parse(decryptedResponse);
-                    RESIDUE_LOCK_LOG("sendPing");
+                    RESIDUE_LOCK_LOG("sendTouch");
                     std::lock_guard<std::recursive_mutex> lock(m_mutex);
                     m_age = j["age"].get<int>();
                     m_dateCreated = j["date_created"].get<unsigned long>();
                 } catch (const std::exception& e) {
-                    reslog(reslog::error) << "Failed to read PING response: " << e.what();
+                    reslog(reslog::error) << "Failed to read TOUCH response: " << e.what();
                 }
                 m_connecting = false;
             }

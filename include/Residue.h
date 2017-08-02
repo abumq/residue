@@ -100,9 +100,9 @@ public:
 
     ///
     /// \brief Threshold (seconds) to check against client age and whether
-    /// we should send ping request or not
+    /// we should send touch request or not
     ///
-    static const unsigned int PING_THRESHOLD;
+    static const unsigned int TOUCH_THRESHOLD;
 
     ///
     /// \brief Default access code value if allowed
@@ -628,8 +628,8 @@ private:
 
     // client
     bool isClientValid() const noexcept;
-    bool shouldSendPing() const noexcept;
-    void sendPing() noexcept;
+    bool shouldTouch() const noexcept;
+    void touch() noexcept;
     void healthCheck() noexcept;
 
     // connect
