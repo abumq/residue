@@ -230,18 +230,23 @@ if (compile-server)
 
 ############# RESIDUE CORE LIB (STATIC) ###############
 
-#add_library (residue-core ${SOURCE_FILES})
+add_library (residue-core ${SOURCE_FILES})
 
-#set_target_properties (residue-core PROPERTIES
-#    VERSION ${RESIDUE_VERSION}
-#    SOVERSION ${RESIDUE_SOVERSION}
-#)
+set_target_properties (residue-core PROPERTIES
+    VERSION ${RESIDUE_VERSION}
+    SOVERSION ${RESIDUE_SOVERSION}
+)
 
-#target_link_libraries (residue-core
-#    ${RIPE_LIBRARY}
-#    ${Boost_LIBRARIES}
-#    ${CMAKE_THREAD_LIBS_INIT}
-#)
+target_link_libraries (residue-core ${REQUIRED_LIBS})
+
+target_compile_definitions (residue-core PUBLIC
+    ELPP_FORCE_USE_STD_THREAD
+    ELPP_THREAD_SAFE
+    ELPP_STL_LOGGING
+    ELPP_STACKTRACE
+    ELPP_FEATURE_CRASH_LOG
+    ELPP_DEFAULT_LOG_FILE="/tmp/logs/residue_default_logger.log"
+)
 
 # Set RPATH to library install path.
 set (CMAKE_INSTALL_RPATH "${CMAKE_INSTALL_PREFIX}/lib")
@@ -276,19 +281,19 @@ set (CMAKE_INSTALL_RPATH "${CMAKE_INSTALL_PREFIX}/lib")
 ############# RESIDUE BINARY ###############
 
 add_executable (residue-bin
-    ${SOURCE_FILES}
+    #${SOURCE_FILES}
     src/main.cc
     ${EASYLOGGINGPP_INCLUDE_DIR}/easylogging++.cc
 )
 
-target_compile_definitions (residue-bin PUBLIC
-    ELPP_FORCE_USE_STD_THREAD
-    ELPP_THREAD_SAFE
-    ELPP_STL_LOGGING
-    ELPP_STACKTRACE
-    ELPP_FEATURE_CRASH_LOG
-    ELPP_DEFAULT_LOG_FILE="/tmp/logs/residue_default_logger.log"
-)
+#target_compile_definitions (residue-bin PUBLIC
+#    ELPP_FORCE_USE_STD_THREAD
+#    ELPP_THREAD_SAFE
+#    ELPP_STL_LOGGING
+#    ELPP_STACKTRACE
+#    ELPP_FEATURE_CRASH_LOG
+#    ELPP_DEFAULT_LOG_FILE="/tmp/logs/residue_default_logger.log"
+#)
 
 set_target_properties (residue-bin PROPERTIES
     VERSION ${RESIDUE_VERSION}
@@ -296,11 +301,9 @@ set_target_properties (residue-bin PROPERTIES
     OUTPUT_NAME "residue"
 )
 
-target_link_libraries (residue-bin
-    ${REQUIRED_LIBS}
-)
+# target_link_libraries (residue-bin ${REQUIRED_LIBS})
 
-# target_link_libraries (residue-bin residue-core)
+target_link_libraries (residue-bin residue-core)
 
 set_target_properties (residue-bin PROPERTIES OUTPUT_NAME "residue")
 install (TARGETS residue-bin DESTINATION bin)
@@ -322,7 +325,7 @@ if (test)
     enable_testing()
 
     add_executable (residue-unit-tests
-        ${SOURCE_FILES}
+        #${SOURCE_FILES}
         test/main.cc
         ${EASYLOGGINGPP_INCLUDE_DIR}/easylogging++.cc
     )
@@ -337,11 +340,9 @@ if (test)
     target_link_libraries (residue-unit-tests gtest gtest_main)
 
     # Extra linking for the project.
-#    target_link_libraries (residue-unit-tests residue-core)
+    target_link_libraries (residue-unit-tests residue-core)
 
-    target_link_libraries (residue-unit-tests
-        ${REQUIRED_LIBS}
-    )
+    target_link_libraries (residue-unit-tests ${REQUIRED_LIBS})
 
     add_test (NAME residueUnitTests COMMAND residue-unit-tests)
 endif()

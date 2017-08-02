@@ -1,5 +1,7 @@
 # Change Log
 
+## [Unreleased]
+
 ## [1.0.0-beta.13] - 02-08-2017
 ### Updated
 - Removed `allow_pinging_dead_client` config
