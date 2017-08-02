@@ -19,7 +19,6 @@
     "compression": true,
     "allow_bulk_log_request": true,
     "max_items_in_bulk": 50,
-    "allow_pinging_dead_client": false,
     "token_age": 60,
     "client_age": 300,
     "timestamp_validity": 120,
