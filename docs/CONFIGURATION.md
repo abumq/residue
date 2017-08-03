@@ -108,7 +108,7 @@ Default: `false`
 You should note few points:
 
  * If this is enabled client libraries should take advantage of it and send compressed data. However, if it doesn't, request is still processed.
- * Only log requests should be compressed, other requests (connection, token, ping etc) are sent normally.
+ * Only log requests should be compressed, other requests (connection, token, touch etc) are sent normally.
  * Outgoing data (from server) is never compressed.
 
 Compression has great affect and can save big data. We recommend you to enable compression in your server. Just to give you little bit of idea, when we run [simple example project](/samples/clients/c%2B%2B/detailed-cmake) to log 1244 times, without compression data transferred was `488669 bytes` and with compression it was `44509 bytes`. Same data transferred has same performance with high reliability.
@@ -154,18 +154,18 @@ Minimum: `30`
 Default: `120`
 
 ### `client_age`
-[Integer] Value (in seconds) that defines the age of a client. After this age, client is considered *dead*. Clients library can `PING` request just before dying to bring it back to life provided it's not already dead. After client is dead, it needs to reconnect and obtain a new key.
+[Integer] Value (in seconds) that defines the age of a client. After this age, client is considered *dead*. Clients library can `TOUCH` request just before (subject to `TOUCH_THRESHOLD` value in the library) dying to bring it back to life provided it's not already dead. After client is dead, it needs to reconnect and obtain a new key.
 
 Default: `259200` (3 days)
 
-Minimum: `15`
+Minimum: `120`
 
 Forever: `0` (not recommended)
 
 ### `non_acknowledged_client_age`
 [Integer] Value (in seconds) that defines the age of a client that is not yet acknowledged by client library.
 
-Note: You cannot `PING` a non-acknowledged client.
+Note: You cannot `TOUCH` a non-acknowledged client.
 
 Minimum: `15`
 

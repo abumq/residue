@@ -1,7 +1,7 @@
 //
 //  Config Validator tool for Residue
 //
-//  http://muflihun.com
+//  https://muflihun.github.io
 //  Copyright © 2017 Muflihun Labs
 //
 

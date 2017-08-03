@@ -9,6 +9,7 @@ int main(int argc, char** argv) {
             "sample-app", "a2dcb"
         }
     };
+    Residue::setInternalLoggingLevel(Residue::InternalLoggingLevel::error);
 
     Residue::connect(&accessCodes);
 
@@ -21,8 +22,6 @@ int main(int argc, char** argv) {
         if (!input.empty()) {
             std::wcout << L"Logging <" << input << L">\n";
             CLOG(INFO, "sample-app") << input;
-            // Or you can use LOG(INFO) but define ELPP_DEFAULT_LOGGER
-            // see https://github.com/muflihun/residue/blob/master/samples/clients/c%2B%2B/simple/src/log.h
         }
     }
 

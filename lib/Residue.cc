@@ -27,7 +27,7 @@ INITIALIZE_EASYLOGGINGPP
 const std::size_t Residue::DEFAULT_KEY_SIZE = 2048;
 const std::string Residue::LOCALHOST = "127.0.0.1";
 const int Residue::DEFAULT_PORT = 8777;
-const unsigned int Residue::PING_THRESHOLD = 15; // minimum client_age
+const unsigned int Residue::TOUCH_THRESHOLD = 120; // should always be min(client_age)
 const std::string Residue::DEFAULT_ACCESS_CODE = "default";
 
 using json = nlohmann::json;
@@ -135,13 +135,13 @@ public:
     /// \see ResponseHandler
     ///
     void send(std::string&& payload, bool expectResponse = false,
-              const ResponseHandler& resHandler = [](std::string&&, bool, std::string&&) -> void {}, bool retryOnTimeout = true);
+              const ResponseHandler& resHandler = [](std::string&&, bool, std::string&&) -> void {}, bool retryOnTimeout = true, bool ignoreQueue = false);
 
     ///
     /// \brief Whether connected to the server (using this host and port) or not
     /// \return True if connected, otherwise false
     ///
-    inline bool connected() const noexcept { return m_connected; }
+    inline bool connected() const noexcept { return m_socket.is_open() && m_connected; }
 
     ///
     /// \brief Returns last error recorded
@@ -165,12 +165,13 @@ private:
     /// \param resHandler When response is read, this callback is called
     /// \see ResponseHandler
     ///
-    void read(const ResponseHandler& resHandler = [](std::string&&, bool, std::string&&) -> void {});
+    void read(const ResponseHandler& resHandler = [](std::string&&, bool, std::string&&) -> void {}, const std::string& payload = "");
 };
 
 static std::unique_ptr<ResidueClient> s_connectionClient;
 static std::unique_ptr<ResidueClient> s_tokenClient;
 static std::unique_ptr<ResidueClient> s_loggingClient;
+
 
 ResidueClient::ResidueClient(const std::string& host, std::string&& port) noexcept :
     m_host(host),
@@ -195,15 +196,23 @@ void ResidueClient::connect()
     }
 }
 
-void ResidueClient::send(std::string&& payload, bool expectResponse, const ResponseHandler& resHandler, bool retryOnTimeout)
+void ResidueClient::send(std::string&& payload, bool expectResponse, const ResponseHandler& resHandler, bool retryOnTimeout, bool ignoreQueue)
 {
     reslog(reslog::crazy) << "Send: " << payload;
+    if (!m_socket.is_open()) {
+        reslog(reslog::error) << "Socket closed [" << m_port << "]";
+        return;
+    }
+    if (!m_connected) {
+        reslog(reslog::error) << "Client not connected [" << m_port << "]";
+        return;
+    }
+    reslog(reslog::crazy) << "Writing [" << m_port << "]..." << (expectResponse ? "" : " (async)");
     if (expectResponse) {
         try {
-            reslog(reslog::crazy) << "Writing...";
             boost::asio::write(m_socket, boost::asio::buffer(payload, payload.length()));
             reslog(reslog::crazy) << "Waiting for response...";
-            read(resHandler);
+            read(resHandler, payload);
             reslog(reslog::crazy) << "Done";
         } catch (const std::exception& e) {
             m_lastError = "Failed to send: " + std::string(e.what());
@@ -224,7 +233,7 @@ void ResidueClient::send(std::string&& payload, bool expectResponse, const Respo
     }
 }
 
-void ResidueClient::read(const ResponseHandler& resHandler)
+void ResidueClient::read(const ResponseHandler& resHandler, const std::string& payload)
 {
     boost::system::error_code ec;
     boost::asio::streambuf buf;
@@ -236,8 +245,14 @@ void ResidueClient::read(const ResponseHandler& resHandler)
             buffer.erase(numOfBytes - Ripe::PACKET_DELIMITER_SIZE);
             resHandler(std::move(buffer), false, "");
         } else {
-            reslog(reslog::error) << ec.message();
-            resHandler("", true, ec.message());
+            if ((ec == boost::asio::error::eof) || (ec == boost::asio::error::connection_reset)) {
+                reslog(reslog::error) << "Failed to send, requeueing...";
+                std::this_thread::sleep_for(std::chrono::milliseconds(500));
+                m_connected = false;
+            } else {
+                reslog(reslog::error) << ec.message();
+                resHandler("", true, ec.message());
+            }
         }
     } catch (const std::exception& e) {
         reslog(reslog::error) << e.what();
@@ -354,8 +369,8 @@ void Residue::healthCheck() noexcept
             // We ignore these errors as we have
             // log messages from the reset()
         }
-    } else if (shouldSendPing()) {
-        sendPing();
+    } else if (shouldTouch()) {
+        touch();
     }
 }
 
@@ -395,6 +410,7 @@ void Residue::connect_(const std::string& host, int port, AccessCodeMap* accessC
         m_rsaPrivateKey = rsaKey.privateKey;
         m_rsaPublicKey = rsaKey.publicKey;
     }
+    reslog(reslog::info) << "Estabilishing full connection...";
     reset();
 
 }
@@ -509,6 +525,7 @@ void Residue::reset()
                             std::string ackRequest = Ripe::prepareData(jsonRequest.c_str(), m_key, m_clientId.c_str());
                             try {
                                 s_connectionClient->send(ackRequest.c_str(), true, [&](std::string&& ackResponse, bool hasError, std::string&& errorText) -> void {
+                                    reslog(reslog::debug) << "Saving connection parameters...";
                                     m_connecting = false;
                                     if (hasError) {
                                         reslog(reslog::error) << "Failed to connect. Network error";
@@ -548,7 +565,7 @@ void Residue::reset()
                                                 try {
                                                     s_tokenClient->connect();
                                                     if (!s_tokenClient->connected()) {
-                                                        addError("Failed to connect. (Port: " + std::to_string(m_tokenPort) + ") " + s_loggingClient->lastError());
+                                                        addError("Failed to connect. (Port: " + std::to_string(m_tokenPort) + ") " + s_tokenClient->lastError());
                                                         throw ResidueException(m_errors.at(m_errors.size() - 1));
                                                     }
                                                 } catch (const ResidueException& e) {
@@ -572,7 +589,7 @@ void Residue::reset()
                                                 if (m_autoBulkParams) {
                                                     if (hasFlag(Flag::ALLOW_BULK_LOG_REQUEST)) {
                                                         m_bulkDispatch = true;
-                                                        m_bulkSize = m_maxBulkSize <= 40 ? m_maxBulkSize : 40;
+                                                        m_bulkSize = std::min(m_maxBulkSize, 40U);
                                                     }
                                                 }
 
@@ -584,6 +601,7 @@ void Residue::reset()
                                                     throw ResidueException(m_errors.at(m_errors.size() - 1));
                                                 }
                                                 m_connected = true;
+
                                                 onConnect();
                                             } catch (const std::exception& e) {
                                                 reslog(reslog::error) << "Failed to connect (4): " << e.what();
@@ -628,9 +646,6 @@ void Residue::addToQueue(RequestTuple&& request) noexcept
     unsigned long queue_dura;
     RESIDUE_PROFILE_START(t_queue);
 #endif
-    while (m_connecting) {
-        std::this_thread::sleep_for(std::chrono::milliseconds(10));
-    }
     RESIDUE_LOCK_LOG("addToQueue");
     std::lock_guard<std::recursive_mutex> lock(m_mutex);
     m_requests.push_front(std::move(request));
@@ -659,8 +674,20 @@ void Residue::dispatch()
     while (!m_requests.empty()) {
 
         while (m_connecting) {
-            reslog(reslog::debug) << "Stilling connecting...";
-            std::this_thread::sleep_for(std::chrono::milliseconds(1));
+            reslog(reslog::debug) << "Still connecting...";
+            std::this_thread::sleep_for(std::chrono::milliseconds(500));
+        }
+
+        try {
+            if (!s_loggingClient->connected() || !s_tokenClient->connected()) {
+                reslog(reslog::info) << "Trying to connect...";
+                m_connected = false;
+                connect();
+            }
+        } catch (const ResidueException& e) {
+            reslog(reslog::error) << "Failed to connect: " << e.what() << ". Retrying in 500ms";
+            std::this_thread::sleep_for(std::chrono::milliseconds(500));
+            continue;
         }
 
         RESIDUE_PROFILE_START(t_while);
@@ -721,7 +748,8 @@ void Residue::dispatch()
         RESIDUE_PROFILE_END(t_prepare_data, prepare_data);
 
         RESIDUE_PROFILE_START(t_send);
-        s_loggingClient->send(std::move(data), true);
+        s_loggingClient->send(std::move(data), true); // we keep it to true as we may end program before it's actually dispatched
+
         RESIDUE_PROFILE_END(t_send, send_recv);
 
 #ifdef RESIDUE_PROFILING
@@ -757,17 +785,20 @@ std::string Residue::requestToJson(RequestTuple&& request)
         j["app"] = m_applicationId;
     }
 
-    std::string token = getToken(loggerId);
-    if (token.empty()) {
-        obtainToken(loggerId);
+    if (hasFlag(Flag::CHECK_TOKENS)) {
+        std::string token = getToken(loggerId);
+        if (token.empty()) {
+            obtainToken(loggerId);
+        }
+        token = getToken(loggerId);
+
+        j["token"] = token;
     }
-    token = getToken(loggerId);
 
     if (m_plainRequest && hasFlag(Flag::ALLOW_PLAIN_LOG_REQUEST)) {
         j["client_id"] = m_clientId;
     }
 
-    j["token"] = token;
     j["thread"] = threadId;
     j["datetime"] = date;
     j["logger"] = loggerId;
@@ -789,22 +820,22 @@ std::string Residue::requestToJson(RequestTuple&& request)
     return j.dump();
 }
 
-bool Residue::shouldSendPing() const noexcept
+bool Residue::shouldTouch() const noexcept
 {
     if (m_age == 0) {
-        // Always alive so don't need to send ping
+        // Always alive so don't need to touch the client
         return false;
     }
     unsigned long now = std::chrono::system_clock::now().time_since_epoch() / std::chrono::seconds(1);
-    return m_age - (now - m_dateCreated) < Residue::PING_THRESHOLD;
+    return m_age - (now - m_dateCreated) < Residue::TOUCH_THRESHOLD;
 }
 
-void Residue::sendPing() noexcept
+void Residue::touch() noexcept
 {
-    reslog(reslog::debug) << "Pinging...";
+    reslog(reslog::debug) << "Touching...";
     m_connecting = true;
     json j;
-    int type = 3; // 3 = PING
+    int type = 3; // 3 = TOUCH
     j["type"] = type;
     j["_t"] = getTimestamp();
     j["client_id"] = m_clientId;
@@ -813,12 +844,13 @@ void Residue::sendPing() noexcept
     try {
         request = Ripe::prepareData(jsonRequest.c_str(), m_key, m_clientId.c_str());
     } catch (const std::exception& e) {
-        reslog(reslog::error) << "Failed to prepare request (PING): " << e.what();
+        reslog(reslog::error) << "Failed to prepare request (TOUCH): " << e.what();
     }
 
     s_connectionClient->send(std::move(request), true, [&](std::string&& response, bool hasError, std::string&& errorText) -> void {
+        m_connecting = false;
         if (hasError) {
-            reslog(reslog::error) << "Failed to ping. Network error. " + errorText;
+            reslog(reslog::error) << "Failed to touch. Network error. " + errorText;
         } else {
             if (response.find("{") != std::string::npos) {
                 // Error
@@ -833,21 +865,19 @@ void Residue::sendPing() noexcept
                 } catch (const std::exception& e) {
                     reslog(reslog::error) << "Error occurred but could not parse response: " << response << " (" << e.what() << ")";
                 }
-                m_connecting = false;
 
             } else {
                 std::string iv;
                 try {
                     std::string decryptedResponse = Ripe::decryptAES(response, m_key, iv, true);
                     j = json::parse(decryptedResponse);
-                    RESIDUE_LOCK_LOG("sendPing");
+                    RESIDUE_LOCK_LOG("sendTouch");
                     std::lock_guard<std::recursive_mutex> lock(m_mutex);
                     m_age = j["age"].get<int>();
                     m_dateCreated = j["date_created"].get<unsigned long>();
                 } catch (const std::exception& e) {
-                    reslog(reslog::error) << "Failed to read PING response: " << e.what();
+                    reslog(reslog::error) << "Failed to read TOUCH response: " << e.what();
                 }
-                m_connecting = false;
             }
         }
     });

@@ -10,11 +10,12 @@ option (build_static_lib "Build residue as a static library (as opposed to defau
 option (build_sample_app "Builds detailed-cmake sample" OFF)
 option (profiling "Turns profiling on for various scenarios" OFF)
 option (compile-server "Turn it on when you have source code available for the server" OFF)
+option (static_ripe "Prefer static ripe library" OFF)
 option (BUILD_SHARED_LIBS "build shared libraries" OFF)
 
 set (RESIDUE_MAJOR "1")
 set (RESIDUE_MINOR "0")
-set (RESIDUE_PATCH "0-beta.13")
+set (RESIDUE_PATCH "0-beta.14")
 set (RESIDUE_VERSION "${RESIDUE_MAJOR}.${RESIDUE_MINOR}.${RESIDUE_PATCH}")
 set (RESIDUE_SOVERSION "${RESIDUE_MAJOR}.${RESIDUE_MINOR}.${RESIDUE_PATCH}")
 set (RESIDUE_NAME "Residue")
@@ -56,10 +57,10 @@ if (debug)
     add_definitions (-DRESIDUE_DEBUG)
 else()
     message ("-- DEBUGGING IS OFF")
-    add_definitions (-DELPP_DISABLE_DEBUG_LOGS)
 endif()
 
 if (production)
+    message ("-- PRODUCTION BUILD")
     add_definitions (-DRESIDUE_PRODUCTION)
 endif()
 
@@ -91,13 +92,13 @@ message ("-- Check for Easylogging++")
 find_package (EASYLOGGINGPP REQUIRED)
 include_directories (${EASYLOGGINGPP_INCLUDE_DIR})
 
-set (Ripe_USE_STATIC_LIBS OFF)
+set (Ripe_USE_STATIC_LIBS ${static_ripe})
 find_package (Ripe REQUIRED)
 include_directories (${RIPE_INCLUDE_DIR})
 
 message ("-- Check for Boost System (static)")
 ## We always use static linking for boost stuffs
-set (Boost_USE_STATIC_LIBS OFF)
+set (Boost_USE_STATIC_LIBS OFF) ## TODO: Fix this and turn it off
 find_package (Boost REQUIRED COMPONENTS system)
 include_directories (${Boost_INCLUDE_DIR})
 message ("-- Boost binary: " ${Boost_LIBRARIES})
@@ -222,127 +223,118 @@ if (compile-server)
         src/Tar.cc
     )
 
-    set (REQUIRED_LIBS
+    set (SHARED_REQUIRED_LIBS
         ${RIPE_LIBRARY}
         ${Boost_LIBRARIES}
         ${CMAKE_THREAD_LIBS_INIT}
     )
 
-############# RESIDUE CORE LIB (STATIC) ###############
+    ############# RESIDUE CORE LIB (STATIC) ###############
 
-#add_library (residue-core ${SOURCE_FILES})
+    add_library (residue-core ${SOURCE_FILES})
 
-#set_target_properties (residue-core PROPERTIES
-#    VERSION ${RESIDUE_VERSION}
-#    SOVERSION ${RESIDUE_SOVERSION}
-#)
+    set_target_properties (residue-core PROPERTIES
+        VERSION ${RESIDUE_VERSION}
+        SOVERSION ${RESIDUE_SOVERSION}
+    )
 
-#target_link_libraries (residue-core
-#    ${RIPE_LIBRARY}
-#    ${Boost_LIBRARIES}
-#    ${CMAKE_THREAD_LIBS_INIT}
-#)
+    target_link_libraries (residue-core ${SHARED_REQUIRED_LIBS})
 
-# Set RPATH to library install path.
-set (CMAKE_INSTALL_RPATH "${CMAKE_INSTALL_PREFIX}/lib")
+    target_compile_definitions (residue-core PUBLIC
+        ELPP_FORCE_USE_STD_THREAD
+        ELPP_THREAD_SAFE
+    )
 
-
-############# CONFIG VALIDATOR TOOL ###############
-
-#add_executable (config-validator-bin
-#    tools/config-validator/config-validator.cc
-#    ${EASYLOGGINGPP_INCLUDE_DIR}/easylogging++.cc
-#)
-
-#target_compile_definitions (config-validator-bin PRIVATE
-#    ELPP_NO_DEFAULT_LOG_FILE
-#    ELPP_NO_LOG_TO_FILE
-#    AUTO_INITIALIZE_EASYLOGGINGPP
-#    ELPP_DEFAULT_LOGGING_FLAGS=4096
-#    ELPP_STL_LOGGING
-#)
-
-#target_link_libraries (config-validator-bin ${RIPE_LIBRARY} residue-core)
-
-#set_target_properties (config-validator-bin PROPERTIES
-#    OUTPUT_NAME "config-validator"
-#    VERSION ${RESIDUE_VERSION}
-#    SOVERSION ${RESIDUE_SOVERSION}
-#)
-
-# -- DO NOT UNCOMMENT install (TARGETS config-validator-bin DESTINATION bin)
+    # Set RPATH to library install path.
+    set (CMAKE_INSTALL_RPATH "${CMAKE_INSTALL_PREFIX}/lib")
 
 
-############# RESIDUE BINARY ###############
+    ############# CONFIG VALIDATOR TOOL ###############
 
-add_executable (residue-bin
-    ${SOURCE_FILES}
-    src/main.cc
-    ${EASYLOGGINGPP_INCLUDE_DIR}/easylogging++.cc
-)
+    #add_executable (config-validator-bin
+    #    tools/config-validator/config-validator.cc
+    #    ${EASYLOGGINGPP_INCLUDE_DIR}/easylogging++.cc
+    #)
 
-target_compile_definitions (residue-bin PUBLIC
-    ELPP_FORCE_USE_STD_THREAD
-    ELPP_THREAD_SAFE
-    ELPP_STL_LOGGING
-    ELPP_STACKTRACE
-    ELPP_FEATURE_CRASH_LOG
-    ELPP_DEFAULT_LOG_FILE="/tmp/logs/residue_default_logger.log"
-)
+    #target_compile_definitions (config-validator-bin PUBLIC
+    #    ELPP_NO_DEFAULT_LOG_FILE
+    #    ELPP_NO_LOG_TO_FILE
+    #    ELPP_STL_LOGGING
+    #    AUTO_INITIALIZE_EASYLOGGINGPP
+    #    ELPP_DEFAULT_LOGGING_FLAGS=4096
+    #)
 
-set_target_properties (residue-bin PROPERTIES
-    VERSION ${RESIDUE_VERSION}
-    SOVERSION ${RESIDUE_SOVERSION}
-    OUTPUT_NAME "residue"
-)
+    #target_link_libraries (config-validator-bin ${RIPE_LIBRARY} residue-core)
 
-target_link_libraries (residue-bin
-    ${REQUIRED_LIBS}
-)
+    #set_target_properties (config-validator-bin PROPERTIES
+    #    OUTPUT_NAME "config-validator"
+    #    VERSION ${RESIDUE_VERSION}
+    #    SOVERSION ${RESIDUE_SOVERSION}
+    #)
 
-# target_link_libraries (residue-bin residue-core)
-
-set_target_properties (residue-bin PROPERTIES OUTPUT_NAME "residue")
-install (TARGETS residue-bin DESTINATION bin)
-
-#############################################
-
-# Reference all headers, to make certain IDEs happy.
-file (GLOB_RECURSE all_headers ${CMAKE_SOURCE_DIR}/*.h)
-add_custom_target (all_placeholder SOURCES ${all_headers})
+    # -- DO NOT UNCOMMENT install (TARGETS config-validator-bin DESTINATION bin)
 
 
-############# RESIDUE TESTS ###############
-if (test)
+    ############# RESIDUE BINARY ###############
 
-    find_package (gtest REQUIRED)
-
-    include_directories (${gtest_SOURCE_DIR}/include ${gtest_SOURCE_DIR})
-
-    enable_testing()
-
-    add_executable (residue-unit-tests
-        ${SOURCE_FILES}
-        test/main.cc
+    add_executable (residue-bin
+        src/main.cc
         ${EASYLOGGINGPP_INCLUDE_DIR}/easylogging++.cc
     )
 
-    target_compile_definitions (residue-unit-tests PUBLIC
-        ELPP_FEATURE_ALL
-        ELPP_DEFAULT_LOG_FILE="/tmp/logs/residue_unit_tests.log"
-        ELPP_DEFAULT_LOGGING_FLAGS=4096
+    target_compile_definitions (residue-bin PUBLIC
+        ELPP_STL_LOGGING
+        ELPP_STACKTRACE
+        ELPP_FEATURE_CRASH_LOG
+        ELPP_DEFAULT_LOG_FILE="/tmp/logs/residue_default_logger.log"
     )
 
-    # Standard linking to gtest stuff.
-    target_link_libraries (residue-unit-tests gtest gtest_main)
-
-    # Extra linking for the project.
-#    target_link_libraries (residue-unit-tests residue-core)
-
-    target_link_libraries (residue-unit-tests
-        ${REQUIRED_LIBS}
+    set_target_properties (residue-bin PROPERTIES
+        VERSION ${RESIDUE_VERSION}
+        SOVERSION ${RESIDUE_SOVERSION}
+        OUTPUT_NAME "residue"
     )
 
-    add_test (NAME residueUnitTests COMMAND residue-unit-tests)
-endif()
-endif()
+    target_link_libraries (residue-bin residue-core)
+
+    set_target_properties (residue-bin PROPERTIES OUTPUT_NAME "residue")
+    install (TARGETS residue-bin DESTINATION bin)
+
+    #############################################
+
+    # Reference all headers, to make certain IDEs happy.
+    file (GLOB_RECURSE all_headers ${CMAKE_SOURCE_DIR}/*.h)
+    add_custom_target (all_placeholder SOURCES ${all_headers})
+
+
+    ############# RESIDUE TESTS ###############
+    if (test)
+
+        find_package (gtest REQUIRED)
+
+        include_directories (${gtest_SOURCE_DIR}/include ${gtest_SOURCE_DIR})
+
+        enable_testing()
+
+        add_executable (residue-unit-tests
+            test/main.cc
+            ${EASYLOGGINGPP_INCLUDE_DIR}/easylogging++.cc
+        )
+
+        target_compile_definitions (residue-unit-tests PUBLIC
+            ELPP_FEATURE_ALL
+            ELPP_DEFAULT_LOG_FILE="/tmp/logs/residue_unit_tests.log"
+            ELPP_DEFAULT_LOGGING_FLAGS=4096
+        )
+
+        # Standard linking to gtest stuff.
+        target_link_libraries (residue-unit-tests gtest gtest_main)
+
+        # Extra linking for the project.
+        target_link_libraries (residue-unit-tests residue-core)
+
+        target_link_libraries (residue-unit-tests ${SHARED_REQUIRED_LIBS})
+
+        add_test (NAME residueUnitTests COMMAND residue-unit-tests)
+    endif() ## test
+endif() ## Compile server
