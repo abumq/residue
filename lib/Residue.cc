@@ -629,7 +629,8 @@ void Residue::addToQueue(RequestTuple&& request) noexcept
     RESIDUE_PROFILE_START(t_queue);
 #endif
     while (m_connecting) {
-        std::this_thread::sleep_for(std::chrono::milliseconds(10));
+        reslog(reslog::debug) << "Still connecting...";
+        std::this_thread::sleep_for(std::chrono::milliseconds(500));
     }
     RESIDUE_LOCK_LOG("addToQueue");
     std::lock_guard<std::recursive_mutex> lock(m_mutex);
@@ -659,8 +660,8 @@ void Residue::dispatch()
     while (!m_requests.empty()) {
 
         while (m_connecting) {
-            reslog(reslog::debug) << "Stilling connecting...";
-            std::this_thread::sleep_for(std::chrono::milliseconds(1));
+            reslog(reslog::debug) << "Still connecting...";
+            std::this_thread::sleep_for(std::chrono::milliseconds(500));
         }
 
         RESIDUE_PROFILE_START(t_while);
@@ -820,6 +821,7 @@ void Residue::touch() noexcept
     }
 
     s_connectionClient->send(std::move(request), true, [&](std::string&& response, bool hasError, std::string&& errorText) -> void {
+        m_connecting = false;
         if (hasError) {
             reslog(reslog::error) << "Failed to touch. Network error. " + errorText;
         } else {
@@ -836,7 +838,6 @@ void Residue::touch() noexcept
                 } catch (const std::exception& e) {
                     reslog(reslog::error) << "Error occurred but could not parse response: " << response << " (" << e.what() << ")";
                 }
-                m_connecting = false;
 
             } else {
                 std::string iv;
@@ -850,7 +851,6 @@ void Residue::touch() noexcept
                 } catch (const std::exception& e) {
                     reslog(reslog::error) << "Failed to read TOUCH response: " << e.what();
                 }
-                m_connecting = false;
             }
         }
     });
