@@ -589,7 +589,7 @@ void Residue::reset()
                                                 if (m_autoBulkParams) {
                                                     if (hasFlag(Flag::ALLOW_BULK_LOG_REQUEST)) {
                                                         m_bulkDispatch = true;
-                                                        m_bulkSize = m_maxBulkSize <= 40 ? m_maxBulkSize : 40;
+                                                        m_bulkSize = std::max(m_maxBulkSize, 40U);
                                                     }
                                                 }
 
