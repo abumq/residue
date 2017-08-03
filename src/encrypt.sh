@@ -6,6 +6,10 @@ if [ "$RESIDUE_SRC_KEY" = "" ];then
     exit;
 fi
 
-RESIDUE_SRC_IV=f1002847d4c7c8a714a765f3fef232eb
+FILE_CHECKSUM=`shasum $file`
+CURR_CHECKSUM=`cat $file.chk`
 
-cat $file | $RIPE -e --aes --key $RESIDUE_SRC_KEY --iv $RESIDUE_SRC_IV > $file.enc
+if [ "$FILE_SHA" != "$CURR_CHECKSUM" ];then
+    cat $file | $RIPE -e --aes --key $RESIDUE_SRC_KEY > $file.enc
+    echo "$FILE_CHECKSUM" > $file.chk
+fi
