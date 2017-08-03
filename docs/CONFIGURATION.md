@@ -158,7 +158,7 @@ Default: `120`
 
 Default: `259200` (3 days)
 
-Minimum: `15`
+Minimum: `120`
 
 Forever: `0` (not recommended)
 

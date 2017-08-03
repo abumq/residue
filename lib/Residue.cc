@@ -27,7 +27,7 @@ INITIALIZE_EASYLOGGINGPP
 const std::size_t Residue::DEFAULT_KEY_SIZE = 2048;
 const std::string Residue::LOCALHOST = "127.0.0.1";
 const int Residue::DEFAULT_PORT = 8777;
-const unsigned int Residue::TOUCH_THRESHOLD = 15; // minimum client_age
+const unsigned int Residue::TOUCH_THRESHOLD = 120; // should always be min(client_age)
 const std::string Residue::DEFAULT_ACCESS_CODE = "default";
 
 using json = nlohmann::json;
