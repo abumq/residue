@@ -10,6 +10,7 @@ option (build_static_lib "Build residue as a static library (as opposed to defau
 option (build_sample_app "Builds detailed-cmake sample" OFF)
 option (profiling "Turns profiling on for various scenarios" OFF)
 option (compile-server "Turn it on when you have source code available for the server" OFF)
+option (static_ripe "Prefer static ripe library" OFF)
 option (BUILD_SHARED_LIBS "build shared libraries" OFF)
 
 set (RESIDUE_MAJOR "1")
@@ -91,7 +92,7 @@ message ("-- Check for Easylogging++")
 find_package (EASYLOGGINGPP REQUIRED)
 include_directories (${EASYLOGGINGPP_INCLUDE_DIR})
 
-set (Ripe_USE_STATIC_LIBS OFF)
+set (Ripe_USE_STATIC_LIBS ${static_ripe})
 find_package (Ripe REQUIRED)
 include_directories (${RIPE_INCLUDE_DIR})
 
