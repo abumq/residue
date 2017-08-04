@@ -1,6 +1,6 @@
 //
 //  ConfigurationTest.h
-//  Residue
+//  Residue Tests
 //
 //  Copyright © 2017 Muflihun Labs
 //

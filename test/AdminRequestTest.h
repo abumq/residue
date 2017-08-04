@@ -1,6 +1,6 @@
 //
 //  AdminRequestTest.h
-//  Residue
+//  Residue Tests
 //
 //  Copyright © 2017 Muflihun Labs
 //
@@ -10,7 +10,6 @@
 
 #include <cstdio>
 #include <vector>
-#include "easylogging++.h"
 #include "test.h"
 #include "src/Utils.h"
 #include "src/AdminRequest.h"

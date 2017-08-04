@@ -17,15 +17,17 @@ Now that residue is running on your computer use following commands to send logs
 Log can be sent encrypted or in plain format. By default, `default` logger accepts any log messages.
 
 ## Run Demo Client
-Use [netcat samples](/samples/clients/netcat) to test your logging server and to understand how it works. Please note that this sample is only for demo purposes, in real-time you will have your own RSA keys for both server and client.
+Use [netcat samples](/tools/netcat-client/) to test your logging server and to understand how it works. Please note that this sample is only for demo purposes, in real-time you will have your own RSA keys for both server and client.
 
 Please consider reading through [DATA_FLOW](/docs/DATA_FLOW.md) to understand how client interacts with the server.
 
 Change your working directory to the following
 
 ```
-cd samples/clients/netcat/
+cd tools/netcat-client/
 ```
+
+NOTE: Netcat sample was originally created to speed up the development. You should [check out full demo here](/demo/)
 
 ### 1. Connect
 Client needs to connect to the server and obtain encryption key for secure connections.
