@@ -94,6 +94,7 @@ set (SOURCE_FILES
     src/CommandHandler.cc
     src/Tar.cc
     src/LicenseManager.cc
+    src/License.cc
 )
 
 set (SHARED_REQUIRED_LIBS
