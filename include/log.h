@@ -18,9 +18,9 @@
 #define RV_DEBUG 7
 #define RV_DETAILS 6
 #define RV_5 5
-#define RV_4 4
-#define RV_WARNING 3
-#define RV_ERROR 2
+#define RV_WARNING 4
+#define RV_ERROR 3
+#define RV_NOTICE 2
 #define RV_INFO 1
 
 #ifdef RESIDUE_PROFILING
