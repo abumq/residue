@@ -36,6 +36,10 @@
             "public_key": "samples/keys/client-256-public.pem",
             "key_size": 128,
             "loggers": ["sample-app"]
+        },
+        {
+            "client_id": "muflihun00102031",
+            "public_key": "samples/keys/encrypted-pubkey.pem"
         }
     ],
     "known_loggers": [
