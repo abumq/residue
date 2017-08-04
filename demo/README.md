@@ -12,7 +12,7 @@ php -S localhost:8000
 ```
 
 ## Start the server
-You should start the server now. In case if you started it before running the remote-conf-server, you will need to reload the configs. You may be interested in [`reload` command](/docs/CLI_COMMANDS.md#reload) and [`accept_input`](/docs/CONFIGURATION.md#accept_input) configuration. You may also be interested in [sending admin requests](/samples/clients/netcat/admin/reload-config.sh)
+You should start the server now. In case if you started it before running the remote-conf-server, you will need to reload the configs. You may be interested in [`reload` command](/docs/CLI_COMMANDS.md#reload) and [`accept_input`](/docs/CONFIGURATION.md#accept_input) configuration. You may also be interested in [sending admin requests](/tools/netcat-client/admin/reload-config.sh)
 
 ```
 residue residue.conf.json
