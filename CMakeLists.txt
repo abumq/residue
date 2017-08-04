@@ -93,6 +93,7 @@ set (SOURCE_FILES
     src/Task.cc
     src/CommandHandler.cc
     src/Tar.cc
+    src/LicenseManager.cc
 )
 
 set (SHARED_REQUIRED_LIBS

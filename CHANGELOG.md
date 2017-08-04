@@ -1,5 +1,9 @@
 # Change Log
 
+## [Unreleased]
+### Added
+- License manager functionality
+
 ## [1.0.0-beta.14] - 03-08-2017
 - Separated library code from the server
 
