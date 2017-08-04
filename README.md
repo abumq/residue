@@ -8,12 +8,6 @@
 
 [![Version](https://img.shields.io/github/release/muflihun/residue.svg)](https://github.com/muflihun/residue/releases/latest)
 
-[![NPM Version](https://img.shields.io/npm/v/residue.svg)](https://www.npmjs.com/package/residue)
-
-[![Documentation](https://img.shields.io/badge/docs-doxygen-blue.svg)](https://muflihun.github.io/residue)
-
-[![GitHub license](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](https://github.com/muflihun/residue/blob/master/LICENCE)
-
 [![Donate](https://img.shields.io/badge/Donate-PayPal-green.svg)](https://www.paypal.me/MuflihunDotCom/25)
 
 # Build Matrix
@@ -58,5 +52,10 @@ No matter what language is your application written in, residue is compatible an
 However, if your application is written in C++ you can use [CLIENT_API.md](/docs/CLIENT_API.md) to start integrating. If you're already using Easylogging++ or similar logging library (that supports `LOG` helper macros) in your application, integration can be done in no more than 2 minutes.
 
 We're also actively working on client library for residue in other languages. Please feel free to contribute.
- 
+
+# License
+Copyright (c) 2017 Muflihun Labs
+
+You must obtain a license from authorised person in order to host residue server commercially.
+
   [banner]: https://raw.githubusercontent.com/muflihun/residue/master/docs/Residue.png
