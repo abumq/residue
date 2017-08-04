@@ -20,13 +20,16 @@ TEST(LicenseManagerText, IsAlphaNumeric)
     std::string licenceWithSignature = l.generateNew("muflihun labs", 25U, "fasdf");
     std::string licenceWithoutSignature = l.generateNew("muflihun labs", 25U);
 
-    ASSERT_TRUE(l.validate(licenceWithSignature, true, "fasdf"));
-    ASSERT_TRUE(l.validate(licenceWithoutSignature, true, "fasdf"));
-    ASSERT_FALSE(l.validate(licenceWithSignature, true, "wrong-sign"));
-    ASSERT_FALSE(l.validate(licenceWithSignature, false)); // need signature
-    ASSERT_FALSE(l.validate(licenceWithSignature, true)); // need signature
-    ASSERT_TRUE(l.validate(licenceWithoutSignature, false, "fasdf"));
-    ASSERT_TRUE(l.validate(licenceWithoutSignature, false, ""));
+    ASSERT_TRUE(std::get<0>(l.validate(licenceWithSignature, true, "fasdf")));
+    ASSERT_TRUE(std::get<0>(l.validate(licenceWithoutSignature, true, "fasdf")));
+    ASSERT_FALSE(std::get<0>(l.validate(licenceWithSignature, true, "wrong-sign")));
+    ASSERT_FALSE(std::get<0>(l.validate(licenceWithSignature, false))); // need signature
+    ASSERT_FALSE(std::get<0>(l.validate(licenceWithSignature, true))); // need signature
+    ASSERT_TRUE(std::get<0>(l.validate(licenceWithoutSignature, false, "fasdf")));
+    ASSERT_TRUE(std::get<0>(l.validate(licenceWithoutSignature, false, "")));
+
+    ASSERT_EQ(std::get<1>(l.validate(licenceWithSignature, true, "fasdf")), "muflihun labs");
+    ASSERT_EQ(std::get<1>(l.validate(licenceWithoutSignature, true, "fasdf")), "muflihun labs");
 }
 
 #endif // LICENSE_MANAGER_TEST_H

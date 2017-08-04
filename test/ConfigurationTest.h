@@ -17,6 +17,7 @@
 #include "src/UserLogBuilder.h"
 #include "src/ConnectionRequest.h"
 #include "src/LogRequestHandler.h"
+#include "src/LicenseManager.h"
 
 using namespace residue;
 
@@ -27,7 +28,7 @@ static const char* kLoggerConfResidue = "residue-logger.conf";
 static const char* kLoggerConfMuflihun = "muflihun-logger.conf";
 static const char* kPrivateKeyFile = "private-key-for-test.pem";
 static const char* kPublicKeyFile = "public-key-for-test.pem";
-
+static const char* kLicenseFileForTesting = "license_file_for_testing";
 class ConfigurationTest : public ::testing::Test
 {
 protected:
@@ -84,12 +85,19 @@ protected:
                           ")");
         fs.flush();
         fs.close();
+
+        LicenseManager l;
+        fs.open(kLicenseFileForTesting, std::fstream::out);
+        fs << l.generateNew("residue-test-case", 25U);
+        fs.close();
+
         // keys
         Ripe::writeRSAKeyPair(kPublicKeyFile, kPrivateKeyFile);
         // Residue server conf
         fs.open (kConfigurationFile, std::fstream::out);
         fs << std::string(R"(
                           {
+                              "license_key_path": "license_file_for_testing",
                               "admin_port": 87761,
                               "connect_port": 87771,
                               "token_port": 87781,
