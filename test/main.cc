@@ -8,6 +8,7 @@
 #include "test.h"
 #include "ConfigurationTest.h"
 #include "UtilsTest.h"
+#include "LicenseManagerTest.h"
 #include "UrlTest.h"
 #include "AdminRequestTest.h"
 
