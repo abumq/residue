@@ -160,7 +160,7 @@ Minimum: `30`
 Default: `120`
 
 ### `client_age`
-[Integer] Value (in seconds) that defines the age of a client. After this age, client is considered *dead*. Clients library can `TOUCH` request just before (subject to `TOUCH_THRESHOLD` value in the library) dying to bring it back to life provided it's not already dead. After client is dead, it needs to reconnect and obtain a new key.
+[Integer] Value (in seconds) that defines the age of a client. After this age, client is considered _dead_. Clients library can `TOUCH` request just before (subject to `TOUCH_THRESHOLD` value in the library) dying to bring it back to life provided it's not already dead. After client is dead, it needs to reconnect and obtain a new key.
 
 Default: `259200` (3 days)
 
@@ -173,7 +173,7 @@ Forever: `0` (not recommended)
 
 Note: You cannot `TOUCH` a non-acknowledged client.
 
-Minimum: `15`
+Minimum: `120`
 
 Default: `300` (5 minutes)
 
@@ -207,7 +207,7 @@ Forever: `0` (not recommended)
 
 This is a task that ensures integrity of the clients to remove dead clients that are unusable (and tokens accordingly)
 
-Default: 300 or min(`client_age`, `non_acknowledged_client_age`) [whichever is higher]
+Default: `300` or `min(client_age, non_acknowledged_client_age)` [whichever is higher]
 
 Minimum: `300`
 

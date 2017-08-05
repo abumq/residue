@@ -12,7 +12,7 @@ option (BUILD_SHARED_LIBS "build shared libraries" ON)
 
 set (RESIDUE_MAJOR "1")
 set (RESIDUE_MINOR "0")
-set (RESIDUE_PATCH "0-beta.14")
+set (RESIDUE_PATCH "0-beta.15")
 set (RESIDUE_VERSION "${RESIDUE_MAJOR}.${RESIDUE_MINOR}.${RESIDUE_PATCH}")
 set (RESIDUE_NAME "Residue")
 
