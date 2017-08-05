@@ -42,11 +42,13 @@ int main(int argc, char* argv[])
     std::string authority = "default";
     unsigned int period;
     bool issue = false;
+    bool validate = false;
 
     for (int i = 0; i < argc; i++) {
         std::string arg(argv[i]);
         if (arg == "--validate" && i < argc) {
             licenseFile = argv[++i];
+            validate = true;
         } else if (arg == "--signature" && i < argc) {
             signature = argv[++i];
         } else if (arg == "--issue" && i < argc) {
@@ -61,7 +63,7 @@ int main(int argc, char* argv[])
     }
 
     residue::LicenseManager licenseManager;
-    if (!licenseFile.empty()) {
+    if (validate && !licenseFile.empty()) {
         std::ifstream stream(licenseFile);
         if (!stream.is_open()) {
             std::cerr << "Failed to open file " << licenseFile << std::endl;
@@ -88,6 +90,8 @@ int main(int argc, char* argv[])
 #else
         std::cerr << "ERROR: Access denied. You cannot issue new licenses." << std::endl;
 #endif // LICENSE_MANAGER_CAN_ISSUE_LICENSE
+    } else {
+        displayUsage();
     }
     return 0;
 }
