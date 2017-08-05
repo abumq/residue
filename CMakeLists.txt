@@ -7,6 +7,7 @@ option (travis "Travis CI" OFF)
 option (production "Build for production" ON)
 option (debug "Enable debug logging" OFF)
 option (profiling "Turns profiling on for various scenarios" OFF)
+option (admin_build "This is build for admins. See " OFF)
 option (BUILD_SHARED_LIBS "build shared libraries" ON)
 
 set (RESIDUE_MAJOR "1")
@@ -19,6 +20,10 @@ add_definitions (-DRESIDUE_VERSION="${RESIDUE_VERSION}")
 
 if (profiling)
     add_definitions (-DRESIDUE_PROFILING)
+endif()
+
+if (admin_build)
+    add_definitions (-DLICENSE_MANAGER_CAN_ISSUE_LICENSE)
 endif()
 
 if (debug)
@@ -125,28 +130,27 @@ set (CMAKE_INSTALL_RPATH "${CMAKE_INSTALL_PREFIX}/lib")
 
 ############# CONFIG VALIDATOR TOOL ###############
 
-#add_executable (config-validator-bin
-#    tools/config-validator/main.cc
-#    ${EASYLOGGINGPP_INCLUDE_DIR}/easylogging++.cc
-#)
+add_executable (residue-config-validator-bin
+    tools/config-validator/main.cc
+    ${EASYLOGGINGPP_INCLUDE_DIR}/easylogging++.cc
+)
 
-#target_compile_definitions (config-validator-bin PUBLIC
-#    ELPP_NO_DEFAULT_LOG_FILE
-#    ELPP_NO_LOG_TO_FILE
-#    ELPP_STL_LOGGING
-#    AUTO_INITIALIZE_EASYLOGGINGPP
-#    ELPP_DEFAULT_LOGGING_FLAGS=4096
-#)
+target_compile_definitions (residue-config-validator-bin PUBLIC
+    ELPP_NO_DEFAULT_LOG_FILE
+    ELPP_NO_LOG_TO_FILE
+    ELPP_STL_LOGGING
+    AUTO_INITIALIZE_EASYLOGGINGPP
+    ELPP_DEFAULT_LOGGING_FLAGS=4096
+)
 
-#target_link_libraries (config-validator-bin ${RIPE_LIBRARY} residue-core)
+target_link_libraries (residue-config-validator-bin ${RIPE_LIBRARY} residue-core)
 
-#set_target_properties (config-validator-bin PROPERTIES
-#    OUTPUT_NAME "config-validator"
-#    VERSION ${RESIDUE_VERSION}
-#    SOVERSION ${RESIDUE_SOVERSION}
-#)
+set_target_properties (residue-config-validator-bin PROPERTIES
+    OUTPUT_NAME "residue-config-validator"
+    VERSION ${RESIDUE_VERSION}
+)
 
-# -- DO NOT UNCOMMENT install (TARGETS config-validator-bin DESTINATION bin)
+#install (TARGETS residue-config-validator-bin DESTINATION bin)
 
 
 ############# LICENSE_MANAGER TOOL ###############
@@ -171,7 +175,7 @@ set_target_properties (residue-license-manager-bin PROPERTIES
     VERSION ${RESIDUE_VERSION}
 )
 
-# -- DO NOT UNCOMMENT install (TARGETS config-validator-bin DESTINATION bin)
+#install (TARGETS residue-license-manager-bin DESTINATION bin)
 
 
 ############# RESIDUE BINARY ###############
