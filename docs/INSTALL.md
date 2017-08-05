@@ -2,7 +2,7 @@
                                        ‫بسم الله الرَّحْمَنِ الرَّحِيمِ
 
 # Installation
-This document shows you steps to install reside on your machine. You can install it for development or for production use.
+This document shows you steps to install residue server on your machine. You can install it for development or for production use.
 
 # Dependencies
   * C++11 (or higher)
@@ -74,9 +74,9 @@ cd easyloggingpp-master
 cmake .
 make
 sudo make install
-wget -O ripe-bin.tar.gz https://github.com/muflihun/ripe/releases/download/v2.2.0/ripe-2.2.0-linux-x86_64.tar.gz
-tar xfz ripe-2.2.0-linux-x86_64.tar.gz
-cd ripe-2.2.0-linux-x86_64
+wget -O ripe-bin.tar.gz https://github.com/muflihun/ripe/releases/download/v3.3.0/ripe-3.3.0-x86_64-linux.tar.gz
+tar xfz ripe-bin.tar.gz
+cd ripe-3.3.0-x86_64-linux
 sudo cp libripe.* /usr/lib/
 sudo cp Ripe.h /usr/include/
 sudo cp ripe /usr/bin/
