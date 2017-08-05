@@ -126,7 +126,7 @@ set (CMAKE_INSTALL_RPATH "${CMAKE_INSTALL_PREFIX}/lib")
 ############# CONFIG VALIDATOR TOOL ###############
 
 #add_executable (config-validator-bin
-#    tools/config-validator/config-validator.cc
+#    tools/config-validator/main.cc
 #    ${EASYLOGGINGPP_INCLUDE_DIR}/easylogging++.cc
 #)
 
@@ -145,6 +145,31 @@ set (CMAKE_INSTALL_RPATH "${CMAKE_INSTALL_PREFIX}/lib")
 #    VERSION ${RESIDUE_VERSION}
 #    SOVERSION ${RESIDUE_SOVERSION}
 #)
+
+# -- DO NOT UNCOMMENT install (TARGETS config-validator-bin DESTINATION bin)
+
+
+############# LICENSE_MANAGER TOOL ###############
+
+add_executable (residue-license-manager-bin
+    tools/license-manager/main.cc
+    ${EASYLOGGINGPP_INCLUDE_DIR}/easylogging++.cc
+)
+
+target_compile_definitions (residue-license-manager-bin PUBLIC
+    ELPP_NO_DEFAULT_LOG_FILE
+    ELPP_NO_LOG_TO_FILE
+    ELPP_STL_LOGGING
+    AUTO_INITIALIZE_EASYLOGGINGPP
+    ELPP_DEFAULT_LOGGING_FLAGS=4096
+)
+
+target_link_libraries (residue-license-manager-bin ${RIPE_LIBRARY} residue-core)
+
+set_target_properties (residue-license-manager-bin PROPERTIES
+    OUTPUT_NAME "residue-license-manager"
+    VERSION ${RESIDUE_VERSION}
+)
 
 # -- DO NOT UNCOMMENT install (TARGETS config-validator-bin DESTINATION bin)
 
