@@ -23,6 +23,7 @@ if (profiling)
 endif()
 
 if (admin_build)
+    message ("-- THIS IS ADMIN BUILD!")
     add_definitions (-DADMIN_BUILD)
 endif()
 
