@@ -1,5 +1,7 @@
 # Change Log
 
+## [Unreleased]
+
 ## [1.0.0-beta.15] - 05-08-2017
 ### Added
 - License manager functionality
