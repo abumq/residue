@@ -1,6 +1,8 @@
 # Change Log
 
 ## [Unreleased]
+### Changes
+- More logging for debugging
 
 ## [1.0.0-beta.15] - 05-08-2017
 ### Added
