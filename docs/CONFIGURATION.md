@@ -167,7 +167,7 @@ Forever: `0` (not recommended)
 
 Note: You cannot `TOUCH` a non-acknowledged client.
 
-Minimum: `15`
+Minimum: `120`
 
 Default: `300` (5 minutes)
 
