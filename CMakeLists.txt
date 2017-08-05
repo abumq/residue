@@ -23,7 +23,7 @@ if (profiling)
 endif()
 
 if (admin_build)
-    add_definitions (-DLICENSE_MANAGER_CAN_ISSUE_LICENSE)
+    add_definitions (-DADMIN_BUILD)
 endif()
 
 if (debug)

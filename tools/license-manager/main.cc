@@ -12,11 +12,12 @@
 #include <string>
 #include "src/LicenseManager.h"
 #include "src/License.h"
+#include "src/Utils.h"
 
 using namespace residue;
 
 void displayUsage() {
-    std::cout << "residue-license-manager [--validate <file> --signature <signature>] [--issue --licensee <licensee> --signature <licensee_signature> --period <validation_period> --authority <issuing_authority>]" << std::endl;
+    std::cout << "USAGE: residue-license-manager [--validate <file> --signature <signature>] [--issue --licensee <licensee> --signature <licensee_signature> --period <validation_period> --authority <issuing_authority>]" << std::endl;
 }
 
 void displayVersion() {
@@ -25,7 +26,6 @@ void displayVersion() {
 
 int main(int argc, char* argv[])
 {
-
     if (argc > 1 && strcmp(argv[1], "--version") == 0) {
         displayVersion();
         return 0;
@@ -81,15 +81,11 @@ int main(int argc, char* argv[])
             }
         }
     } else if (issue) {
-#ifdef LICENSE_MANAGER_CAN_ISSUE_LICENSE
         licenseManager.changeIssuingAuthority(authority);
         License license = licenseManager.generateNew(licensee, period, signature);
         std::cout << license.toString() << std::endl;
         std::cout << "Licensed to " << license.licensee() << std::endl;
         std::cout << "Subscription is active until " << license.formattedExpiry() << std::endl << std::endl;
-#else
-        std::cerr << "ERROR: Access denied. You cannot issue new licenses." << std::endl;
-#endif // LICENSE_MANAGER_CAN_ISSUE_LICENSE
     } else {
         displayUsage();
     }
