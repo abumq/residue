@@ -36,8 +36,6 @@ You can define following options in CMake (using `-D<option>=ON`)
 | `test`       | Compile unit tests              |
 | `debug`      | Turn on debug logging           |
 | `production` | Compile for production use      |
-| `build_sample_app` | Builds sample app (to check client library in action) |
-| `build_static_lib` | Builds static library for official c++ client library (see [Static Library](#static-library))
 
 Please consider running unit test before you move on
 
@@ -94,32 +92,6 @@ relocation R_X86_64_32 against .rodata.str1.1 can not be used when making a shar
 ```
 
 This happens when static library (`libboost_system` in our case) is linked against shared library (`libresidue` in our case), you can link it statically. See [Static Library](#static-library) section below.
-
-#### RESIDUE_LIBRARY_LOCAL-NOTFOUND Error
-
-If you get error at `cmake -Dbuild_sample_app=ON ..` step complaining about `RESIDUE_LIBRARY` not found, this is because sample-client application uses this, you can turn this option off, install the library and then rebuild with this option.
-
-### Static Library
-By default, residue builds shared library that you can link in order to connect to residue server seamlessly. You can choose to build static library instead using `build_static_lib` option in cmake
-
-For example,
-
-```
-cmake -Dbuild_static_lib=ON ..
-```
-
-This will create `libresidue.a` and you can create one single static library (with boost bindings) using
-
-```
-ar -x libresidue.a
-cp /usr/local/lib/libboost_system-mt.a . # Path has to match your system's path
-ar -x libboost_system-mt.a
-ar -qc libresidue_full.a *.o
-```
-
-This will essentially join all the object files from both the libraries (no name overlaps).
-
-You then link with this library and ripe (dynamic) library using options `-lresidue_full -lripe`
 
 # What's Next?
 You can run demo to see how residue works. Please refer to [DEMO.md](/docs/DEMO.md) documentation
