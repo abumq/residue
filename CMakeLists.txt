@@ -7,11 +7,12 @@ option (travis "Travis CI" OFF)
 option (production "Build for production" ON)
 option (debug "Enable debug logging" OFF)
 option (profiling "Turns profiling on for various scenarios" OFF)
+option (admin_build "This is build for admins. See " OFF)
 option (BUILD_SHARED_LIBS "build shared libraries" ON)
 
 set (RESIDUE_MAJOR "1")
 set (RESIDUE_MINOR "0")
-set (RESIDUE_PATCH "0-beta.14")
+set (RESIDUE_PATCH "0-beta.15")
 set (RESIDUE_VERSION "${RESIDUE_MAJOR}.${RESIDUE_MINOR}.${RESIDUE_PATCH}")
 set (RESIDUE_NAME "Residue")
 
@@ -42,8 +43,18 @@ require_cpp11()
 check_apple()
 
 if (travis)
+    set (admin_build ON)
 else()
     list (APPEND CMAKE_CXX_FLAGS "-Wno-deprecated-declarations")
+endif()
+
+if (admin_build)
+    message ("--------------------------------")
+    message ("                                ")
+    message ("-- *** THIS IS ADMIN BUILD! *** ")
+    message ("                                ")
+    message ("--------------------------------")
+    add_definitions (-DADMIN_BUILD)
 endif()
 
 message ("-- Check for Easylogging++")
@@ -93,6 +104,9 @@ set (SOURCE_FILES
     src/Task.cc
     src/CommandHandler.cc
     src/Tar.cc
+    src/LicenseManager.cc
+    src/License.cc
+    src/IssuingAuthority.cc
 )
 
 set (SHARED_REQUIRED_LIBS
@@ -122,28 +136,52 @@ set (CMAKE_INSTALL_RPATH "${CMAKE_INSTALL_PREFIX}/lib")
 
 ############# CONFIG VALIDATOR TOOL ###############
 
-#add_executable (config-validator-bin
-#    tools/config-validator/config-validator.cc
-#    ${EASYLOGGINGPP_INCLUDE_DIR}/easylogging++.cc
-#)
+add_executable (residue-config-validator-bin
+    tools/config-validator/main.cc
+    ${EASYLOGGINGPP_INCLUDE_DIR}/easylogging++.cc
+)
 
-#target_compile_definitions (config-validator-bin PUBLIC
-#    ELPP_NO_DEFAULT_LOG_FILE
-#    ELPP_NO_LOG_TO_FILE
-#    ELPP_STL_LOGGING
-#    AUTO_INITIALIZE_EASYLOGGINGPP
-#    ELPP_DEFAULT_LOGGING_FLAGS=4096
-#)
+target_compile_definitions (residue-config-validator-bin PUBLIC
+    ELPP_NO_DEFAULT_LOG_FILE
+    ELPP_NO_LOG_TO_FILE
+    ELPP_STL_LOGGING
+    AUTO_INITIALIZE_EASYLOGGINGPP
+    ELPP_DEFAULT_LOGGING_FLAGS=4096
+)
 
-#target_link_libraries (config-validator-bin ${RIPE_LIBRARY} residue-core)
+target_link_libraries (residue-config-validator-bin ${RIPE_LIBRARY} residue-core)
 
-#set_target_properties (config-validator-bin PROPERTIES
-#    OUTPUT_NAME "config-validator"
-#    VERSION ${RESIDUE_VERSION}
-#    SOVERSION ${RESIDUE_SOVERSION}
-#)
+set_target_properties (residue-config-validator-bin PROPERTIES
+    OUTPUT_NAME "residue-config-validator"
+    VERSION ${RESIDUE_VERSION}
+)
 
-# -- DO NOT UNCOMMENT install (TARGETS config-validator-bin DESTINATION bin)
+#install (TARGETS residue-config-validator-bin DESTINATION bin)
+
+
+############# LICENSE_MANAGER TOOL ###############
+
+add_executable (residue-license-manager-bin
+    tools/license-manager/main.cc
+    ${EASYLOGGINGPP_INCLUDE_DIR}/easylogging++.cc
+)
+
+target_compile_definitions (residue-license-manager-bin PUBLIC
+    ELPP_NO_DEFAULT_LOG_FILE
+    ELPP_NO_LOG_TO_FILE
+    ELPP_STL_LOGGING
+    AUTO_INITIALIZE_EASYLOGGINGPP
+    ELPP_DEFAULT_LOGGING_FLAGS=4096
+)
+
+target_link_libraries (residue-license-manager-bin ${RIPE_LIBRARY} residue-core)
+
+set_target_properties (residue-license-manager-bin PROPERTIES
+    OUTPUT_NAME "residue-license-manager"
+    VERSION ${RESIDUE_VERSION}
+)
+
+#install (TARGETS residue-license-manager-bin DESTINATION bin)
 
 
 ############# RESIDUE BINARY ###############

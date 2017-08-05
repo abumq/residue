@@ -1,4 +1,5 @@
 {
+    "license_key_path": "samples/license_file.key",
     "admin_port": 8776,
     "connect_port": 8777,
     "token_port": 8778,
@@ -8,7 +9,7 @@
     "server_rsa_public_key": "samples/keys/server-1024-public.pem",
     "server_rsa_secret": "",
     "default_key_size": 256,
-    "accept_input": false,
+    "accept_input": true,
     "allow_default_access_code": true,
     "allow_plain_connection": true,
     "allow_unknown_loggers": true,
@@ -35,6 +36,10 @@
             "public_key": "samples/keys/client-256-public.pem",
             "key_size": 128,
             "loggers": ["sample-app"]
+        },
+        {
+            "client_id": "muflihun00102031",
+            "public_key": "samples/keys/encrypted-pubkey.pem"
         }
     ],
     "known_loggers": [

@@ -10,6 +10,9 @@ Quits the server gracefully
 ### `reload`
 Reloads configurations from same file as initially loaded
 
+### `license`
+Checks for subscription and current license. It is safe to do so and won't kill the server if your license is already expired, however, in such case you won't be able to restart the server. (Reloading should be OK)
+
 ### `reset`
 Resets the server with following things (be careful in doing this as it may affect connected clients)
 
