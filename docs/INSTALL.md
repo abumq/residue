@@ -36,6 +36,7 @@ You can define following options in CMake (using `-D<option>=ON`)
 | `test`       | Compile unit tests              |
 | `debug`      | Turn on debug logging           |
 | `production` | Compile for production use      |
+| `admin_build`| This is usually turned off for users and should only be turned on when building for those who can do management stuffs, e.g, issue new licenses |
 
 Please consider running unit test before you move on
 
