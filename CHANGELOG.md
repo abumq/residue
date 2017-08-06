@@ -4,6 +4,9 @@
 ### Changes
 - More logging for debugging
 
+### Updates
+- Changes file mode for logger files
+
 ## [1.0.0-beta.15] - 05-08-2017
 ### Added
 - License manager functionality
