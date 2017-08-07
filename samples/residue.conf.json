@@ -35,7 +35,8 @@
             "client_id": "muflihun00102030",
             "public_key": "samples/keys/client-256-public.pem",
             "key_size": 128,
-            "loggers": ["sample-app"]
+            "loggers": ["sample-app"],
+			"user": "mkhan"
         },
         {
             "client_id": "muflihun00102031",
