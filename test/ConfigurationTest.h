@@ -88,7 +88,7 @@ protected:
 
         LicenseManager l;
         fs.open(kLicenseFileForTesting, std::fstream::out);
-        fs << l.generateNew("residue-test-case", 25U).toString();
+        fs << l.generateNew("residue-test-case", 24U).toString();
         fs.close();
 
         // keys

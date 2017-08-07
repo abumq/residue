@@ -15,6 +15,7 @@ if [ -f $newfile ]; then
        echo "$orig" > "$newfile.bk.hex"
        echo "$result" > $newfile.hex
        cat $newfile.hex | $RIPE -d --hex > $newfile
+       shasum $newfile > $newfile.chk
        cat $newfile.bk.hex | $RIPE -d --hex > $newfile.bk
        rm $newfile.hex
        rm $newfile.bk.hex
@@ -23,6 +24,7 @@ else
    echo "Updating $file..."
    echo "$result" > $newfile.hex
    cat $newfile.hex | $RIPE -d --hex > $newfile
+   shasum $newfile > $newfile.chk
    rm $newfile.hex
 fi
 

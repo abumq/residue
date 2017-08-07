@@ -17,7 +17,7 @@
 using namespace residue;
 
 void displayUsage() {
-    std::cout << "USAGE: residue-license-manager [--validate <file> --signature <signature>] [--issue --licensee <licensee> --signature <licensee_signature> --period <validation_period> --authority <issuing_authority>]" << std::endl;
+    std::cout << "USAGE: residue-license-manager [--validate <file> --signature <signature>] [--issue --licensee <licensee> --signature <licensee_signature> --period <validation_period> --authority <issuing_authority> --passphrase <passphrase_for_issuing_authority>]" << std::endl;
 }
 
 void displayVersion() {
@@ -39,6 +39,7 @@ int main(int argc, char* argv[])
     std::string licenseFile;
     std::string signature;
     std::string licensee;
+    std::string secret;
     std::string authority = "default";
     unsigned int period;
     bool issue = false;
@@ -59,6 +60,8 @@ int main(int argc, char* argv[])
             period = static_cast<unsigned int>(atoi(argv[++i]));
         } else if (arg == "--authority" && i < argc) {
             authority = argv[++i];
+        } else if (arg == "--passphrase" && i < argc) {
+            secret = argv[++i];
         }
     }
 
@@ -82,7 +85,7 @@ int main(int argc, char* argv[])
         }
     } else if (issue) {
         licenseManager.changeIssuingAuthority(authority);
-        License license = licenseManager.generateNew(licensee, period, signature);
+        License license = licenseManager.generateNew(licensee, period, secret, signature);
         std::cout << license.toString() << std::endl;
         std::cout << "Licensed to " << license.licensee() << std::endl;
         std::cout << "Subscription is active until " << license.formattedExpiry() << std::endl << std::endl;
