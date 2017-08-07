@@ -291,6 +291,13 @@ See [`default_key_size`](#default_key_size)
 
 This is to map the client with multiple loggers. Remember, client is not validated against the logger using this array, this is only for extra information.
 
+#### `known_clients`::`user`
+[String] Linux / mac user assigned to known clients. All the log files associated to the corresponding loggers will belong to this user with `RW-R----` permissions
+
+Default: Current process user
+
+See [`known_clients::loggers`](#known_clientsloggers)
+
 ### `known_clients_endpoint`
 [String] This is URL where we can pull *more* known clients from. The endpoint should return JSON with object [`known_clients`](#known_clients), e.g,
 
@@ -359,6 +366,11 @@ Default: `false`
 [String] One of [`never`, `hourly`, `daily`, `weekly`, `monthly`, `quarterly`, `yearly`] to specify rotation frequency for corresponding log files. This is rotated regardless of file size.
 
 Default: `never`
+
+#### `known_loggers`::`user`
+[String] Linux / mac user assigned to known logger. All the log files associated to the corresponding logger will belong to this user with `RW-R----` permissions
+
+Default: Current process user
 
 #### `known_loggers`::`archived_log_filename`
 [String] Filename for rotated or archived log file
