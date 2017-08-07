@@ -292,7 +292,7 @@ See [`default_key_size`](#default_key_size)
 This is to map the client with multiple loggers. Remember, client is not validated against the logger using this array, this is only for extra information.
 
 #### `known_clients`::`user`
-[String] Linux / mac user assigned to known clients. All the log files associated to the corresponding loggers will belong to this user with `RW-R----` permissions
+[String] Linux / mac user assigned to known clients. All the log files associated to the corresponding loggers will belong to this user with `RW-R-----` permissions
 
 Default: Current process user
 
@@ -368,7 +368,7 @@ Default: `false`
 Default: `never`
 
 #### `known_loggers`::`user`
-[String] Linux / mac user assigned to known logger. All the log files associated to the corresponding logger will belong to this user with `RW-R----` permissions
+[String] Linux / mac user assigned to known logger. All the log files associated to the corresponding logger will belong to this user with `RW-R-----` permissions
 
 Default: Current process user
 
