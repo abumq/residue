@@ -94,5 +94,10 @@ relocation R_X86_64_32 against .rodata.str1.1 can not be used when making a shar
 
 This happens when static library (`libboost_system` in our case) is linked against shared library (`libresidue` in our case), you can link it statically. See [Static Library](#static-library) section below.
 
+# Run as `root`
+You will need to run residue as root user. This is because residue needs to change the ownership of the files to the relevant users and yet need to write to those files.
+
+There is no other way super-user access is used.
+
 # What's Next?
 You can run demo to see how residue works. Please refer to [DEMO.md](/docs/DEMO.md) documentation
