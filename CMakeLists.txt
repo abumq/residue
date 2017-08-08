@@ -26,6 +26,7 @@ if (debug)
     add_definitions (-DRESIDUE_DEBUG=1)
 else()
     message ("-- DEBUGGING IS OFF")
+    add_definitions (-DRESIDUE_DEBUG=0)
 endif()
 
 if (production)
