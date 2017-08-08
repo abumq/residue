@@ -3,6 +3,7 @@
 ## [Unreleased]
 ### Changes
 - More logging for debugging
+- `CHECK_TOKENS` changed to `REQUIRES_TOKEN`
 
 ### Updates
 - Changes file mode for logger files

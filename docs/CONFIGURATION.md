@@ -89,7 +89,7 @@ Default: `true`
 
 Default: `true`
 
-### `check_tokens`
+### `requires_token`
 [Boolean] Turn on/off token checking with each log request.
 
 Default: `true`

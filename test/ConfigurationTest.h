@@ -107,7 +107,7 @@ protected:
                               "allow_unknown_loggers": true,
                               "allow_unknown_clients": false,
                               "accept_input": false,
-                              "check_tokens": true,
+                              "requires_token": true,
                               "allow_plain_log_request": true,
                               "immediate_flush": true,
                               "allow_bulk_log_request": true,
@@ -214,7 +214,7 @@ TEST_F(ConfigurationTest, CheckValues)
     ASSERT_TRUE(conf->hasFlag(Configuration::Flag::ALLOW_UNKNOWN_LOGGERS));
     ASSERT_FALSE(conf->hasFlag(Configuration::Flag::ALLOW_UNKNOWN_CLIENTS));
     ASSERT_TRUE(conf->hasFlag(Configuration::Flag::ALLOW_DEFAULT_ACCESS_CODE));
-    ASSERT_TRUE(conf->hasFlag(Configuration::Flag::CHECK_TOKENS));
+    ASSERT_TRUE(conf->hasFlag(Configuration::Flag::REQUIRES_TOKEN));
     ASSERT_TRUE(conf->hasFlag(Configuration::Flag::ALLOW_PLAIN_LOG_REQUEST));
     ASSERT_FALSE(conf->hasLoggerFlag("residue", Configuration::Flag::ALLOW_PLAIN_LOG_REQUEST));
     ASSERT_TRUE(conf->hasLoggerFlag("muflihun", Configuration::Flag::ALLOW_PLAIN_LOG_REQUEST));
@@ -266,7 +266,7 @@ TEST_F(ConfigurationTest, Save)
     ASSERT_EQ(conf2->hasFlag(Configuration::Flag::ALLOW_UNKNOWN_LOGGERS), conf->hasFlag(Configuration::Flag::ALLOW_UNKNOWN_LOGGERS));
     ASSERT_EQ(conf2->hasFlag(Configuration::Flag::ALLOW_UNKNOWN_CLIENTS), conf->hasFlag(Configuration::Flag::ALLOW_UNKNOWN_CLIENTS));
     ASSERT_EQ(conf2->hasFlag(Configuration::Flag::ALLOW_DEFAULT_ACCESS_CODE), conf->hasFlag(Configuration::Flag::ALLOW_DEFAULT_ACCESS_CODE));
-    ASSERT_EQ(conf2->hasFlag(Configuration::Flag::CHECK_TOKENS), conf->hasFlag(Configuration::Flag::CHECK_TOKENS));
+    ASSERT_EQ(conf2->hasFlag(Configuration::Flag::REQUIRES_TOKEN), conf->hasFlag(Configuration::Flag::REQUIRES_TOKEN));
     ASSERT_EQ(conf2->hasFlag(Configuration::Flag::ALLOW_PLAIN_LOG_REQUEST), conf->hasFlag(Configuration::Flag::ALLOW_PLAIN_LOG_REQUEST));
     ASSERT_EQ(conf2->hasLoggerFlag("residue", Configuration::Flag::ALLOW_PLAIN_LOG_REQUEST), conf->hasLoggerFlag("residue", Configuration::Flag::ALLOW_PLAIN_LOG_REQUEST));
     ASSERT_EQ(conf2->hasLoggerFlag("muflihun", Configuration::Flag::ALLOW_PLAIN_LOG_REQUEST), conf->hasLoggerFlag("muflihun", Configuration::Flag::ALLOW_PLAIN_LOG_REQUEST));
@@ -289,7 +289,7 @@ TEST_F(ConfigurationTest, KnownLoggersRequestAllowed)
     LogRequestHandler logRequestHandler(&registry, &logBuilder);
     logRequestHandler.start(); // start to handle ~LogRequestHandler
     // We remove token check for this test
-    conf->removeFlag(Configuration::CHECK_TOKENS);
+    conf->removeFlag(Configuration::REQUIRES_TOKEN);
     std::string connectionRequestStr(R"({
                                             "client_id":"blah",
                                             "type":1,
@@ -346,7 +346,7 @@ TEST_F(ConfigurationTest, KnownLoggersRequestAllowed)
     runTests(testCases2);
 
     // reset it back
-    conf->addFlag(Configuration::CHECK_TOKENS);
+    conf->addFlag(Configuration::REQUIRES_TOKEN);
 }
 
 TEST_F(ConfigurationTest, AccessCode)

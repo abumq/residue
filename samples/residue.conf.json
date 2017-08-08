@@ -14,7 +14,7 @@
     "allow_plain_connection": true,
     "allow_unknown_loggers": true,
     "allow_unknown_clients": true,
-    "check_tokens": true,
+    "requires_token": true,
     "allow_plain_log_request": true,
     "immediate_flush": false,
     "compression": true,
