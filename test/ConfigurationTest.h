@@ -125,7 +125,8 @@ protected:
                                       "client_id": "client-for-test",
                                       "public_key": "public-key-for-test.pem",
                                       "key_size": 128,
-                                      "loggers": ["muflihun"]
+                                      "loggers": ["muflihun"],
+                                      "default_logger": "muflihun"
                                   },
                                   {
                                       "client_id": "client-for-test2",
@@ -224,6 +225,17 @@ TEST_F(ConfigurationTest, CheckValues)
     ASSERT_EQ(conf->knownClientsKeys().size(), 2);
     ASSERT_EQ(conf->keySize("client-for-test"), 128);
     ASSERT_EQ(conf->keySize("client-for-test2"), 256);
+    ASSERT_EQ(conf->getConfigurationFile("muflihun"), "muflihun-logger.conf");
+
+    LogRequest r(conf.get());
+    r.setClientId("client-for-test");
+    ASSERT_EQ(conf->getConfigurationFile("unknownlogger", &r), "muflihun-logger.conf");
+
+    r.setClientId("client-for-test2");
+    ASSERT_EQ(conf->getConfigurationFile("unknownlogger", &r), "");
+
+    r.setClientId("unknown-client");
+    ASSERT_EQ(conf->getConfigurationFile("unknownlogger", &r), "");
 }
 
 TEST_F(ConfigurationTest, Load)
