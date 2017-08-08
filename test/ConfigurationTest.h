@@ -277,6 +277,16 @@ TEST_F(ConfigurationTest, Save)
     ASSERT_EQ(conf2->knownClientsKeys().size(), 2);
     ASSERT_EQ(conf2->keySize("client-for-test"), 128);
     ASSERT_EQ(conf2->keySize("client-for-test2"), 256);
+
+    LogRequest r(conf2);
+    r.setClientId("client-for-test");
+    ASSERT_EQ(conf2->getConfigurationFile("unknownlogger", &r), "muflihun-logger.conf");
+
+    r.setClientId("client-for-test2");
+    ASSERT_EQ(conf2->getConfigurationFile("unknownlogger", &r), "");
+
+    r.setClientId("unknown-client");
+    ASSERT_EQ(conf2->getConfigurationFile("unknownlogger", &r), "");
 }
 
 

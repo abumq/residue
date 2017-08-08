@@ -18,11 +18,16 @@ TEST(LicenseManagerTest, LicenseGenerationAndVerification)
 {
 
     LicenseManager licenseManager;
+
     licenseManager.changeIssuingAuthority("short-term-issuer");
+
+    LOG(INFO) << "Generating licenceWithSignature";
     License licenceWithSignature = licenseManager.generateNew("residue unit-test", 24U, "", "fasdf");
+    LOG(INFO) << "Generating licenceWithoutSignature";
     License licenceWithoutSignature = licenseManager.generateNew("residue unit-test", 24U);
 
     licenseManager.changeIssuingAuthority("dev-issuer");
+    LOG(INFO) << "Generating licenceWithSignature using dev-issuer";
     License licenseFromOtherAuthority = licenseManager.generateNew("residue unit-test license", 24U, "dev-license");
 
     ASSERT_TRUE(licenseManager.validate(licenceWithSignature, true, "fasdf"));
