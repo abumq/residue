@@ -7,6 +7,9 @@
 ### Updates
 - Changes file mode for logger files
 
+### Added
+- Ability to set custom default logger under `known_clients` for unknown logger configurations
+
 ## [1.0.0-beta.15] - 05-08-2017
 ### Added
 - License manager functionality

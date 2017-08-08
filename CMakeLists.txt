@@ -23,7 +23,7 @@ endif()
 
 if (debug)
     message ("-- DEBUGGING IS ON")
-    add_definitions (-DRESIDUE_DEBUG)
+    add_definitions (-DRESIDUE_DEBUG=1)
 else()
     message ("-- DEBUGGING IS OFF")
 endif()
