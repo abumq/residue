@@ -27,7 +27,7 @@ TEST(LicenseManagerTest, LicenseGenerationAndVerification)
     License licenceWithoutSignature = licenseManager.generateNew("residue unit-test", 24U);
 
     licenseManager.changeIssuingAuthority("dev-issuer");
-    LOG(INFO) << "Generating licenceWithSignature using dev-issuer";
+    LOG(INFO) << "Generating licenseFromOtherAuthority using dev-issuer";
     License licenseFromOtherAuthority = licenseManager.generateNew("residue unit-test license", 24U, "dev-license");
 
     ASSERT_TRUE(licenseManager.validate(licenceWithSignature, true, "fasdf"));
