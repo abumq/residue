@@ -56,6 +56,6 @@ We're also actively working on client library for residue in other languages. Pl
 # License
 Copyright (c) 2017 Muflihun Labs
 
-You must obtain a license from authorised person in order to host residue server commercially.
+You must obtain a license from authorised person in order to host residue server.
 
   [banner]: https://raw.githubusercontent.com/muflihun/residue/master/docs/Residue.png
