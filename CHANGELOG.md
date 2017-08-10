@@ -11,6 +11,9 @@
 ### Added
 - Ability to set custom default logger under `known_clients` for unknown logger configurations
 
+### Fixes
+- Updated log rotator to fix permissions for archived file
+
 ## [1.0.0-beta.15] - 05-08-2017
 ### Added
 - License manager functionality
