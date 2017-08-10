@@ -10,6 +10,7 @@
 
 ### Added
 - Ability to set custom default logger under `known_clients` for unknown logger configurations
+- New command to remove client manually
 
 ### Fixes
 - Fixed log rotator to fix permissions for archived file
