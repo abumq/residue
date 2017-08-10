@@ -14,6 +14,7 @@
 ### Fixes
 - Fixed log rotator to fix permissions for archived file
 - Fixed user owner issue with known client (with user) and unknown logger
+- Permission issue for backup files
 
 ## [1.0.0-beta.15] - 05-08-2017
 ### Added
