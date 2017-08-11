@@ -135,4 +135,20 @@ TEST(UtilsTest, RandomAlphaNumeric)
     LOG_IF(same == 0, INFO) << "100% random!";
 }
 
+TEST(UtilsTest, CreatePath)
+{
+    system("rm -rf a_custom_directory");
+    ASSERT_FALSE(Utils::fileExists("a_custom_directory/is/a/path"));
+    Utils::createPath("a_custom_directory/is/a/path");
+    ASSERT_TRUE(Utils::createPath("a_custom_directory/is/a/path"));
+    ASSERT_FALSE(Utils::fileExists("a_custom_directory/is/a/path_no"));
+    ASSERT_TRUE(Utils::fileExists("a_custom_directory/is/a/path"));
+
+    system("rm -rf a_custom_directory2");
+    ASSERT_FALSE(Utils::fileExists("a_custom_directory2/is/a/path/"));
+    Utils::createPath("a_custom_directory2/is/a/path/");
+    ASSERT_TRUE(Utils::createPath("a_custom_directory2/is/a/path/"));
+    ASSERT_TRUE(Utils::fileExists("a_custom_directory2/is/a/path/"));
+}
+
 #endif // UTILS_TEST_H
