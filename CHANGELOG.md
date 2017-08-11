@@ -18,6 +18,7 @@
 - Fixed user owner issue with known client (with user) and unknown logger
 - Context switching for the queue has now threshold of 500 items
 - Fixed issue with check client when processing to use date received instead of current date
+- Critical bug with not being able to write verbose log is fixed
 
 ## [1.0.0-beta.15] - 05-08-2017
 ### Added
