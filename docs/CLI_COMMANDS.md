@@ -1,5 +1,4 @@
-
-                                       ‫بسم الله الرَّحْمَنِ الرَّحِيمِ
+﷽
 
 ## CLI Commands
 When residue server starts it can accept some commands from command-line interface. This document lists these commands.
@@ -28,6 +27,9 @@ Displays server stats
 
 ### `clients`
 Number of connected clients (dead or alive)
+
+##### `remove <client_id>`
+Removes the existing client. Please be careful with this command. If client has unprocessed requests it may crash.
 
 ##### `list`
 Lists all the connected clients (and `DEAD` status if they're dead)
