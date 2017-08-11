@@ -1,4 +1,4 @@
-                                       ‫بسم الله الرَّحْمَنِ الرَّحِيمِ
+﷽
 
 ## Configuration
 This document gives you details on configuring residue
@@ -117,7 +117,7 @@ You should note few points:
  * Only log requests should be compressed, other requests (connection, token, touch etc) are sent normally.
  * Outgoing data (from server) is never compressed.
 
-Compression has great affect and can save big data. We recommend you to enable compression in your server. Just to give you little bit of idea, when we run [simple example project](/samples/clients/c%2B%2B/detailed-cmake) to log 1244 times, without compression data transferred was `488669 bytes` and with compression it was `44509 bytes`. Same data transferred has same performance with high reliability.
+Compression has great affect and can save big data. We recommend you to enable compression in your server. Just to give you little bit of idea, when we run [simple example project](https://github.com/muflihun/residue-cpp/tree/master/samples/detailed-cmake) to log 1246 requests, without compression data transferred was `488669 bytes` and with compression it was `44509 bytes`. Same data transferred has same performance with high reliability.
 
 It always has very good performance when you have [`compression`](#compression) and [`allow_bulk_log_request`](#allow_bulk_log_request) both active. In one of our big test we had following result:
 
@@ -310,11 +310,11 @@ Default: Current process user
 <?php
 header('Content-Type: application/json');
 $list = array(
-"known_loggers" => array(
-    array(
+    "known_loggers" => array(
+        array(
             "logger_id" => "another",
             "configuration_file" => "samples/configurations/blah.conf"
-		),
+        ),
     ),
 );
 
