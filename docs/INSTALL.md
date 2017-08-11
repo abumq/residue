@@ -1,5 +1,4 @@
-
-                                       ‫بسم الله الرَّحْمَنِ الرَّحِيمِ
+﷽
 
 # Installation
 This document shows you steps to install residue server on your machine. You can install it for development or for production use.
@@ -36,9 +35,9 @@ You can define following options in CMake (using `-D<option>=ON`)
 | `test`       | Compile unit tests              |
 | `debug`      | Turn on debug logging           |
 | `production` | Compile for production use      |
-| `admin_build`| This is usually turned off for users and should only be turned on when building for those who can do management stuffs, e.g, issue new licenses |
+| `profiling`  | Turn on profiling information for making server faster (goes together with `debug`) |
 
-Please consider running unit test before you move on
+Please consider running unit test before you move on.
 
 ```
 make test
