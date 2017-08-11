@@ -1,4 +1,4 @@
-                                       ‫بسم الله الرَّحْمَنِ الرَّحِيمِ
+﷽
 
 ## Demo
 This document runs you through to run a demo client to see how it all works.
