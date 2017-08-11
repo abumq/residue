@@ -26,7 +26,7 @@
     "requires_timestamp": false,
     "non_acknowledged_client_age": 300,
     "client_integrity_task_interval": 300,
-    "dispatch_delay": 0,
+    "dispatch_delay": 1,
     "archived_log_directory": "%original/backups/%logger/",
     "archived_log_filename": "mylogs-%hour-00-%wday-%level.log",
     "archived_log_compressed_filename": "%logger-%hour-00-%wday.tar.gz",
@@ -37,7 +37,7 @@
             "key_size": 128,
             "loggers": ["sample-app"],
 			"default_logger": "sample-app",
-			"user":"majid.khan"
+			"user": "majid.khan"
         },
         {
             "client_id": "muflihun00102031",

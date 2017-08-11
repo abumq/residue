@@ -15,6 +15,7 @@
 ### Fixes
 - Fixed log rotator to fix permissions for archived file
 - Fixed user owner issue with known client (with user) and unknown logger
+- Context switching for the queue has now threshold of 500 items
 
 ## [1.0.0-beta.15] - 05-08-2017
 ### Added
