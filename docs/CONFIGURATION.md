@@ -344,6 +344,20 @@ Residue supports following [custom format specifiers](https://github.com/muflihu
 | `%ip`     | IP address of the request |
 | `%vnamelevel`     | Verbose level name (instead of number) |
 
+Verbose level names are:
+
+| Verbose Level | Name |
+| ---------------- | ----------- |
+| 9 | `vCRAZY` |
+| 8 | `vTRACE` |
+| 7 | `vDEBUG` |
+| 6 | `vDETAILS` |
+| 5 | `5` |
+| 4 | `vERROR` |
+| 3 | `vWARNING` |
+| 2 | `vNOTICE` |
+| 1 | `vINFO` |
+
 #### `known_loggers`::`access_codes`
 [Array] Object that is defined as `{"code" : "<string of any length>", "token_age" : <integer>}`.
 
