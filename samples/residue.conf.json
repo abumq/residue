@@ -9,7 +9,7 @@
     "server_rsa_public_key": "samples/keys/server-1024-public.pem",
     "server_rsa_secret": "",
     "default_key_size": 256,
-    "accept_input": true,
+    "accept_input": false,
     "allow_default_access_code": true,
     "allow_plain_connection": true,
     "allow_unknown_loggers": true,

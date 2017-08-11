@@ -4,6 +4,7 @@
 ### Changes
 - More logging for debugging
 - `CHECK_TOKENS` changed to `REQUIRES_TOKEN`
+- Bypass checks for same bulk if first check passed
 
 ### Updates
 - Changes file mode for logger files
