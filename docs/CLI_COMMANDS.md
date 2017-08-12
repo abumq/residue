@@ -40,6 +40,15 @@ Lists all the tokens for selected client (and `EXPIRED` status if they're expire
 ##### `<client_id>`
 The client ID to see tokens for
 
+### `rotate`
+Manually run log rotator for specified logger
+
+##### `<logger_id>`
+The logger ID to run log rotation for.
+
+#### `[--ignore-archive]`
+If this option is set the archival task won't run and it will just copy the logs to backup directory.
+
 ### `sess`
 Number of active sessions
 
