@@ -28,8 +28,8 @@
     "client_integrity_task_interval": 300,
     "dispatch_delay": 1,
     "archived_log_directory": "%original/backups/%logger/",
-    "archived_log_filename": "mylogs-%hour-00-%wday-%level.log",
-    "archived_log_compressed_filename": "%logger-%hour-00-%wday.tar.gz",
+    "archived_log_filename": "%hour-00-%day-%month-%year-%level.log",
+    "archived_log_compressed_filename": "%hour-00-%day-%month-%year.tar.gz",
     "known_clients": [
         {
             "client_id": "muflihun00102030",
@@ -58,9 +58,6 @@
             "logger_id": "sample-app",
             "configuration_file": "samples/configurations/sample-app-Logger.conf",
             "rotation_freq": "hourly",
-            "archived_log_filename": "mylogs-%hour-00-%wday-%level.log",
-            "archived_log_compressed_filename": "%hour-00-%wday-%month-%year.tar.gz",
-            "archived_log_directory": "%original/backups/%logger/",
             "access_codes_blacklist": [
                 "ii3faf",
                 "ii3fa2"
