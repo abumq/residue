@@ -21,7 +21,9 @@
 - Context switching for the queue has now threshold of 500 items
 - Fixed issue with check client when processing to use date received instead of current date
 - Critical bug with not being able to write verbose log is fixed
-- Log rotation fixes
+- Log rotation file naming issue fixed
+- Issue with log rotation for loggers are not supposed to be rotated
+- Fix log rotation for `residue` logger
 
 ## [1.0.0-beta.15] - 05-08-2017
 ### Added
