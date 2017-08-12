@@ -43,10 +43,8 @@ protected:
                               FILENAME                =   "/tmp/logs/default.log"
                               ENABLED                 =   true
                               TO_FILE                 =   true
-                              TO_STANDARD_OUTPUT      =   true
                               SUBSECOND_PRECISION      =   3
                               PERFORMANCE_TRACKING    =   false
-                              MAX_LOG_FILE_SIZE       =   20971520 ## 20MB
                           * VERBOSE:
                               FORMAT                  =   "%datetime [%logger] %app %level-%vlevel %msg"
                           ")");
@@ -59,10 +57,8 @@ protected:
                               FILENAME                =   "/tmp/logs/residue.log"
                               ENABLED                 =   true
                               TO_FILE                 =   true
-                              TO_STANDARD_OUTPUT      =   true
                               SUBSECOND_PRECISION      =   3
                               PERFORMANCE_TRACKING    =   false
-                              MAX_LOG_FILE_SIZE       =   20971520 ## 20MB
                           * VERBOSE:
                               FORMAT                  =   "%datetime [%logger] %app %level-%vlevel %msg"
                           ")");
@@ -76,10 +72,8 @@ protected:
                               FILENAME                =   "/tmp/logs/muflihun.log"
                               ENABLED                 =   true
                               TO_FILE                 =   true
-                              TO_STANDARD_OUTPUT      =   true
                               SUBSECOND_PRECISION      =   3
                               PERFORMANCE_TRACKING    =   false
-                              MAX_LOG_FILE_SIZE       =   20971520 ## 20MB
                           * VERBOSE:
                               FORMAT                  =   "%datetime [%logger] %app %level-%vlevel %msg"
                           ")");
