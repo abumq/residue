@@ -47,7 +47,10 @@ Manually run log rotator for specified logger
 The logger ID to run log rotation for.
 
 #### `[--ignore-archive]`
-If this option is set the archival task won't run and it will just copy the logs to backup directory.
+If this option is set the archival task will not run and it will just copy the logs to backup directory.
+
+#### `[--check-only]`
+Only check the schedule for this logger rotation
 
 ### `sess`
 Number of active sessions
