@@ -28,7 +28,7 @@
     "client_integrity_task_interval": 86400,
     "dispatch_delay": 1,
     "archived_log_directory": "%original/backups/%logger/",
-    "archived_log_filename": "%hour-%min-%day-%month-%year-%level.log",
+    "archived_log_filename": "%hour-%min-%day-%month-%year.log",
     "archived_log_compressed_filename": "%hour-%min-%day-%month-%year.tar.gz",
     "known_clients": [
         {
@@ -47,7 +47,8 @@
     "known_loggers": [
         {
             "logger_id": "residue",
-            "configuration_file": "samples/configurations/residue-Logger.conf"
+            "configuration_file": "samples/configurations/residue-Logger.conf",
+            "rotation_freq": "hourly"
         },
         {
             "logger_id": "default",
