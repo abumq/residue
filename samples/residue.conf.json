@@ -25,7 +25,7 @@
     "timestamp_validity": 120,
     "requires_timestamp": false,
     "non_acknowledged_client_age": 300,
-    "client_integrity_task_interval": 300,
+    "client_integrity_task_interval": 86400,
     "dispatch_delay": 1,
     "archived_log_directory": "%original/backups/%logger/",
     "archived_log_filename": "%hour-%min-%day-%month-%year-%level.log",
