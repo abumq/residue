@@ -30,8 +30,10 @@ TEST(UtilsTest, BytesToHumanReadable)
 {
     ASSERT_EQ(Utils::bytesToHumanReadable(999), "999B");
     ASSERT_EQ(Utils::bytesToHumanReadable(1025), "1.0kB");
+    ASSERT_EQ(Utils::bytesToHumanReadable(1127), "1.1kB");
     ASSERT_EQ(Utils::bytesToHumanReadable(2048), "2kB");
     ASSERT_EQ(Utils::bytesToHumanReadable(205000), "200.2kB");
+    ASSERT_EQ(Utils::bytesToHumanReadable(205950), "201.1kB");
     ASSERT_EQ(Utils::bytesToHumanReadable(20493322), "19.5MB");
     ASSERT_EQ(Utils::bytesToHumanReadable(static_cast<long>(1024.0f * 40000000.0f)), "38.1GB");
 }
