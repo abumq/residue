@@ -7,12 +7,11 @@ option (travis "Travis CI" OFF)
 option (production "Build for production" ON)
 option (debug "Enable debug logging" OFF)
 option (profiling "Turns profiling on for various scenarios" OFF)
-option (admin_build "This is build for admins. See " OFF)
 option (BUILD_SHARED_LIBS "build shared libraries" ON)
 
 set (RESIDUE_MAJOR "1")
 set (RESIDUE_MINOR "0")
-set (RESIDUE_PATCH "0-beta.15")
+set (RESIDUE_PATCH "0-beta.16")
 set (RESIDUE_VERSION "${RESIDUE_MAJOR}.${RESIDUE_MINOR}.${RESIDUE_PATCH}")
 set (RESIDUE_NAME "Residue")
 
@@ -24,9 +23,10 @@ endif()
 
 if (debug)
     message ("-- DEBUGGING IS ON")
-    add_definitions (-DRESIDUE_DEBUG)
+    add_definitions (-DRESIDUE_DEBUG=1)
 else()
     message ("-- DEBUGGING IS OFF")
+    add_definitions (-DRESIDUE_DEBUG=0)
 endif()
 
 if (production)
@@ -43,18 +43,8 @@ require_cpp11()
 check_apple()
 
 if (travis)
-    set (admin_build ON)
 else()
     list (APPEND CMAKE_CXX_FLAGS "-Wno-deprecated-declarations")
-endif()
-
-if (admin_build)
-    message ("--------------------------------")
-    message ("                                ")
-    message ("-- *** THIS IS ADMIN BUILD! *** ")
-    message ("                                ")
-    message ("--------------------------------")
-    add_definitions (-DADMIN_BUILD)
 endif()
 
 message ("-- Check for Easylogging++")
@@ -104,6 +94,7 @@ set (SOURCE_FILES
     src/Task.cc
     src/CommandHandler.cc
     src/Tar.cc
+    src/LicenseCheckerTask.cc
     src/LicenseManager.cc
     src/License.cc
     src/IssuingAuthority.cc

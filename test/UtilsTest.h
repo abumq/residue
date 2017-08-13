@@ -26,6 +26,18 @@ TEST(UtilsTest, IsAlphaNumeric)
     ASSERT_TRUE(Utils::isAlphaNumeric("this-is-not_alphanumeric123", "-_"));
 }
 
+TEST(UtilsTest, BytesToHumanReadable)
+{
+    ASSERT_EQ(Utils::bytesToHumanReadable(999), "999B");
+    ASSERT_EQ(Utils::bytesToHumanReadable(1025), "1.0kB");
+    ASSERT_EQ(Utils::bytesToHumanReadable(1127), "1.1kB");
+    ASSERT_EQ(Utils::bytesToHumanReadable(2048), "2kB");
+    ASSERT_EQ(Utils::bytesToHumanReadable(205000), "200.2kB");
+    ASSERT_EQ(Utils::bytesToHumanReadable(205950), "201.1kB");
+    ASSERT_EQ(Utils::bytesToHumanReadable(20493322), "19.5MB");
+    ASSERT_EQ(Utils::bytesToHumanReadable(static_cast<long>(1024.0f * 40000000.0f)), "38.1GB");
+}
+
 TEST(UtilsTest, GenerateRandomKey)
 {
     std::string s = Utils::generateRandomKey(32);
@@ -133,6 +145,22 @@ TEST(UtilsTest, RandomAlphaNumeric)
     float totalGenerated = static_cast<float>(total) * 2.0f; // s1 and s2
     LOG_IF(same > 0, WARNING) << ((same / totalGenerated) * 100.0f) << "% similar strings generated (" << same << " / " << totalGenerated << ")";
     LOG_IF(same == 0, INFO) << "100% random!";
+}
+
+TEST(UtilsTest, CreatePath)
+{
+    system("rm -rf a_custom_directory");
+    ASSERT_FALSE(Utils::fileExists("a_custom_directory/is/a/path"));
+    Utils::createPath("a_custom_directory/is/a/path");
+    ASSERT_TRUE(Utils::createPath("a_custom_directory/is/a/path"));
+    ASSERT_FALSE(Utils::fileExists("a_custom_directory/is/a/path_no"));
+    ASSERT_TRUE(Utils::fileExists("a_custom_directory/is/a/path"));
+
+    system("rm -rf a_custom_directory2");
+    ASSERT_FALSE(Utils::fileExists("a_custom_directory2/is/a/path/"));
+    Utils::createPath("a_custom_directory2/is/a/path/");
+    ASSERT_TRUE(Utils::createPath("a_custom_directory2/is/a/path/"));
+    ASSERT_TRUE(Utils::fileExists("a_custom_directory2/is/a/path/"));
 }
 
 #endif // UTILS_TEST_H

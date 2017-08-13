@@ -1,5 +1,4 @@
-
-                                       ‫بسم الله الرَّحْمَنِ الرَّحِيمِ
+﷽
 
 ## CLI Commands
 When residue server starts it can accept some commands from command-line interface. This document lists these commands.
@@ -29,6 +28,9 @@ Displays server stats
 ### `clients`
 Number of connected clients (dead or alive)
 
+##### `remove <client_id>`
+Removes the existing client. Please be careful with this command. If client has unprocessed requests it may crash.
+
 ##### `list`
 Lists all the connected clients (and `DEAD` status if they're dead)
 
@@ -37,6 +39,18 @@ Lists all the tokens for selected client (and `EXPIRED` status if they're expire
 
 ##### `<client_id>`
 The client ID to see tokens for
+
+### `rotate`
+Manually run log rotator for specified logger
+
+##### `<logger_id>`
+The logger ID to run log rotation for.
+
+#### `[--ignore-archive]`
+If this option is set the archival task will not run and it will just copy the logs to backup directory.
+
+#### `[--check-only]`
+Only check the schedule for this logger rotation
 
 ### `sess`
 Number of active sessions

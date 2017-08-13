@@ -1,4 +1,4 @@
-                                       ‫بسم الله الرَّحْمَنِ الرَّحِيمِ
+﷽
 
 ## Client Development
 This document show you steps required in order to write a new client library for residue server.
@@ -7,9 +7,9 @@ We highly recommend you understand how the server and client interact and what's
 
 Residue comes with following official client libraries for respective platforms:
 
- * [C++ (C++11 or higher)](/lib/Residue.cc)
+ * [C++ (C++11 or higher)](https://github.com/muflihun/residue-cpp)
  * [Node.js](https://github.com/muflihun/residue-node)
- * [Java (Incl. Android, API level 26 or higher)](https://github.com/muflihun/residue-node)
+ * [Java (Incl. Android, API level 26 or higher)](https://github.com/muflihun/residue-java)
  
 This document contains core concepts behind development of these libraries that follow same pattern. You can use same concepts to create your own library in language of your choice for other developers or for your organization.
 

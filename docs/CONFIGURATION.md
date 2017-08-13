@@ -1,4 +1,4 @@
-                                       ‫بسم الله الرَّحْمَنِ الرَّحِيمِ
+﷽
 
 ## Configuration
 This document gives you details on configuring residue
@@ -89,7 +89,7 @@ Default: `true`
 
 Default: `true`
 
-### `check_tokens`
+### `requires_token`
 [Boolean] Turn on/off token checking with each log request.
 
 Default: `true`
@@ -117,7 +117,7 @@ You should note few points:
  * Only log requests should be compressed, other requests (connection, token, touch etc) are sent normally.
  * Outgoing data (from server) is never compressed.
 
-Compression has great affect and can save big data. We recommend you to enable compression in your server. Just to give you little bit of idea, when we run [simple example project](/samples/clients/c%2B%2B/detailed-cmake) to log 1244 times, without compression data transferred was `488669 bytes` and with compression it was `44509 bytes`. Same data transferred has same performance with high reliability.
+Compression has great affect and can save big data. We recommend you to enable compression in your server. Just to give you little bit of idea, when we run [simple example project](https://github.com/muflihun/residue-cpp/tree/master/samples/detailed-cmake) to log 1246 requests, without compression data transferred was `488669 bytes` and with compression it was `44509 bytes`. Same data transferred has same performance with high reliability.
 
 It always has very good performance when you have [`compression`](#compression) and [`allow_bulk_log_request`](#allow_bulk_log_request) both active. In one of our big test we had following result:
 
@@ -245,6 +245,7 @@ Default: It must be provided by user
 Possible format specifiers:
 
  * `%logger`: Logger ID
+ * `%min`: Zero padded hour (`09`, `13`, `14`, ...) - the time when log rotator actually ran
  * `%hour`: 24-hours zero padded hour (`09`, `13`, `14`, ...)
  * `%wday`: Day of the week (`sun`, `mon`, ...)
  * `%day`: Day of month (`1`, `2`, ...)
@@ -291,6 +292,18 @@ See [`default_key_size`](#default_key_size)
 
 This is to map the client with multiple loggers. Remember, client is not validated against the logger using this array, this is only for extra information.
 
+#### `known_clients`::`default_logger`
+[String] Default logger for the client. This is useful when logging using unknown logger but connected as known client. The configurations from this logger is used.
+
+Default: `default`
+
+See [`known_clients::loggers`](#known_clientsloggers)
+
+#### `known_clients`::`user`
+[String] Linux / mac user assigned to known clients. All the log files associated to the corresponding loggers will belong to this user with `RW-R-----` permissions
+
+Default: Current process user
+
 ### `known_clients_endpoint`
 [String] This is URL where we can pull *more* known clients from. The endpoint should return JSON with object [`known_clients`](#known_clients), e.g,
 
@@ -298,11 +311,11 @@ This is to map the client with multiple loggers. Remember, client is not validat
 <?php
 header('Content-Type: application/json');
 $list = array(
-"known_loggers" => array(
-    array(
+    "known_loggers" => array(
+        array(
             "logger_id" => "another",
             "configuration_file" => "samples/configurations/blah.conf"
-		),
+        ),
     ),
 );
 
@@ -332,6 +345,29 @@ Residue supports following [custom format specifiers](https://github.com/muflihu
 | `%ip`     | IP address of the request |
 | `%vnamelevel`     | Verbose level name (instead of number) |
 
+Verbose level names are:
+
+| Verbose Level | Name |
+| ---------------- | ----------- |
+| 9 | `vCRAZY` |
+| 8 | `vTRACE` |
+| 7 | `vDEBUG` |
+| 6 | `vDETAILS` |
+| 5 | `5` |
+| 4 | `vERROR` |
+| 3 | `vWARNING` |
+| 2 | `vNOTICE` |
+| 1 | `vINFO` |
+
+##### Configuration Errors
+***
+
+You're not allowed to use following configurations in your configuration file as residue handles these configurations differently and ignore your configurations. Residue will not start until these configuration lines are removed. This is so that user does not expect anything from these configuration items.
+
+ * `Max_Log_File_Size`
+ * `To_Standard_Output`
+ * `Log_Flush_Threshold`
+
 #### `known_loggers`::`access_codes`
 [Array] Object that is defined as `{"code" : "<string of any length>", "token_age" : <integer>}`.
 
@@ -356,9 +392,16 @@ Maximum: [`max_token_age`](#max_token_age)
 Default: `false`
 
 #### `known_loggers`::`rotation_freq`
-[String] One of [`never`, `hourly`, `daily`, `weekly`, `monthly`, `quarterly`, `yearly`] to specify rotation frequency for corresponding log files. This is rotated regardless of file size.
+[String] One of [`never`, `hourly`, `six_hours`, `twelve_hours`, `daily`, `weekly`, `monthly`, `quarterly`, `yearly`] to specify rotation frequency for corresponding log files. This is rotated regardless of file size.
+
+Please note, log rotation task starts from the time server starts. For example, if you start the server at `10:41` the next rotation for `hourly` frequency will be at `11:41`
 
 Default: `never`
+
+#### `known_loggers`::`user`
+[String] Linux / mac user assigned to known logger. All the log files associated to the corresponding logger will belong to this user with `RW-R-----` permissions
+
+Default: Current process user
 
 #### `known_loggers`::`archived_log_filename`
 [String] Filename for rotated or archived log file

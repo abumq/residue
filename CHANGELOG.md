@@ -1,5 +1,29 @@
 # Change Log
 
+## [1.0.0-beta.16] - 13-08-2017
+### Changes
+- More logging for debugging
+- `CHECK_TOKENS` changed to `REQUIRES_TOKEN`
+- Bypass checks for same bulk if first check passed
+- Log rotation for global level is not seperated with each levels rather it will use `GLOBAL`
+- Changes file mode for logger files
+
+### Added
+- Ability to set custom default logger under `known_clients` for unknown logger configurations
+- New command to remove client manually
+- Run log rotator using CLI and admin requests
+- Added licenseee in connection response
+
+### Fixes
+- Fixed log rotator to fix permissions for archived file
+- Fixed user owner issue with known client (with user) and unknown logger
+- Context switching for the queue has now threshold of 500 items
+- Fixed issue with check client when processing to use date received instead of current date
+- Critical bug with not being able to write verbose log is fixed
+- Log rotation file naming issue fixed
+- Issue with log rotation for loggers are not supposed to be rotated
+- Fix log rotation for `residue` logger
+
 ## [1.0.0-beta.15] - 05-08-2017
 ### Added
 - License manager functionality

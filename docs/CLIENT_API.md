@@ -1,7 +1,9 @@
-                                       ‫بسم الله الرَّحْمَنِ الرَّحِيمِ
+﷽
 
 ## Client API
-Residue comes with official C++ API for users to use in their C++ applications. You can easily integrate residue in to your existing C++ application with literally 3 changes.
+Residue comes with official C++ client library for users to use in their C++ applications. You can easily integrate residue in to your existing C++ application with literally 3 changes.
+
+For other client libraries please refer to corresponding repository.
 
 ### 1. Download Library and Header
 You need 2 things to connect to residue
@@ -25,7 +27,7 @@ int main() {
    
     // You will need to fill this map with access codes to access correct logger (depends on the server)
     // For our samples we have used "sample-app" logger whose access code are in config file
-    // https://github.com/muflihun/residue/blob/master/samples/residue.conf.json#L73
+    // https://github.com/muflihun/residue/blob/master/samples/residue.conf.json
     // so we define these access code for seamless interaction
     Residue::AccessCodeMap accessCodes = {
         {
@@ -33,7 +35,7 @@ int main() {
         }
     };
     
-    // Connects to localhost on Residue::DEFAULT_PORT (8777) with no access codes
+    // Connects to localhost on Residue::DEFAULT_PORT (8777)
     Residue::connect(&accessCodeMap);
     
     ///
@@ -44,7 +46,7 @@ int main() {
     ///
     
     // It's always best to safely disconnect before your application ends, this ensures 
-    // all the logs have been dispatched to the server
+    // all the logs have been flushed to the server
     Residue::disconnect();
     
     return 0;

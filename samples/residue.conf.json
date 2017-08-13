@@ -14,28 +14,30 @@
     "allow_plain_connection": true,
     "allow_unknown_loggers": true,
     "allow_unknown_clients": true,
-    "check_tokens": true,
+    "requires_token": true,
     "allow_plain_log_request": true,
     "immediate_flush": false,
     "compression": true,
     "allow_bulk_log_request": true,
     "max_items_in_bulk": 50,
-    "token_age": 60,
+    "token_age": 3600,
     "client_age": 300,
     "timestamp_validity": 120,
     "requires_timestamp": false,
     "non_acknowledged_client_age": 300,
-    "client_integrity_task_interval": 300,
+    "client_integrity_task_interval": 86400,
     "dispatch_delay": 1,
     "archived_log_directory": "%original/backups/%logger/",
-    "archived_log_filename": "mylogs-%hour-00-%wday-%level.log",
-    "archived_log_compressed_filename": "%logger-%hour-00-%wday.tar.gz",
+    "archived_log_filename": "%hour-%min-%day-%month-%year.log",
+    "archived_log_compressed_filename": "%hour-%min-%day-%month-%year.tar.gz",
     "known_clients": [
         {
             "client_id": "muflihun00102030",
             "public_key": "samples/keys/client-256-public.pem",
             "key_size": 128,
-            "loggers": ["sample-app"]
+            "loggers": ["sample-app"],
+			"default_logger": "sample-app",
+			"user": "majid.khan"
         },
         {
             "client_id": "muflihun00102031",
@@ -45,19 +47,18 @@
     "known_loggers": [
         {
             "logger_id": "residue",
-            "configuration_file": "samples/configurations/residue-Logger.conf"
+            "configuration_file": "samples/configurations/residue-Logger.conf",
+            "rotation_freq": "hourly"
         },
         {
             "logger_id": "default",
-            "configuration_file": "samples/configurations/default-Logger.conf"
+            "configuration_file": "samples/configurations/default-Logger.conf",
+            "allow_plain_log_request": true
         },
         {
             "logger_id": "sample-app",
             "configuration_file": "samples/configurations/sample-app-Logger.conf",
-            "rotation_freq": "never",
-            "archived_log_filename": "mylogs-%hour-00-%wday-%level.log",
-            "archived_log_compressed_filename": "%hour-00-%wday-%month-%year.tar.gz",
-            "archived_log_directory": "%original/backups/%logger/",
+            "rotation_freq": "hourly",
             "access_codes_blacklist": [
                 "ii3faf",
                 "ii3fa2"

@@ -13,7 +13,7 @@
     "allow_plain_connection": false,
     "allow_unknown_loggers": false,
     "allow_unknown_clients": false,
-    "check_tokens": true,
+    "requires_token": true,
     "allow_plain_log_request": false,
     "immediate_flush": false,
     "compression": true,
