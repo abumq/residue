@@ -245,6 +245,7 @@ Default: It must be provided by user
 Possible format specifiers:
 
  * `%logger`: Logger ID
+ * `%min`: Zero padded hour (`09`, `13`, `14`, ...) - the time when log rotator actually ran
  * `%hour`: 24-hours zero padded hour (`09`, `13`, `14`, ...)
  * `%wday`: Day of the week (`sun`, `mon`, ...)
  * `%day`: Day of month (`1`, `2`, ...)
@@ -392,6 +393,8 @@ Default: `false`
 
 #### `known_loggers`::`rotation_freq`
 [String] One of [`never`, `hourly`, `six_hours`, `twelve_hours`, `daily`, `weekly`, `monthly`, `quarterly`, `yearly`] to specify rotation frequency for corresponding log files. This is rotated regardless of file size.
+
+Please note, log rotation task starts from the time server starts. For example, if you start the server at `10:41` the next rotation for `hourly` frequency will be at `11:41`
 
 Default: `never`
 
