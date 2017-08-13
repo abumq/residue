@@ -1,5 +1,7 @@
 # Change Log
 
+## [Unreleased]
+
 ## [1.0.0-beta.16] - 13-08-2017
 ### Changes
 - More logging for debugging
