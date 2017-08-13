@@ -26,6 +26,16 @@ TEST(UtilsTest, IsAlphaNumeric)
     ASSERT_TRUE(Utils::isAlphaNumeric("this-is-not_alphanumeric123", "-_"));
 }
 
+TEST(UtilsTest, BytesToHumanReadable)
+{
+    ASSERT_EQ(Utils::bytesToHumanReadable(999), "999B");
+    ASSERT_EQ(Utils::bytesToHumanReadable(1025), "1.0kB");
+    ASSERT_EQ(Utils::bytesToHumanReadable(2048), "2kB");
+    ASSERT_EQ(Utils::bytesToHumanReadable(205000), "200.2kB");
+    ASSERT_EQ(Utils::bytesToHumanReadable(20493322), "19.5MB");
+    ASSERT_EQ(Utils::bytesToHumanReadable(static_cast<long>(1024.0f * 40000000.0f)), "38.1GB");
+}
+
 TEST(UtilsTest, GenerateRandomKey)
 {
     std::string s = Utils::generateRandomKey(32);
