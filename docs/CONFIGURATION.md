@@ -391,7 +391,7 @@ Maximum: [`max_token_age`](#max_token_age)
 Default: `false`
 
 #### `known_loggers`::`rotation_freq`
-[String] One of [`never`, `hourly`, `daily`, `weekly`, `monthly`, `quarterly`, `yearly`] to specify rotation frequency for corresponding log files. This is rotated regardless of file size.
+[String] One of [`never`, `hourly`, `six_hours`, `twelve_hours`, `daily`, `weekly`, `monthly`, `quarterly`, `yearly`] to specify rotation frequency for corresponding log files. This is rotated regardless of file size.
 
 Default: `never`
 
