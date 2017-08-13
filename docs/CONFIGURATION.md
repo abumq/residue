@@ -365,7 +365,7 @@ You're not allowed to use following configurations in your configuration file as
 
  * `Max_Log_File_Size`
  * `To_Standard_Output`
- * `LogFlushThreshold`
+ * `Log_Flush_Threshold`
 
 #### `known_loggers`::`access_codes`
 [Array] Object that is defined as `{"code" : "<string of any length>", "token_age" : <integer>}`.
