@@ -94,6 +94,7 @@ set (SOURCE_FILES
     src/Task.cc
     src/CommandHandler.cc
     src/Tar.cc
+    src/LicenseCheckerTask.cc
     src/LicenseManager.cc
     src/License.cc
     src/IssuingAuthority.cc
