@@ -358,6 +358,15 @@ Verbose level names are:
 | 2 | `vNOTICE` |
 | 1 | `vINFO` |
 
+##### Configuration Errors
+***
+
+You're not allowed to use following configurations in your configuration file as residue handles these configurations differently and ignore your configurations. Residue will not start until these configuration lines are removed. This is so that user does not expect anything from these configuration items.
+
+ * `Max_Log_File_Size`
+ * `To_Standard_Output`
+ * `LogFlushThreshold`
+
 #### `known_loggers`::`access_codes`
 [Array] Object that is defined as `{"code" : "<string of any length>", "token_age" : <integer>}`.
 
