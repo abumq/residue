@@ -26,9 +26,9 @@ TEST(LicenseManagerTest, LicenseGenerationAndVerification)
     LOG(INFO) << "Generating licenceWithoutSignature";
     License licenceWithoutSignature = licenseManager.generateNew("residue unit-test", 24U);
 
-    licenseManager.changeIssuingAuthority("dev-issuer");
-    LOG(INFO) << "Generating licenseFromOtherAuthority using dev-issuer";
-    License licenseFromOtherAuthority = licenseManager.generateNew("residue unit-test license", 24U, "dev-license");
+    licenseManager.changeIssuingAuthority("beta-issuer");
+    LOG(INFO) << "Generating licenseFromOtherAuthority using beta-issuer";
+    License licenseFromOtherAuthority = licenseManager.generateNew("residue unit-test license", 24U);
 
     ASSERT_TRUE(licenseManager.validate(licenceWithSignature, true, "fasdf"));
     ASSERT_TRUE(licenseManager.validate(licenceWithoutSignature, true, "fasdf"));
@@ -42,7 +42,7 @@ TEST(LicenseManagerTest, LicenseGenerationAndVerification)
     ASSERT_EQ(licenceWithoutSignature.licensee(), "residue unit-test");
     ASSERT_EQ(licenceWithSignature.issuingAuthorityId(), "short-term-issuer");
     ASSERT_EQ(licenceWithoutSignature.issuingAuthorityId(), "short-term-issuer");
-    ASSERT_EQ(licenseFromOtherAuthority.issuingAuthorityId(), "dev-issuer");
+    ASSERT_EQ(licenseFromOtherAuthority.issuingAuthorityId(), "beta-issuer");
 
     ASSERT_TRUE(licenseManager.validate(licenseFromOtherAuthority, false, ""));
 }
