@@ -2,7 +2,8 @@
 
 ## [Unreleased]
 ### Fixes
-- Critical fix to incorrect dereferencing but server is now slowish
+- Critical fix to incorrect dereferencing making server even faster and more logging
+- Fix to client checking after client integrity task execution
 
 ## [1.0.0-beta.16] - 13-08-2017
 ### Changes
