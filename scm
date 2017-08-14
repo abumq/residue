@@ -1,87 +1,89 @@
-#!/usr/bin/env bash
+#!/bin/bash
+
+##########################
+###
+### SCM SCRIPT FOR RESIDUE
+###
+##########################
 
 if [ "$RIPE" = "" ];then
     export RIPE="ripe"
 fi
 
-echo "Ripe `$RIPE --version | head -2 | tail -1`"
+if [ "$RESIDUE_SRC_KEY" = "" ];then
+    echo "RESIDUE_SRC_KEY not set"
+    exit;
+fi
+
 
 function decr {
-	file=$1
-	newfile="${file%????}"
+    file=$1
+    newfile="${file%????}"
 
-	if [ "$RESIDUE_SRC_KEY" = "" ];then
-	    echo "RESIDUE_SRC_KEY not set"
-	    exit;
-	fi
-	
-	result=$(cat $file | $RIPE -d --aes --key $RESIDUE_SRC_KEY --base64 | $RIPE -e --hex)
+    result=$(cat $file | $RIPE -d --aes --key $RESIDUE_SRC_KEY --base64 | $RIPE -e --hex)
 
-	if [ -f $newfile ]; then
-	   orig=`cat $newfile | $RIPE -e --hex`
-	   if [ "$orig" != "$result" ];then
-	       echo "Updating $file... (orig file backedup)"
-	       echo "$orig" > $newfile.bk.hex
-	       echo "$result" > $newfile.hex
-	       cat $newfile.hex | $RIPE -d --hex > $newfile
-	       cat $newfile.bk.hex | $RIPE -d --hex > $newfile.bk
-	       rm $newfile.hex
-	       rm $newfile.bk.hex
-	   fi
-	else
-	   echo "Updating $file..."
-	   echo "$result" > $newfile.hex
-	   cat $newfile.hex | $RIPE -d --hex > $newfile
-	   rm $newfile.hex
-	fi
+    if [ -f $newfile ]; then
+       orig=`cat $newfile | $RIPE -e --hex`
+       if [ "$orig" != "$result" ];then
+           echo "Updating $file... (orig file backedup)"
+           echo "$orig" > $newfile.bk.hex
+           echo "$result" > $newfile.hex
+           cat $newfile.hex | $RIPE -d --hex > $newfile
+           cat $newfile.bk.hex | $RIPE -d --hex > $newfile.bk
+           rm $newfile.hex
+           rm $newfile.bk.hex
+       fi
+    else
+       echo "Updating $file..."
+       echo "$result" > $newfile.hex
+       cat $newfile.hex | $RIPE -d --hex > $newfile
+       rm $newfile.hex
+    fi
 }
 
 function encr {
-	file=$1
+    file=$1
 
-	if [ "$RESIDUE_SRC_KEY" = "" ];then
-	    echo "RESIDUE_SRC_KEY not set"
-	    exit;
-	fi
+    FILE_CHECKSUM=`shasum $file | head -n1 | awk '{print $1;}'`
+    CURR_CHECKSUM=`cat $file.chk`
 
-	FILE_CHECKSUM=`shasum $file | head -n1 | awk '{print $1;}'`
-	CURR_CHECKSUM=`cat $file.chk`
-
-	if [ "$FILE_CHECKSUM" != "$CURR_CHECKSUM" ];then
-	    cat $file | $RIPE -e --aes --key $RESIDUE_SRC_KEY > $file.enc
-	    echo "$FILE_CHECKSUM" > $file.chk
-	fi
+    if [ "$FILE_CHECKSUM" != "$CURR_CHECKSUM" ];then
+        cat $file | $RIPE -e --aes --key $RESIDUE_SRC_KEY > $file.enc
+        echo "$FILE_CHECKSUM" > $file.chk
+    fi
 }
 
 function hash_check {
-	file=$1
+    file=$1
 
-	if [ ! -f "$file.chk" ];then
-	    echo "Checksum not available for $file"
-	    exit;
-	fi
+    if [ ! -f "$file.chk" ];then
+        echo "Checksum not available for $file"
+        exit;
+    fi
 
-	FILE_CHECKSUM=`shasum $file | head -n1 | awk '{print $1;}'`
-	CURR_CHECKSUM=`cat $file.chk`
+    FILE_CHECKSUM=`shasum $file | head -n1 | awk '{print $1;}'`
+    CURR_CHECKSUM=`cat $file.chk`
 
-	if [ "$FILE_CHECKSUM" != "$CURR_CHECKSUM" ];then
-	    echo "$file Changed"
-	fi
-	
+    if [ "$FILE_CHECKSUM" != "$CURR_CHECKSUM" ];then
+        echo "$file Changed"
+    fi
+    
 }
 
 function decr_all {
-	find src -name "*.enc" -exec bash -c 'decr "$0"' {} \;
+    echo "Ripe `$RIPE --version | head -2 | tail -1`"
+    find src -name "*.enc" -exec bash -c 'decr "$0"' {} \;
 }
 
 function encr_all {
-	find src -name "*.cc" -exec bash -c 'encr "$0"' {} \;
-	find src -name "*.h" -exec bash -c 'encr "$0"' {} \;
+    echo "Ripe `$RIPE --version | head -2 | tail -1`"
+    find src -name "*.cc" -exec bash -c 'encr "$0"' {} \;
+    find src -name "*.h" -exec bash -c 'encr "$0"' {} \;
 }
 
 function hash_check_all {
-	find src -name "*.cc" -exec bash -c 'hash_check "$0"' {} \;
-	find src -name "*.h" -exec bash -c 'hash_check "$0"' {} \;
+    find src -name "*.cc" -exec bash -c 'hash_check "$0"' {} \;
+    find src -name "*.h" -exec bash -c 'hash_check "$0"' {} \;
 }
 
 export -f decr
@@ -108,9 +110,11 @@ case "$1" in
         cf)
             hash_check $2
             ;;
-         
+         status)
+             git status
+             echo "Checking source..."
+             $0 c
+             ;;
         *)
-            echo $"Usage: $0 {d|e|c|df|ef|cf}"
-            exit 1
- 
+             git $@
 esac
