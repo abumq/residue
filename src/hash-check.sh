@@ -5,7 +5,7 @@ if [ ! -f "$file.chk" ];then
     exit;
 fi
 
-FILE_CHECKSUM=`shasum $file`
+FILE_CHECKSUM=`shasum $file | head -n1 | awk '{print $1;}'`
 CURR_CHECKSUM=`cat $file.chk`
 
 if [ "$FILE_CHECKSUM" != "$CURR_CHECKSUM" ];then
