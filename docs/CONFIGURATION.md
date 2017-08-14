@@ -424,5 +424,44 @@ See [archived_log_directory](#archived_log_directory)
 ### `loggers_blacklist`
 [Array] String where each string is logger ID. Whenever request using these loggers are received, they are ignored without notifying the user.
 
+## Comments
+Because Residue configuration is in JSON format, comments are not supported as there should be no comment in JSON file. With that said there are ways to have comments around it.
+
+1. You can have a seperate "object" for comment e.g,
+
+```javascript
+...
+    "comment", "following backup directory will be in original logging directory",
+    "archived_log_directory": "%original/backups/%logger/",
+    "comment", "another comment",
+    "archived_log_filename": "%hour-%min-%day-%month-%year.log",
+    "comment", "another comment",
+    "archived_log_compressed_filename": "%hour-%min-%day-%month-%year.tar.gz",
+    "known_clients": [
+...
+```
+
+Please note, this is not preferred way as parsing may get slower with increasing comments.
+
+2. You can have comment using `//` or `/* */` in the file and then before you pass it on to residue, run it through jsMin. e.g, for file `test.json`
+
+```javascript
+...
+    // following backup directory will be in original logging directory
+    "archived_log_directory": "%original/backups/%logger/",
+    // another comment
+    "archived_log_filename": "%hour-%min-%day-%month-%year.log",
+    // another comment
+    "archived_log_compressed_filename": "%hour-%min-%day-%month-%year.tar.gz",
+    "known_clients": [
+...
+```
+
+```
+cat test.json | jsmin > test-nocomments.json && residue test-nocomments.json
+```
+
+**This is preferred way** as it will only pass on what is really needed.
+
 ## Sample
 Please refer to [sample configuration file](/samples/residue.conf.json) for understanding it better.
