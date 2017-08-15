@@ -1,5 +1,13 @@
 # Change Log
 
+## [1.0.0-beta.17] - 15-08-2017
+### Fixes
+- Critical fix to incorrect dereferencing making server even faster and more logging
+- Fix to client checking after client integrity task execution
+
+### Changes
+- Updated logging levels for some logs
+
 ## [1.0.0-beta.16] - 13-08-2017
 ### Changes
 - More logging for debugging
