@@ -3,6 +3,7 @@
 ## [Unreleased]
 ### Fixes
 - Attach crash handler opt
+- Fixed up licensing authorities
 
 ## [1.0.0-beta.18] - 15-08-2017
 ### Fixes
