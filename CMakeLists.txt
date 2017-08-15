@@ -10,7 +10,7 @@ option (profiling "Turns profiling on for various scenarios" OFF)
 
 set (RESIDUE_MAJOR "1")
 set (RESIDUE_MINOR "0")
-set (RESIDUE_PATCH "0-beta.16")
+set (RESIDUE_PATCH "0-beta.17")
 set (RESIDUE_VERSION "${RESIDUE_MAJOR}.${RESIDUE_MINOR}.${RESIDUE_PATCH}")
 set (RESIDUE_NAME "Residue")
 
