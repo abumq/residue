@@ -81,7 +81,6 @@ protected:
         fs.close();
 
         LicenseManagerForTest l;
-        l.changeIssuingAuthority("unittest-issuer-1");
         LOG(INFO) << "Issuer: " << l.issuingAuthority()->id();
         fs.open(kLicenseFileForTesting, std::fstream::out);
         fs << l.generateNew("residue-test-case", 24U).toString();

@@ -16,18 +16,15 @@ using namespace residue;
 
 TEST(LicenseManagerTest, LicenseGenerationAndVerification)
 {
-
     LicenseManagerForTest licenseManager;
 
-    licenseManager.changeIssuingAuthority("unittest-issuer-1");
-
-    LOG(INFO) << "Generating licenceWithSignature";
+    LOG(INFO) << "Generating licenceWithSignature using " << licenseManager.issuingAuthority()->id();
     License licenceWithSignature = licenseManager.generateNew("residue unit-test", 24U, "", "fasdf");
-    LOG(INFO) << "Generating licenceWithoutSignature";
+    LOG(INFO) << "Generating licenceWithoutSignature using " << licenseManager.issuingAuthority()->id();
     License licenceWithoutSignature = licenseManager.generateNew("residue unit-test", 24U);
 
     licenseManager.changeIssuingAuthority("unittest-issuer-2");
-    LOG(INFO) << "Generating licenseFromOtherAuthority using beta-issuer";
+    LOG(INFO) << "Generating licenseFromOtherAuthority using " << licenseManager.issuingAuthority()->id();
     License licenseFromOtherAuthority = licenseManager.generateNew("residue unit-test license", 24U);
 
     ASSERT_TRUE(licenseManager.validate(licenceWithSignature, true, "fasdf"));
@@ -45,6 +42,17 @@ TEST(LicenseManagerTest, LicenseGenerationAndVerification)
     ASSERT_EQ(licenseFromOtherAuthority.issuingAuthorityId(), "unittest-issuer-2");
 
     ASSERT_TRUE(licenseManager.validate(licenseFromOtherAuthority, false, ""));
+}
+
+TEST(LicenseManagerTest, LicenseGenerationAndVerificationUsingSecureAuthority)
+{
+    LicenseManagerForTest licenseManager;
+    licenseManager.changeIssuingAuthority("unittest-issuer-3");
+    LOG(INFO) << "Generating licenseWithSecureAuthority using " << licenseManager.issuingAuthority()->id();
+    License licenseWithSecureAuthority = licenseManager.generateNew("residue unit-test license", 24U, "unit-test-issuer-secret");
+    ASSERT_EQ(licenseWithSecureAuthority.issuingAuthorityId(), "unittest-issuer-3");
+
+    ASSERT_TRUE(licenseManager.validate(licenseWithSecureAuthority, false, ""));
 }
 
 #endif // LICENSE_MANAGER_TEST_H
