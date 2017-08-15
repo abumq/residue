@@ -12,12 +12,12 @@
 #include <fstream>
 #include <memory>
 #include "test.h"
+#include "test/license-manager-for-test.h"
 #include "src/core/configuration.h"
 #include "src/core/registry.h"
 #include "src/logging/user-log-builder.h"
 #include "src/request/connection-request.h"
 #include "src/request-handlers/log-request-handler.h"
-#include "src/licensing/license-manager.h"
 
 using namespace residue;
 
@@ -80,7 +80,9 @@ protected:
         fs.flush();
         fs.close();
 
-        LicenseManager l;
+        LicenseManagerForTest l;
+        l.changeIssuingAuthority("unittest-issuer-1");
+        LOG(INFO) << "Issuer: " << l.issuingAuthority()->id();
         fs.open(kLicenseFileForTesting, std::fstream::out);
         fs << l.generateNew("residue-test-case", 24U).toString();
         fs.close();
