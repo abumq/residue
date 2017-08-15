@@ -84,10 +84,10 @@ set (SOURCE_FILES
     src/clients/client.cc
     src/clients/client-integrity-task.cc
 
-    src/licensing/license-manager.cc
     src/licensing/license.cc
     src/licensing/issuing-authority.cc
     src/licensing/license-checker-task.cc
+    src/licensing/license-manager-keys.cc
 
     src/logging/log-rotator.cc
     src/logging/user-log-builder.cc
