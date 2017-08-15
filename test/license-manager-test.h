@@ -44,6 +44,7 @@ TEST(LicenseManagerTest, LicenseGenerationAndVerification)
     ASSERT_TRUE(licenseManager.validate(licenseFromOtherAuthority, false, ""));
 }
 
+#ifndef RESIDUE_ON_CI
 TEST(LicenseManagerTest, LicenseGenerationAndVerificationUsingSecureAuthority)
 {
     LicenseManagerForTest licenseManager("unittest-issuer-3");
@@ -53,6 +54,7 @@ TEST(LicenseManagerTest, LicenseGenerationAndVerificationUsingSecureAuthority)
 
     ASSERT_TRUE(licenseManager.validate(licenseWithSecureAuthority, false));
 }
+#endif
 
 TEST(LicenseManagerTest, VerificationUsingSecureAuthority)
 {

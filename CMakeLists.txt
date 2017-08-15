@@ -42,6 +42,7 @@ require_cpp11()
 check_apple()
 
 if (travis)
+    add_definitions (-DRESIDUE_ON_CI)
 else()
     list (APPEND CMAKE_CXX_FLAGS "-Wno-deprecated-declarations")
 endif()
