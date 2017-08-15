@@ -48,7 +48,7 @@ TEST(LicenseManagerTest, LicenseGenerationAndVerificationUsingSecureAuthority)
 {
     LicenseManagerForTest licenseManager("unittest-issuer-3");
     LOG(INFO) << "Generating licenseWithSecureAuthority using " << licenseManager.issuingAuthority()->id();
-    License licenseWithSecureAuthority = licenseManager.generateNew("residue unit-test license", 219000U, "unit-test-issuer-secret");
+    License licenseWithSecureAuthority = licenseManager.generateNew("residue unit-test license", 25U, "unit-test-issuer-secret");
     ASSERT_EQ(licenseWithSecureAuthority.issuingAuthorityId(), "unittest-issuer-3");
 
     ASSERT_TRUE(licenseManager.validate(licenseWithSecureAuthority, false));
