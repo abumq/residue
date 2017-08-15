@@ -1,5 +1,9 @@
 # Change Log
 
+## [1.0.0-beta.18] - 15-08-2017
+### Changes
+- Re-structured the source code for scalability
+
 ## [1.0.0-beta.17] - 15-08-2017
 ### Fixes
 - Critical fix to incorrect dereferencing making server even faster and more logging

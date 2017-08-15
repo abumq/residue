@@ -142,7 +142,7 @@ install:
  - cd "${TRAVIS_BUILD_DIR}"
  - echo $RIPE
  - ./scm d
- - cat src/custom-logging.h
+ - cat src/logging/custom-logging.h
  - mkdir build
  - cd build
  - cmake -Dcompile-server=ON -Dtest=ON -Dtravis=ON ..
