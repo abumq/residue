@@ -86,6 +86,11 @@ function hash_check_all {
     find src -name "*.h" -exec bash -c 'hash_check "$0"' {} \;
 }
 
+function clean_all {
+    find src -name "*.cc" -exec rm -f {} \;
+    find src -name "*.h" -exec rm -f {} \;
+}
+
 export -f decr
 export -f encr
 export -f hash_check
@@ -109,6 +114,9 @@ case "$1" in
             ;;
         cf)
             hash_check $2
+            ;;
+         clean)
+            clean_all
             ;;
          status)
              git status
