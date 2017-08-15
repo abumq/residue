@@ -4,6 +4,7 @@
 ### Fixes
 - Attach crash handler opt
 - Fixed up licensing authorities
+- Fixed issue with license with signature not loading properly
 
 ## [1.0.0-beta.18] - 15-08-2017
 ### Fixes
