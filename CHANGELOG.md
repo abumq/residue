@@ -1,6 +1,6 @@
 # Change Log
 
-## [Unreleased]
+## [1.0.0-beta.18] - 15-08-2017
 ### Changes
 - Re-structured the source code for scalability
 
