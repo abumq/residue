@@ -9,7 +9,7 @@
 #include <sstream>
 #include <iostream>
 #include <string>
-#include "src/Configuration.h"
+#include "src/core/configuration.h"
 
 using namespace residue;
 

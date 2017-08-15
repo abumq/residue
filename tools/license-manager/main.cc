@@ -10,9 +10,9 @@
 #include <fstream>
 #include <iostream>
 #include <string>
-#include "src/LicenseManager.h"
-#include "src/License.h"
-#include "src/Utils.h"
+#include "src/licensing/license-manager.h"
+#include "src/licensing/license.h"
+#include "src/utils/utils.h"
 
 using namespace residue;
 

@@ -6,11 +6,11 @@
 //
 
 #include "test.h"
-#include "ConfigurationTest.h"
-#include "UtilsTest.h"
-#include "LicenseManagerTest.h"
-#include "UrlTest.h"
-#include "AdminRequestTest.h"
+#include "configuration-test.h"
+#include "utils-test.h"
+#include "license-manager-test.h"
+#include "url-test.h"
+#include "admin-request-test.h"
 
 INITIALIZE_EASYLOGGINGPP
 
