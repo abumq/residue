@@ -1,5 +1,9 @@
 # Change Log
 
+## [Unreleased]
+### Fixes
+- Attach crash handler opt
+
 ## [1.0.0-beta.18] - 15-08-2017
 ### Fixes
 - Fix issue with crashing on non-bulk requests
