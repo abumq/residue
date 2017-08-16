@@ -15,6 +15,9 @@ set (RESIDUE_VERSION "${RESIDUE_MAJOR}.${RESIDUE_MINOR}.${RESIDUE_PATCH}")
 set (RESIDUE_NAME "Residue")
 
 add_definitions (-DRESIDUE_VERSION="${RESIDUE_VERSION}")
+add_definitions (-DRESIDUE_MAJOR_VERSION="${RESIDUE_MAJOR}")
+add_definitions (-DRESIDUE_MINOR_VERSION="${RESIDUE_MINOR}")
+add_definitions (-DRESIDUE_PATCH_VERSION="${RESIDUE_PATCH}")
 
 if (profiling)
     add_definitions (-DRESIDUE_PROFILING)
@@ -93,6 +96,7 @@ set (SOURCE_FILES
     src/logging/log-rotator.cc
     src/logging/user-log-builder.cc
 
+    src/core/auto-updater.cc
     src/core/json-object.cc
     src/core/token.cc
     src/core/configuration.cc
