@@ -40,6 +40,7 @@ set (CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "${CMAKE_SOURCE_DIR}/cmake")
 include(residue-dev)
 
 include (FindPackageHandleStandardArgs)
+include (FindCURL)
 
 require_cpp11()
 check_apple()
@@ -57,6 +58,16 @@ include_directories (${EASYLOGGINGPP_INCLUDE_DIR})
 set (Ripe_USE_STATIC_LIBS OFF)
 find_package (Ripe REQUIRED)
 include_directories (${RIPE_INCLUDE_DIR})
+
+message ("-- Check for libcurl")
+find_package (CURL)
+if (${CURL_FOUND})
+    add_definitions (-DRESIDUE_HAS_CURL)
+    include_directories (${CURL_INCLUDE_DIRS})
+    message ("-- Curl binary: " ${CURL_LIBRARIES} " version: " ${CURL_VERSION_STRING})
+else()
+    message ("--==> libcurl not found")
+endif()
 
 message ("-- Check for Boost System (static)")
 set (Boost_USE_STATIC_LIBS OFF)
@@ -115,6 +126,7 @@ set (SOURCE_FILES
 set (SHARED_REQUIRED_LIBS
     ${RIPE_LIBRARY}
     ${Boost_LIBRARIES}
+    ${CURL_LIBRARIES}
     ${CMAKE_THREAD_LIBS_INIT}
 )
 
