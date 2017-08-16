@@ -123,6 +123,7 @@ set (SOURCE_FILES
 
     src/utils/tar.cc
     src/utils/utils.cc
+    src/utils/url-utils.cc
 )
 
 set (SHARED_REQUIRED_LIBS
