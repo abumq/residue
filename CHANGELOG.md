@@ -1,16 +1,10 @@
 # Change Log
 
 ## [1.0.0-rc] - 16-08-2017
-### Changes
-- Release candidate with binaries
-
 ### Fixes
 - Attach crash handler opt
 - Fixed up licensing authorities
 - Fixed issue with license with signature not loading properly
-
-### Known Issues
-- No known issues
 
 ## [1.0.0-beta.18] - 15-08-2017
 ### Fixes
