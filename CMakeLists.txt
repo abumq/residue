@@ -7,7 +7,7 @@ option (travis "Travis CI" OFF)
 option (production "Build for production" ON)
 option (debug "Enable debug logging" OFF)
 option (profiling "Turns profiling on for various scenarios" OFF)
-option (use_shared_curl "Use shared libraries for cURL" OFF)
+option (use_shared_curl "Use shared libraries for cURL" ON)
 
 set (RESIDUE_MAJOR "1")
 set (RESIDUE_MINOR "0")
