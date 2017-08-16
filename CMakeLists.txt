@@ -11,7 +11,7 @@ option (use_shared_curl "Use shared libraries for cURL" ON)
 
 set (RESIDUE_MAJOR "1")
 set (RESIDUE_MINOR "0")
-set (RESIDUE_PATCH "0-beta.18")
+set (RESIDUE_PATCH "0-rc")
 set (RESIDUE_VERSION "${RESIDUE_MAJOR}.${RESIDUE_MINOR}.${RESIDUE_PATCH}")
 set (RESIDUE_NAME "Residue")
 
