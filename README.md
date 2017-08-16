@@ -26,49 +26,33 @@
 | `master` | GNU/Linux 4.4 / Ubuntu 4.8.4 64-bit / `g++-7` | [![Build Status](https://travis-matrix-badges.herokuapp.com/repos/muflihun/residue/branches/master/5)](https://travis-ci.org/muflihun/residue) |
 
 # Introduction
-Residue is a real-time remote logging server that is secure, efficient with memory and CPU. It allows application to send log messages in real-time. This new design helps developers find more details on health of their applications. It is very useful in mobile/tablet apps where you cannot store much logs on the device itself.
+Residue is a real-time logging server. It is an effort to standardize application logging using simple API, simple configurations, build-in log rotations, simple way to format your log messages according to need of your application.
 
-Residue logging server is fully configurable and supports high-level security, compression and asyncronous operations for speed and security. It uses [Easylogging++](https://github.com/muflihun/easyloggingpp) under the hood, that itself is a feature-rich library.
+It is fully configurable and supports high-level security, compression and asyncronous operations. It uses [Easylogging++](https://github.com/muflihun/easyloggingpp) under the hood, that itself is a feature-rich library.
 
 # Features
-Residue is feature-rich, highly configurable server that is light on CPU and RAM. Some of the notable features are listed below:
+Some of the notable features are listed below
 
-## Real-time logging
-Real-time logging is a core feature of Residue. You can send log requests in real-time and expect them to be available on the server within few seconds.
-
-## Log Rotation
-Fully configurable log rotation is supported by Residue with custom filenames (using patterns) and rotation frequency
-
-## Bulk Requests
-Bulk requests makes logging requests faster to process and low on network and highly compressable.
-
-## Secure Connections
-Security has been taken in to consideration to prevent unauthorised applications writing logs. This is done using various technologies and techniques, that include:
-
- - Secure connections
- - Access codes to use logger(s)
- - Tokenized authentication
- 
-Residue is fully configurable and various security levels can be enabled/disabled depending on your requirement. See [SECURITY.md](/docs/SECURITY.md) for details
-
-## Compression
-Residue server and client libraries provide ability to compress the network packets which makes a big difference in amount of data transferred over the wire.
-
-## Speed
-Speed cannot be compromised with logging libraries and servers. All the requests are processed in background worker, providing server a lot of space to deal with incoming requests.
-
-In addition to that, we use `single threaded event-driven approach` for new request (as opposed to `multi-threaded non-blocking worker` design) to keep memory low. This is because threads are expensive. This decision was carefully made after immense research and looking at all the requirements.
+ * Lightweight: Residue is very light on CPU and RAM. On start-up it will only take approx 2mb of RAM and while running it will keep the memory as clean as possible using as low CPU as possible.
+ * Asyncronous: Residue has been built with speed in mind right from the beginning. It runs on 10 threads on idle and an extra thread for log rotation task.
+ * *Context switching* is a concept developed as part of asyncronous processing where a *request queue* is different from *processing queue*. Once *processing queue* is emptied (i.e, all the requests are processed from the queue) the *request queue* and *processed queue* is swapped. This swapping is what we call *context switching*.
+ * *Log rotation* has been built in to the server that runs on a separate thread
+ * *Bulk requests* is another concept that makes logging requests process much faster and highly compressible making them low on network.
+ * Security: Residue is not developed with security in mind rather it has been developed with security as a foundation brick. We use various techniques to keep the application secure. This is very important with logging library to prevent unauthorised applications from logging.
+ * Compression: Residue server and official client libraries provide ability to compress the network packets which makes a big difference in amount of data transferred over the wire.
+ * Speed is not compromised in any way and there is a lot of testing being done every day to ensure that logging server meets the speed requirements.
+ * There are many more features available for this new application. Please feel free to download a copy of residue binary and run it.
 
 ## Compatibility And Integration
 No matter what language is your application written in, residue is compatible and can be used as central logging server. All you need is client library. You can either write your own using [CLIENT_DEVELOPMENT.md](/docs/CLIENT_DEVELOPMENT.md) guidelines or use existing one.
 
-If your application is written in C++ you can use [CLIENT_API.md](/docs/CLIENT_API.md) to start integrating. If you're already using Easylogging++ or similar logging library (that supports `LOG` helper macros) in your application, integration can be done in no more than 2 minutes.
+C++: If your application is written in C++ you can use [CLIENT_API.md](/docs/CLIENT_API.md) to start integrating. If you're already using Easylogging++ or similar logging library (that supports `LOG` helper macros) in your application, integration can be done in no more than 2 minutes.
 
-A very massive commercial application that has multiple dependencies and modules and it was using Log4J logging library took us no more than half hour to fully replace existing library with residue java client library.
+Java: A very massive commercial application that has multiple dependencies and modules and it was using Log4J logging library took us no more than half hour to fully replace existing library with [residue java client library](https://github.com/muflihun/residue-java).
 
-We're also actively working on client library for residue in other languages. Please feel free to contribute.
+We're also actively working on client libraries for residue in other languages. Please feel free to contribute.
 
 # License
-Please see [LICENSE.md](/LICENSE.md) for licensing. You are free to share the binaries however the residue server license must obtained from an authorised authority in order to host the server.
+Please see [LICENSE.md](/LICENSE.md) for licensing. You are free to use or share the binaries however the residue server license must obtained from an authorised authority in order to host the server.
 
   [banner]: https://raw.githubusercontent.com/muflihun/residue/master/docs/Residue.png
