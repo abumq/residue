@@ -5,8 +5,8 @@
 //  Copyright © 2017 Muflihun Labs
 //
 
-#ifndef TEST_HELPERS_H_
-#define TEST_HELPERS_H_
+#ifndef TEST_H
+#define TEST_H
 
 #include <vector>
 #include <tuple>
@@ -24,4 +24,4 @@ std::tuple<T...> TestCase(T... f) {
 
 #define PARAM(v) std::get<v>(item)
 
-#endif
+#endif // TEST_H

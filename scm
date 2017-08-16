@@ -48,6 +48,7 @@ function encr {
     CURR_CHECKSUM=`cat $file.chk`
 
     if [ "$FILE_CHECKSUM" != "$CURR_CHECKSUM" ];then
+        echo "Change detected: $file"
         cat $file | $RIPE -e --aes --key $RESIDUE_SRC_KEY > $file.enc
         echo "$FILE_CHECKSUM" > $file.chk
     fi

@@ -7,14 +7,18 @@ option (travis "Travis CI" OFF)
 option (production "Build for production" ON)
 option (debug "Enable debug logging" OFF)
 option (profiling "Turns profiling on for various scenarios" OFF)
+option (use_shared_curl "Use shared libraries for cURL" ON)
 
 set (RESIDUE_MAJOR "1")
 set (RESIDUE_MINOR "0")
-set (RESIDUE_PATCH "0-beta.18")
+set (RESIDUE_PATCH "0-rc")
 set (RESIDUE_VERSION "${RESIDUE_MAJOR}.${RESIDUE_MINOR}.${RESIDUE_PATCH}")
 set (RESIDUE_NAME "Residue")
 
 add_definitions (-DRESIDUE_VERSION="${RESIDUE_VERSION}")
+add_definitions (-DRESIDUE_MAJOR_VERSION="${RESIDUE_MAJOR}")
+add_definitions (-DRESIDUE_MINOR_VERSION="${RESIDUE_MINOR}")
+add_definitions (-DRESIDUE_PATCH_VERSION="${RESIDUE_PATCH}")
 
 if (profiling)
     add_definitions (-DRESIDUE_PROFILING)
@@ -37,11 +41,13 @@ set (CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "${CMAKE_SOURCE_DIR}/cmake")
 include(residue-dev)
 
 include (FindPackageHandleStandardArgs)
+include (FindCURL)
 
 require_cpp11()
 check_apple()
 
 if (travis)
+    add_definitions (-DRESIDUE_ON_CI)
 else()
     list (APPEND CMAKE_CXX_FLAGS "-Wno-deprecated-declarations")
 endif()
@@ -53,6 +59,26 @@ include_directories (${EASYLOGGINGPP_INCLUDE_DIR})
 set (Ripe_USE_STATIC_LIBS OFF)
 find_package (Ripe REQUIRED)
 include_directories (${RIPE_INCLUDE_DIR})
+
+message ("-- Check for libcurl")
+if (use_shared_curl)
+    find_package (CURL)
+else()
+    message ("-- curl is linking statically")
+    add_subdirectory(${CMAKE_SOURCE_DIR}/third-party/curl)
+    set(CURL_DIR ${CMAKE_SOURCE_DIR}/third-party/curl)
+    set(CURL_STATICLIB ON BOOL)
+    set(CURL_LIBRARIES libcurl)
+    set(CURL_INCLUDE_DIRS ${CURL_DIR}/include)
+endif()
+
+if (${CURL_FOUND})
+    add_definitions (-DRESIDUE_HAS_CURL)
+    include_directories (${CURL_INCLUDE_DIRS})
+    message ("-- Curl binary: " ${CURL_LIBRARIES} " version: " ${CURL_VERSION_STRING})
+else()
+    message ("--==> libcurl not found")
+endif()
 
 message ("-- Check for Boost System (static)")
 set (Boost_USE_STATIC_LIBS OFF)
@@ -84,14 +110,15 @@ set (SOURCE_FILES
     src/clients/client.cc
     src/clients/client-integrity-task.cc
 
-    src/licensing/license-manager.cc
     src/licensing/license.cc
     src/licensing/issuing-authority.cc
     src/licensing/license-checker-task.cc
+    src/licensing/license-manager-keys.cc
 
     src/logging/log-rotator.cc
     src/logging/user-log-builder.cc
 
+    src/core/auto-updater.cc
     src/core/json-object.cc
     src/core/token.cc
     src/core/configuration.cc
@@ -110,6 +137,7 @@ set (SOURCE_FILES
 set (SHARED_REQUIRED_LIBS
     ${RIPE_LIBRARY}
     ${Boost_LIBRARIES}
+    ${CURL_LIBRARIES}
     ${CMAKE_THREAD_LIBS_INIT}
 )
 

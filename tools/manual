@@ -1,0 +1,51 @@
+.\" Manpage for residue.
+
+.TH RESIDUE 1 "16 Aug 2017" "1.0.0" "Residue"
+.SH NAME
+residue \- Real-time centralized logging server
+
+.SH SYNOPSIS
+\fBresidue\fR [config file path]
+.TP
+\fBresidue\fR [config file path] [-v]
+.TP
+\fBresidue\fR [config file path] [--v=X]
+.TP
+\fBresidue\fR [config file path] [--force-without-root]
+.TP
+\fBresidue\fR [config file path] [--attach-crash-handler]
+
+.SH DESCRIPTION
+Residue is a real-time remote logging server that is secure, efficient with memory and CPU. It allows application to send log messages in real-time. See https://muflihun.github.io/residue for more details.
+
+.SH OPTIONS
+.TP
+.BI \-v
+Enable verbose logs level 9
+.TP
+.BI \--v=1-9
+Enable verbose logs of specified level
+.TP
+.BI \--force-without-root
+Normally residue requires you to run it as \fIroot\fR. You can use this option to force starting the server without root.
+The reason of this requirement is because residue needs to change file permissions for specified log files to specified users (as per your config file) which needs super-user access.
+.TP
+.BI \--attach-crash-handler
+Attaches crash handler to the server. If it crashes, it will log it (with stack trace) to the internal logging file (as specified in your config) before shutting down.
+
+.SH BUGS
+Bugs are tracked in GitHub Issues: https://github.com/muflihun/residue/issues
+
+.SH AUTHOR
+Muflihun Labs (https://muflihun.github.io/)
+
+.SH COPYRIGHT
+Copyright Muflihun Labs. Residue is available under the Apache 2.0 license.
+.TP
+Please visit https://github.com/muflihun/residue/tree/master#license for more details
+
+.SH RESOURCES AND DOCUMENTATION
+Website: https://muflihun.github.io/residue
+
+Documentation: https://github.com/muflihun/residue/blob/master/docs/
+

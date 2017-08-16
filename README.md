@@ -69,8 +69,6 @@ A very massive commercial application that has multiple dependencies and modules
 We're also actively working on client library for residue in other languages. Please feel free to contribute.
 
 # License
-Copyright (c) 2017 Muflihun Labs
-
-You must obtain a license from authorised person in order to host residue server.
+Please see [LICENSE.md](/LICENSE.md) for licensing. You are free to share the binaries however the residue server license must obtained from an authorised authority in order to host the server.
 
   [banner]: https://raw.githubusercontent.com/muflihun/residue/master/docs/Residue.png
