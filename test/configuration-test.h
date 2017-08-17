@@ -90,8 +90,11 @@ protected:
         LOG(INFO) << "Issued license for testing!";
 
         // keys
+        LOG(INFO) << "generating keypair";
         Ripe::writeRSAKeyPair(kPublicKeyFile, kPrivateKeyFile);
+        LOG(INFO) << "keypair saved";
         // Residue server conf
+        LOG(INFO) << "generating conf";
         fs.open (kConfigurationFile, std::fstream::out);
         fs << std::string(R"(
                           {
@@ -179,6 +182,7 @@ protected:
                           )");
         fs.flush();
         fs.close();
+        LOG(INFO) << "conf saved";
         conf = std::unique_ptr<Configuration>(new Configuration(kConfigurationFile));
         if (!conf->isValid()) {
             std::cout << "ERRORS: " << conf->errors() << std::endl;
