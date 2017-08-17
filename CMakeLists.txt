@@ -17,9 +17,9 @@ set (RESIDUE_VERSION "${RESIDUE_MAJOR}.${RESIDUE_MINOR}.${RESIDUE_PATCH}")
 set (RESIDUE_NAME "Residue")
 
 add_definitions (-DRESIDUE_VERSION="${RESIDUE_VERSION}")
-add_definitions (-DRESIDUE_MAJOR_VERSION="${RESIDUE_MAJOR}")
-add_definitions (-DRESIDUE_MINOR_VERSION="${RESIDUE_MINOR}")
-add_definitions (-DRESIDUE_PATCH_VERSION="${RESIDUE_PATCH}")
+add_definitions (-DRESIDUE_VERSION_MAJOR="${RESIDUE_MAJOR}")
+add_definitions (-DRESIDUE_VERSION_MINOR="${RESIDUE_MINOR}")
+add_definitions (-DRESIDUE_VERSION_PATCH="${RESIDUE_PATCH}")
 
 if (profiling)
     add_definitions (-DRESIDUE_PROFILING)
