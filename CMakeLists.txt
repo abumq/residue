@@ -46,7 +46,7 @@ include (FindCURL)
 require_cpp11()
 check_apple()
 
-list (APPEND CMAKE_CXX_FLAGS " -Wall -Werror -g ")
+list (APPEND CMAKE_CXX_FLAGS " -Wall -Werror -g -O3 ")
 
 if (travis)
     add_definitions (-DRESIDUE_ON_CI)
