@@ -147,7 +147,7 @@ install:
  - cat src/logging/custom-logging.h
  - mkdir build
  - cd build
- - cmake -Dcompile-server=ON -Dtest=ON -Dtravis=ON -DRIPE_INCLUDE_DIR=/usr/include -DRIPE_LIBRARY=/usr/lib/ ..
+ - cmake -Dcompile-server=ON -Dtest=ON -Dtravis=ON -DRIPE_INCLUDE_DIR=/usr/include -DRIPE_LIBRARY=/usr/lib/libripe.so.4.0.0 ..
 
 script: "sudo make VERBOSE=1 && ./residue-unit-tests --gtest_catch_exceptions=0 && ldd ./residue"
 branches:
