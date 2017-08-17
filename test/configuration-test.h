@@ -84,7 +84,10 @@ protected:
         LOG(INFO) << "Issuer: " << l.issuingAuthority()->id();
         fs.open(kLicenseFileForTesting, std::fstream::out);
         fs << l.generateNew("residue-test-case", 24U).toString();
+        fs.flush();
         fs.close();
+
+        LOG(INFO) << "Issued license for testing!";
 
         // keys
         Ripe::writeRSAKeyPair(kPublicKeyFile, kPrivateKeyFile);
