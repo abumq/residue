@@ -136,10 +136,9 @@ install:
 
 ## Set env variable for ripe
  - echo $LD_LIBRARY_PATH
- - export LD_LIBRARY_PATH=/usr/local/lib:$LD_LIBRARY_PATH
+ - export LD_LIBRARY_PATH=/usr/lib:$LD_LIBRARY_PATH
  - export RIPE="sudo LD_LIBRARY_PATH=$LD_LIBRARY_PATH ripe"
  - $RIPE --version
- - ls -l /usr/lib/x86_64-linux-gnu/libstdc++.so.6 
 
 ## Build
  - cd "${TRAVIS_BUILD_DIR}"
@@ -148,7 +147,7 @@ install:
  - cat src/logging/custom-logging.h
  - mkdir build
  - cd build
- - cmake -Dcompile-server=ON -Dtest=ON -Dtravis=ON ..
+ - cmake -Dcompile-server=ON -Dtest=ON -Dtravis=ON -DRIPE_INCLUDE_DIR=/usr/include -DRIPE_LIBRARY=/usr/lib/ ..
 
 script: "sudo make VERBOSE=1 && ./residue-unit-tests --gtest_catch_exceptions=0 && ldd ./residue"
 branches:
