@@ -46,7 +46,7 @@ include (FindCURL)
 require_cpp11()
 check_apple()
 
-list (APPEND CMAKE_CXX_FLAGS " -Wall -Werror -O3 ")
+list (APPEND CMAKE_CXX_FLAGS " -Wall -Werror -O0 ")
 
 if (CMAKE_BUILD_TYPE EQUAL "DEBUG" OR CMAKE_BUILD_TYPE EQUAL "RELWITHDEBINFO")
     message ("-- Exporting debug symbols")
