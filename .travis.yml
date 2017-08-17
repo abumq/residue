@@ -103,36 +103,35 @@ install:
  - sudo make install
 
 ## Crypto++ (We dont need this for residue, we need it for ripe)
- - wget https://raw.githubusercontent.com/muflihun/muflihun.github.io/master/downloads/cryptocpp.tar.gz
- - tar xf cryptocpp.tar.gz
- - cd cryptopp-CRYPTOPP_5_6_5
- - wget https://raw.githubusercontent.com/muflihun/muflihun.github.io/master/downloads/pem_pack.zip
- - unzip pem_pack.zip
- - cmake .
- - make
- - sudo make install
+# - wget https://raw.githubusercontent.com/muflihun/muflihun.github.io/master/downloads/cryptocpp.tar.gz
+# - tar xf cryptocpp.tar.gz
+# - cd cryptopp-CRYPTOPP_5_6_5
+# - wget https://raw.githubusercontent.com/muflihun/muflihun.github.io/master/downloads/pem_pack.zip
+# - unzip pem_pack.zip
+# - cmake .
+# - make
+# - sudo make install
 
 ## Ripe
- - RIPE_VERSION=3.3.0
- - RIPE_VERSION=develop
- - RIPE_VERSION_URL="$RIPE_VERSION"
- - wget -O ripe-code.zip https://github.com/muflihun/ripe/archive/$RIPE_VERSION_URL.zip
- - unzip ripe-code.zip
- - cd ripe-$RIPE_VERSION
- - cmake .
- - make
- - ls -l
- - sudo make install
+ - RIPE_VERSION=4.0.0
+# - RIPE_VERSION_URL="$RIPE_VERSION"
+# - wget -O ripe-code.zip https://github.com/muflihun/ripe/archive/$RIPE_VERSION_URL.zip
+# - unzip ripe-code.zip
+# - cd ripe-$RIPE_VERSION
+# - cmake .
+# - make
+# - ls -l
+# - sudo make install
 
 ## Ripe Binaries
-# - wget -O ripe-bin.tar.gz https://github.com/muflihun/ripe/releases/download/v$RIPE_VERSION/ripe-$RIPE_VERSION-x86_64-linux.tar.gz
-# - tar xfz ripe-bin.tar.gz
-# - cd ripe-$RIPE_VERSION-x86_64-linux
-# - ls -l
-# - sudo cp lib* /usr/local/lib/
-# - sudo cp ripe /usr/local/bin/
-# - wget https://github.com/muflihun/ripe/releases/download/v$RIPE_VERSION/Ripe.h
-# - sudo cp Ripe.h /usr/include/
+ - wget -O ripe-bin.tar.gz https://github.com/muflihun/ripe/releases/download/v$RIPE_VERSION/ripe-$RIPE_VERSION-x86_64-linux.tar.gz
+ - tar xfz ripe-bin.tar.gz
+ - cd ripe-$RIPE_VERSION-x86_64-linux
+ - ls -l
+ - sudo cp lib* /usr/local/lib/
+ - sudo cp ripe* /usr/local/bin/
+ - wget https://github.com/muflihun/ripe/releases/download/v$RIPE_VERSION/Ripe.h
+ - sudo cp Ripe.h /usr/include/
 
 ## Set env variable for ripe
  - echo $LD_LIBRARY_PATH
