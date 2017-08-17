@@ -139,6 +139,7 @@ install:
  - export LD_LIBRARY_PATH=/usr/local/lib:$LD_LIBRARY_PATH
  - export RIPE="sudo LD_LIBRARY_PATH=$LD_LIBRARY_PATH ripe"
  - $RIPE --version
+ - ls -l /usr/lib/x86_64-linux-gnu/libstdc++.so.6 
 
 ## Build
  - cd "${TRAVIS_BUILD_DIR}"
