@@ -147,7 +147,7 @@ install:
  - cd build
  - cmake -Dcompile-server=ON -Dtest=ON -Dtravis=ON ..
 
-script: "sudo make VERBOSE=1 && ./residue-unit-tests"
+script: "sudo make VERBOSE=1 && ./residue-unit-tests --gtest_catch_exceptions=0"
 branches:
   only:
     - master
