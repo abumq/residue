@@ -149,14 +149,16 @@ TEST(UtilsTest, RandomAlphaNumeric)
 
 TEST(UtilsTest, CreatePath)
 {
-    system("rm -rf a_custom_directory");
+    int r = system("rm -rf a_custom_directory");
+    ASSERT_EQ(r, 0);
     ASSERT_FALSE(Utils::fileExists("a_custom_directory/is/a/path"));
     Utils::createPath("a_custom_directory/is/a/path");
     ASSERT_TRUE(Utils::createPath("a_custom_directory/is/a/path"));
     ASSERT_FALSE(Utils::fileExists("a_custom_directory/is/a/path_no"));
     ASSERT_TRUE(Utils::fileExists("a_custom_directory/is/a/path"));
 
-    system("rm -rf a_custom_directory2");
+    int r2 = system("rm -rf a_custom_directory2");
+    ASSERT_EQ(r2, 0);
     ASSERT_FALSE(Utils::fileExists("a_custom_directory2/is/a/path/"));
     Utils::createPath("a_custom_directory2/is/a/path/");
     ASSERT_TRUE(Utils::createPath("a_custom_directory2/is/a/path/"));
