@@ -115,7 +115,8 @@ install:
 ## Ripe
  - RIPE_VERSION=3.3.0
  - RIPE_VERSION=develop
- - wget -O ripe-code.zip https://github.com/muflihun/ripe/archive/v$RIPE_VERSION.zip
+ - RIPE_VERSION_URL="$RIPE_VERSION"
+ - wget -O ripe-code.zip https://github.com/muflihun/ripe/archive/$RIPE_VERSION_URL.zip
  - unzip ripe-code.zip
  - cd ripe-$RIPE_VERSION
  - cmake .
