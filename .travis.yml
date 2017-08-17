@@ -124,11 +124,12 @@ install:
 # - sudo make install
 
 ## Ripe Binaries
- - wget -O ripe-bin.tar.gz https://github.com/muflihun/ripe/releases/download/v4.0.0/ripe-4.0.0-x86_64-linux.tar.gz
- - tar xfz ripe-bin.tar.gz
- - cd ripe-4.0.0-x86_64-linux
+ - wget -O ripe-bin.zip https://github.com/muflihun/ripe/releases/download/v4.0.0/ripe-4.0.0-x86_64-linux.zip
+ - unzip ripe-bin.zip
+# - tar xfz ripe-bin.tar.gz
+# - cd ripe-4.0.0-x86_64-linux
  - ls -l
- - sudo cp lib* /usr/local/lib/
+ - sudo cp libripe* /usr/local/lib/
  - sudo cp ripe* /usr/local/bin/
  - wget https://github.com/muflihun/ripe/releases/download/v4.0.0/Ripe.h
  - sudo cp Ripe.h /usr/include/
