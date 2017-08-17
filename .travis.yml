@@ -129,8 +129,8 @@ install:
 # - tar xfz ripe-bin.tar.gz
 # - cd ripe-4.0.0-x86_64-linux
  - ls -l
- - sudo cp libripe* /usr/local/lib/
- - sudo cp ripe* /usr/local/bin/
+ - sudo cp libripe* /usr/lib/
+ - sudo cp ripe* /usr/bin/
  - wget https://github.com/muflihun/ripe/releases/download/v4.0.0/Ripe.h
  - sudo cp Ripe.h /usr/include/
 
