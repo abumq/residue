@@ -16,8 +16,8 @@
 #include "src/core/configuration.h"
 #include "src/core/registry.h"
 #include "src/logging/user-log-builder.h"
+#include "src/logging/log-request-handler.h"
 #include "src/connect/connection-request.h"
-#include "src/request-handlers/log-request-handler.h"
 
 using namespace residue;
 
