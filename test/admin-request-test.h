@@ -12,7 +12,7 @@
 #include <vector>
 #include "test.h"
 #include "src/utils/utils.h"
-#include "src/request/admin-request.h"
+#include "src/admin/admin-request.h"
 
 using namespace residue;
 

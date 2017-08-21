@@ -7,7 +7,6 @@ option (travis "Travis CI" OFF)
 option (production "Build for production" ON)
 option (debug "Enable debug logging" OFF)
 option (profiling "Turns profiling on for various scenarios" OFF)
-option (use_shared_curl "Use shared libraries for cURL" ON)
 option (disable_curl_support "Build without curl. HTTPS endpoints and auto-update will not work" OFF)
 
 set (RESIDUE_MAJOR "1")
@@ -92,21 +91,18 @@ thread_packages_check()
 include_directories (${CMAKE_SOURCE_DIR})
 
 set (SOURCE_FILES
-    src/request-handlers/request-handler.cc
-    src/request-handlers/connection-request-handler.cc
-    src/request-handlers/admin-request-handler.cc
-    src/request-handlers/token-request-handler.cc
-    src/request-handlers/log-request-handler.cc
 
-    src/request/connection-request.cc
-    src/request/request.cc
-    src/request/admin-request.cc
-    src/request/log-request.cc
-    src/request/token-request.cc
+    src/connect/connection-request.cc
+    src/connect/connection-request-handler.cc
+    src/connect/connection-response.cc
 
-    src/response/connection-response.cc
-    src/response/response.cc
-    src/response/token-response.cc
+    src/tokenization/token-request-handler.cc
+    src/tokenization/token-request.cc
+    src/tokenization/token.cc
+    src/tokenization/token-response.cc
+
+    src/admin/admin-request.cc
+    src/admin/admin-request-handler.cc
 
     src/clients/client.cc
     src/clients/client-integrity-task.cc
@@ -116,12 +112,16 @@ set (SOURCE_FILES
     src/licensing/license-checker-task.cc
     src/licensing/license-manager-keys.cc
 
+    src/logging/log-request-handler.cc
+    src/logging/log-request.cc
     src/logging/log-rotator.cc
     src/logging/user-log-builder.cc
 
+    src/core/request.cc
+    src/core/request-handler.cc
+    src/core/response.cc
     src/core/auto-updater.cc
     src/core/json-object.cc
-    src/core/token.cc
     src/core/configuration.cc
     src/core/command-handler.cc
     src/core/task.cc
@@ -130,10 +130,10 @@ set (SOURCE_FILES
     src/net/server.cc
     src/net/session.cc
     src/net/url.cc
+    src/net/http-client.cc
 
     src/utils/tar.cc
     src/utils/utils.cc
-    src/utils/url-utils.cc
 )
 
 set (SHARED_REQUIRED_LIBS
