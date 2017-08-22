@@ -46,7 +46,7 @@ include (FindCURL)
 require_cpp11()
 check_apple()
 
-list (APPEND CMAKE_CXX_FLAGS " -Wall -Werror -Wno-unknown-warning-option -Wno-pessimizing-move ")
+list (APPEND CMAKE_CXX_FLAGS " -Wall -Wextra -pedantic -pedantic-errors -Werror -Wfatal-errors -Wundef -Wunused -Wno-unknown-warning-option -Wno-pessimizing-move ")
 
 if (CMAKE_BUILD_TYPE EQUAL "DEBUG" OR CMAKE_BUILD_TYPE EQUAL "RELWITHDEBINFO")
     message ("-- Exporting debug symbols")
