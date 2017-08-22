@@ -50,21 +50,6 @@ TEST(UtilsTest, FileExists)
     ASSERT_FALSE(Utils::fileExists(kUtilsTestFile));
 }
 
-TEST(UtilsTest, IsSymmetricDataFormat)
-{
-    static TestData<std::string, bool> Data = {
-        TestCase("da024686f7f2da49da6c98253b42fe1c:erezutlgudgbtwza:i3eclcagfnUbK1B==", true),
-        TestCase("da024686f7f2da49da6c98253b42fe1c:i3eclcagfnUbK1B==", true),
-        TestCase("erezutlgudgbtwza:i3eclcagfnUbK1B==", false),
-        TestCase("i3eclcagfnUbK1B==", false),
-    };
-    for (const auto& item : Data) {
-        auto first = PARAM(0);
-        auto second = PARAM(1);
-        ASSERT_EQ(Utils::isRipeDataFormat(first), second);
-    }
-}
-
 TEST(UtilsTest, IsJSON)
 {
     static TestData<std::string, bool> Data = {
