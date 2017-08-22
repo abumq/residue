@@ -127,6 +127,11 @@ set (SOURCE_FILES
     src/core/task.cc
     src/core/registry.cc
 
+    src/crypto/rsa.cc
+    src/crypto/aes.cc
+    src/crypto/base64.cc
+    src/crypto/base16.cc
+
     src/net/server.cc
     src/net/session.cc
     src/net/url.cc
