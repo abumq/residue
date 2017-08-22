@@ -38,21 +38,6 @@ TEST(UtilsTest, BytesToHumanReadable)
     ASSERT_EQ(Utils::bytesToHumanReadable(static_cast<long>(1024.0f * 40000000.0f)), "38.1GB");
 }
 
-TEST(UtilsTest, GenerateRandomKey)
-{
-    std::string s = Utils::generateRandomKey(32);
-    ASSERT_EQ(32 * 2 /* hex */, s.size());
-    LOG(INFO) << "Generated key: " << s;
-
-    s = Utils::generateRandomKey(16);
-    ASSERT_EQ(16 * 2 /* hex */, s.size());
-    LOG(INFO) << "Generated key: " << s;
-
-    s = Utils::generateRandomKey(24);
-    ASSERT_EQ(24 * 2 /* hex */, s.size());
-    LOG(INFO) << "Generated key: " << s;
-}
-
 TEST(UtilsTest, FileExists)
 {
     std::fstream fs;

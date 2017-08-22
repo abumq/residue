@@ -264,6 +264,7 @@ if (test)
 
     target_compile_definitions (residue-unit-tests PUBLIC
         ELPP_FEATURE_ALL
+        ELPP_STL_LOGGING
         ELPP_DEFAULT_LOG_FILE="/tmp/logs/residue_unit_tests.log"
         ELPP_DEFAULT_LOGGING_FLAGS=4096
     )

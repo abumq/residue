@@ -91,7 +91,7 @@ protected:
 
         // keys
         LOG(INFO) << "generating keypair";
-        Ripe::writeRSAKeyPair(kPublicKeyFile, kPrivateKeyFile);
+        RSA::generateKeyAndSave(kPublicKeyFile, kPrivateKeyFile);
         LOG(INFO) << "keypair saved";
         // Residue server conf
         LOG(INFO) << "generating conf";
