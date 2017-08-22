@@ -131,6 +131,7 @@ set (SOURCE_FILES
     src/crypto/aes.cc
     src/crypto/base64.cc
     src/crypto/base16.cc
+    src/crypto/zlib.cc
 
     src/net/server.cc
     src/net/session.cc

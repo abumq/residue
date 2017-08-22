@@ -12,6 +12,8 @@
 #include <algorithm>
 #include "test.h"
 #include "src/crypto/aes.h"
+#include "src/crypto/base64.h"
+#include "src/crypto/zlib.h"
 
 using namespace residue;
 
@@ -41,6 +43,18 @@ TEST(CryptoTest_AES, GenerateRandomKey)
     testBySize(256);
     testBySize(192);
     testBySize(128);
+}
+
+TEST(CryptoTest_ZLib, CompressionDecompression)
+{
+
+    std::string text = "this is test data";
+    LOG(INFO) << "Compressing " << text.size() << " bytes";
+    std::string out = ZLib::compress(text);
+    LOG(INFO) << "Result: " << out.size() << " bytes";
+    std::string decompressed = ZLib::decompress(text);
+    LOG(INFO) << "Recovered " << decompressed.size() << " bytes";
+    ASSERT_STREQ(text.c_str(), decompressed.c_str());
 }
 
 
