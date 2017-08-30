@@ -46,7 +46,7 @@ include (FindCURL)
 require_cpp11()
 check_apple()
 
-list (APPEND CMAKE_CXX_FLAGS " -Wall -Wextra -pedantic -pedantic-errors -Werror -Wfatal-errors -Wundef -Wunused -Wno-unknown-warning-option -Wno-pessimizing-move ")
+list (APPEND CMAKE_CXX_FLAGS " -Wall -Wextra -pedantic -pedantic-errors -Werror -Wfatal-errors -Wundef -Wunused -Wno-unknown-warning-option -Wno-pessimizing-move -O2 ")
 
 if (CMAKE_BUILD_TYPE EQUAL "DEBUG" OR CMAKE_BUILD_TYPE EQUAL "RELWITHDEBINFO")
     message ("-- Exporting debug symbols")
@@ -79,6 +79,11 @@ else()
         message ("--==> libcurl not found")
     endif()
 endif()
+
+find_package(ZLIB REQUIRED)
+if (ZLIB_FOUND)
+    include_directories(${ZLIB_INCLUDE_DIRS})
+endif(ZLIB_FOUND)
 
 message ("-- Check for Boost System (static)")
 set (Boost_USE_STATIC_LIBS ON)
@@ -140,6 +145,8 @@ set (SOURCE_FILES
 
     src/utils/tar.cc
     src/utils/utils.cc
+
+    /usr/local/include/mine.cc
 )
 
 set (SHARED_REQUIRED_LIBS
@@ -147,6 +154,7 @@ set (SHARED_REQUIRED_LIBS
     ${Boost_LIBRARIES}
     ${CURL_LIBRARIES}
     ${CMAKE_THREAD_LIBS_INIT}
+    ${ZLIB_LIBRARIES}
 )
 
 ############# RESIDUE CORE LIB (STATIC) ###############
