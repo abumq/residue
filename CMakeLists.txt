@@ -268,6 +268,7 @@ if (test)
     enable_testing()
 
     add_executable (residue-unit-tests
+        /usr/local/include/mine.cc
         test/main.cc
         ${EASYLOGGINGPP_INCLUDE_DIR}/easylogging++.cc
     )
