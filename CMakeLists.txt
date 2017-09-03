@@ -95,7 +95,10 @@ thread_packages_check()
 
 include_directories (${CMAKE_SOURCE_DIR})
 
+
 set (SOURCE_FILES
+
+    /usr/local/include/mine.cc
 
     src/connect/connection-request.cc
     src/connect/connection-request-handler.cc
@@ -145,8 +148,6 @@ set (SOURCE_FILES
 
     src/utils/tar.cc
     src/utils/utils.cc
-
-    /usr/local/include/mine.cc
 )
 
 set (SHARED_REQUIRED_LIBS

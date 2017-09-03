@@ -102,6 +102,14 @@ install:
  - make
  - sudo make install
 
+## Mine
+ - wget https://github.com/muflihun/mine/archive/develop.zip
+ - unzip develop.zip
+ - cd mine-develop
+ - cmake .
+ - make
+ - sudo make install
+
 ## Crypto++ (We dont need this for residue, we need it for ripe)
 # - wget https://raw.githubusercontent.com/muflihun/muflihun.github.io/master/downloads/cryptocpp.tar.gz
 # - tar xf cryptocpp.tar.gz
