@@ -116,7 +116,7 @@ install:
  - wget https://github.com/muflihun/mine/archive/develop.zip
  - unzip develop.zip
  - cd mine-develop
- - cmake .
+ - cmake -Dtest_main_header=ON -Dtest_wstring_conversions=OFF .
  - make
  - sudo make install
 
