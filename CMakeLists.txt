@@ -91,6 +91,12 @@ find_package (Boost REQUIRED COMPONENTS system)
 include_directories (${Boost_INCLUDE_DIR})
 message ("-- Boost binary: " ${Boost_LIBRARIES})
 
+# Check for cryptopp (static)
+set(CryptoPP_USE_STATIC_LIBS ON)
+find_package(CryptoPP REQUIRED)
+message ("-- Crypto++ binary: " ${CRYPTOPP_LIBRARY})
+include_directories (${CRYPTOPP_INCLUDE_DIRS})
+
 thread_packages_check()
 
 include_directories (${CMAKE_SOURCE_DIR})
@@ -156,6 +162,7 @@ set (SHARED_REQUIRED_LIBS
     ${CURL_LIBRARIES}
     ${CMAKE_THREAD_LIBS_INIT}
     ${ZLIB_LIBRARIES}
+    ${CRYPTOPP_LIBRARIES}
 )
 
 ############# RESIDUE CORE LIB (STATIC) ###############
