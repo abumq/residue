@@ -1,6 +1,6 @@
 # Change Log
 
-## [Unreleased]
+## [1.0.0-rc.2] - 05-09-2017
 ### Internals
 - A lot of refactoring and wrapper for cryptography
 
