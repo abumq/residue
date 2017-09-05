@@ -4,9 +4,10 @@ project (Residue)
 
 option (test "Build all tests" OFF)
 option (travis "Travis CI" OFF)
-option (production "Build for production" ON)
+option (production "Build for production" OFF)
 option (debug "Enable debug logging" OFF)
 option (profiling "Turns profiling on for various scenarios" OFF)
+option (use_mine "Use mine when possible for crypto instead of ripe" ON)
 option (disable_curl_support "Build without curl. HTTPS endpoints and auto-update will not work" OFF)
 
 set (RESIDUE_MAJOR "1")
@@ -19,6 +20,10 @@ add_definitions (-DRESIDUE_VERSION="${RESIDUE_VERSION}")
 add_definitions (-DRESIDUE_VERSION_MAJOR="${RESIDUE_MAJOR}")
 add_definitions (-DRESIDUE_VERSION_MINOR="${RESIDUE_MINOR}")
 add_definitions (-DRESIDUE_VERSION_PATCH="${RESIDUE_PATCH}")
+
+if (use_mine)
+    add_definitions (-DRESIDUE_USE_MINE)
+endif()
 
 if (profiling)
     add_definitions (-DRESIDUE_PROFILING)
