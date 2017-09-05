@@ -65,6 +65,10 @@ message ("-- Check for Easylogging++")
 find_package (EASYLOGGINGPP REQUIRED)
 include_directories (${EASYLOGGINGPP_INCLUDE_DIR})
 
+message ("-- Check for Mine")
+find_package (MineCrypto REQUIRED)
+include_directories (${MINE_CRYPTO_INCLUDE_DIR})
+
 set (Ripe_USE_STATIC_LIBS OFF)
 find_package (Ripe REQUIRED)
 include_directories (${RIPE_INCLUDE_DIR})
@@ -109,7 +113,7 @@ include_directories (${CMAKE_SOURCE_DIR})
 
 set (SOURCE_FILES
 
-    /usr/local/include/mine.cc
+    ${MINE_CRYPTO_INCLUDE_DIR}/mine.cc
 
     src/connect/connection-request.cc
     src/connect/connection-request-handler.cc
@@ -280,7 +284,7 @@ if (test)
     enable_testing()
 
     add_executable (residue-unit-tests
-        /usr/local/include/mine.cc
+        ${MINE_CRYPTO_INCLUDE_DIR}/mine.cc
         test/main.cc
         ${EASYLOGGINGPP_INCLUDE_DIR}/easylogging++.cc
     )
