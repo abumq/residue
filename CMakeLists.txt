@@ -12,7 +12,7 @@ option (disable_curl_support "Build without curl. HTTPS endpoints and auto-updat
 
 set (RESIDUE_MAJOR "1")
 set (RESIDUE_MINOR "0")
-set (RESIDUE_PATCH "0-rc")
+set (RESIDUE_PATCH "0-rc.2")
 set (RESIDUE_VERSION "${RESIDUE_MAJOR}.${RESIDUE_MINOR}.${RESIDUE_PATCH}")
 set (RESIDUE_NAME "Residue")
 
