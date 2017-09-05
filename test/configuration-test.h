@@ -11,13 +11,14 @@
 #include <cstdio>
 #include <fstream>
 #include <memory>
+#include <Ripe.h>
 #include "test.h"
 #include "test/license-manager-for-test.h"
 #include "src/core/configuration.h"
 #include "src/core/registry.h"
 #include "src/logging/user-log-builder.h"
-#include "src/request/connection-request.h"
-#include "src/request-handlers/log-request-handler.h"
+#include "src/logging/log-request-handler.h"
+#include "src/connect/connection-request.h"
 
 using namespace residue;
 
@@ -84,11 +85,17 @@ protected:
         LOG(INFO) << "Issuer: " << l.issuingAuthority()->id();
         fs.open(kLicenseFileForTesting, std::fstream::out);
         fs << l.generateNew("residue-test-case", 24U).toString();
+        fs.flush();
         fs.close();
 
+        LOG(INFO) << "Issued license for testing!";
+
         // keys
+        LOG(INFO) << "generating keypair";
         Ripe::writeRSAKeyPair(kPublicKeyFile, kPrivateKeyFile);
+        LOG(INFO) << "keypair saved";
         // Residue server conf
+        LOG(INFO) << "generating conf";
         fs.open (kConfigurationFile, std::fstream::out);
         fs << std::string(R"(
                           {
@@ -176,6 +183,7 @@ protected:
                           )");
         fs.flush();
         fs.close();
+        LOG(INFO) << "conf saved";
         conf = std::unique_ptr<Configuration>(new Configuration(kConfigurationFile));
         if (!conf->isValid()) {
             std::cout << "ERRORS: " << conf->errors() << std::endl;

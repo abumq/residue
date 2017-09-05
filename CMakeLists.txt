@@ -4,21 +4,26 @@ project (Residue)
 
 option (test "Build all tests" OFF)
 option (travis "Travis CI" OFF)
-option (production "Build for production" ON)
+option (production "Build for production" OFF)
 option (debug "Enable debug logging" OFF)
 option (profiling "Turns profiling on for various scenarios" OFF)
-option (use_shared_curl "Use shared libraries for cURL" ON)
+option (use_mine "Use mine when possible for crypto instead of ripe" ON)
+option (disable_curl_support "Build without curl. HTTPS endpoints and auto-update will not work" OFF)
 
 set (RESIDUE_MAJOR "1")
 set (RESIDUE_MINOR "0")
-set (RESIDUE_PATCH "0-rc")
+set (RESIDUE_PATCH "0-rc.2")
 set (RESIDUE_VERSION "${RESIDUE_MAJOR}.${RESIDUE_MINOR}.${RESIDUE_PATCH}")
 set (RESIDUE_NAME "Residue")
 
 add_definitions (-DRESIDUE_VERSION="${RESIDUE_VERSION}")
-add_definitions (-DRESIDUE_MAJOR_VERSION="${RESIDUE_MAJOR}")
-add_definitions (-DRESIDUE_MINOR_VERSION="${RESIDUE_MINOR}")
-add_definitions (-DRESIDUE_PATCH_VERSION="${RESIDUE_PATCH}")
+add_definitions (-DRESIDUE_VERSION_MAJOR="${RESIDUE_MAJOR}")
+add_definitions (-DRESIDUE_VERSION_MINOR="${RESIDUE_MINOR}")
+add_definitions (-DRESIDUE_VERSION_PATCH="${RESIDUE_PATCH}")
+
+if (use_mine)
+    add_definitions (-DRESIDUE_USE_MINE)
+endif()
 
 if (profiling)
     add_definitions (-DRESIDUE_PROFILING)
@@ -46,30 +51,48 @@ include (FindCURL)
 require_cpp11()
 check_apple()
 
+list (APPEND CMAKE_CXX_FLAGS " -Wall -Wextra -pedantic -pedantic-errors -Werror -Wfatal-errors -Wundef -Wunused -Wno-unknown-warning-option -Wno-pessimizing-move -O3 ")
+
+if (CMAKE_BUILD_TYPE EQUAL "DEBUG" OR CMAKE_BUILD_TYPE EQUAL "RELWITHDEBINFO")
+    message ("-- Exporting debug symbols")
+endif()
+
 if (travis)
     add_definitions (-DRESIDUE_ON_CI)
-else()
-    list (APPEND CMAKE_CXX_FLAGS "-Wno-deprecated-declarations")
 endif()
 
 message ("-- Check for Easylogging++")
 find_package (EASYLOGGINGPP REQUIRED)
 include_directories (${EASYLOGGINGPP_INCLUDE_DIR})
 
+message ("-- Check for Mine")
+find_package (MineCrypto REQUIRED)
+include_directories (${MINE_CRYPTO_INCLUDE_DIR})
+
 set (Ripe_USE_STATIC_LIBS OFF)
 find_package (Ripe REQUIRED)
 include_directories (${RIPE_INCLUDE_DIR})
 
-message ("-- Check for libcurl")
-find_package (CURL REQUIRED)
-
-if (${CURL_FOUND})
-    add_definitions (-DRESIDUE_HAS_CURL)
-    include_directories (${CURL_INCLUDE_DIRS})
-    message ("-- Curl binary: " ${CURL_LIBRARIES} " version: " ${CURL_VERSION_STRING})
+if (!disable_curl_support)
+    set (CURL_LIBRARIES "")
+    message ("--==> libcurl is disabled")
 else()
-    message ("--==> libcurl not found")
+    message ("-- Check for libcurl")
+    find_package (CURL REQUIRED)
+
+    if (${CURL_FOUND})
+        add_definitions (-DRESIDUE_HAS_CURL)
+        include_directories (${CURL_INCLUDE_DIRS})
+        message ("-- Curl binary: " ${CURL_LIBRARIES} " version: " ${CURL_VERSION_STRING})
+    else()
+        message ("--==> libcurl not found")
+    endif()
 endif()
+
+find_package(ZLIB REQUIRED)
+if (ZLIB_FOUND)
+    include_directories(${ZLIB_INCLUDE_DIRS})
+endif(ZLIB_FOUND)
 
 message ("-- Check for Boost System (static)")
 set (Boost_USE_STATIC_LIBS ON)
@@ -77,26 +100,32 @@ find_package (Boost REQUIRED COMPONENTS system)
 include_directories (${Boost_INCLUDE_DIR})
 message ("-- Boost binary: " ${Boost_LIBRARIES})
 
+# Check for cryptopp (static)
+set(CryptoPP_USE_STATIC_LIBS ON)
+find_package(CryptoPP REQUIRED)
+message ("-- Crypto++ binary: " ${CRYPTOPP_LIBRARY})
+include_directories (${CRYPTOPP_INCLUDE_DIRS})
+
 thread_packages_check()
 
 include_directories (${CMAKE_SOURCE_DIR})
 
+
 set (SOURCE_FILES
-    src/request-handlers/request-handler.cc
-    src/request-handlers/connection-request-handler.cc
-    src/request-handlers/admin-request-handler.cc
-    src/request-handlers/token-request-handler.cc
-    src/request-handlers/log-request-handler.cc
 
-    src/request/connection-request.cc
-    src/request/request.cc
-    src/request/admin-request.cc
-    src/request/log-request.cc
-    src/request/token-request.cc
+    ${MINE_CRYPTO_INCLUDE_DIR}/mine.cc
 
-    src/response/connection-response.cc
-    src/response/response.cc
-    src/response/token-response.cc
+    src/connect/connection-request.cc
+    src/connect/connection-request-handler.cc
+    src/connect/connection-response.cc
+
+    src/tokenization/token-request-handler.cc
+    src/tokenization/token-request.cc
+    src/tokenization/token.cc
+    src/tokenization/token-response.cc
+
+    src/admin/admin-request.cc
+    src/admin/admin-request-handler.cc
 
     src/clients/client.cc
     src/clients/client-integrity-task.cc
@@ -106,20 +135,31 @@ set (SOURCE_FILES
     src/licensing/license-checker-task.cc
     src/licensing/license-manager-keys.cc
 
+    src/logging/log-request-handler.cc
+    src/logging/log-request.cc
     src/logging/log-rotator.cc
     src/logging/user-log-builder.cc
 
+    src/core/request.cc
+    src/core/request-handler.cc
+    src/core/response.cc
     src/core/auto-updater.cc
     src/core/json-object.cc
-    src/core/token.cc
     src/core/configuration.cc
     src/core/command-handler.cc
     src/core/task.cc
     src/core/registry.cc
 
+    src/crypto/rsa.cc
+    src/crypto/aes.cc
+    src/crypto/base64.cc
+    src/crypto/base16.cc
+    src/crypto/zlib.cc
+
     src/net/server.cc
     src/net/session.cc
     src/net/url.cc
+    src/net/http-client.cc
 
     src/utils/tar.cc
     src/utils/utils.cc
@@ -130,6 +170,8 @@ set (SHARED_REQUIRED_LIBS
     ${Boost_LIBRARIES}
     ${CURL_LIBRARIES}
     ${CMAKE_THREAD_LIBS_INIT}
+    ${ZLIB_LIBRARIES}
+    ${CRYPTOPP_LIBRARIES}
 )
 
 ############# RESIDUE CORE LIB (STATIC) ###############
@@ -242,12 +284,14 @@ if (test)
     enable_testing()
 
     add_executable (residue-unit-tests
+        ${MINE_CRYPTO_INCLUDE_DIR}/mine.cc
         test/main.cc
         ${EASYLOGGINGPP_INCLUDE_DIR}/easylogging++.cc
     )
 
     target_compile_definitions (residue-unit-tests PUBLIC
         ELPP_FEATURE_ALL
+        ELPP_STL_LOGGING
         ELPP_DEFAULT_LOG_FILE="/tmp/logs/residue_unit_tests.log"
         ELPP_DEFAULT_LOGGING_FLAGS=4096
     )

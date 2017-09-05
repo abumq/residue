@@ -38,21 +38,6 @@ TEST(UtilsTest, BytesToHumanReadable)
     ASSERT_EQ(Utils::bytesToHumanReadable(static_cast<long>(1024.0f * 40000000.0f)), "38.1GB");
 }
 
-TEST(UtilsTest, GenerateRandomKey)
-{
-    std::string s = Utils::generateRandomKey(32);
-    ASSERT_EQ(32 * 2 /* hex */, s.size());
-    LOG(INFO) << "Generated key: " << s;
-
-    s = Utils::generateRandomKey(16);
-    ASSERT_EQ(16 * 2 /* hex */, s.size());
-    LOG(INFO) << "Generated key: " << s;
-
-    s = Utils::generateRandomKey(24);
-    ASSERT_EQ(24 * 2 /* hex */, s.size());
-    LOG(INFO) << "Generated key: " << s;
-}
-
 TEST(UtilsTest, FileExists)
 {
     std::fstream fs;
@@ -63,21 +48,6 @@ TEST(UtilsTest, FileExists)
     ASSERT_TRUE(Utils::fileExists(kUtilsTestFile));
     remove(kUtilsTestFile);
     ASSERT_FALSE(Utils::fileExists(kUtilsTestFile));
-}
-
-TEST(UtilsTest, IsSymmetricDataFormat)
-{
-    static TestData<std::string, bool> Data = {
-        TestCase("da024686f7f2da49da6c98253b42fe1c:erezutlgudgbtwza:i3eclcagfnUbK1B==", true),
-        TestCase("da024686f7f2da49da6c98253b42fe1c:i3eclcagfnUbK1B==", true),
-        TestCase("erezutlgudgbtwza:i3eclcagfnUbK1B==", false),
-        TestCase("i3eclcagfnUbK1B==", false),
-    };
-    for (const auto& item : Data) {
-        auto first = PARAM(0);
-        auto second = PARAM(1);
-        ASSERT_EQ(Utils::isRipeDataFormat(first), second);
-    }
 }
 
 TEST(UtilsTest, IsJSON)
@@ -149,14 +119,16 @@ TEST(UtilsTest, RandomAlphaNumeric)
 
 TEST(UtilsTest, CreatePath)
 {
-    system("rm -rf a_custom_directory");
+    int r = system("rm -rf a_custom_directory");
+    ASSERT_EQ(r, 0);
     ASSERT_FALSE(Utils::fileExists("a_custom_directory/is/a/path"));
     Utils::createPath("a_custom_directory/is/a/path");
     ASSERT_TRUE(Utils::createPath("a_custom_directory/is/a/path"));
     ASSERT_FALSE(Utils::fileExists("a_custom_directory/is/a/path_no"));
     ASSERT_TRUE(Utils::fileExists("a_custom_directory/is/a/path"));
 
-    system("rm -rf a_custom_directory2");
+    int r2 = system("rm -rf a_custom_directory2");
+    ASSERT_EQ(r2, 0);
     ASSERT_FALSE(Utils::fileExists("a_custom_directory2/is/a/path/"));
     Utils::createPath("a_custom_directory2/is/a/path/");
     ASSERT_TRUE(Utils::createPath("a_custom_directory2/is/a/path/"));

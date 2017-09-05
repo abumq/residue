@@ -1,5 +1,9 @@
 # Change Log
 
+## [1.0.0-rc.2] - 05-09-2017
+### Internals
+- A lot of refactoring and wrapper for cryptography
+
 ## [1.0.0-rc] - 16-08-2017
 ### Fixes
 - Attach crash handler opt

@@ -5,10 +5,13 @@ This document shows you steps to install residue server on your machine. You can
 
 # Dependencies
   * C++11 (or higher)
-  * [Ripe](https://github.com/muflihun/ripe) v3.3.0
-  * Boost v1.59 or higher [Components: system]
+  * [Ripe](https://github.com/muflihun/ripe)\* v3.3.0
+  * [Mine](https://github.com/muflihun/mine) v1.0.0
+  * Boost v1.59 or higher [Components: [asio](http://www.boost.org/doc/libs/master/doc/html/boost_asio.html)]
   * [Easylogging++](https://github.com/muflihun/easyloggingpp) v9.95.0
   * [CMake Toolchains](https://cmake.org/) v2.8.12
+  
+\* We're working to remove this dependency
  
 # Get Code
 You can either [download code from master branch](https://github.com/muflihun/residue/archive/master.zip) or clone it using `git`:
@@ -18,7 +21,7 @@ git clone git@github.com:muflihun/residue.git
 ```
 
 # Build
-Residue uses the CMake toolchains to create makefiles.
+Residue uses the CMake toolchains to generate makefiles.
 Steps to build Residue:
 
 ```
@@ -36,8 +39,10 @@ You can define following options in CMake (using `-D<option>=ON`)
 | `debug`      | Turn on debug logging           |
 | `production` | Compile for production use      |
 | `profiling`  | Turn on profiling information for making server faster (goes together with `debug`) |
+| `disable_curl_support` | Do not use libcurl. If you turn it off querying https will not be possible |
+| `use_mine` | Use [minimal encryption library](https://github.com/muflihun/mine) whereever possible (instead of ripe) |
 
-Please consider running unit test before you move on.
+Please consider running unit tests before you move on.
 
 ```
 make test
@@ -59,7 +64,10 @@ cmake .. -DCMAKE_INSTALL_PREFIX=/usr/bin
 Make sure you have all the dependencies installed. You can use following script to install it all and then go back to [Build](#build) section (tested on Ubuntu 16.04 64-bit)
 
 ```
+## Boost System and ASIO
 sudo apt-get install -y libboost-system-dev cmake
+
+## Google Testing Library
 wget -O gtest.tar.gz https://github.com/google/googletest/archive/release-1.7.0.tar.gz
 tar xf gtest.tar.gz
 cd googletest-release-1.7.0
@@ -68,13 +76,25 @@ make
 sudo cp -a include/gtest /usr/include
 sudo cp -a libgtest_main.so libgtest.so /usr/lib/
 cd ..
+
+## Easylogging++
 wget -O elpp-master.zip https://github.com/muflihun/easyloggingpp/archive/master.zip
 unzip elpp-master.zip
 cd easyloggingpp-master
 cmake .
 make
 sudo make install
-wget -O ripe-bin.tar.gz https://github.com/muflihun/ripe/releases/download/v3.3.0/ripe-3.3.0-x86_64-linux.tar.gz
+
+## Mine
+wget -O mine-master.zip https://github.com/muflihun/mine/archive/master.zip
+unzip mine-master.zip
+cd mine-master
+cmake .
+make
+sudo make install
+
+## Ripe
+wget -O ripe-bin.tar.gz https://github.com/muflihun/ripe/releases/download/v4.0.0/ripe-4.0.0-x86_64-linux.tar.gz
 tar xfz ripe-bin.tar.gz
 cd ripe-3.3.0-x86_64-linux
 sudo cp libripe.* /usr/lib/
@@ -96,7 +116,7 @@ This happens when static library (`libboost_system` in our case) is linked again
 # Run as `root`
 You will need to run residue as root user. This is because residue needs to change the ownership of the files to the relevant users and yet need to write to those files.
 
-There is no other way super-user access is used.
+If you are just need to test the residue before you run it in production (in production you should always run it as root) you can use `--force-without-root` command-line argument.
 
 # What's Next?
 You can run demo to see how residue works. Please refer to [DEMO.md](/docs/DEMO.md) documentation

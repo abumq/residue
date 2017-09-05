@@ -23,8 +23,10 @@
 #define RV_NOTICE 2
 #define RV_INFO 1
 
+#define RESIDUE_UNUSED(x) (void)x
+
 #ifdef RESIDUE_PROFILING
-#define RESIDUE_PROFILE_START(id) std::chrono::high_resolution_clock::time_point id##1 = std::chrono::high_resolution_clock::now();
+#define RESIDUE_PROFILE_START(id) std::chrono::high_resolution_clock::time_point id##1 = std::chrono::high_resolution_clock::now(); RESIDUE_UNUSED(id##1)
 #define RESIDUE_PROFILE_END(id, result) std::chrono::high_resolution_clock::time_point id##2 = std::chrono::high_resolution_clock::now();\
     result = std::chrono::duration_cast<std::chrono::milliseconds>( id##2 - id##1 ).count();
 #define RESIDUE_PROFILE_CHECKPOINT(id, result, idx) std::chrono::high_resolution_clock::time_point id##3##idx = std::chrono::high_resolution_clock::now();\
