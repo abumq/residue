@@ -41,7 +41,7 @@ int main(int argc, char* argv[])
     std::string licensee;
     std::string secret;
     std::string authority = "default";
-    unsigned int period;
+    unsigned int period = 0U;
     bool issue = false;
     bool validate = false;
 
