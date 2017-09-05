@@ -11,6 +11,7 @@
 #include <cstdio>
 #include <fstream>
 #include <memory>
+#include <Ripe.h>
 #include "test.h"
 #include "test/license-manager-for-test.h"
 #include "src/core/configuration.h"
@@ -91,7 +92,7 @@ protected:
 
         // keys
         LOG(INFO) << "generating keypair";
-        RSA::generateKeyAndSave(kPublicKeyFile, kPrivateKeyFile);
+        Ripe::writeRSAKeyPair(kPublicKeyFile, kPrivateKeyFile);
         LOG(INFO) << "keypair saved";
         // Residue server conf
         LOG(INFO) << "generating conf";
