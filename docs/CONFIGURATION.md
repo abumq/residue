@@ -1,6 +1,6 @@
 ﷽
 
-## Configuration
+# Configuration
 This document gives you details on configuring residue
 
 Residue is fully configurable to support various features and for security. Configuration is always in [JSON](http://json.org/) format.
