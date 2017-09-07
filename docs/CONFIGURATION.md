@@ -1,4 +1,6 @@
-﷽
+<p align="center">
+   ﷽
+</p>
 
 # Configuration
 This document gives you details on configuring residue
