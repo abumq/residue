@@ -1,4 +1,6 @@
-﷽
+<p align="center">
+   ﷽
+</p>
 
 # Client Development
 This document show you steps required in order to write a new client library for residue server.
