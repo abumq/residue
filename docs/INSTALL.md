@@ -1,4 +1,6 @@
-﷽
+<p align="center">
+   ﷽
+</p>
 
 # Installation
 This document shows you steps to install residue server on your machine. You can install it for development or for production use.
