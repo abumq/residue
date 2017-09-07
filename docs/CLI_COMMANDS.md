@@ -1,4 +1,6 @@
-﷽
+<p align="center">
+   ﷽
+</p>
 
 # CLI Commands
 When residue server starts it can accept some commands from command-line interface. This document lists these commands.
