@@ -1,4 +1,6 @@
-﷽
+<p align="center">
+   ﷽
+</p>
 
 # Client API
 Residue comes with official C++ client library for users to use in their C++ applications. You can easily integrate residue in to your existing C++ application with literally 3 changes.
