@@ -1,4 +1,6 @@
-﷽
+<p align="center">
+   ﷽
+</p>
 
 # Protocol
 This document explains the residue protocol.
