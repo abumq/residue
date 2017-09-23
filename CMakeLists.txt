@@ -7,7 +7,6 @@ option (travis "Travis CI" OFF)
 option (production "Build for production" OFF)
 option (debug "Enable debug logging" OFF)
 option (profiling "Turns profiling on for various scenarios" OFF)
-option (use_mine "Use mine when possible for crypto instead of ripe" ON)
 option (disable_curl_support "Build without curl. HTTPS endpoints and auto-update will not work" OFF)
 
 set (RESIDUE_MAJOR "1")
@@ -21,9 +20,7 @@ add_definitions (-DRESIDUE_VERSION_MAJOR="${RESIDUE_MAJOR}")
 add_definitions (-DRESIDUE_VERSION_MINOR="${RESIDUE_MINOR}")
 add_definitions (-DRESIDUE_VERSION_PATCH="${RESIDUE_PATCH}")
 
-if (use_mine)
-    add_definitions (-DRESIDUE_USE_MINE)
-endif()
+add_definitions (-DRIPE_VERSION="4.0.0-static")
 
 if (profiling)
     add_definitions (-DRESIDUE_PROFILING)
@@ -65,14 +62,6 @@ message ("-- Check for Easylogging++")
 find_package (EASYLOGGINGPP REQUIRED)
 include_directories (${EASYLOGGINGPP_INCLUDE_DIR})
 
-message ("-- Check for Mine")
-find_package (MineCrypto REQUIRED)
-include_directories (${MINE_CRYPTO_INCLUDE_DIR})
-
-set (Ripe_USE_STATIC_LIBS OFF)
-find_package (Ripe REQUIRED)
-include_directories (${RIPE_INCLUDE_DIR})
-
 if (!disable_curl_support)
     set (CURL_LIBRARIES "")
     message ("--==> libcurl is disabled")
@@ -113,7 +102,7 @@ include_directories (${CMAKE_SOURCE_DIR})
 
 set (SOURCE_FILES
 
-    ${MINE_CRYPTO_INCLUDE_DIR}/mine.cc
+    include/Ripe.cc
 
     src/connect/connection-request.cc
     src/connect/connection-request-handler.cc
@@ -166,7 +155,6 @@ set (SOURCE_FILES
 )
 
 set (SHARED_REQUIRED_LIBS
-    ${RIPE_LIBRARY}
     ${Boost_LIBRARIES}
     ${CURL_LIBRARIES}
     ${CMAKE_THREAD_LIBS_INIT}
@@ -208,7 +196,8 @@ target_compile_definitions (residue-config-validator-bin PUBLIC
     ELPP_DEFAULT_LOGGING_FLAGS=4096
 )
 
-target_link_libraries (residue-config-validator-bin ${RIPE_LIBRARY} residue-core)
+target_link_libraries (residue-config-validator-bin
+    residue-core)
 
 set_target_properties (residue-config-validator-bin PROPERTIES
     OUTPUT_NAME "residue-config-validator"
@@ -233,7 +222,8 @@ target_compile_definitions (residue-license-manager-bin PUBLIC
     ELPP_DEFAULT_LOGGING_FLAGS=4096
 )
 
-target_link_libraries (residue-license-manager-bin ${RIPE_LIBRARY} residue-core)
+target_link_libraries (residue-license-manager-bin
+    residue-core)
 
 set_target_properties (residue-license-manager-bin PROPERTIES
     OUTPUT_NAME "residue-license-manager"
@@ -284,7 +274,7 @@ if (test)
     enable_testing()
 
     add_executable (residue-unit-tests
-        ${MINE_CRYPTO_INCLUDE_DIR}/mine.cc
+        include/Ripe.cc
         test/main.cc
         ${EASYLOGGINGPP_INCLUDE_DIR}/easylogging++.cc
     )
