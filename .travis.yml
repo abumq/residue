@@ -156,8 +156,11 @@ install:
  - mkdir build
  - cd build
  - cmake -Dtest=ON -Dtravis=ON ..
+ - sudo make VERBOSE=0
+ - ls -l
+ - ldd ./residue
 
-script: "sudo make VERBOSE=1 && ./residue-unit-tests --gtest_catch_exceptions=0 && ldd ./residue"
+script: "./residue-unit-tests --gtest_catch_exceptions=0"
 branches:
   only:
     - master
