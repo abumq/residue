@@ -1,5 +1,12 @@
 # Change Log
 
+## [Unreleased]
+### Added
+- License issuing authority in connection response
+
+### Internals
+- Linking of some libraries for portability
+
 ## [1.0.0-rc.2] - 05-09-2017
 ### Internals
 - A lot of refactoring and wrapper for cryptography
