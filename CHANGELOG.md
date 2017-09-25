@@ -6,6 +6,7 @@
 
 ### Internals
 - Linking of some libraries for portability
+- Admin requests now calls commands using command handler
 
 ## [1.0.0-rc.2] - 05-09-2017
 ### Internals
