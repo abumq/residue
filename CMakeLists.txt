@@ -153,6 +153,12 @@ set (SOURCE_FILES
     src/extensions/extension.cc
     src/extensions/update.cc
     src/extensions/reset.cc
+    src/extensions/check-license.cc
+    src/extensions/reload-config.cc
+    src/extensions/session-details.cc
+    src/extensions/stats.cc
+    src/extensions/rotate.cc
+    src/extensions/list-tokens.cc
 
     src/utils/tar.cc
     src/utils/utils.cc
