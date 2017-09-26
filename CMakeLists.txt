@@ -159,6 +159,8 @@ set (SOURCE_FILES
     src/extensions/stats.cc
     src/extensions/rotate.cc
     src/extensions/list-tokens.cc
+    src/extensions/list-logging-files.cc
+    src/extensions/clients.cc
 
     src/utils/tar.cc
     src/utils/utils.cc
