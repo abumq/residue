@@ -150,6 +150,9 @@ set (SOURCE_FILES
     src/net/url.cc
     src/net/http-client.cc
 
+    src/extensions/extension.cc
+    src/extensions/update.cc
+
     src/utils/tar.cc
     src/utils/utils.cc
 )
