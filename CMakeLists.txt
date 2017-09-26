@@ -152,6 +152,7 @@ set (SOURCE_FILES
 
     src/extensions/extension.cc
     src/extensions/update.cc
+    src/extensions/reset.cc
 
     src/utils/tar.cc
     src/utils/utils.cc
