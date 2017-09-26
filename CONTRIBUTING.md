@@ -1,3 +1,6 @@
+<p align="center">
+  ﷽
+</p>
 
 # Contributing
 
