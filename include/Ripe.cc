@@ -1,7 +1,11 @@
 //
 //  Ripe.cc
 //
-//  Copyright © 2017 Muflihun.com. All rights reserved.
+//  Copyright (c) 2017, Muflihun Labs
+//
+//  https://muflihun.com
+//  https://muflihun.github.io/ripe
+//  https://github.com/muflihun
 //
 
 #include <iomanip>
@@ -26,14 +30,13 @@
 
 using namespace CryptoPP;
 
-const std::string Ripe::PACKET_DELIMITER = "\r\n\r\n";
+const std::string Ripe::PACKET_DELIMITER      = "\r\n\r\n";
 const std::size_t Ripe::PACKET_DELIMITER_SIZE = Ripe::PACKET_DELIMITER.size();
-const char Ripe::DATA_DELIMITER = ':';
-const int Ripe::BITS_PER_BYTE = 8;
-const int Ripe::DEFAULT_RSA_LENGTH = 2048;
-const int Ripe::ZLIB_BUFFER_SIZE = 32768;
-const int Ripe::AES_BSIZE = AES::BLOCKSIZE;
-const std::string Ripe::BASE64_CHARS = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/=";
+const char        Ripe::DATA_DELIMITER        = ':';
+const int         Ripe::DEFAULT_RSA_LENGTH    = 2048;
+const int         Ripe::ZLIB_BUFFER_SIZE      = 32768;
+const int         Ripe::AES_BLOCK_SIZE             = AES::BLOCKSIZE;
+const std::string Ripe::BASE64_CHARS          = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/=";
 const std::string Ripe::PRIVATE_RSA_ALGORITHM = "AES-256-CBC";
 
 bool loadPrivateKey(const std::string& key, RSA::PrivateKey& keyOut, const std::string& secret)
@@ -273,7 +276,7 @@ std::string Ripe::encryptAES(const std::string& buffer, const byte* key, std::si
 {
     SecByteBlock keyBlock(key, keySize);
 
-    byte ivArr[Ripe::AES_BSIZE] = {0};
+    byte ivArr[Ripe::AES_BLOCK_SIZE] = {0};
 
     if (iv.empty()) {
         AutoSeededRandomPool rnd;
@@ -334,7 +337,7 @@ std::string Ripe::decryptAES(const std::string& data, const byte* key, std::size
     std::string result;
     SecByteBlock keyBlock(key, keySize);
 
-    byte ivArr[Ripe::AES_BSIZE] = {0};
+    byte ivArr[Ripe::AES_BLOCK_SIZE] = {0};
     std::copy(iv.begin(), iv.end(), std::begin(ivArr));
 
     CBC_Mode<AES>::Decryption d;

@@ -1,9 +1,9 @@
 //
-//  Ripe.h
+//  Ripe.cc
 //
-//  Copyright © 2017 Muflihun Labs. All rights reserved.
+//  Copyright (c) 2017, Muflihun Labs
 //
-//  http://muflihun.com
+//  https://muflihun.com
 //  https://muflihun.github.io/ripe
 //  https://github.com/muflihun
 //
@@ -52,11 +52,6 @@ public:
     static const char DATA_DELIMITER;
 
     ///
-    /// \brief Constant value for bits per bytes (8)
-    ///
-    static const int BITS_PER_BYTE;
-
-    ///
     /// \brief Constant value default rsa length
     ///
     static const int DEFAULT_RSA_LENGTH;
@@ -64,7 +59,7 @@ public:
     ///
     /// \brief Constant value for AES block size
     ///
-    static const int AES_BSIZE;
+    static const int AES_BLOCK_SIZE;
 
     ///
     /// \brief Possible base64 characters
@@ -172,7 +167,7 @@ public:
     ///
     inline static std::size_t expectedAESCipherLength(std::size_t plainDataSize) noexcept
     {
-        return (plainDataSize / AES_BSIZE + 1) * AES_BSIZE;
+        return (plainDataSize / AES_BLOCK_SIZE + 1) * AES_BLOCK_SIZE;
     }
 
     ///
