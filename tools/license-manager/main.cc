@@ -76,7 +76,8 @@ int main(int argc, char* argv[])
                                               (std::istreambuf_iterator<char>()));
             stream.close();
             residue::License license;
-            if (!licenseManager.validate(licenseKey, &license, true, signature)) {
+            license.load(licenseKey);
+            if (!licenseManager.validate(&license, true, signature)) {
                 std::cout << "License is not valid";
             } else {
                 std::cout << "Licensed to " << license.licensee() << std::endl;
@@ -84,8 +85,17 @@ int main(int argc, char* argv[])
             }
         }
     } else if (issue) {
-        licenseManager.changeIssuingAuthority(authority);
-        License license = licenseManager.generateNew(licensee, period, secret, signature);
+        const IssuingAuthority* issuingAuthority;
+        for (const auto& a : LicenseManagerKeys::LICENSE_ISSUING_AUTHORITIES) {
+            if (a.id() == authority) {
+                issuingAuthority = &(a);
+            }
+        }
+        if (issuingAuthority == nullptr) {
+            std::cout << "Invalid issuing authority." << std::endl;
+            return 1;
+        }
+        License license = licenseManager.issue(licensee, period, issuingAuthority, secret, signature);
         std::cout << license.toString() << std::endl;
         std::cout << "Licensed to " << license.licensee() << std::endl;
         std::cout << "Subscription is active until " << license.formattedExpiry() << std::endl << std::endl;

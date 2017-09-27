@@ -33,14 +33,8 @@ const std::vector<IssuingAuthority> UnitTestLicenseKeys::LICENSE_ISSUING_AUTHORI
 class LicenseManagerForTest : public BaseLicenseManager<UnitTestLicenseKeys>
 {
 public:
-
     LicenseManagerForTest()
         : BaseLicenseManager()
-    {
-    }
-
-    LicenseManagerForTest(const std::string& issuingAuthorityId)
-        : BaseLicenseManager(issuingAuthorityId)
     {
     }
 };

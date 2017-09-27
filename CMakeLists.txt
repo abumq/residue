@@ -20,7 +20,8 @@ add_definitions (-DRESIDUE_VERSION_MAJOR="${RESIDUE_MAJOR}")
 add_definitions (-DRESIDUE_VERSION_MINOR="${RESIDUE_MINOR}")
 add_definitions (-DRESIDUE_VERSION_PATCH="${RESIDUE_PATCH}")
 
-add_definitions (-DRIPE_VERSION="4.0.0-static")
+add_definitions (-DRIPE_VERSION="4.0.1-static")
+#add_definitions (-DRESIDUE_USE_MINE=1)
 
 if (profiling)
     add_definitions (-DRESIDUE_PROFILING)
@@ -103,6 +104,7 @@ include_directories (${CMAKE_SOURCE_DIR})
 set (SOURCE_FILES
 
     include/Ripe.cc
+    include/mine.cc
 
     src/connect/connection-request.cc
     src/connect/connection-request-handler.cc
