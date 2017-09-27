@@ -118,6 +118,6 @@ THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
 OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 ```
 
-## `Tar.cc` and `Tar.h`
-Code was originally written by @lindenb (github) and did not have any associated licence with it. It was changed to suit our needs
+## Tar Utils
+Code was originally written by @lindenb and did not have any associated licence with it. It was changed to suit our needs
 
