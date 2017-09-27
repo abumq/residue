@@ -21,7 +21,7 @@ add_definitions (-DRESIDUE_VERSION_MINOR="${RESIDUE_MINOR}")
 add_definitions (-DRESIDUE_VERSION_PATCH="${RESIDUE_PATCH}")
 
 add_definitions (-DRIPE_VERSION="4.0.1-static")
-#add_definitions (-DRESIDUE_USE_MINE=1)
+add_definitions (-DRESIDUE_USE_MINE=1)
 
 if (profiling)
     add_definitions (-DRESIDUE_PROFILING)
