@@ -8,6 +8,7 @@ option (production "Build for production" OFF)
 option (debug "Enable debug logging" OFF)
 option (profiling "Turns profiling on for various scenarios" OFF)
 option (disable_curl_support "Build without curl. HTTPS endpoints and auto-update will not work" OFF)
+option (use_mine "Use mine whereever possible" ON)
 
 set (RESIDUE_MAJOR "1")
 set (RESIDUE_MINOR "0")
@@ -21,7 +22,9 @@ add_definitions (-DRESIDUE_VERSION_MINOR="${RESIDUE_MINOR}")
 add_definitions (-DRESIDUE_VERSION_PATCH="${RESIDUE_PATCH}")
 
 add_definitions (-DRIPE_VERSION="4.0.1-static")
-add_definitions (-DRESIDUE_USE_MINE=1)
+if (use_mine)
+    add_definitions (-DRESIDUE_USE_MINE)
+endif()
 
 if (profiling)
     add_definitions (-DRESIDUE_PROFILING)
@@ -100,11 +103,18 @@ thread_packages_check()
 
 include_directories (${CMAKE_SOURCE_DIR})
 
+if (use_mine)
+    set (CRYPTO_LIBS
+        include/Ripe.cc
+        include/mine.cc)
+else()
+    set (CRYPTO_LIBS
+        include/Ripe.cc)
+endif()
 
 set (SOURCE_FILES
 
-    include/Ripe.cc
-    include/mine.cc
+    ${CRYPTO_LIBS}
 
     src/connect/connection-request.cc
     src/connect/connection-request-handler.cc
