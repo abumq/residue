@@ -1,6 +1,8 @@
-﷽
+<p align="center">
+   ﷽
+</p>
 
-## Demo
+# Demo
 This document runs you through to run a demo client to see how it all works.
 
 ## Start Residue Server

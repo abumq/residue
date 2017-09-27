@@ -1,7 +1,11 @@
-﷽
+<p align="center">
+   ﷽
+</p>
 
-## CLI Commands
+# CLI Commands
 When residue server starts it can accept some commands from command-line interface. This document lists these commands.
+
+Please note, some of these commands can also be triggered using admin requests.
 
 ### `quit`
 Quits the server gracefully
@@ -28,8 +32,13 @@ Displays server stats
 ### `clients`
 Number of connected clients (dead or alive)
 
-##### `remove <client_id>`
+##### `remove --client-id <client-id>`
 Removes the existing client. Please be careful with this command. If client has unprocessed requests it may crash.
+
+##### `add --client-id <id> --rsa-public-key-file <rsa_key>`
+Adds new client with specific id and public key.
+
+The public key should exist on the server
 
 ##### `list`
 Lists all the connected clients (and `DEAD` status if they're dead)
@@ -37,13 +46,13 @@ Lists all the connected clients (and `DEAD` status if they're dead)
 ### `tokens`
 Lists all the tokens for selected client (and `EXPIRED` status if they're expired).
 
-##### `<client_id>`
+##### `--client-id <client-id>`
 The client ID to see tokens for
 
 ### `rotate`
 Manually run log rotator for specified logger
 
-##### `<logger_id>`
+##### `--logger-id <logger-id>`
 The logger ID to run log rotation for.
 
 #### `[--ignore-archive]`
@@ -55,5 +64,21 @@ Only check the schedule for this logger rotation
 ### `sess`
 Number of active sessions
 
-##### `stats`
+##### `--stats`
 Displays stats for active sessions (received, sent and how long session has been active for)
+
+
+### `stats`
+Displays server stats
+
+### `files`
+Displays list of logging files for speicified client, logger or levels
+
+##### `--client-id <id>`
+Client to display files for (all loggers if no `--logger-id` specified)
+
+##### `--logger-id <id>`
+Limit the list to specified logger id (for specified client)
+
+##### `--levels <levels>`
+Comma seperated logging levels, e.g, `info,error`

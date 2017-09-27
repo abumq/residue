@@ -1,4 +1,6 @@
-﷽
+<p align="center">
+  ﷽
+</p>
 
 ![banner]
 
@@ -20,7 +22,7 @@ Some of the notable features are listed below
  * *Context switching* is a concept designed as part of asyncronous processing where a *request queue* is different from *processing queue*. Once *processing queue* is emptied (i.e, all the requests are processed from the queue) the *request queue* and *processed queue* is swapped. This swapping is what we call *context switching*.
  * *Log rotation* has been built in to the server that runs on a separate thread, allowing you to create backups and compress them. Every logger can be set up to have it's own rotation frequency from `hourly` to `yearly` depending on your application.
  * *Bulk requests* is another concept that makes logging requests process much faster and highly compressible making them low on network.
- * Security: Residue uses [mine](https://github.com/muflihun/mine) and [Ripe](https://github.com/muflihun/ripe) for securing the data. It consists of several layers and techniques to secure the requests and to prevent unauthorised application from logging.
+ * Security: Residue uses external libaries for securing the data. It consists of several layers and techniques to secure the requests and to prevent unauthorised application from logging.
  * Compression: Residue server and official client libraries provide ability to compress the network packets which makes a big difference in amount of data transferred over the wire.
  * Speed is not compromised in any way and there is a lot of testing being done every day to ensure that logging server meets the speed requirements.
  * There are many more features available for this new application. Please feel free to download a copy of residue binary and run it.

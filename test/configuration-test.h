@@ -82,9 +82,9 @@ protected:
         fs.close();
 
         LicenseManagerForTest l;
-        LOG(INFO) << "Issuer: " << l.issuingAuthority()->id();
+        const IssuingAuthority* authority = &(UnitTestLicenseKeys::LICENSE_ISSUING_AUTHORITIES.at(0));
         fs.open(kLicenseFileForTesting, std::fstream::out);
-        fs << l.generateNew("residue-test-case", 24U).toString();
+        fs << l.issue("residue-test-case", 24U, authority).toString();
         fs.flush();
         fs.close();
 

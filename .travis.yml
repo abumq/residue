@@ -113,12 +113,12 @@ install:
  - sudo make install
 
 ## Mine
- - wget https://github.com/muflihun/mine/archive/develop.zip
- - unzip develop.zip
- - cd mine-develop
- - cmake -Dtest_main_header=ON -Dtest_wstring_conversions=OFF .
- - make
- - sudo make install
+# - wget https://github.com/muflihun/mine/archive/develop.zip
+# - unzip develop.zip
+# - cd mine-develop
+# - cmake -Dtest_main_header=ON -Dtest_wstring_conversions=OFF .
+# - make
+# - sudo make install
 
 ## Ripe
  - RIPE_VERSION=4.0.0
@@ -155,9 +155,12 @@ install:
  - cat src/logging/custom-logging.h
  - mkdir build
  - cd build
- - cmake -Dcompile-server=ON -Dtest=ON -Dtravis=ON -DRIPE_INCLUDE_DIR=/usr/include -DRIPE_LIBRARY=/usr/lib/libripe.so.4.0.0 ..
+ - cmake -Dtest=ON -Dtravis=ON ..
+ - sudo make VERBOSE=0
+ - ls -l
+ - ldd ./residue
 
-script: "sudo make VERBOSE=1 && ./residue-unit-tests --gtest_catch_exceptions=0 && ldd ./residue"
+script: "./residue-unit-tests --gtest_catch_exceptions=0"
 branches:
   only:
     - master

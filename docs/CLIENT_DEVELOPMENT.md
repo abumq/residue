@@ -1,6 +1,8 @@
-﷽
+<p align="center">
+   ﷽
+</p>
 
-## Client Development
+# Client Development
 This document show you steps required in order to write a new client library for residue server.
 
 We highly recommend you understand how the server and client interact and what's the role of a developer in the whole process. You can understand all this by looking at [DATA_FLOW](/docs/DATA_FLOW.md) diagram. 
@@ -13,10 +15,10 @@ Residue comes with following official client libraries for respective platforms:
  
 This document contains core concepts behind development of these libraries that follow same pattern. You can use same concepts to create your own library in language of your choice for other developers or for your organization.
 
-### What is Client Library?
+## What is Client Library?
 Server is useless without a client. In residue's world, client is what sends log request payload to the server. Client library is abstract layer between developer of the application and the remote logging server (residue). 
 
-### Make It Official
+## Make It Official
 If you have written client library for your organization and wish to make it officially part of _Residue client libraries_, following conditions must be met:
 
 #### Seamless
@@ -53,7 +55,9 @@ Library should track whether the connection was closed by remote or not. If so, 
 
 This is extremely important as it will make upgrading the server software easier.
 
-### Development
+## Development
+Please read residue [PROTOCOL](/docs/PROTOCOL.md) specifications before writing your client library.
+
 Following are the public functions that must be available for user
 
 #### CONNECT
@@ -113,16 +117,16 @@ You can ask users to provide additional paramters, for example, bulk size etc.
 Server does not accept any disconnect requests. Closing the socket should suffice. This is thoughtful decision as multiple known clients may be connected using same client ID.
 
 ### Backbone
-In order to develop client library you can use following pointers as guidelines on what you need:
+In order to develop client library you can use following pointers as high-level guidelines on what you need:
 
- * Network client: To read and write data to the server socket. This can be utility functions or class (however you like)
- * RSA Encryption/Decryption: To encrypt connection request in order to exchange symmetric key
- * AES-CBC Encryption/Decryption: To encrypt all the conversation to and from the server
- * Base64 Encoding/Decoding: All the conversation to and from the server in base64 encoding
- * Hex Encoding/Decoding: To deal with initialization vector (for CBC) and keys
- * GZip Compression: Whether server supports compression or not, you should always aim to support compression on your client library. The compression should be done on plain JSON log request before encoding.
+ 1. Network client
+ 2. RSA Encryption/Decryption functions with PKCS#1 padding
+ 3. AES-CBC Encryption/Decryption functions
+ 4. Base64 Encoding/Decoding functions
+ 5. Base16 Encoding/Decoding functions
+ 6. GZip compression functions (optional)
  
 These are minimal features that should be supported by client library. If you wish to add something more i.e, to have extra features you can wish to do so e.g, bulk requests etc.
 
 ### Conclusion
-Core concept is encapsulating the details and making connection to residue server as seamless as possible. Once you understand this you should have no problem in creating libraries for the developers.
+Core concept is encapsulating the details and making connection to residue server as seamless as possible. Once you understand this you should have no problem in writing client libraries for the developers.

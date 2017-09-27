@@ -7,12 +7,12 @@ option (travis "Travis CI" OFF)
 option (production "Build for production" OFF)
 option (debug "Enable debug logging" OFF)
 option (profiling "Turns profiling on for various scenarios" OFF)
-option (use_mine "Use mine when possible for crypto instead of ripe" ON)
 option (disable_curl_support "Build without curl. HTTPS endpoints and auto-update will not work" OFF)
+option (use_mine "Use mine whereever possible" ON)
 
 set (RESIDUE_MAJOR "1")
 set (RESIDUE_MINOR "0")
-set (RESIDUE_PATCH "0-rc.2")
+set (RESIDUE_PATCH "0")
 set (RESIDUE_VERSION "${RESIDUE_MAJOR}.${RESIDUE_MINOR}.${RESIDUE_PATCH}")
 set (RESIDUE_NAME "Residue")
 
@@ -21,6 +21,7 @@ add_definitions (-DRESIDUE_VERSION_MAJOR="${RESIDUE_MAJOR}")
 add_definitions (-DRESIDUE_VERSION_MINOR="${RESIDUE_MINOR}")
 add_definitions (-DRESIDUE_VERSION_PATCH="${RESIDUE_PATCH}")
 
+add_definitions (-DRIPE_VERSION="4.0.1-static")
 if (use_mine)
     add_definitions (-DRESIDUE_USE_MINE)
 endif()
@@ -65,14 +66,6 @@ message ("-- Check for Easylogging++")
 find_package (EASYLOGGINGPP REQUIRED)
 include_directories (${EASYLOGGINGPP_INCLUDE_DIR})
 
-message ("-- Check for Mine")
-find_package (MineCrypto REQUIRED)
-include_directories (${MINE_CRYPTO_INCLUDE_DIR})
-
-set (Ripe_USE_STATIC_LIBS OFF)
-find_package (Ripe REQUIRED)
-include_directories (${RIPE_INCLUDE_DIR})
-
 if (!disable_curl_support)
     set (CURL_LIBRARIES "")
     message ("--==> libcurl is disabled")
@@ -110,10 +103,18 @@ thread_packages_check()
 
 include_directories (${CMAKE_SOURCE_DIR})
 
+if (use_mine)
+    set (CRYPTO_LIBS
+        include/Ripe.cc
+        include/mine.cc)
+else()
+    set (CRYPTO_LIBS
+        include/Ripe.cc)
+endif()
 
 set (SOURCE_FILES
 
-    ${MINE_CRYPTO_INCLUDE_DIR}/mine.cc
+    ${CRYPTO_LIBS}
 
     src/connect/connection-request.cc
     src/connect/connection-request-handler.cc
@@ -161,12 +162,23 @@ set (SOURCE_FILES
     src/net/url.cc
     src/net/http-client.cc
 
+    src/extensions/extension.cc
+    src/extensions/update.cc
+    src/extensions/reset.cc
+    src/extensions/check-license.cc
+    src/extensions/reload-config.cc
+    src/extensions/session-details.cc
+    src/extensions/stats.cc
+    src/extensions/rotate.cc
+    src/extensions/list-tokens.cc
+    src/extensions/list-logging-files.cc
+    src/extensions/clients.cc
+
     src/utils/tar.cc
     src/utils/utils.cc
 )
 
 set (SHARED_REQUIRED_LIBS
-    ${RIPE_LIBRARY}
     ${Boost_LIBRARIES}
     ${CURL_LIBRARIES}
     ${CMAKE_THREAD_LIBS_INIT}
@@ -208,7 +220,8 @@ target_compile_definitions (residue-config-validator-bin PUBLIC
     ELPP_DEFAULT_LOGGING_FLAGS=4096
 )
 
-target_link_libraries (residue-config-validator-bin ${RIPE_LIBRARY} residue-core)
+target_link_libraries (residue-config-validator-bin
+    residue-core)
 
 set_target_properties (residue-config-validator-bin PROPERTIES
     OUTPUT_NAME "residue-config-validator"
@@ -233,7 +246,8 @@ target_compile_definitions (residue-license-manager-bin PUBLIC
     ELPP_DEFAULT_LOGGING_FLAGS=4096
 )
 
-target_link_libraries (residue-license-manager-bin ${RIPE_LIBRARY} residue-core)
+target_link_libraries (residue-license-manager-bin
+    residue-core)
 
 set_target_properties (residue-license-manager-bin PROPERTIES
     OUTPUT_NAME "residue-license-manager"
@@ -284,7 +298,7 @@ if (test)
     enable_testing()
 
     add_executable (residue-unit-tests
-        ${MINE_CRYPTO_INCLUDE_DIR}/mine.cc
+        include/Ripe.cc
         test/main.cc
         ${EASYLOGGINGPP_INCLUDE_DIR}/easylogging++.cc
     )

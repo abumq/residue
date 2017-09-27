@@ -1,6 +1,8 @@
-﷽
+<p align="center">
+   ﷽
+</p>
 
-## Data Flow
+# Data Flow
 
 Following diagram shows you data flow in from residue server to client library. Note, under "obtain token" section, developer is not shown, this means developer has no role in obtaining new token.
 

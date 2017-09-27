@@ -1,4 +1,6 @@
-                                       ‫بسم الله الرَّحْمَنِ الرَّحِيمِ
+<p align="center">
+  ﷽
+</p>
 
 # Library
 Client libraries are in their own repositories, please [search](https://github.com/search?q=topic%3Aresidue-client+org%3Amuflihun&type=Repositories) github for language of your choice

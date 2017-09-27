@@ -1,18 +1,16 @@
-﷽
+<p align="center">
+   ﷽
+</p>
 
 # Installation
 This document shows you steps to install residue server on your machine. You can install it for development or for production use.
 
 # Dependencies
   * C++11 (or higher)
-  * [Ripe](https://github.com/muflihun/ripe)\* v3.3.0
-  * [Mine](https://github.com/muflihun/mine) v1.0.0
   * Boost v1.59 or higher [Components: [asio](http://www.boost.org/doc/libs/master/doc/html/boost_asio.html)]
   * [Easylogging++](https://github.com/muflihun/easyloggingpp) v9.95.0
   * [CMake Toolchains](https://cmake.org/) v2.8.12
   
-\* We're working to remove this dependency
- 
 # Get Code
 You can either [download code from master branch](https://github.com/muflihun/residue/archive/master.zip) or clone it using `git`:
 
@@ -40,7 +38,6 @@ You can define following options in CMake (using `-D<option>=ON`)
 | `production` | Compile for production use      |
 | `profiling`  | Turn on profiling information for making server faster (goes together with `debug`) |
 | `disable_curl_support` | Do not use libcurl. If you turn it off querying https will not be possible |
-| `use_mine` | Use [minimal encryption library](https://github.com/muflihun/mine) whereever possible (instead of ripe) |
 
 Please consider running unit tests before you move on.
 

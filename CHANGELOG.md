@@ -1,5 +1,15 @@
 # Change Log
 
+## [1.0.0] - 27-09-2017
+### Added
+- License issuing authority in connection response
+
+### Internals
+- Linking of some libraries for portability
+- Admin requests now calls commands using command handler
+- License authority technical updates
+- Concept of extensions
+
 ## [1.0.0-rc.2] - 05-09-2017
 ### Internals
 - A lot of refactoring and wrapper for cryptography

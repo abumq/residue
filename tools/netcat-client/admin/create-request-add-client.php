@@ -5,7 +5,7 @@ $request = json_encode(array(
     "_t" => round(microtime(true)),
     "type" => 2, // ADD_CLIENT
     "client_id" => "test-client",
-    "rsa_public_key" => "/Users/majid.khan/Projects/residue/samples/clients/netcat/client-256-public.pem"
+    "rsa_public_key" => "/Users/mkhan/Projects/residue/tools/netcat-client/client-256-public.pem"
 ));
 
 echo shell_exec("echo '$request' | ripe -e --key $serverKey");
