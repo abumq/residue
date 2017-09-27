@@ -1,6 +1,6 @@
 # Change Log
 
-## [Unreleased]
+## [1.0.0] - 27-09-2017
 ### Added
 - License issuing authority in connection response
 
