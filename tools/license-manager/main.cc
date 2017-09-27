@@ -85,7 +85,7 @@ int main(int argc, char* argv[])
             }
         }
     } else if (issue) {
-        const IssuingAuthority* issuingAuthority;
+        const IssuingAuthority* issuingAuthority = nullptr;
         for (const auto& a : LicenseManagerKeys::LICENSE_ISSUING_AUTHORITIES) {
             if (a.id() == authority) {
                 issuingAuthority = &(a);
