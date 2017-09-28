@@ -7,9 +7,12 @@ This document shows you steps to install residue server on your machine. You can
 
 # Dependencies
   * C++11 (or higher)
-  * Boost v1.59 or higher [Components: [asio](http://www.boost.org/doc/libs/master/doc/html/boost_asio.html)]
+  * Boost v1.59 or higher [Components: [system](http://www.boost.org/doc/libs/1_62_0/libs/system/doc/index.html)]
   * [Easylogging++](https://github.com/muflihun/easyloggingpp) v9.95.0
+  * [Crypto++](https://www.cryptopp.com/) v5.6.5+ [with Pem Pack](https://raw.githubusercontent.com/muflihun/muflihun.github.io/master/downloads/pem_pack.zip)
   * [CMake Toolchains](https://cmake.org/) v2.8.12
+  * [zlib-devel](https://zlib.net/)
+  * [libcurl](https://curl.haxx.se/libcurl/)
   
 # Get Code
 You can either [download code from master branch](https://github.com/muflihun/residue/archive/master.zip) or clone it using `git`:
@@ -38,6 +41,7 @@ You can define following options in CMake (using `-D<option>=ON`)
 | `production` | Compile for production use      |
 | `profiling`  | Turn on profiling information for making server faster (goes together with `debug`) |
 | `disable_curl_support` | Do not use libcurl. If you turn it off querying https will not be possible |
+| `use_mine` | Use mine crypto library (instead of ripe) whereever possible |
 
 Please consider running unit tests before you move on.
 
@@ -61,8 +65,14 @@ cmake .. -DCMAKE_INSTALL_PREFIX=/usr/bin
 Make sure you have all the dependencies installed. You can use following script to install it all and then go back to [Build](#build) section (tested on Ubuntu 16.04 64-bit)
 
 ```
-## Boost System and ASIO
+## Essentials
+sudo apt-get install -y cmake build-essential libcurl-dev libz-dev
+    # sudo yum install -y cmake curl-devel zlib-devel for rpm
+    # sudo yum groupinstall 'Development Tools'
+
+## Boost System
 sudo apt-get install -y libboost-system-dev cmake
+    # or boost-devel and/or boost-static-devel for rpm
 
 ## Google Testing Library
 wget -O gtest.tar.gz https://github.com/google/googletest/archive/release-1.7.0.tar.gz
@@ -82,33 +92,16 @@ cmake .
 make
 sudo make install
 
-## Mine
-wget -O mine-master.zip https://github.com/muflihun/mine/archive/master.zip
-unzip mine-master.zip
-cd mine-master
+## Crypto++
+wget https://raw.githubusercontent.com/muflihun/muflihun.github.io/master/downloads/cryptocpp.tar.gz
+tar xf cryptocpp.tar.gz
+cd cryptopp-CRYPTOPP_5_6_5
+wget https://raw.githubusercontent.com/muflihun/muflihun.github.io/master/downloads/pem_pack.zip
+unzip pem_pack.zip
 cmake .
 make
 sudo make install
-
-## Ripe
-wget -O ripe-bin.tar.gz https://github.com/muflihun/ripe/releases/download/v4.0.0/ripe-4.0.0-x86_64-linux.tar.gz
-tar xfz ripe-bin.tar.gz
-cd ripe-3.3.0-x86_64-linux
-sudo cp libripe.* /usr/lib/
-sudo cp Ripe.h /usr/include/
-sudo cp ripe /usr/bin/
 ```
-
-#### Boost Library Linking Error
-
-If you get an error similar to
-
-```
-relocation R_X86_64_32 against .rodata.str1.1 can not be used when making a shared object; recompile with -fPIC 
-... libboost_system.a: error adding symbols: Bad value
-```
-
-This happens when static library (`libboost_system` in our case) is linked against shared library (`libresidue` in our case), you can link it statically. See [Static Library](#static-library) section below.
 
 # Run as `root`
 You will need to run residue as root user. This is because residue needs to change the ownership of the files to the relevant users and yet need to write to those files.
