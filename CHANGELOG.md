@@ -1,5 +1,13 @@
 # Change Log
 
+## [Unreleased]
+### Changes
+- `LIST_LOGGING_FILES` admin request now returns logger - files map instead of flat list of files
+
+### Fixed
+- Admin request to list files runs correct command
+- `LIST_LOGGING_FILES` shows files for all levels if not specified otherwise
+
 ## [1.0.0] - 27-09-2017
 ### Added
 - License issuing authority in connection response
