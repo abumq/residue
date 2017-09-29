@@ -26,6 +26,22 @@ Some of the notable features are listed below
  * Compression: Residue server and official client libraries provide ability to compress the network packets which makes a big difference in amount of data transferred over the wire.
  * Speed is not compromised in any way and there is a lot of testing being done every day to ensure that logging server meets the speed requirements.
  * There are many more features available for this new application. Please feel free to download a copy of residue binary and run it.
+ 
+# Supported Platforms
+Residue binaries can be run directly on the following platforms. 
+
+Please note, you will need _libstdc++_ (C++11) runtime libraries (please refer to compiler version for the respective binary to check minimum version required)
+
+ * CentOS 7 or higher (64-bit)
+ * Ubuntu 14.04 or higher (64-bit)
+ * OS X El Capitan or higher (64-bit)
+ * Fedora 24 or higher (64-bit)
+ 
+Other distributions that _should_ work (but have not yet been tested)
+ * Oracle Linux
+ * Amazon Linux
+ * RHEL 7 or higher (64-bit)
+ * Fedora 19 (Schrödinger's Cat) or higher (32-bit or 64-bit)
 
 # Compatibility And Integration
 No matter what language is your application written in, residue is compatible and can be used as central logging server. All you need is client library. You can either write your own using [CLIENT_DEVELOPMENT.md](/docs/CLIENT_DEVELOPMENT.md) guidelines or use existing one.
