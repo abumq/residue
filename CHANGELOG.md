@@ -3,6 +3,7 @@
 ## [Unreleased]
 ### Changes
 - `LIST_LOGGING_FILES` admin request now returns logger - files map instead of flat list of files
+- Mine is disabled for future releases until fully stable
 
 ### Fixed
 - Admin request to list files runs correct command

@@ -8,7 +8,7 @@ option (production "Build for production" OFF)
 option (debug "Enable debug logging" OFF)
 option (profiling "Turns profiling on for various scenarios" OFF)
 option (disable_curl_support "Build without curl. HTTPS endpoints and auto-update will not work" OFF)
-option (use_mine "Use mine whereever possible" ON)
+option (use_mine "Use mine whereever possible" OFF)
 
 set (RESIDUE_MAJOR "1")
 set (RESIDUE_MINOR "0")
