@@ -37,12 +37,13 @@ Please note, you will need _libstdc++_ (C++11) runtime libraries (please refer t
  * Ubuntu 14.04 or higher (64-bit)
  * OS X El Capitan or higher (64-bit)
  * Fedora 24 or higher (64-bit)
+ * Amazon Linux AMI 2017.03 or higher
  
 Other distributions that _should_ work (but have not yet been tested)
  * Oracle Linux
- * Amazon Linux
  * RHEL 7 or higher (64-bit)
  * Fedora 19 (Schrödinger's Cat) or higher (32-bit or 64-bit)
+ * Amazon Linux (AMI 2016.03)
 
 # Compatibility And Integration
 No matter what language is your application written in, residue is compatible and can be used as central logging server. All you need is client library. You can either write your own using [CLIENT_DEVELOPMENT.md](/docs/CLIENT_DEVELOPMENT.md) guidelines or use existing one.
