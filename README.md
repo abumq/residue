@@ -18,14 +18,15 @@ It is fully configurable and supports high-level security, compression and async
 Some of the notable features are listed below
 
  * Lightweight: Residue is very light on CPU and RAM. On start-up it will only take approx 2mb of RAM and while running it will keep the memory as clean as possible using as low CPU as possible.
- * Asyncronous: Residue has been built with speed in mind right from the beginning. It runs on 10 threads on idle and an extra thread for log rotation task.
- * *Context switching* is a concept designed as part of asyncronous processing where a *request queue* is different from *processing queue*. Once *processing queue* is emptied (i.e, all the requests are processed from the queue) the *request queue* and *processed queue* is swapped. This swapping is what we call *context switching*.
- * *Log rotation* has been built in to the server that runs on a separate thread, allowing you to create backups and compress them. Every logger can be set up to have it's own rotation frequency from `hourly` to `yearly` depending on your application.
- * *Bulk requests* is another concept that makes logging requests process much faster and highly compressible making them low on network.
- * Security: Residue uses external libaries for securing the data. It consists of several layers and techniques to secure the requests and to prevent unauthorised application from logging.
+ * Asyncronous: Residue has been built with speed in mind right from the beginning. It runs on 10 threads on idle and an extra threads for scheduled task.
+ * _Context switching_ is a concept designed as part of asyncronous processing where a *request queue* is different from *processing queue*. Once all the items from _processing queue_ are processed the _request queue_ and _processed queue_ is swapped. This swapping is what we call *context switching*.
+ * _Log rotation_ has been built in to the server that runs as scheduled task, allowing you to create backups and compress them without effecting the logging process. Every logger can be set up to have it's own rotation frequency from `hourly` to `yearly` depending on your needs.
+ * _Bulk requests_ is another concept that makes logging requests process much faster and make them highly compressible to reduce traffic on the network.
+ * Encryption: All the incoming and outgoing data is automatically encrypted. Residue also has several layers and techniques to secure the requests and to prevent unauthorised application from logging without compromising the speed.
  * Compression: Residue server and official client libraries provide ability to compress the network packets which makes a big difference in amount of data transferred over the wire.
  * Speed is not compromised in any way and there is a lot of testing being done every day to ensure that logging server meets the speed requirements.
- * There are many more features available for this new application. Please feel free to download a copy of residue binary and run it.
+ * Reliability: We are actively working on making the server much more reliable from restarting from the crash to handling bad traffic.
+ * There are many more features available for this new application. Please feel free to download your copy of residue server and give it a try.
  
 # Supported Platforms
 Residue binaries can be run directly on the following platforms. 
