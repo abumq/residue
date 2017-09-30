@@ -42,7 +42,7 @@ Please note, you will need _libstdc++_ (C++11) runtime libraries (please refer t
 Other distributions that _should_ work (but have not yet been tested)
  * Oracle Linux
  * RHEL 7 or higher (64-bit)
- * Fedora 19 (Schrödinger's Cat) or higher (32-bit or 64-bit)
+ * Fedora 19 (Schrödinger's Cat) or higher (64-bit)
  * Amazon Linux (AMI 2016.03)
 
 # Compatibility And Integration
