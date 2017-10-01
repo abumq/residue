@@ -1,6 +1,6 @@
 # Change Log
 
-## [Unreleased]
+## [1.1.0] - 01-10-2017
 ### Changes
 - `LIST_LOGGING_FILES` admin request now returns logger - files map instead of flat list of files
 - Mine is disabled for future releases until fully stable
