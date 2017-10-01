@@ -33,11 +33,11 @@ Residue binaries can be run directly on the following platforms.
 
 Please note, you will need _libstdc++_ (C++11) runtime libraries (please refer to compiler version for the respective binary to check minimum version required)
 
- * CentOS 7 or higher (64-bit)
  * Ubuntu 14.04 or higher (64-bit)
  * OS X El Capitan or higher (64-bit)
  * Fedora 24 or higher (64-bit)
  * Amazon Linux AMI 2017.03 or higher
+ * CentOS 7 or higher (64-bit)
  
 Other distributions that _should_ work (but have not yet been tested)
  * Oracle Linux
