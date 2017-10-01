@@ -46,6 +46,8 @@ if (production)
     add_definitions (-DRESIDUE_PRODUCTION)
 endif()
 
+#add_definitions (-DRESIDUE_SPECIAL_EDITION)
+
 set (CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "${CMAKE_SOURCE_DIR}/cmake")
 include(residue-dev)
 
