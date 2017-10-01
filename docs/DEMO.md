@@ -2,65 +2,28 @@
    ﷽
 </p>
 
-# Demo
-This document runs you through to run a demo client to see how it all works.
+# Demo Server
+Residue server is running on http://residue-demo.muflihun.com to demonstrate how it all works. This server is open and non-restrictive. This means, it can:
 
-## Start Residue Server
-Once residue is (built and installed](/Docs/INSTALL.md), go to the root directory of the source and run using
+ * Accept plain connections
+ * Accept plain log requests
+ * Allow unknown clients and loggers
+ * Logs are streamed on browser using [`resitail`](https://www.npmjs.com/package/resitail)
+ * Streamed logs are not using https
+ 
+Resitail is currently under development but basic `tail -f` functionality can be seen and filtered for clients by going to http://residue-demo.muflihun.com/?clientId=muflihun00102030
 
-```
- ./build/residue samples/residue.conf.json --verbose
-```
+## Node.js Sample Client
+The most simple demo client can help you understand on how it all works.
 
-Please take some time to understand [configuration file](/samples/residue.conf.json) and [sample files](/samples)
-
-Now that residue is running on your computer use following commands to send logs to the server.
-
-Log can be sent encrypted or in plain format. By default, `default` logger accepts any log messages.
-
-## Run Demo Client
-Use [netcat samples](/tools/netcat-client/) to test your logging server and to understand how it works. Please note that this sample is only for demo purposes, in real-time you will have your own RSA keys for both server and client.
-
-Please consider reading through [DATA_FLOW](/docs/DATA_FLOW.md) to understand how client interacts with the server.
-
-Change your working directory to the following
-
-```
-cd tools/netcat-client/
-```
-
-NOTE: Netcat sample was originally created to speed up the development. You should [check out full demo here](/demo/)
-
-### 1. Connect
-Client needs to connect to the server and obtain encryption key for secure connections.
-
-```
-sh connect.sh
-```
-
-This will create `connection.json` file which contains connection parameters required to connect to the server.
-
-### 2. Obtain Token
-You need tokens to access loggers<sup>[1]</sup>, in order to obtain token for sample logger `sample-app`, run:
-
-```
-sh token.sh
-```
-
-<sup>[1] This depends on your configuration. Please read [CONFIGURATION.md](/docs/CONFIGURATION.md) documentation for details.</sup>
-
-### 3. Start Logging
-Now that you have token you can send log requests, run:
-
-```
-sh log.sh
-```
-
-This sends plain (unencrypted) request.
-
-Now check `/tmp/logs/sample-app.log`
-
-## Full Demo
-There is a full-cycle demo available to learn more about residue client-server interactions and security. See [`/demo`](/demo/) for more details
+ * Download [Node.Js sample app](https://github.com/muflihun/residue-node/tree/master/samples/node) code
+ * Install the package using `npm install`
+ * Change `client.conf.json` `url` from `localhost:8777` to `residue-demo.muflihun.com:8777`
+ * Start the app using `node app.js`
+ * Open [Residue logs streaming](http://residue-demo.muflihun.com/?clientId=muflihun00102030)
+ * Now open http://localhost:3009 and check the residue logs streaming tab on your browser
+ 
+## Summary
+This is only a quick demo. We will extend this demo as we work our way through `resitail`.
 
 
