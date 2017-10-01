@@ -10,6 +10,9 @@ option (profiling "Turns profiling on for various scenarios" OFF)
 option (disable_curl_support "Build without curl. HTTPS endpoints and auto-update will not work" OFF)
 option (use_mine "Use mine whereever possible" OFF)
 
+# *******************************************************
+# NOTE: Change the optimization with production releases
+# *******************************************************
 set (RESIDUE_MAJOR "1")
 set (RESIDUE_MINOR "1")
 set (RESIDUE_PATCH "0")
