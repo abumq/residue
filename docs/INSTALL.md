@@ -7,7 +7,7 @@ This document shows you steps to install residue server on your machine. You can
 
 # Dependencies
   * C++11 (or higher)
-  * Boost v1.59 or higher [Components: [system](http://www.boost.org/doc/libs/1_62_0/libs/system/doc/index.html)]
+  * Boost v1.53 or higher [Components: [system](http://www.boost.org/doc/libs/1_62_0/libs/system/doc/index.html)]
   * [Easylogging++](https://github.com/muflihun/easyloggingpp) v9.95.0
   * [Crypto++](https://www.cryptopp.com/) v5.6.5+ [with Pem Pack](https://raw.githubusercontent.com/muflihun/muflihun.github.io/master/downloads/pem_pack.zip)
   * [CMake Toolchains](https://cmake.org/) v2.8.12
@@ -67,12 +67,12 @@ Make sure you have all the dependencies installed. You can use following script 
 ```
 ## Essentials
 sudo apt-get install -y cmake build-essential libcurl-dev libz-dev
-    # sudo yum install -y cmake curl-devel zlib-devel for rpm
-    # sudo yum groupinstall 'Development Tools'
+    # sudo yum install -y cmake curl-devel zlib-devel # for rpm
+    # sudo yum groupinstall -y 'Development Tools'
 
 ## Boost System
 sudo apt-get install -y libboost-system-dev cmake
-    # or boost-devel and/or boost-static-devel for rpm
+    # sudo yum install -y boost-devel boost-devel-static # for rpm
 
 ## Google Testing Library
 wget -O gtest.tar.gz https://github.com/google/googletest/archive/release-1.7.0.tar.gz
