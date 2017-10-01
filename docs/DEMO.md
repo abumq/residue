@@ -16,7 +16,7 @@ Resitail is currently under development but basic `tail -f` functionality can be
 ## Node.js Sample Client
 The most simple demo client can help you understand on how it all works.
 
- * Download [Node.Js sample app](https://github.com/muflihun/residue-node/tree/master/samples/node) code
+ * Download [Node.js sample app](https://github.com/muflihun/residue-node/tree/master/samples/node) code
  * Install the package using `npm install`
  * Change `client.conf.json` `url` from `localhost:8777` to `residue-demo.muflihun.com:8777`
  * Start the app using `node app.js`
