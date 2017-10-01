@@ -10,6 +10,9 @@ option (profiling "Turns profiling on for various scenarios" OFF)
 option (disable_curl_support "Build without curl. HTTPS endpoints and auto-update will not work" OFF)
 option (use_mine "Use mine whereever possible" OFF)
 
+# *******************************************************
+# NOTE: Change the optimization with production releases
+# *******************************************************
 set (RESIDUE_MAJOR "1")
 set (RESIDUE_MINOR "1")
 set (RESIDUE_PATCH "0")
@@ -52,7 +55,7 @@ include (FindCURL)
 #require_cpp11()
 check_apple()
 
-list (APPEND CMAKE_CXX_FLAGS " -std=c++11 -O0 -Wall -Wextra -pedantic -pedantic-errors -Werror -Wfatal-errors -Wundef -Wunused -Wno-unknown-warning-option -Wno-pessimizing-move ")
+list (APPEND CMAKE_CXX_FLAGS " -std=c++11 -O3 -Wall -Wextra -pedantic -pedantic-errors -Werror -Wfatal-errors -Wundef -Wunused -Wno-unknown-warning-option -Wno-pessimizing-move ")
 
 if (CMAKE_BUILD_TYPE EQUAL "DEBUG" OR CMAKE_BUILD_TYPE EQUAL "RELWITHDEBINFO")
     message ("-- Exporting debug symbols")
