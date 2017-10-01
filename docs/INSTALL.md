@@ -3,7 +3,7 @@
 </p>
 
 # Overview
-Residue can be installed either by building from source or by downloading the binaries from respective releases.
+Residue can be installed either by building from the source or by downloading the binaries from respective releases.
 
 # Download Binary
 You can download binary from [releases](https://github.com/muflihun/residue/releases) page for your platform. They are standalone binaries but they require some external libraries installed that are mentioned with each release notes.
@@ -16,7 +16,7 @@ We always recommend users to use standard edition first and if that does not wor
 # Building From Source
 This document shows you steps to install residue server on your machine. You can install it for development or for production use.
 
-# Dependencies
+## Dependencies
   * C++11 (or higher)
   * Boost v1.53 or higher [Components: [system](http://www.boost.org/doc/libs/1_62_0/libs/system/doc/index.html)]
   * [Easylogging++](https://github.com/muflihun/easyloggingpp) v9.95.0
@@ -25,14 +25,14 @@ This document shows you steps to install residue server on your machine. You can
   * [zlib-devel](https://zlib.net/)
   * [libcurl](https://curl.haxx.se/libcurl/)
   
-# Get Code
+## Get Code
 You can either [download code from master branch](https://github.com/muflihun/residue/archive/master.zip) or clone it using `git`:
 
 ```
 git clone git@github.com:muflihun/residue.git
 ```
 
-# Build
+## Build
 Residue uses the CMake toolchains to generate makefiles.
 Steps to build Residue:
 
@@ -72,8 +72,8 @@ If the default path (`/usr/local`) is not where you want things installed, then 
 cmake .. -DCMAKE_INSTALL_PREFIX=/usr/bin
 ```
 
-### If Build Fails...
-Make sure you have all the dependencies installed. You can use following script to install it all and then go back to [Build](#build) section (tested on Ubuntu 16.04 64-bit)
+## If Build Fails...
+Make sure you have all the dependencies installed. You can use following script to install it all and then go back to [Build](#build) section (tested on Ubuntu 14.04 64-bit)
 
 ```
 ## Essentials
