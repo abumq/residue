@@ -9,6 +9,7 @@ option (debug "Enable debug logging" OFF)
 option (profiling "Turns profiling on for various scenarios" OFF)
 option (disable_curl_support "Build without curl. HTTPS endpoints and auto-update will not work" OFF)
 option (use_mine "Use mine whereever possible" OFF)
+option (special_edition "Special edition build" OFF)
 
 # *******************************************************
 # NOTE: Change the optimization with production releases
@@ -44,6 +45,10 @@ endif()
 if (production)
     message ("-- PRODUCTION BUILD")
     add_definitions (-DRESIDUE_PRODUCTION)
+endif()
+
+if (special_edition)
+    add_definitions (-DRESIDUE_SPECIAL_EDITION)
 endif()
 
 set (CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "${CMAKE_SOURCE_DIR}/cmake")

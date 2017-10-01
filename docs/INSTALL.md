@@ -2,7 +2,18 @@
    ﷽
 </p>
 
-# Installation
+# Overview
+Residue can be installed either by building from source or by downloading the binaries from respective releases.
+
+# Download Binary
+You can download binary from [releases](https://github.com/muflihun/residue/releases) page for your platform. They are standalone binaries but they require some external libraries installed that are mentioned with each release notes.
+
+## Special Edition
+Linux binaries come in two flavours, standard and special edition. Special edition is exactly same as standard edition except that it's built with older compiler, hence chances of it running on older systems is higher than standard edition.
+
+We always recommend users to use standard edition first and if that does not work only then try special edition.
+
+# Building From Source
 This document shows you steps to install residue server on your machine. You can install it for development or for production use.
 
 # Dependencies
