@@ -140,11 +140,9 @@ set (SOURCE_FILES
     src/admin/admin-request-handler.cc
 
     src/clients/client.cc
-    src/clients/client-integrity-task.cc
 
     src/licensing/license.cc
     src/licensing/issuing-authority.cc
-    src/licensing/license-checker-task.cc
     src/licensing/license-manager-keys.cc
 
     src/logging/log-request-handler.cc
@@ -155,11 +153,9 @@ set (SOURCE_FILES
     src/core/request.cc
     src/core/request-handler.cc
     src/core/response.cc
-    src/core/auto-updater.cc
     src/core/json-object.cc
     src/core/configuration.cc
     src/core/command-handler.cc
-    src/core/task.cc
     src/core/registry.cc
 
     src/crypto/rsa.cc
@@ -184,6 +180,11 @@ set (SOURCE_FILES
     src/extensions/list-tokens.cc
     src/extensions/list-logging-files.cc
     src/extensions/clients.cc
+
+    src/tasks/license-checker-task.cc
+    src/tasks/auto-updater.cc
+    src/tasks/client-integrity-task.cc
+    src/tasks/task.cc
 
     src/utils/tar.cc
     src/utils/utils.cc
