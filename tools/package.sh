@@ -11,6 +11,10 @@ STRIP=strip
 TYPE=$1
 VERSION=$2
 
+if [ "$SHASUM" = "" ];then
+    export SHASUM="shasum"
+fi
+
 if [ "$TYPE" = "" ] || [ "$VERSION" = "" ];then
 	echo "Usage: $0 <type> version>"
 	echo "  example: $0 darwin $RIPE_VERSION"
@@ -41,5 +45,5 @@ ls -lh $PACK
 
 tar cfz $PACK.tar.gz $PACK
 rm -rf $PACK
-shasum $PACK.tar.gz
+$SHASUM $PACK.tar.gz
 echo `pwd`/$PACK.tar.gz
