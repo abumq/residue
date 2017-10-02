@@ -34,16 +34,16 @@ Residue binaries can be run directly on the following platforms.
 Please note, you will need _libstdc++_ (C++11) runtime libraries (please refer to compiler version for the respective binary to check minimum version required)
 
  * Ubuntu 14.04 or higher (64-bit)
- * OS X El Capitan or higher (64-bit)
- * Fedora 24 or higher (64-bit)
+ * macOS 10.11 (El Capitan) or higher (64-bit)
  * Amazon Linux AMI 2017.03 or higher
+ * Fedora 24 or higher (64-bit)
+ * Fedora 19 or higher (64-bit) ([SE Only](https://github.com/muflihun/residue/blob/master/docs/INSTALL.md#special-edition))
  * CentOS 7 or higher (64-bit)
  
 Other distributions that _should_ work (but have not yet been tested)
  * Oracle Linux
  * RHEL 7 or higher (64-bit)
- * Fedora 19 (Schrödinger's Cat) or higher (64-bit)
- * Amazon Linux (AMI 2016.03)
+ * Amazon Linux AMI 2016.03
 
 # Compatibility And Integration
 No matter what language is your application written in, residue is compatible and can be used as central logging server. All you need is client library. You can either write your own using [CLIENT_DEVELOPMENT.md](/docs/CLIENT_DEVELOPMENT.md) guidelines or use existing one.
