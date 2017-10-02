@@ -7,6 +7,7 @@ if [ "$CURR_DIR" != "build" ];then
 	exit;
 fi
 
+STRIP=strip
 TYPE=$1
 VERSION=$2
 
@@ -32,6 +33,9 @@ mkdir $PACK
 cp residue-$VERSION $PACK/residue
 cp residue-config-validator-$VERSION $PACK/residue-config-validator
 cp residue-license-manager-$VERSION $PACK/residue-license-manager
+$STRIP $PACK/residue-license-manager
+$STRIP $PACK/residue-config-validator
+$STRIP $PACK/residue
 
 ls -lh $PACK
 

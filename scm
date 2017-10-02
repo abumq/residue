@@ -10,6 +10,10 @@ if [ "$RIPE" = "" ];then
     export RIPE="ripe"
 fi
 
+if [ "$SHASUM" = "" ];then
+    export SHASUM="shasum"
+fi
+
 if [ "$RESIDUE_SRC_KEY" = "" ];then
     echo "RESIDUE_SRC_KEY not set"
     exit;
@@ -44,7 +48,7 @@ function decr {
 function encr {
     file=$1
 
-    FILE_CHECKSUM=`shasum $file | head -n1 | awk '{print $1;}'`
+    FILE_CHECKSUM=`$SHASUM $file | head -n1 | awk '{print $1;}'`
     CURR_CHECKSUM=`cat $file.chk`
 
     if [ "$FILE_CHECKSUM" != "$CURR_CHECKSUM" ];then
@@ -62,7 +66,7 @@ function hash_check {
         exit;
     fi
 
-    FILE_CHECKSUM=`shasum $file | head -n1 | awk '{print $1;}'`
+    FILE_CHECKSUM=`$SHASUM $file | head -n1 | awk '{print $1;}'`
     CURR_CHECKSUM=`cat $file.chk`
 
     if [ "$FILE_CHECKSUM" != "$CURR_CHECKSUM" ];then
