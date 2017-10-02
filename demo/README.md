@@ -3,8 +3,8 @@ This directory contains a complete demo that devops can use to base their stagin
 
 To check existing demo server please refer to [DEMO.md](/docs/DEMO.md)
 
-## remote-conf-server
-(Optional) This directory contains a PHP script that can be run as a server (remember to write your own server for production environment and not use PHP CLI based server as it's not meant to be used in public environment) and will serve as clients and loggers endpoints.
+### remote-conf-server [optional]
+This directory contains a PHP script that can be run as a server (remember to write your own server for production environment and not use PHP CLI based server as it's not meant to be used in public environment) and will serve as clients and loggers endpoints.
 
 To start the server
 
