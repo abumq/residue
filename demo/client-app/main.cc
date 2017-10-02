@@ -6,7 +6,7 @@ int main(int argc, const char** argv)
 
     try {
         Residue::loadConfiguration(clientConfigFile);
-        Residue::connect();
+        Residue::reconnect();
         Residue::enableCrashHandler();
     } catch (const ResidueException& e) {
         std::cout << "EXCEPTION: " << e.what() << std::endl;
