@@ -7,6 +7,7 @@
 
 ### Fixes
 - Log rotator rounds up to nearest hour
+- Issue with loading license with signature fixed
 
 ## [1.1.0] - 01-10-2017
 ### Changes
