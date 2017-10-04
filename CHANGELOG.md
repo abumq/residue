@@ -5,6 +5,9 @@
 - Moved server and license info to `server_info` object in response
 - Added `license_expiry` in connection response
 
+### Improvements
+- Loggers and clients endpoints only called when available in configuration
+
 ### Fixes
 - Log rotator rounds up to nearest hour
 - Issue with loading license with signature fixed
