@@ -1,5 +1,9 @@
 # Change Log
 
+## [Unreleased]
+### Fixes
+- Log rotator rounds up to nearest hour
+
 ## [1.1.0] - 01-10-2017
 ### Changes
 - `LIST_LOGGING_FILES` admin request now returns logger - files map instead of flat list of files

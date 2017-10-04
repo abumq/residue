@@ -60,7 +60,7 @@ include (FindCURL)
 #require_cpp11()
 check_apple()
 
-list (APPEND CMAKE_CXX_FLAGS " -std=c++11 -O3 -Wall -Wextra -pedantic -pedantic-errors -Werror -Wfatal-errors -Wundef -Wunused -Wno-unknown-warning-option -Wno-pessimizing-move ")
+list (APPEND CMAKE_CXX_FLAGS " -std=c++11 -O0 -Wall -Wextra -pedantic -pedantic-errors -Werror -Wfatal-errors -Wundef -Wunused -Wno-unknown-warning-option -Wno-pessimizing-move ")
 
 if (CMAKE_BUILD_TYPE EQUAL "DEBUG" OR CMAKE_BUILD_TYPE EQUAL "RELWITHDEBINFO")
     message ("-- Exporting debug symbols")
@@ -147,7 +147,6 @@ set (SOURCE_FILES
 
     src/logging/log-request-handler.cc
     src/logging/log-request.cc
-    src/logging/log-rotator.cc
     src/logging/user-log-builder.cc
 
     src/core/request.cc
@@ -181,6 +180,7 @@ set (SOURCE_FILES
     src/extensions/list-logging-files.cc
     src/extensions/clients.cc
 
+    src/tasks/log-rotator.cc
     src/tasks/license-checker-task.cc
     src/tasks/auto-updater.cc
     src/tasks/client-integrity-task.cc
