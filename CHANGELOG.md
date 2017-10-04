@@ -1,6 +1,10 @@
 # Change Log
 
 ## [Unreleased]
+### Changes
+- Moved server and license info to `server_info` object in response
+- Added `license_expiry` in connection response
+
 ### Fixes
 - Log rotator rounds up to nearest hour
 
