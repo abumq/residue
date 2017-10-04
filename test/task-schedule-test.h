@@ -42,18 +42,6 @@ TEST(TaskScheduleTest, TestBasicSchedule)
     SimpleTask t(interv);
     ASSERT_EQ(t.nextExecution(), now + interv);
     ASSERT_EQ(t.intervalCount(), interv);
-
-    interv = 3600;
-    SimpleTaskWithRoundOff t2(interv);
-    unsigned long nearestNextHour = (3600 - (now % 3600));
-    ASSERT_EQ(t2.intervalCount(), nearestNextHour + interv);
-    ASSERT_EQ(t2.nextExecution(), now + nearestNextHour + interv);
-
-    interv = 300;
-    SimpleTaskWithRoundOff t3(interv);
-    nearestNextHour = (3600 - (now % 3600));
-    ASSERT_EQ(t3.intervalCount(), nearestNextHour + interv);
-    ASSERT_EQ(t3.nextExecution(), now + nearestNextHour + interv);
 }
 
 #endif // TASK_SCHEDULE_TEST_H
