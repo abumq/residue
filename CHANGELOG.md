@@ -2,6 +2,7 @@
 
 ## [Unreleased]
 ### Changes
+- Reset license keys to final new keys
 - Moved server and license info to `server_info` object in response
 - Added `license_expiry` in connection response
 
