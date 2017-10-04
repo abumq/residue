@@ -10,7 +10,7 @@
 [![Donate](https://img.shields.io/badge/Donate-PayPal-green.svg)](https://www.paypal.me/MuflihunDotCom/25)
 
 # Overview
-Residue is *logging_as_a_service (LaaS)* software to standardize application logging independent of programming language. 
+Residue is an effort to standardize application logging and making logging as a *microservice* by implementing simple logging API, easily configurable, build-in log rotators, simple way to format your log messages according to need of your application and most of all language-independent.
 
 It is fully configurable and supports high-level security, compression and asyncronous operations. It uses [Easylogging++](https://github.com/muflihun/easyloggingpp) under the hood, that itself is a feature-rich library.
 
