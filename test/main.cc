@@ -12,6 +12,7 @@
 #include "crypto-test.h"
 #include "url-test.h"
 #include "admin-request-test.h"
+#include "task-schedule-test.h"
 
 INITIALIZE_EASYLOGGINGPP
 

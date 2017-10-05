@@ -3,8 +3,8 @@
 CURR_DIR=${PWD##*/}
 
 if [ "$CURR_DIR" != "build" ];then
-	echo "Run this script from 'build' directory"
-	exit;
+    echo "Run this script from 'build' directory"
+    exit;
 fi
 
 STRIP=strip
@@ -16,16 +16,21 @@ if [ "$SHASUM" = "" ];then
 fi
 
 if [ "$TYPE" = "" ] || [ "$VERSION" = "" ];then
-	echo "Usage: $0 <type> version>"
-	echo "  example: $0 darwin $RIPE_VERSION"
-	exit;
+    echo "Usage: $0 <type> version>"
+    echo "  example: $0 darwin $RIPE_VERSION"
+    exit;
+fi
+
+if [ `grep -o ' -O0 ' ../CMakeLists.txt -c` != "0" ];then
+    echo "Error: Optimization not reset"
+    exit;
 fi
 
 PACK=residue-$VERSION-x86_64-$TYPE
 
 if [ -d "$PACK" ];then
-	echo "$PACK already exist. Remove $PACK first"
-	exit;
+    echo "Error: $PACK already exist. Remove $PACK first"
+    exit;
 fi
 
 

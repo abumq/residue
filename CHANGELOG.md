@@ -1,5 +1,19 @@
 # Change Log
 
+## [1.2.0] - 06-10-2017
+### Changes
+- Reset license keys to final new keys
+- Moved server and license info to `server_info` object in response
+- Added `license_expiry` in connection response
+
+### Improvements
+- Loggers and clients endpoints only called when available in configuration
+
+### Fixes
+- Log rotator rounds up to nearest hour
+- Issue with loading license with signature fixed
+- Logging files now lists default logger for client
+
 ## [1.1.0] - 01-10-2017
 ### Changes
 - `LIST_LOGGING_FILES` admin request now returns logger - files map instead of flat list of files
