@@ -1,6 +1,6 @@
 # Change Log
 
-## [Unreleased]
+## [1.2.0] - 06-10-2017
 ### Changes
 - Reset license keys to final new keys
 - Moved server and license info to `server_info` object in response
