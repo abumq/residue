@@ -1,5 +1,9 @@
 # Change Log
 
+## [Unreleased]
+### Changes
+- Removed `v` from `server_info.version`
+
 ## [1.2.0] - 06-10-2017
 ### Changes
 - Reset license keys to final new keys
