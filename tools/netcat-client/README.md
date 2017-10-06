@@ -1,6 +1,7 @@
-                                       ‫بسم الله الرَّحْمَنِ الرَّحِيمِ
+<p align="center">
+   ﷽
+</p>
 
-### Netcat Sample
-These files are only to speed up the development purposes. They should not be used in production.
+### Netcat Client
+These files are to speed up the development and basic demo of JSON payloads.
 
-In order to use this sample and see how residue works, please refer to [DEMO.md](/docs/DEMO.md) document.
