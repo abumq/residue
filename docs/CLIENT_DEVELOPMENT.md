@@ -174,8 +174,10 @@ See also
  * `dispatcher` thread in [Java](https://github.com/muflihun/residue-java/blob/master/src/com/muflihun/residue/Residue.java) library
  * `sendLogRequest` in [Node.js](https://github.com/muflihun/residue-node/blob/master/src/residue.js) library does not have multi-threading so it's dispatched as is (but it does check for all the above items)
 
-### JSON Request
+### JSON Payload
 All the requests are JSON based and each type of connection is sent to specific port as specified in [`PROTOCOL`](/docs/PROTOCOL.md) specification
+
+For those of you who are familiar with bash scripting and PHP scripting we have [`netcat` client for demo purposes](/tools/netcat-client/) that will also help you create correct JSON payload
 
 ### Conclusion
 Core concept is encapsulating the details and making connection to the server as seamless as possible. Once you understand this you should have no problem in writing client libraries for the developers.
