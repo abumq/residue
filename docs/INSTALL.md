@@ -9,9 +9,9 @@ Residue can be installed either by building from the source or by downloading th
 You can download binary from [releases](https://github.com/muflihun/residue/releases) page for your platform. They are standalone binaries but they require some external libraries installed that are mentioned with each release notes.
 
 ## Special Edition
-Linux binaries come in two flavours, standard and special edition. Special edition is exactly same as standard edition except that it's built with older compiler, hence chances of it running on older systems is higher than standard edition.
+Linux binaries come in two flavours, standard and special edition. Special edition is exactly same as standard edition except that it's built with older compiler, hence chances of it running on older systems is higher than that of standard edition.
 
-We always recommend users to use standard edition first and if that does not work only then try special edition.
+We always recommend users to try standard edition first and if that does not work only then try special edition.
 
 # Building From Source
 This document shows you steps to install residue server on your machine. You can install it for development or for production use.
@@ -23,7 +23,8 @@ This document shows you steps to install residue server on your machine. You can
   * [Crypto++](https://www.cryptopp.com/) v5.6.5+ [with Pem Pack](https://raw.githubusercontent.com/muflihun/muflihun.github.io/master/downloads/pem_pack.zip)
   * [CMake Toolchains](https://cmake.org/) v2.8.12
   * [zlib-devel](https://zlib.net/)
-  * [libcurl](https://curl.haxx.se/libcurl/)
+  * [libcurl-devel](https://curl.haxx.se/libcurl/)
+  * [Google Testing Framework](https://github.com/google/googletest/blob/master/googletest/docs/Primer.md)
   
 ## Get Code
 You can either [download code from master branch](https://github.com/muflihun/residue/archive/master.zip) or clone it using `git`:
@@ -72,8 +73,8 @@ If the default path (`/usr/local`) is not where you want things installed, then 
 cmake .. -DCMAKE_INSTALL_PREFIX=/usr/bin
 ```
 
-## If Build Fails...
-Make sure you have all the dependencies installed. You can use following script to install it all and then go back to [Build](#build) section (tested on Ubuntu 14.04 64-bit)
+## Install Script
+Make sure you have all the dependencies installed. You can use following script to install it all and then go back to [Build](#build) section (tested on Ubuntu 14.04 (Trusty) 64-bit)
 
 ```
 ## Essentials
