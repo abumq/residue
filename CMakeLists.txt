@@ -11,9 +11,6 @@ option (disable_curl_support "Build without curl. HTTPS endpoints and auto-updat
 option (use_mine "Use mine whereever possible" OFF)
 option (special_edition "Special edition build" OFF)
 
-# *******************************************************
-# NOTE: Change the optimization with production releases
-# *******************************************************
 set (RESIDUE_MAJOR "1")
 set (RESIDUE_MINOR "2")
 set (RESIDUE_PATCH "0")
@@ -48,6 +45,7 @@ if (production)
 endif()
 
 if (special_edition)
+    message ("-- SPECIAL EDITION BUILD")
     add_definitions (-DRESIDUE_SPECIAL_EDITION)
 endif()
 
@@ -60,7 +58,7 @@ include (FindCURL)
 #require_cpp11()
 check_apple()
 
-list (APPEND CMAKE_CXX_FLAGS " -std=c++11 -O0 -Wall -Wextra -pedantic -pedantic-errors -Werror -Wfatal-errors -Wundef -Wunused -Wno-unknown-warning-option -Wno-pessimizing-move ")
+list (APPEND CMAKE_CXX_FLAGS " -std=c++11 -O3 -Wall -Wextra -pedantic -pedantic-errors -Werror -Wfatal-errors -Wundef -Wunused -Wno-unknown-warning-option -Wno-pessimizing-move ")
 
 if (CMAKE_BUILD_TYPE EQUAL "DEBUG" OR CMAKE_BUILD_TYPE EQUAL "RELWITHDEBINFO")
     message ("-- Exporting debug symbols")
