@@ -13,8 +13,6 @@ This server can be connected via port 8777. This means, it can:
  * Accept plain connections
  * Accept plain log requests
  * Allow unknown clients and loggers
- * Logs are streamed on browser using [`resitail`](https://www.npmjs.com/package/resitail)
- * Streamed logs are not using https
  
 You can stream these logs on your browser via http://residue-demo.muflihun.com:8775/?clientId=muflihun00102030
 
@@ -37,6 +35,6 @@ The most simple demo client can help you understand on how it all works.
  * Now open http://localhost:3009 and check the residue logs streaming tab on your browser
  
 ## Summary
-The streaming UI uses `resitail` which is under development but has enough functionality to show you how residue works and what it does.
+The streaming UI uses [`resitail`](https://www.npmjs.com/package/resitail) which is under development but has enough functionality to show you how residue works and what it does. Currently, it does not support HTTPS, filtering or searching but it's irrelevant to the residue server.
 
 
