@@ -5,10 +5,12 @@
 # Demo Server
 Residue server is hosted on http://residue-demo.muflihun.com to demonstrate how it all works.
 
-This machine has two servers running, one is open and non-restrictive and other is closed server.
+This machine has two servers running.
 
 ## Non-Restrictive Server
-This server can be connected via port 8777. This means, it can:
+This server can be connected via port 8777. 
+
+This is open and non-restrictive server which means, it can:
  
  * Accept plain connections
  * Accept plain log requests
@@ -20,7 +22,7 @@ You can stream these logs on your browser via http://residue-demo.muflihun.com:8
 This server can be connected via port 8772.
 
  * You will need [server public key](/tools/closed-server/server.pub) to access this server
- * Unknown clients are not allowed and there is only one client registered (client_id: `client-1`, ([private key](/tools/closed-server/client-1.pem)))
+ * Unknown clients are not allowed and there is only one client registered (client_id: [`client-1`](/tools/closed-server/client-1.pem)), default logger ID: `default`)
  * Unknown loggers are allowed
 
 You can stream these logs on your browser via http://residue-demo.muflihun.com:8770/?clientId=client-1
