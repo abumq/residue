@@ -1,14 +1,11 @@
 # Change Log
 
-## [Unreleased]
-### Changes
-- Removed `v` from `server_info.version`
-
 ## [1.2.0] - 06-10-2017
 ### Changes
 - Reset license keys to final new keys
 - Moved server and license info to `server_info` object in response
 - Added `license_expiry` in connection response
+- Removed `v` from `server_info.version`
 
 ### Improvements
 - Loggers and clients endpoints only called when available in configuration
