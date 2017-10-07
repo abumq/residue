@@ -15,7 +15,7 @@
 #include <vector>
 #include <algorithm>
 
-using byte = unsigned char;
+typedef unsigned char RipeByte;
 
 #ifdef RIPE_DLL
 #ifdef RIPE_EXPORTS
@@ -108,12 +108,12 @@ public:
     ///
     /// \brief Encrypts data of length with symmetric key of size = keySize with specified initialization vector
     ///
-    static std::string encryptAES(const std::string& data, const byte* key, std::size_t keySize, std::vector<byte>& iv);
+    static std::string encryptAES(const std::string& data, const RipeByte* key, std::size_t keySize, std::vector<RipeByte>& iv);
 
     ///
     /// \brief Decrypts data of specified length with specified key and initialization vector
     ///
-    static std::string decryptAES(const std::string& data, const byte* key, std::size_t keySize, std::vector<byte>& iv);
+    static std::string decryptAES(const std::string& data, const RipeByte* key, std::size_t keySize, std::vector<RipeByte>& iv);
 
     ///
     /// \brief Generate random AES key
@@ -149,9 +149,9 @@ public:
     /// \brief Helper function that takes hex key
     /// \see encryptAES(std::string& data, const std::string& hexKey, const std::string& clientId, const std::string& outputFile)
     ///
-    inline static std::string encryptAES(const std::string& buffer, const std::string& hexKey, std::vector<byte>& iv)
+    inline static std::string encryptAES(const std::string& buffer, const std::string& hexKey, std::vector<RipeByte>& iv)
     {
-        return encryptAES(buffer, reinterpret_cast<const byte*>(hexToString(hexKey).c_str()), hexKey.size() / 2, iv);
+        return encryptAES(buffer, reinterpret_cast<const RipeByte*>(hexToString(hexKey).c_str()), hexKey.size() / 2, iv);
     }
 
     ///
@@ -165,7 +165,7 @@ public:
     ///
     /// \brief Exceptect size of AES cipher when plainDataSize size data is encrypted
     ///
-    inline static std::size_t expectedAESCipherLength(std::size_t plainDataSize) noexcept
+    inline static std::size_t expectedAESCipherLength(std::size_t plainDataSize)
     {
         return (plainDataSize / AES_BLOCK_SIZE + 1) * AES_BLOCK_SIZE;
     }
@@ -174,7 +174,7 @@ public:
     /// \brief normalizeIV If IV with no space is provided e.g, <pre>67e56fee50e22a8c2ba05c0fb2932bfa:</pre> normalized IV
     /// is <pre>67 e5 6f ee 50 e2 2a 8c 2b a0 5c 0f b2 93 2b fa:</pre>
     ///
-    static bool normalizeHex(std::string& iv) noexcept;
+    static bool normalizeHex(std::string& iv);
 
 
 
@@ -325,7 +325,7 @@ public:
     /// \brief expectedBase64Length Returns expected base64 length
     /// \param n Length of input (plain data)
     ///
-    inline static std::size_t expectedBase64Length(std::size_t n) noexcept
+    inline static std::size_t expectedBase64Length(std::size_t n)
     {
         return ((4 * n / 3) + 3) & ~0x03;
     }
@@ -335,7 +335,7 @@ public:
     /// by finding non-base64 character. So it is not necessary
     /// a valid base64 encoding.
     ///
-    inline static bool isBase64(const std::string& data) noexcept
+    inline static bool isBase64(const std::string& data)
     {
         return data.find_first_not_of(BASE64_CHARS) == std::string::npos;
     }
@@ -402,12 +402,12 @@ public:
     /// \brief Calculates expected data size. Assumed IV size = 32
     /// \see prepareData(const char*, const std::string&, const char*)
     ///
-    static std::size_t expectedDataSize(std::size_t plainDataSize, std::size_t clientIdSize = 16) noexcept;
+    static std::size_t expectedDataSize(std::size_t plainDataSize, std::size_t clientIdSize = 16);
 
     ///
     /// \brief Helper function to convert string to hexdecimal e.g, khn = 6b686e.
     ///
-    static std::string stringToHex(const std::string& raw) noexcept;
+    static std::string stringToHex(const std::string& raw);
 
     ///
     /// \brief Helper function to convert hexadecimal input to raw data
@@ -415,24 +415,24 @@ public:
     static std::string hexToString(const std::string& hex);
 
     ///
-    /// \brief Converts vector of byte to raw string
+    /// \brief Converts vector of RipeByte to raw string
     ///
-    static std::string vecToString(const std::vector<byte>& iv) noexcept;
+    static std::string vecToString(const std::vector<RipeByte>& iv);
 
     ///
-    /// \brief ivToVector Converts plain (unsigned char*) IV to std::vector<byte>
+    /// \brief ivToVector Converts plain (unsigned char*) IV to std::vector<RipeByte>
     ///
-    static std::vector<byte> byteToVec(const byte* iv) noexcept;
+    static std::vector<RipeByte> RipeByteToVec(const RipeByte* iv);
 
     ///
     /// \brief version Version of Ripe library
     ///
-    static std::string version() noexcept;
+    static std::string version();
 
 private:
 
-    Ripe() = delete;
-    Ripe(const Ripe&) = delete;
-    Ripe& operator=(const Ripe&) = delete;
+    Ripe() {}
+    Ripe(const Ripe&) {}
+    Ripe& operator=(const Ripe&) { return *this; }
 };
 #endif /* Ripe_h */
