@@ -5,6 +5,9 @@
 # Protocol
 This document explains the residue protocol.
 
+## Delimiter
+All the requests and responses delimiters is same as HTTP protocol, i.e, `\r\n\r\n`
+
 ## Connection
 ### Hello from Client
 First request comes from client library either in plain format or encrypted with server public key, containing:
