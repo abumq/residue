@@ -6,7 +6,7 @@
 This document explains the residue protocol.
 
 ## Delimiter
-All the requests and responses delimiters is same as HTTP protocol, i.e, `\r\n\r\n`
+All the requests and responses are delimited by 4-bytes `<CR><LF><CR><LF>`, i.e, `\r\n\r\n`
 
 ## Connection
 ### Hello from Client
