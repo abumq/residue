@@ -8,12 +8,15 @@
 //  https://github.com/muflihun
 //
 
+#include <cerrno>
 #include <iomanip>
 #include <memory>
 #include <sstream>
+#include <stdexcept>
 #include <fstream>
 #include <vector>
 #include <iostream>
+#include <iterator>
 
 #include <cryptopp/osrng.h>
 #include <cryptopp/base64.h>
@@ -88,7 +91,7 @@ std::string Ripe::encryptRSA(std::string& data, const std::string& key, const st
             encryptedData = Ripe::base64Encode(encryptedData);
         }
         if (!outputFile.empty()) {
-            std::ofstream out(outputFile);
+            std::ofstream out(outputFile.c_str());
             out.write(encryptedData.c_str(), encryptedData.size());
             out.flush();
             out.close();
@@ -145,7 +148,7 @@ bool Ripe::verifyRSA(const std::string& data, const std::string& signatureHex, c
     RSASS<PKCS1v15,SHA>::Verifier verifier(publicKey);
     StringSource ss2(decodedSignature + data, true,
                      new SignatureVerificationFilter(verifier,
-                                                     new ArraySink((byte*)&result, sizeof(result))));
+                                                     new ArraySink((RipeByte*)&result, sizeof(result))));
     return result;
 }
 
@@ -272,11 +275,11 @@ std::string Ripe::generateNewKey(int length)
     return s;
 }
 
-std::string Ripe::encryptAES(const std::string& buffer, const byte* key, std::size_t keySize, std::vector<byte>& iv)
+std::string Ripe::encryptAES(const std::string& buffer, const RipeByte* key, std::size_t keySize, std::vector<RipeByte>& iv)
 {
     SecByteBlock keyBlock(key, keySize);
 
-    byte ivArr[Ripe::AES_BLOCK_SIZE] = {0};
+    RipeByte ivArr[Ripe::AES_BLOCK_SIZE] = {0};
 
     if (iv.empty()) {
         AutoSeededRandomPool rnd;
@@ -296,7 +299,7 @@ std::string Ripe::encryptAES(const std::string& buffer, const byte* key, std::si
     if (iv.empty()) {
         // store for user
         iv.resize(sizeof ivArr);
-        std::copy(std::begin(ivArr), std::end(ivArr), iv.begin());
+        std::copy(ivArr, ivArr + Ripe::AES_BLOCK_SIZE, iv.begin());
     }
 
     // The StreamTransformationFilter adds padding as required.
@@ -311,19 +314,19 @@ std::string Ripe::encryptAES(std::string& data, const std::string& hexKey, const
 {
     std::stringstream ss;
     if (!outputFile.empty()) {
-        std::vector<byte> iv;
+        std::vector<RipeByte> iv;
         if (!ivec.empty()) {
-            byte* ivBytes = reinterpret_cast<byte*>(const_cast<char*>(ivec.data()));
-            iv = Ripe::byteToVec(ivBytes);
+            RipeByte* ivBytes = reinterpret_cast<RipeByte*>(const_cast<char*>(ivec.data()));
+            iv = Ripe::RipeByteToVec(ivBytes);
         }
         std::string encrypted = Ripe::encryptAES(data, hexKey, iv);
 
-        std::ofstream out(outputFile);
+        std::ofstream out(outputFile.c_str());
         out << encrypted.data();
         out.close();
         ss << "IV: " << std::hex << std::setfill('0');
-        for (byte b : iv) {
-            ss << std::setw(2) << static_cast<unsigned int>(b);
+        for (std::vector<RipeByte>::const_iterator it = iv.begin(); it < iv.end(); ++it) {
+            ss << std::setw(2) << static_cast<unsigned int>(*it);
         }
         ss << std::endl;
     } else {
@@ -332,13 +335,13 @@ std::string Ripe::encryptAES(std::string& data, const std::string& hexKey, const
     return ss.str();
 }
 
-std::string Ripe::decryptAES(const std::string& data, const byte* key, std::size_t keySize, std::vector<byte>& iv)
+std::string Ripe::decryptAES(const std::string& data, const RipeByte* key, std::size_t keySize, std::vector<RipeByte>& iv)
 {
     std::string result;
     SecByteBlock keyBlock(key, keySize);
 
-    byte ivArr[Ripe::AES_BLOCK_SIZE] = {0};
-    std::copy(iv.begin(), iv.end(), std::begin(ivArr));
+    RipeByte ivArr[Ripe::AES_BLOCK_SIZE] = {0};
+    std::copy(iv.begin(), iv.end(), ivArr);
 
     CBC_Mode<AES>::Decryption d;
     d.SetKeyWithIV(keyBlock, keyBlock.size(), ivArr);
@@ -371,8 +374,8 @@ std::string Ripe::decryptAES(std::string& data, const std::string& hexKey, std::
         Ripe::normalizeHex(ivec);
     }
 
-    byte* iv = reinterpret_cast<byte*>(const_cast<char*>(ivec.data()));
-    std::vector<byte> ivHex = Ripe::byteToVec(iv);
+    RipeByte* iv = reinterpret_cast<RipeByte*>(const_cast<char*>(ivec.data()));
+    std::vector<RipeByte> ivHex = Ripe::RipeByteToVec(iv);
 
     if (isBase64) {
         data = Ripe::base64Decode(data);
@@ -380,7 +383,7 @@ std::string Ripe::decryptAES(std::string& data, const std::string& hexKey, std::
     if (isHex) {
         data = Ripe::hexToString(data);
     }
-    return Ripe::decryptAES(data, reinterpret_cast<const byte*>(Ripe::hexToString(hexKey).c_str()), hexKey.size() / 2, ivHex);
+    return Ripe::decryptAES(data, reinterpret_cast<const RipeByte*>(Ripe::hexToString(hexKey).c_str()), hexKey.size() / 2, ivHex);
 }
 
 bool Ripe::compressFile(const std::string& gzFilename, const std::string& inputFile)
@@ -396,8 +399,8 @@ bool Ripe::compressFile(const std::string& gzFilename, const std::string& inputF
     std::FILE* in = std::fopen(inputFile.c_str(), "rb");
     std::size_t nRead = 0;
     while((nRead = std::fread(buff, sizeof(char), BUFSIZ, in)) > 0) {
-        int bytes_written = gzwrite(out, buff, nRead);
-        if (bytes_written == 0) {
+        int RipeBytes_written = gzwrite(out, buff, nRead);
+        if (RipeBytes_written == 0) {
            int err_no = 0;
            throw std::runtime_error(
                        std::string("Error during compression " + std::string(gzerror(out, &err_no))).data()
@@ -428,7 +431,7 @@ std::string Ripe::compressString(const std::string& str)
     char outbuffer[ZLIB_BUFFER_SIZE];
     std::string outstring;
 
-    // retrieve the compressed bytes blockwise
+    // retrieve the compressed RipeBytes blockwise
     do {
         zs.next_out = reinterpret_cast<Bytef*>(outbuffer);
         zs.avail_out = sizeof(outbuffer);
@@ -492,14 +495,14 @@ std::string Ripe::decompressString(const std::string& str)
 
 std::string Ripe::prepareData(const std::string& data, const std::string& hexKey, const char* clientId, const std::string& ivec)
 {
-    std::vector<byte> iv;
+    std::vector<RipeByte> iv;
     if (!ivec.empty()) {
         std::string ivector(ivec);
         if (ivector.size() == 32) {
             Ripe::normalizeHex(ivector);
         }
-        byte* ivBytes = reinterpret_cast<byte*>(const_cast<char*>(ivector.data()));
-        iv = Ripe::byteToVec(ivBytes);
+        RipeByte* ivBytes = reinterpret_cast<RipeByte*>(const_cast<char*>(ivector.data()));
+        iv = Ripe::RipeByteToVec(ivBytes);
     }
     std::string encrypted = Ripe::encryptAES(data, hexKey, iv);
     // Encryption Base64 encoding
@@ -508,8 +511,8 @@ std::string Ripe::prepareData(const std::string& data, const std::string& hexKey
     // IV Hex
     std::stringstream ss;
     ss << std::hex << std::setfill('0');
-    for (byte b : iv) {
-        ss << std::setw(2) << static_cast<unsigned int>(b);
+    for (std::vector<RipeByte>::const_iterator it = iv.begin(); it < iv.end(); ++it) {
+        ss << std::setw(2) << static_cast<unsigned int>(*it);
     }
     ss << Ripe::DATA_DELIMITER;
     if (strlen(clientId) > 0) {
@@ -521,7 +524,7 @@ std::string Ripe::prepareData(const std::string& data, const std::string& hexKey
     return fss.str();
 }
 
-bool Ripe::normalizeHex(std::string& iv) noexcept
+bool Ripe::normalizeHex(std::string& iv)
 {
     if (iv.size() == 32) {
         for (int j = 2; j < 32 + 15; j += 2) {
@@ -533,19 +536,19 @@ bool Ripe::normalizeHex(std::string& iv) noexcept
     return false;
 }
 
-std::string Ripe::vecToString(const std::vector<byte>& iv) noexcept
+std::string Ripe::vecToString(const std::vector<RipeByte>& iv)
 {
     std::stringstream ss;
     ss << std::hex << std::setfill('0');
-    for (byte b : iv) {
-        ss << std::setw(2) << static_cast<unsigned int>(b);
+    for (std::vector<RipeByte>::const_iterator it = iv.begin(); it < iv.end(); ++it) {
+        ss << std::setw(2) << static_cast<unsigned int>(*it);
     }
     return ss.str();
 }
 
-std::vector<byte> Ripe::byteToVec(const byte* b) noexcept
+std::vector<RipeByte> Ripe::RipeByteToVec(const RipeByte* b)
 {
-    std::vector<byte> hexData;
+    std::vector<RipeByte> hexData;
 
     std::istringstream ss(reinterpret_cast<const char*>(b));
 
@@ -568,7 +571,7 @@ std::string Ripe::hexToString(const std::string& hex)
     return result;
 }
 
-std::string Ripe::stringToHex(const std::string& raw) noexcept
+std::string Ripe::stringToHex(const std::string& raw)
 {
     std::string result;
     StringSource ss(raw, true,
@@ -580,7 +583,7 @@ std::string Ripe::stringToHex(const std::string& raw) noexcept
     return result;
 }
 
-std::size_t Ripe::expectedDataSize(std::size_t plainDataSize, std::size_t clientIdSize) noexcept
+std::size_t Ripe::expectedDataSize(std::size_t plainDataSize, std::size_t clientIdSize)
 {
     std::size_t dataSize = 32 /* IV */
             + sizeof(DATA_DELIMITER) /* : */
@@ -589,7 +592,7 @@ std::size_t Ripe::expectedDataSize(std::size_t plainDataSize, std::size_t client
     return dataSize + PACKET_DELIMITER_SIZE;
 }
 
-std::string Ripe::version() noexcept
+std::string Ripe::version()
 {
     return RIPE_VERSION;
 }
