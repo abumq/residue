@@ -11,7 +11,7 @@
 #include <cstdio>
 #include <fstream>
 #include <memory>
-#include <Ripe.h>
+#include "include/Ripe.h"
 #include "test.h"
 #include "test/license-manager-for-test.h"
 #include "src/core/configuration.h"
