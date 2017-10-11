@@ -95,12 +95,12 @@ install:
  - cd ..
 
 ## Python
- - wget https://www.python.org/ftp/python/3.6.3/Python-3.6.3.tgz
- - tar xf Python-3.6.3.tgz
- - cd Python-3.6.3
- - ./configure
- - make
- - sudo make install
+# - wget https://www.python.org/ftp/python/3.6.3/Python-3.6.3.tgz
+# - tar xf Python-3.6.3.tgz
+# - cd Python-3.6.3
+# - ./configure
+# - make
+# - sudo make install
 
 ## Easylogging++
  - wget https://github.com/muflihun/easyloggingpp/archive/develop.zip
@@ -120,35 +120,10 @@ install:
  - make
  - sudo make install
 
-## Mine
-# - wget https://github.com/muflihun/mine/archive/develop.zip
-# - unzip develop.zip
-# - cd mine-develop
-# - cmake -Dtest_main_header=ON -Dtest_wstring_conversions=OFF .
-# - make
-# - sudo make install
-
-## Ripe
- - RIPE_VERSION=4.0.0
-# - RIPE_VERSION_URL="$RIPE_VERSION"
-# - wget -O ripe-code.zip https://github.com/muflihun/ripe/archive/$RIPE_VERSION_URL.zip
-# - unzip ripe-code.zip
-# - cd ripe-$RIPE_VERSION
-# - cmake .
-# - make
-# - ls -l
-# - sudo make install
-
 ## Ripe Binaries
- - wget -O ripe-bin.zip https://github.com/muflihun/ripe/releases/download/v4.0.0/ripe-4.0.0-x86_64-linux.zip
- - unzip ripe-bin.zip
-# - tar xfz ripe-bin.tar.gz
-# - cd ripe-4.0.0-x86_64-linux
- - ls -l
- - sudo cp libripe* /usr/lib/
- - sudo cp ripe* /usr/bin/
- - wget https://github.com/muflihun/ripe/releases/download/v4.0.0/Ripe.h
- - sudo cp Ripe.h /usr/include/
+ - wget https://github.com/muflihun/ripe/releases/download/v4.1.0/ripe-4.1.0-x86_64-linux.tar.gz
+ - tar xf ripe-4.1.0-x86_64-linux.tar.gz
+ - sudo cp ripe-4.1.0 /usr/bin/ripe
 
 ## Set env variable for ripe
  - echo $LD_LIBRARY_PATH
@@ -164,7 +139,7 @@ install:
  - mkdir build
  - cd build
  - cmake -Dtest=ON -Dtravis=ON -Denable_extensions=ON ..
- - sudo make VERBOSE=0
+ - sudo make
  - ls -l
  - ldd ./residue
 
