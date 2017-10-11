@@ -101,7 +101,7 @@ cd ..
 wget https://www.python.org/ftp/python/3.6.3/Python-3.6.3.tgz
 tar xf Python-3.6.3.tgz
 cd Python-3.6.3
-./configure --enable-optimizations BASECFLAGS="-static"
+./configure BASECFLAGS="-static" ## Do not use --enable-optimizations with static
 ##> If above fails, try without BASECFLAGS="-static" and manuall change Makefile and append -static to BASECFLAGS
 make
 sudo make install
