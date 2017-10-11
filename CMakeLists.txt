@@ -8,6 +8,7 @@ option (production "Build for production" OFF)
 option (debug "Enable debug logging" OFF)
 option (profiling "Turns profiling on for various scenarios" OFF)
 option (disable_curl_support "Build without curl. HTTPS endpoints and auto-update will not work" OFF)
+option (disable_extensions "Disable extensions support for the build" ON)
 option (use_mine "Use mine whereever possible" OFF)
 option (special_edition "Special edition build" OFF)
 
@@ -58,7 +59,7 @@ include (FindCURL)
 #require_cpp11()
 check_apple()
 
-list (APPEND CMAKE_CXX_FLAGS " -std=c++11 -O3 -Wall -Wextra -pedantic -pedantic-errors -Werror -Wfatal-errors -Wundef -Wunused -Wno-unknown-warning-option -Wno-pessimizing-move ")
+list (APPEND CMAKE_CXX_FLAGS " -std=c++11 -O0 -Wall -Wextra -pedantic -pedantic-errors -Werror -Wfatal-errors -Wundef -Wunused -Wno-unknown-warning-option -Wno-pessimizing-move ")
 
 if (CMAKE_BUILD_TYPE EQUAL "DEBUG" OR CMAKE_BUILD_TYPE EQUAL "RELWITHDEBINFO")
     message ("-- Exporting debug symbols")
@@ -96,11 +97,24 @@ else()
     message ("--==> libz not found")
 endif(ZLIB_FOUND)
 
+# Boost
 message ("-- Check for Boost System (static)")
 set (Boost_USE_STATIC_LIBS ON)
 find_package (Boost REQUIRED COMPONENTS system)
 include_directories (${Boost_INCLUDE_DIR})
 message ("-- libboost: " ${Boost_LIBRARIES})
+
+# Python
+
+if (!disable_extensions)
+    set (PYTHON_LIBRARY "")
+    message ("--==> Extensions are disabled")
+else()
+    add_definitions (-DRESIDUE_HAS_EXTENSIONS)
+    include (FindPythonLibs)
+    find_package(PythonLibs REQUIRED)
+    find_package(PythonInterp REQUIRED)
+endif()
 
 # Check for cryptopp (static)
 set(CryptoPP_USE_STATIC_LIBS ON)
@@ -146,6 +160,7 @@ set (SOURCE_FILES
     src/logging/log-request-handler.cc
     src/logging/log-request.cc
     src/logging/user-log-builder.cc
+    src/logging/log-extension.cc
 
     src/core/request.cc
     src/core/request-handler.cc
@@ -194,6 +209,7 @@ set (SHARED_REQUIRED_LIBS
     ${CMAKE_THREAD_LIBS_INIT}
     ${ZLIB_LIBRARIES}
     ${CRYPTOPP_LIBRARIES}
+    ${PYTHON_LIBRARY}
 )
 
 ############# RESIDUE CORE LIB (STATIC) ###############

@@ -423,6 +423,11 @@ See [archived_log_directory](#archived_log_directory)
 ### `known_loggers_endpoint`
 [String] This is URL same as [`known_clients_endpoint`](#known_clients_endpoint) with JSON object containing same properties as [`known_loggers`](#known_loggers)
 
+### `extensions`
+[Array] You can specify python modules.
+
+Make sure environment variable `PYTHONPATH` is exported correctly
+
 ### `loggers_blacklist`
 [Array] String where each string is logger ID. Whenever request using these loggers are received, they are ignored without notifying the user.
 
