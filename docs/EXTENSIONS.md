@@ -56,5 +56,18 @@ This will print each line with each log received.
 
 Please note, the logging is ignored for internal logger (logger ID: `residue`)
 
+## Test Your Extension
+You can run your extension using following script
+
+```python
+import <module>
+
+<module>.execute('formattedLine', 'clientId', 'loggerId', 1507706003171, 'INFO', 0, 'sourceFile', 'sourceLine', 'sourceFunc', 'log msg', 'threadName', 'threadId', 'applicationName')
+```
+
+Save this as `test.py` and run `python test.py`
+
+Make sure you use compatible executable for python if needed (e.g `python-3.6m test.py`)
+
 ## Samples
 You can have a look at [samples](/samples/extensions) directory to browse for sample extensions
