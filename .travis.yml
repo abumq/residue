@@ -95,9 +95,9 @@ install:
  - cd ..
 
 ## Python
- - wget https://www.python.org/ftp/python/3.6.3/Python-3.6.3.tgz
- - tar xf Python-3.6.3.tgz
- - cd Python-3.6.3
+ - wget https://www.python.org/ftp/python/2.7.14/Python-2.7.14.tgz
+ - tar xf Python-2.7.14.tgz
+ - cd Python-2.7.14
  - ./configure
  - make
  - sudo make install
