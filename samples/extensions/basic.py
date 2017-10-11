@@ -1,4 +1,4 @@
-def execute(formattedLine, clientId, loggerId, datetime, level, vlevel, sourceFile, sourceLine, sourceFunc, msg, threadName, threadId):
+def execute(formattedLine, clientId, loggerId, datetime, level, vlevel, sourceFile, sourceLine, sourceFunc, msg, threadName, threadId, applicationName):
     print("formattedLine: ", formattedLine)
     print("clientId: ", clientId)
     print("loggerId: ", loggerId)
@@ -11,4 +11,5 @@ def execute(formattedLine, clientId, loggerId, datetime, level, vlevel, sourceFi
     print("msg: ", msg)
     print("threadName: ", threadName)
     print("threadId: ", threadId)
+    print("applicationName: ", applicationName)
     return 0
