@@ -24,6 +24,7 @@ This document shows you steps to install residue server on your machine. You can
   * [CMake Toolchains](https://cmake.org/) v2.8.12
   * [zlib-devel](https://zlib.net/)
   * [libcurl-devel](https://curl.haxx.se/libcurl/)
+  * [c-python](https://www.python.org) v3.6.3 (optional, with extensions)
   * [Google Testing Framework](https://github.com/google/googletest/blob/master/googletest/docs/Primer.md)
   
 ## Get Code
@@ -53,6 +54,7 @@ You can define following options in CMake (using `-D<option>=ON`)
 | `production` | Compile for production use      |
 | `profiling`  | Turn on profiling information for making server faster (goes together with `debug`) |
 | `disable_curl_support` | Do not use libcurl. If you turn it off querying https will not be possible |
+| `disable_extensions` | Disable extensions support for the build. Extensions require python |
 | `use_mine` | Use mine crypto library (instead of ripe) whereever possible |
 
 Please consider running unit tests before you move on.
@@ -95,6 +97,14 @@ make
 sudo cp -a include/gtest /usr/include
 sudo cp -a libgtest_main.so libgtest.so /usr/lib/
 cd ..
+
+## Python (Optional with extensions)
+wget https://www.python.org/ftp/python/3.6.3/Python-3.6.3.tgz
+tar xf Python-3.6.3.tgz
+cd Python-3.6.3
+./configure
+make
+sudo make install
 
 ## Easylogging++
 wget -O elpp-master.zip https://github.com/muflihun/easyloggingpp/archive/master.zip
