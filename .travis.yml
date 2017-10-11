@@ -163,7 +163,7 @@ sudo make install
  - cat src/logging/custom-logging.h
  - mkdir build
  - cd build
- - cmake -Dtest=ON -Dtravis=ON -Ddisable_extensions=OFF ..
+ - cmake -Dtest=ON -Dtravis=ON -Denable_extensions=ON ..
  - sudo make VERBOSE=0
  - ls -l
  - ldd ./residue
