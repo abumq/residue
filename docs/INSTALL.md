@@ -24,6 +24,7 @@ This document shows you steps to install residue server on your machine. You can
   * [CMake Toolchains](https://cmake.org/) v2.8.12
   * [zlib-devel](https://zlib.net/)
   * [libcurl-devel](https://curl.haxx.se/libcurl/)
+  * [Python](https://www.python.org) v2.7+ (optional, with extensions)
   * [Google Testing Framework](https://github.com/google/googletest/blob/master/googletest/docs/Primer.md)
   
 ## Get Code
@@ -100,7 +101,7 @@ cd ..
 wget https://www.python.org/ftp/python/2.7.14/Python-2.7.14.tgz
 tar xf Python-2.7.14.tgz
 cd Python-2.7.14
-./configure
+./configure LDFLAGS="-static -static-libgcc" CPPFLAGS="-static"
 make
 sudo make install
 
