@@ -54,6 +54,7 @@ include(residue-dev)
 
 include (FindPackageHandleStandardArgs)
 include (FindCURL)
+include (FindPythonLibs)
 
 #require_cpp11()
 check_apple()
@@ -102,7 +103,8 @@ message ("-- libboost: " ${Boost_LIBRARIES})
 
 if (enable_extensions)
     add_definitions (-DRESIDUE_HAS_EXTENSIONS)
-    include (FindPythonLibs)
+    add_definitions (-DRESIDUE_PYTHON_VERSION="${PYTHONLIBS_VERSION_STRING}")
+    message ("-- python: " ${PYTHON_LIBRARY} " version: " ${PYTHONLIBS_VERSION_STRING})
     find_package(PythonLibs REQUIRED)
     find_package(PythonInterp REQUIRED)
 else()
