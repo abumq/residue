@@ -1,5 +1,12 @@
 # Change Log
 
+## [Unreleased]
+### Added
+- Extension support via python
+
+### Fixes
+- Residue crash handler installed by default - all crashes will be logged via `residue` logger
+
 ## [1.2.1] - 10-10-2017
 ### Updates
 - Updated Ripe to 4.1.0

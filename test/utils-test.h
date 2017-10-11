@@ -50,6 +50,16 @@ TEST(UtilsTest, FileExists)
     ASSERT_FALSE(Utils::fileExists(kUtilsTestFile));
 }
 
+TEST(UtilsTest, ReplaceAll)
+{
+    std::string str("hello");
+    ASSERT_EQ(Utils::replaceAll(str, "ll", "ww"), "hewwo");
+    str = "this is 'test'";
+    ASSERT_EQ(Utils::replaceAll(str, "'", "\\'"), "error Utils::replaceAll => <too many occurrences>. See <incr> parameter");
+    str = "this is 'test'";
+    ASSERT_EQ(Utils::replaceAll(str, "'", "\\'", 2), "this is \\'test\\'");
+}
+
 TEST(UtilsTest, IsJSON)
 {
     static TestData<std::string, bool> Data = {
