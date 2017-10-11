@@ -53,8 +53,7 @@ You can define following options in CMake (using `-D<option>=ON`)
 | `debug`      | Turn on debug logging           |
 | `production` | Compile for production use      |
 | `profiling`  | Turn on profiling information for making server faster (goes together with `debug`) |
-| `disable_curl_support` | Do not use libcurl. If you turn it off querying https will not be possible |
-| `disable_extensions` | Disable extensions support for the build. Extensions require python |
+| `enable_extensions` | Enable extensions support for the build. Extensions require python |
 | `use_mine` | Use mine crypto library (instead of ripe) whereever possible |
 
 Please consider running unit tests before you move on.
@@ -99,9 +98,9 @@ sudo cp -a libgtest_main.so libgtest.so /usr/lib/
 cd ..
 
 ## Python (Optional with extensions)
-wget https://www.python.org/ftp/python/3.6.3/Python-3.6.3.tgz
-tar xf Python-3.6.3.tgz
-cd Python-3.6.3
+wget https://www.python.org/ftp/python/2.7.14/Python-2.7.14.tgz
+tar xf Python-2.7.14.tgz
+cd Python-2.7.14
 ./configure
 make
 sudo make install
