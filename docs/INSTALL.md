@@ -98,10 +98,11 @@ sudo cp -a libgtest_main.so libgtest.so /usr/lib/
 cd ..
 
 ## Python (Optional with extensions)
-wget https://www.python.org/ftp/python/2.7.14/Python-2.7.14.tgz
-tar xf Python-2.7.14.tgz
-cd Python-2.7.14
-./configure
+wget https://www.python.org/ftp/python/3.6.3/Python-3.6.3.tgz
+tar xf Python-3.6.3.tgz
+cd Python-3.6.3
+./configure --enable-optimizations BASECFLAGS="-static"
+##> If above fails, try without BASECFLAGS="-static" and manuall change Makefile and append -static to BASECFLAGS
 make
 sudo make install
 
