@@ -3,7 +3,7 @@
 </p>
 
 # Extensions
-Residue server can be extended using extensions written in python 3.6+
+Residue server can be extended using extensions written in [python v3.6.3+](https://www.python.org/ftp/python/3.6.3/Python-3.6.3.tgz) (see [INSTALL](/docs/INSTALL.docs) for instructions on installation)
 
 You should ensure the server build you are using supports extensions. When you run `residue --version` it will print `(with extension support)` next to version number if the build supports extensions.
 
