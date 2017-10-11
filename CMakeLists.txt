@@ -73,7 +73,7 @@ message ("-- Check for Easylogging++")
 find_package (EASYLOGGINGPP REQUIRED)
 include_directories (${EASYLOGGINGPP_INCLUDE_DIR})
 
-if (!disable_curl_support)
+if (disable_curl_support)
     set (CURL_LIBRARIES "")
     message ("--==> libcurl is disabled")
 else()
@@ -106,7 +106,7 @@ message ("-- libboost: " ${Boost_LIBRARIES})
 
 # Python
 
-if (!disable_extensions)
+if (disable_extensions)
     set (PYTHON_LIBRARY "")
     message ("--==> Extensions are disabled")
 else()

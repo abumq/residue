@@ -94,6 +94,14 @@ install:
  - sudo cp -a libgtest_main.* libgtest.* /usr/lib/
  - cd ..
 
+## Python
+wget https://www.python.org/ftp/python/3.6.3/Python-3.6.3.tgz
+tar xf Python-3.6.3.tgz
+cd Python-3.6.3
+./configure
+make
+sudo make install
+
 ## Easylogging++
  - wget https://github.com/muflihun/easyloggingpp/archive/develop.zip
  - unzip develop.zip
@@ -155,7 +163,7 @@ install:
  - cat src/logging/custom-logging.h
  - mkdir build
  - cd build
- - cmake -Dtest=ON -Dtravis=ON ..
+ - cmake -Dtest=ON -Dtravis=ON -Ddisable_extensions=OFF ..
  - sudo make VERBOSE=0
  - ls -l
  - ldd ./residue
