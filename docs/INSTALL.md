@@ -24,7 +24,6 @@ This document shows you steps to install residue server on your machine. You can
   * [CMake Toolchains](https://cmake.org/) v2.8.12
   * [zlib-devel](https://zlib.net/)
   * [libcurl-devel](https://curl.haxx.se/libcurl/)
-  * [c-python](https://www.python.org) v3.6.3 (optional, with extensions)
   * [Google Testing Framework](https://github.com/google/googletest/blob/master/googletest/docs/Primer.md)
   
 ## Get Code

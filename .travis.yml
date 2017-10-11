@@ -95,12 +95,12 @@ install:
  - cd ..
 
 ## Python
- - wget https://www.python.org/ftp/python/2.7.14/Python-2.7.14.tgz
- - tar xf Python-2.7.14.tgz
- - cd Python-2.7.14
- - ./configure
- - make
- - sudo make install
+# - wget https://www.python.org/ftp/python/2.7.14/Python-2.7.14.tgz
+# - tar xf Python-2.7.14.tgz
+# - cd Python-2.7.14
+# - ./configure
+# - make
+# - sudo make install
 
 ## Easylogging++
  - wget https://github.com/muflihun/easyloggingpp/archive/develop.zip
@@ -138,7 +138,7 @@ install:
  - cat src/logging/custom-logging.h
  - mkdir build
  - cd build
- - cmake -Dtest=ON -Dtravis=ON -Denable_extensions=ON ..
+ - cmake -Dtest=ON -Dtravis=ON -Denable_extensions=OFF ..
  - sudo make
  - ls -l
  - ldd ./residue
