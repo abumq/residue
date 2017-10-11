@@ -78,7 +78,7 @@
             ]
         }
     ],
-    "extensions": [ "basic" ],
+    "extensions": [ ],
     "loggers_blacklist": [
         "bracket",
         "truli"
