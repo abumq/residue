@@ -86,6 +86,11 @@ sudo apt-get install -y cmake build-essential libcurl-dev libz-dev
 ## Boost System
 sudo apt-get install -y libboost-system-dev cmake
     # sudo yum install -y boost-devel boost-devel-static # for rpm
+    
+## Python (Optional, if enable_extensions = ON)
+sudo apt-get install -y python-dev
+   # sudo yum install -y python-devel # for rpm
+   # or search by yum search python | grep -i devel and install appropriate dev package
 
 ## Google Testing Library
 wget -O gtest.tar.gz https://github.com/google/googletest/archive/release-1.7.0.tar.gz
@@ -96,15 +101,6 @@ make
 sudo cp -a include/gtest /usr/include
 sudo cp -a libgtest_main.so libgtest.so /usr/lib/
 cd ..
-
-## Python (Optional with extensions)
-wget https://www.python.org/ftp/python/3.6.3/Python-3.6.3.tgz
-tar xf Python-3.6.3.tgz
-cd Python-3.6.3
-./configure BASECFLAGS="-static" ## Do not use --enable-optimizations with static
-##> If above fails, try without BASECFLAGS="-static" and manuall change Makefile and append -static to BASECFLAGS
-make
-sudo make install
 
 ## Easylogging++
 wget -O elpp-master.zip https://github.com/muflihun/easyloggingpp/archive/master.zip
