@@ -1,3 +1,5 @@
+import time
+
 def execute(formattedLine, clientId, loggerId, datetime, level, vlevel, sourceFile, sourceLine, sourceFunc, msg, threadName, threadId, applicationName):
     print("formattedLine: ", formattedLine)
     print("clientId: ", clientId)
@@ -12,4 +14,5 @@ def execute(formattedLine, clientId, loggerId, datetime, level, vlevel, sourceFi
     print("threadName: ", threadName)
     print("threadId: ", threadId)
     print("applicationName: ", applicationName)
+    time.sleep(3)
     return 0

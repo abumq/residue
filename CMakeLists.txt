@@ -69,10 +69,6 @@ if (travis)
     add_definitions (-DRESIDUE_ON_CI)
 endif()
 
-message ("-- Check for Easylogging++")
-find_package (EASYLOGGINGPP REQUIRED)
-include_directories (${EASYLOGGINGPP_INCLUDE_DIR})
-
 message ("-- Check for libcurl")
 find_package (CURL REQUIRED)
 
@@ -232,7 +228,7 @@ set (CMAKE_INSTALL_RPATH "${CMAKE_INSTALL_PREFIX}/lib")
 
 add_executable (residue-config-validator-bin
     tools/config-validator/main.cc
-    ${EASYLOGGINGPP_INCLUDE_DIR}/easylogging++.cc
+    include/easylogging++.cc
 )
 
 target_compile_definitions (residue-config-validator-bin PUBLIC
@@ -258,7 +254,7 @@ set_target_properties (residue-config-validator-bin PROPERTIES
 
 add_executable (residue-license-manager-bin
     tools/license-manager/main.cc
-    ${EASYLOGGINGPP_INCLUDE_DIR}/easylogging++.cc
+    include/easylogging++.cc
 )
 
 target_compile_definitions (residue-license-manager-bin PUBLIC
@@ -284,7 +280,7 @@ set_target_properties (residue-license-manager-bin PROPERTIES
 
 add_executable (residue-bin
     src/main.cc
-    ${EASYLOGGINGPP_INCLUDE_DIR}/easylogging++.cc
+    include/easylogging++.cc
 )
 
 target_compile_definitions (residue-bin PUBLIC
@@ -323,7 +319,7 @@ if (test)
     add_executable (residue-unit-tests
         include/Ripe.cc
         test/main.cc
-        ${EASYLOGGINGPP_INCLUDE_DIR}/easylogging++.cc
+        include/easylogging++.cc
     )
 
     target_compile_definitions (residue-unit-tests PUBLIC
