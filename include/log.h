@@ -1,7 +1,7 @@
 #ifndef LOG_H
 #define LOG_H
 
-#include "include/easylogging++.h"
+#include <easylogging++.h>
 
 #define RESIDUE_LOGGER_ID "residue"
 
