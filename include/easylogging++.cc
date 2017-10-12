@@ -1,7 +1,7 @@
 //
 //  Bismillah ar-Rahmaan ar-Raheem
 //
-//  Easylogging++ v9.95.1
+//  Easylogging++ v9.95.2
 //  Cross-platform logging library for C++ applications
 //
 //  Copyright (c) 2017 muflihun.com
@@ -2368,7 +2368,6 @@ void LogDispatcher::dispatch(void) {
   if (!m_proceed) {
     return;
   }
-  base::threading::ScopedLock scopedLock(ELPP->lock());
   base::TypedConfigurations* tc = m_logMessage.logger()->m_typedConfigurations;
   if (ELPP->hasFlag(LoggingFlag::StrictLogFileSizeCheck)) {
     tc->validateFileRolling(m_logMessage.level(), ELPP->preRollOutCallback());
@@ -2444,12 +2443,13 @@ void Writer::initializeLogger(const std::string& loggerId, bool lookup, bool nee
     m_logger = ELPP->registeredLoggers()->get(loggerId, ELPP->hasFlag(LoggingFlag::CreateLoggerAutomatically));
   }
   if (m_logger == nullptr) {
-    ELPP->acquireLock();
-    if (!ELPP->registeredLoggers()->has(std::string(base::consts::kDefaultLoggerId))) {
-      // Somehow default logger has been unregistered. Not good! Register again
-      ELPP->registeredLoggers()->get(std::string(base::consts::kDefaultLoggerId));
+    {
+      base::threading::ScopedLock scopedLock(ELPP->lock());
+      if (!ELPP->registeredLoggers()->has(std::string(base::consts::kDefaultLoggerId))) {
+        // Somehow default logger has been unregistered. Not good! Register again
+        ELPP->registeredLoggers()->get(std::string(base::consts::kDefaultLoggerId));
+      }
     }
-    ELPP->releaseLock();  // Need to unlock it for next writer
     Writer(Level::Debug, m_file, m_line, m_func).construct(1, base::consts::kDefaultLoggerId)
         << "Logger [" << loggerId << "] is not registered yet!";
     m_proceed = false;
@@ -2524,7 +2524,7 @@ void Writer::triggerDispatch(void) {
     std::stringstream reasonStream;
     reasonStream << "Fatal log at [" << m_file << ":" << m_line << "]"
                  << " If you wish to disable 'abort on fatal log' please use "
-                 << "el::Helpers::addFlag(el::LoggingFlag::DisableApplicationAbortOnFatalLog)";
+                 << "el::Loggers::addFlag(el::LoggingFlag::DisableApplicationAbortOnFatalLog)";
     base::utils::abort(1, reasonStream.str());
   }
   m_proceed = false;
@@ -2984,11 +2984,11 @@ void Loggers::clearVModules(void) {
 // VersionInfo
 
 const std::string VersionInfo::version(void) {
-  return std::string("9.95.1");
+  return std::string("9.95.2");
 }
 /// @brief Release date of current version
 const std::string VersionInfo::releaseDate(void) {
-  return std::string("12-10-2017 1504hrs");
+  return std::string("12-10-2017 1526hrs");
 }
 
 } // namespace el
