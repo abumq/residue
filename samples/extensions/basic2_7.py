@@ -1,6 +1,4 @@
-import time
-
-def execute(formattedLine, clientId, loggerId, datetime, level, vlevel, sourceFile, sourceLine, sourceFunc, msg, threadName, threadId, applicationName):
+def handle_log(formattedLine, clientId, loggerId, datetime, level, vlevel, sourceFile, sourceLine, sourceFunc, msg, threadName, threadId, applicationName):
     print "formattedLine: ", formattedLine
     print "clientId: ", clientId
     print "loggerId: ", loggerId
@@ -14,5 +12,4 @@ def execute(formattedLine, clientId, loggerId, datetime, level, vlevel, sourceFi
     print "threadName: ", threadName
     print "threadId: ", threadId
     print "applicationName: ", applicationName
-    time.sleep(2)
     return 0
