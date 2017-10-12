@@ -157,7 +157,6 @@ set (SOURCE_FILES
     src/logging/log-request-handler.cc
     src/logging/log-request.cc
     src/logging/user-log-builder.cc
-    src/logging/log-extension.cc
 
     src/core/request.cc
     src/core/request-handler.cc
@@ -189,6 +188,9 @@ set (SOURCE_FILES
     src/plugins/list-tokens.cc
     src/plugins/list-logging-files.cc
     src/plugins/clients.cc
+
+    src/extensions/extension.cc
+    src/extensions/log-extension.cc
 
     src/tasks/log-rotator.cc
     src/tasks/license-checker-task.cc
