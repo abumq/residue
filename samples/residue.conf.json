@@ -81,7 +81,7 @@
     "extensions": {
         "log_extensions": [ 
             "basic",
-            "basic2_7"
+            "to_file"
         ]
     },
     "loggers_blacklist": [
