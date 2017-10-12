@@ -174,6 +174,9 @@ protected:
                                       ]
                                   }
                               ],
+                              "extensions": {
+                                  "log_extensions": ["basic"]
+                              },
                               "loggers_blacklist": [
                                   "bracket",
                                   "truli"
@@ -229,6 +232,7 @@ TEST_F(ConfigurationTest, CheckValues)
     ASSERT_EQ(conf->keySize("client-for-test"), 128);
     ASSERT_EQ(conf->keySize("client-for-test2"), 256);
     ASSERT_EQ(conf->getConfigurationFile("muflihun"), "muflihun-logger.conf");
+    ASSERT_EQ(conf->logExtensions().size(), 1);
 
     LogRequest r(conf.get());
     r.setClientId("client-for-test");
@@ -280,6 +284,7 @@ TEST_F(ConfigurationTest, Save)
     ASSERT_EQ(conf2->knownClientsKeys().size(), 2);
     ASSERT_EQ(conf2->keySize("client-for-test"), 128);
     ASSERT_EQ(conf2->keySize("client-for-test2"), 256);
+    ASSERT_EQ(conf2->logExtensions().size(), conf->logExtensions().size());
 
     LogRequest r(conf2);
     r.setClientId("client-for-test");
