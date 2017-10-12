@@ -79,7 +79,9 @@
         }
     ],
     "extensions": {
-        "log_extensions": [ "basic" ]
+        "log_extensions": [ 
+            "basic"
+        ]
     },
     "loggers_blacklist": [
         "bracket",

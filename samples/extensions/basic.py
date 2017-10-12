@@ -14,5 +14,5 @@ def handle_log(formattedLine, clientId, loggerId, datetime, level, vlevel, sourc
     print("threadName: ", threadName)
     print("threadId: ", threadId)
     print("applicationName: ", applicationName)
-    time.sleep(3)
+    time.sleep(1)
     return 0
