@@ -178,17 +178,17 @@ set (SOURCE_FILES
     src/net/url.cc
     src/net/http-client.cc
 
-    src/extensions/extension.cc
-    src/extensions/update.cc
-    src/extensions/reset.cc
-    src/extensions/check-license.cc
-    src/extensions/reload-config.cc
-    src/extensions/session-details.cc
-    src/extensions/stats.cc
-    src/extensions/rotate.cc
-    src/extensions/list-tokens.cc
-    src/extensions/list-logging-files.cc
-    src/extensions/clients.cc
+    src/plugins/plugin.cc
+    src/plugins/update.cc
+    src/plugins/reset.cc
+    src/plugins/check-license.cc
+    src/plugins/reload-config.cc
+    src/plugins/session-details.cc
+    src/plugins/stats.cc
+    src/plugins/rotate.cc
+    src/plugins/list-tokens.cc
+    src/plugins/list-logging-files.cc
+    src/plugins/clients.cc
 
     src/tasks/log-rotator.cc
     src/tasks/license-checker-task.cc
