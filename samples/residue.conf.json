@@ -80,7 +80,8 @@
     ],
     "extensions": {
         "log_extensions": [ 
-            "basic"
+            "basic",
+            "basic2_7"
         ]
     },
     "loggers_blacklist": [
