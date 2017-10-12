@@ -19,7 +19,7 @@ This document shows you steps to install residue server on your machine. You can
 ## Dependencies
   * C++11 (or higher)
   * Boost v1.53 or higher [Components: [system](http://www.boost.org/doc/libs/1_62_0/libs/system/doc/index.html)]
-  * [Easylogging++](https://github.com/muflihun/easyloggingpp) v9.95.0
+  * [Easylogging++](https://github.com/muflihun/easyloggingpp) v9.95.2
   * [Crypto++](https://www.cryptopp.com/) v5.6.5+ [with Pem Pack](https://raw.githubusercontent.com/muflihun/muflihun.github.io/master/downloads/pem_pack.zip)
   * [CMake Toolchains](https://cmake.org/) v2.8.12
   * [zlib-devel](https://zlib.net/)
