@@ -80,6 +80,8 @@
     ],
     "extensions": {
         "log_extensions": [
+            "to_file",
+            "basic3_6"
         ]
     },
     "loggers_blacklist": [
