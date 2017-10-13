@@ -232,7 +232,11 @@ TEST_F(ConfigurationTest, CheckValues)
     ASSERT_EQ(conf->keySize("client-for-test"), 128);
     ASSERT_EQ(conf->keySize("client-for-test2"), 256);
     ASSERT_EQ(conf->getConfigurationFile("muflihun"), "muflihun-logger.conf");
+#ifdef RESIDUE_HAS_EXTENSIONS
     ASSERT_EQ(conf->logExtensions().size(), 1);
+#else
+    ASSERT_EQ(conf->logExtensions().size(), 0);
+#endif
 
     LogRequest r(conf.get());
     r.setClientId("client-for-test");
