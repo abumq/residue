@@ -1,5 +1,3 @@
-import time
-
 def handle_log(formattedLine, clientId, loggerId, datetime, level, vlevel, sourceFile, sourceLine, sourceFunc, msg, threadName, threadId, applicationName):
     print("formattedLine: ", formattedLine)
     print("clientId: ", clientId)
@@ -14,5 +12,4 @@ def handle_log(formattedLine, clientId, loggerId, datetime, level, vlevel, sourc
     print("threadName: ", threadName)
     print("threadId: ", threadId)
     print("applicationName: ", applicationName)
-    time.sleep(1)
     return 0

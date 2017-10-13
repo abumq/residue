@@ -80,7 +80,6 @@
     ],
     "extensions": {
         "log_extensions": [ 
-            "basic",
             "to_file"
         ]
     },
