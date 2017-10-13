@@ -79,8 +79,7 @@
         }
     ],
     "extensions": {
-        "log_extensions": [ 
-            "to_file"
+        "log_extensions": [
         ]
     },
     "loggers_blacklist": [

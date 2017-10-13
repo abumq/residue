@@ -34,7 +34,7 @@ if [ -d "$PACK" ];then
 fi
 
 
-cmake -DCMAKE_BUILD_TYPE=Release -Duse_mine=OFF -Ddebug=OFF -Dproduction=ON ..
+cmake -DCMAKE_BUILD_TYPE=Release -Duse_mine=OFF -Ddebug=OFF -Dprofiling=OFF -Dproduction=ON ..
 make
 
 echo "Creating $PACK.tar.gz ..."
