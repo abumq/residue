@@ -231,6 +231,9 @@ target_compile_definitions (residue-core PUBLIC
 set (CMAKE_INSTALL_RPATH "${CMAKE_INSTALL_PREFIX}/lib")
 
 
+## Override easylogging++ path
+set(EASYLOGGINGPP_INCLUDE_DIR "include/")
+
 ############# CONFIG VALIDATOR TOOL ###############
 
 add_executable (residue-config-validator-bin
