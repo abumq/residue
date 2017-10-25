@@ -19,10 +19,29 @@ if [ "$RESIDUE_SRC_KEY" = "" ];then
     exit;
 fi
 
+function is_ignore {     
+    result=1;     
+
+    if [ -f ".ripeignore" ];then         
+        result=$(grep -c ^$1$ .ripeignore);     
+    fi;     
+
+    [[ $result = 0 ]] && result=1 || result=0; 
+
+    return $result; 
+}
+
+export -f is_ignore
 
 function decr {
     file=$1
     newfile="${file%????}"
+
+#    is_ignore $newfile
+#    if [ $? -eq 0 ]; then
+#        cp $file $newfile
+#        exit;
+#    fi
 
     result=$(cat $file | $RIPE -d --aes --key $RESIDUE_SRC_KEY --base64 | $RIPE -e --hex)
 
@@ -48,6 +67,17 @@ function decr {
 function encr {
     file=$1
 
+#    is_ignore $file
+#    if [ $? -eq 0 ]; then
+#        echo "Plain $file"
+#        cp $file $file.raw
+#        exit;
+#    else
+#        if [ -f $file.raw ];then
+#            rm $file.raw
+#        fi
+#    fi
+
     FILE_CHECKSUM=`$SHASUM $file | head -n1 | awk '{print $1;}'`
     CURR_CHECKSUM=`cat $file.chk`
 
@@ -60,6 +90,12 @@ function encr {
 
 function hash_check {
     file=$1
+
+#    is_ignore $file
+#    if [ $? -eq 0 ]; then
+#        echo "Ignoring $file"
+#        exit;
+#    fi
 
     if [ ! -f "$file.chk" ];then
         echo "Checksum not available for $file"
