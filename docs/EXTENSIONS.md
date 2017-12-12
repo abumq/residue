@@ -5,6 +5,8 @@
 # Extensions
 [Unstable]
 
+Extensions are currently unavailable in official releases because of unstability.
+
 Residue server can be extended using extensions written in [python v2.7](https://www.python.org/ftp/python/2.7.14/Python-2.7.14.tgz) (see [INSTALL](/docs/INSTALL.docs) for instructions on installation)
 
 You should ensure the server build you are using supports extensions. When you run `residue --version` it will print `(with extension support)` next to version number if the build supports extensions.
