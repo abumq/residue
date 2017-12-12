@@ -1,8 +1,8 @@
 # Change Log
 
-## [Unreleased]
+## [1.2.2]
 ### Added
-- Extension support via python
+- Extension support via python (disabled in official releases - see EXTENSIONS.md under `docs/`)
 
 ### Fixes
 - Residue crash handler installed by default - all crashes will be logged via `residue` logger
