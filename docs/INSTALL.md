@@ -19,11 +19,12 @@ This document shows you steps to install residue server on your machine. You can
 ## Dependencies
   * C++11 (or higher)
   * Boost v1.53 or higher [Components: [system](http://www.boost.org/doc/libs/1_62_0/libs/system/doc/index.html)]
-  * [Easylogging++](https://github.com/muflihun/easyloggingpp) v9.95.0
+  * [Easylogging++](https://github.com/muflihun/easyloggingpp) v9.95.2
   * [Crypto++](https://www.cryptopp.com/) v5.6.5+ [with Pem Pack](https://raw.githubusercontent.com/muflihun/muflihun.github.io/master/downloads/pem_pack.zip)
   * [CMake Toolchains](https://cmake.org/) v2.8.12
   * [zlib-devel](https://zlib.net/)
   * [libcurl-devel](https://curl.haxx.se/libcurl/)
+  * [Python](https://www.python.org) v2.7+ (optional, with extensions)
   * [Google Testing Framework](https://github.com/google/googletest/blob/master/googletest/docs/Primer.md)
   
 ## Get Code
@@ -52,7 +53,7 @@ You can define following options in CMake (using `-D<option>=ON`)
 | `debug`      | Turn on debug logging           |
 | `production` | Compile for production use      |
 | `profiling`  | Turn on profiling information for making server faster (goes together with `debug`) |
-| `disable_curl_support` | Do not use libcurl. If you turn it off querying https will not be possible |
+| `enable_extensions` | Enable extensions support for the build. Extensions require python |
 | `use_mine` | Use mine crypto library (instead of ripe) whereever possible |
 
 Please consider running unit tests before you move on.
@@ -85,6 +86,11 @@ sudo apt-get install -y cmake build-essential libcurl-dev libz-dev
 ## Boost System
 sudo apt-get install -y libboost-system-dev cmake
     # sudo yum install -y boost-devel boost-devel-static # for rpm
+    
+## Python (Optional, if enable_extensions = ON)
+sudo apt-get install -y python-dev
+   # sudo yum install -y python-devel # for rpm
+   # or search by yum search python | grep -i devel and install appropriate dev package
 
 ## Google Testing Library
 wget -O gtest.tar.gz https://github.com/google/googletest/archive/release-1.7.0.tar.gz

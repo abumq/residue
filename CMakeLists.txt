@@ -7,13 +7,13 @@ option (travis "Travis CI" OFF)
 option (production "Build for production" OFF)
 option (debug "Enable debug logging" OFF)
 option (profiling "Turns profiling on for various scenarios" OFF)
-option (disable_curl_support "Build without curl. HTTPS endpoints and auto-update will not work" OFF)
+option (enable_extensions "Enables extensions support for the build" OFF)
 option (use_mine "Use mine whereever possible" OFF)
 option (special_edition "Special edition build" OFF)
 
 set (RESIDUE_MAJOR "1")
 set (RESIDUE_MINOR "2")
-set (RESIDUE_PATCH "1")
+set (RESIDUE_PATCH "2")
 set (RESIDUE_VERSION "${RESIDUE_MAJOR}.${RESIDUE_MINOR}.${RESIDUE_PATCH}")
 set (RESIDUE_NAME "Residue")
 
@@ -54,11 +54,12 @@ include(residue-dev)
 
 include (FindPackageHandleStandardArgs)
 include (FindCURL)
+include (FindPythonLibs)
 
 #require_cpp11()
 check_apple()
 
-list (APPEND CMAKE_CXX_FLAGS " -std=c++11 -O3 -Wall -Wextra -pedantic -pedantic-errors -Werror -Wfatal-errors -Wundef -Wunused -Wno-unknown-warning-option -Wno-pessimizing-move ")
+list (APPEND CMAKE_CXX_FLAGS " -std=c++11 -O3 -Wall -Wextra -pedantic -pedantic-errors -Werror -Wfatal-errors -Wundef -Wno-unused-variable -Wno-unknown-warning-option -Wno-pessimizing-move ")
 
 if (CMAKE_BUILD_TYPE EQUAL "DEBUG" OR CMAKE_BUILD_TYPE EQUAL "RELWITHDEBINFO")
     message ("-- Exporting debug symbols")
@@ -72,20 +73,15 @@ message ("-- Check for Easylogging++")
 find_package (EASYLOGGINGPP REQUIRED)
 include_directories (${EASYLOGGINGPP_INCLUDE_DIR})
 
-if (!disable_curl_support)
-    set (CURL_LIBRARIES "")
-    message ("--==> libcurl is disabled")
-else()
-    message ("-- Check for libcurl")
-    find_package (CURL REQUIRED)
+message ("-- Check for libcurl")
+find_package (CURL REQUIRED)
 
-    if (${CURL_FOUND})
-        add_definitions (-DRESIDUE_HAS_CURL)
-        include_directories (${CURL_INCLUDE_DIRS})
-        message ("-- libcurl: " ${CURL_LIBRARIES} " version: " ${CURL_VERSION_STRING})
-    else()
-        message ("--==> libcurl not found")
-    endif()
+if (${CURL_FOUND})
+    add_definitions (-DRESIDUE_HAS_CURL)
+    include_directories (${CURL_INCLUDE_DIRS})
+    message ("-- libcurl: " ${CURL_LIBRARIES} " version: " ${CURL_VERSION_STRING})
+else()
+    message ("--==> libcurl not found")
 endif()
 
 find_package(ZLIB REQUIRED)
@@ -96,11 +92,26 @@ else()
     message ("--==> libz not found")
 endif(ZLIB_FOUND)
 
+# Boost
 message ("-- Check for Boost System (static)")
 set (Boost_USE_STATIC_LIBS ON)
 find_package (Boost REQUIRED COMPONENTS system)
 include_directories (${Boost_INCLUDE_DIR})
 message ("-- libboost: " ${Boost_LIBRARIES})
+
+# Python
+
+if (enable_extensions)
+    add_definitions (-DRESIDUE_HAS_EXTENSIONS)
+    add_definitions (-DRESIDUE_PYTHON_VERSION="${PYTHONLIBS_VERSION_STRING}")
+    find_package(PythonLibs REQUIRED)
+    find_package(PythonInterp REQUIRED)
+    include_directories(${PYTHON_INCLUDE_DIRS})
+    message ("-- python: " ${PYTHON_LIBRARY} " include: " ${PYTHON_INCLUDE_DIRS} " version: " ${PYTHONLIBS_VERSION_STRING})
+else()
+    set (PYTHON_LIBRARY "")
+    message ("--==> Extensions are disabled")
+endif()
 
 # Check for cryptopp (static)
 set(CryptoPP_USE_STATIC_LIBS ON)
@@ -146,6 +157,7 @@ set (SOURCE_FILES
     src/logging/log-request-handler.cc
     src/logging/log-request.cc
     src/logging/user-log-builder.cc
+    src/logging/logging-queue.cc
 
     src/core/request.cc
     src/core/request-handler.cc
@@ -166,17 +178,20 @@ set (SOURCE_FILES
     src/net/url.cc
     src/net/http-client.cc
 
+    src/plugins/plugin.cc
+    src/plugins/update.cc
+    src/plugins/reset.cc
+    src/plugins/check-license.cc
+    src/plugins/reload-config.cc
+    src/plugins/session-details.cc
+    src/plugins/stats.cc
+    src/plugins/rotate.cc
+    src/plugins/list-tokens.cc
+    src/plugins/list-logging-files.cc
+    src/plugins/clients.cc
+
     src/extensions/extension.cc
-    src/extensions/update.cc
-    src/extensions/reset.cc
-    src/extensions/check-license.cc
-    src/extensions/reload-config.cc
-    src/extensions/session-details.cc
-    src/extensions/stats.cc
-    src/extensions/rotate.cc
-    src/extensions/list-tokens.cc
-    src/extensions/list-logging-files.cc
-    src/extensions/clients.cc
+    src/extensions/log-extension.cc
 
     src/tasks/log-rotator.cc
     src/tasks/license-checker-task.cc
@@ -194,6 +209,7 @@ set (SHARED_REQUIRED_LIBS
     ${CMAKE_THREAD_LIBS_INIT}
     ${ZLIB_LIBRARIES}
     ${CRYPTOPP_LIBRARIES}
+    ${PYTHON_LIBRARY}
 )
 
 ############# RESIDUE CORE LIB (STATIC) ###############
@@ -214,6 +230,9 @@ target_compile_definitions (residue-core PUBLIC
 # Set RPATH to library install path.
 set (CMAKE_INSTALL_RPATH "${CMAKE_INSTALL_PREFIX}/lib")
 
+
+## Override easylogging++ path
+set(EASYLOGGINGPP_INCLUDE_DIR "include/")
 
 ############# CONFIG VALIDATOR TOOL ###############
 

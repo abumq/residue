@@ -19,7 +19,7 @@ Some of the notable features are listed below
 
  * Lightweight: Residue is very light on CPU and RAM. On start-up it will only take approx 2mb of RAM and while running it will keep the memory as clean as possible using as low CPU as possible.
  * Asyncronous: Residue has been built with speed in mind right from the beginning. It runs on 10 threads on idle and an extra threads for scheduled task.
- * _Context switching_ is a concept designed as part of asyncronous processing where a *request queue* is different from *processing queue*. Once all the items from _processing queue_ are processed the _request queue_ and _processed queue_ is swapped. This swapping is what we call *context switching*.
+ * _Context switching_ is a concept designed as part of asyncronous processing where a *backlog* is different from *processing queue*. Once all the items from _processing queue_ are processed, the queues are swapped. This swapping is what we call *context switching*.
  * _Log rotation_ has been built in to the server that runs as scheduled task, allowing you to create backups and compress them without effecting the logging process. Every logger can be set up to have it's own rotation frequency from `hourly` to `yearly` depending on your needs.
  * _Bulk requests_ is another concept that makes logging requests process much faster and make them highly compressible to reduce traffic on the network.
  * Encryption: All the incoming and outgoing data is automatically encrypted. Residue also has several layers and techniques to secure the requests and to prevent unauthorised application from logging without compromising the speed.

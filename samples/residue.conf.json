@@ -9,7 +9,7 @@
     "server_rsa_public_key": "samples/keys/server-1024-public.pem",
     "server_rsa_secret": "",
     "default_key_size": 256,
-    "accept_input": false,
+    "accept_input": true,
     "allow_default_access_code": true,
     "allow_plain_connection": true,
     "allow_unknown_loggers": true,
@@ -47,7 +47,7 @@
         {
             "logger_id": "residue",
             "configuration_file": "samples/configurations/residue-Logger.conf",
-            "rotation_freq": "hourly"
+            "rotation_freq": "never"
         },
         {
             "logger_id": "default",
@@ -57,7 +57,7 @@
         {
             "logger_id": "sample-app",
             "configuration_file": "samples/configurations/sample-app-Logger.conf",
-            "rotation_freq": "hourly",
+            "rotation_freq": "never",
             "access_codes_blacklist": [
                 "ii3faf",
                 "ii3fa2"
