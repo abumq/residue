@@ -9,6 +9,8 @@ Extensions are currently unavailable in official releases because of unstability
 
 Residue server can be extended using extensions written in [python v2.7](https://www.python.org/ftp/python/2.7.14/Python-2.7.14.tgz) (see [INSTALL](/docs/INSTALL.docs) for instructions on installation)
 
+**[Extensions will use Node.js modules instead of python scripts in future releases - hence this document is subject to change]**
+
 You should ensure the server build you are using supports extensions. When you run `residue --version` it will print `(with extension support)` next to version number if the build supports extensions.
 
 These extensions are triggered against log message received. You can use this information to do anything you like with the data, e.g, add it to the database, add it to specific index, send it to bot or web hooks etc.
