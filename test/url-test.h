@@ -13,26 +13,26 @@
 
 using namespace residue;
 
-using TestCaseType = TestCaseWrapper<std::string, std::string, std::string, std::string, std::string, std::string>;
+using URLTestCase = TestCase<std::string, std::string, std::string, std::string, std::string, std::string>;
 
-static TestData<std::string, std::string, std::string, std::string, std::string, std::string> URLTestData = {
-    TestCaseType("https://192.168.1.100:3322/p1?q=1", "https", "192.168.1.100", "3322", "/p1", "q=1"),
-    TestCaseType("http://192.168.1.19:3000/p2?q2=2", "http", "192.168.1.19", "3000", "/p2", "q2=2"),
-    TestCaseType("HTTP://LOCALHOST:3000/PATH?QUERY1=1&QUERY2=2", "HTTP", "LOCALHOST", "3000", "/PATH", "QUERY1=1&QUERY2=2"),
-    TestCaseType("http://localhost:3000/path?query1=1&query2=2", "http", "localhost", "3000", "/path", "query1=1&query2=2"),
-    TestCaseType("http://localhost", "http", "localhost", "80", "", ""),
-    TestCaseType("http://localhost:3000", "http", "localhost", "3000", "", ""),
-    TestCaseType("http://localhost:3000/", "http", "localhost", "3000", "/", ""),
-    TestCaseType("localhost:3000/", "http", "localhost", "3000", "/", ""),
-    TestCaseType("localhost", "http", "localhost", "80", "", ""),
-    TestCaseType("http://localhost", "http", "localhost", "80", "", ""),
-    TestCaseType("https://localhost", "https", "localhost", "443", "", ""),
-    TestCaseType("localhost/", "http", "localhost", "80", "/", ""),
-    TestCaseType("HTTP://LOCALHOST:3000/PATH?QUERY1=1&QUERY2=2", "HTTP", "LOCALHOST", "3000", "/PATH", "QUERY1=1&QUERY2=2"),
+static TestData<URLTestCase> URLTestData = {
+    { "https://192.168.1.100:3322/p1?q=1", "https", "192.168.1.100", "3322", "/p1", "q=1" },
+    { "http://192.168.1.19:3000/p2?q2=2", "http", "192.168.1.19", "3000", "/p2", "q2=2" },
+    { "HTTP://LOCALHOST:3000/PATH?QUERY1=1&QUERY2=2", "HTTP", "LOCALHOST", "3000", "/PATH", "QUERY1=1&QUERY2=2" },
+    { "http://localhost:3000/path?query1=1&query2=2", "http", "localhost", "3000", "/path", "query1=1&query2=2" },
+    { "http://localhost", "http", "localhost", "80", "", "" },
+    { "http://localhost:3000", "http", "localhost", "3000", "", "" },
+    { "http://localhost:3000/", "http", "localhost", "3000", "/", "" },
+    { "localhost:3000/", "http", "localhost", "3000", "/", "" },
+    { "localhost", "http", "localhost", "80", "", "" },
+    { "http://localhost", "http", "localhost", "80", "", "" },
+    { "https://localhost", "https", "localhost", "443", "", "" },
+    { "localhost/", "http", "localhost", "80", "/", "" },
+    { "HTTP://LOCALHOST:3000/PATH?QUERY1=1&QUERY2=2", "HTTP", "LOCALHOST", "3000", "/PATH", "QUERY1=1&QUERY2=2"},
 
 };
 
-void testUrl(const Url& url, const TestCaseType& item)
+void testUrl(const Url& url, const URLTestCase& item)
 {
     ASSERT_EQ(url.protocol(), PARAM(1));
     ASSERT_EQ(url.host(), PARAM(2));

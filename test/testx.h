@@ -1,16 +1,16 @@
 //
 //  Bismillah ar-Rahmaan ar-Raheem
 //
-//  TestX 1.0.2
-//  Single header, header only helper for creating test data
+//  TestX 1.0.3
+//  Single C++11 header for creating typesafe test data
 //
 //  Copyright (c) 2017-present Muflihun Labs
 //
 //  This library is released under the MIT Licence.
 //
-//  https://github.com/muflihun/testx
-//  https://muflihun.github.io
-//  http://muflihun.com
+//  https://github.com/muflihun/testx/
+//  https://muflihun.github.io/
+//  https://muflihun.com/
 //
 #ifndef MUFLIHUN_TEST_X_H
 #define MUFLIHUN_TEST_X_H
@@ -20,40 +20,56 @@
 #include <vector>
 
 namespace muflihun {
-namespace testx {
-
-template <typename... Args>
-class TestCaseWrapper
-{
-public:    
-    template <std::size_t Index>
-    using TestCaseItemType = typename std::remove_reference<
-        decltype(std::get<Index>(std::tuple<Args...>()))
+    namespace testx {
+        
+        /**
+         * @brief Test case with variadic templates. 
+         *
+         * The test case item can be accessed using get<Index> function
+         */
+        template <typename... Args>
+        class TestCase
+        {
+        public:
+            template <std::size_t Index>
+            using TestCaseItemType = typename std::remove_reference<
+            decltype(std::get<Index>(std::tuple<Args...>()))
             >::type;
-
-    TestCaseWrapper(Args... args) : m_data(args...) {
-    }
-    
-    template <std::size_t Index>
-    auto get() const -> TestCaseItemType<Index> { 
-        return std::get<Index>(m_data); 
-    }
-    
-    const std::tuple<Args...>& data() const {
-        return m_data;
-    }
-private:
-    std::tuple<Args...> m_data;
-};
-
-template <typename... T>
-TestCaseWrapper<T...> TestCase(T... t) { return TestCaseWrapper<T...>(t...); }
-
-template <typename... T>
-using TestData = const std::vector<TestCaseWrapper<T...>>;
-
-} // namespace testx
+            
+            TestCase(Args... args) : m_data(args...) {
+            }
+            
+            template <std::size_t Index>
+            auto get() const -> TestCaseItemType<Index> {
+                return std::get<Index>(m_data);
+            }
+            
+            const std::tuple<Args...>& data() const {
+                return m_data;
+            }
+        private:
+            std::tuple<Args...> m_data;
+        };
+        
+        /**
+         * @brief A simple test case container that can be iterated using for (auto& testcase : data) ...
+         */
+        template <typename T>
+        using TestData = const std::vector<T>;
+        
+        /**
+         * @brief A TestData wrapper to explicitly specify the test cases
+         */
+        template <typename... T>
+        using TestDataWrapper = TestData<TestCase<T...>>;
+        
+        /**
+         * @brief A TestCaseWrapper to create test case with implicit type
+         */
+        template <typename... T>
+        TestCase<T...> TestCaseWrapper(T... t) { return TestCase<T...>(t...); }
+        
+    } // namespace testx
 } // namespace muflihun
 
 #endif // MUFLIHUN_TEST_X_H
-
