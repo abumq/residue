@@ -62,7 +62,7 @@ TEST(UtilsTest, ReplaceAll)
 
 TEST(UtilsTest, IsJSON)
 {
-    static TestData<TestCase<std::string, bool>> Data = {
+    static TestData<std::string, bool> Data = {
         { "da024686f7f2da49da6c98253b42fe1c:erezutlgudgbtwza:i3eclcagfnUbK1B==", false },
         { "da024686f7f2da49da6c98253b42fe1c:i3eclcagfnUbK1B==", false },
         { "erezutlgudgbtwza:i3eclcagfnUbK1B==", false },
@@ -80,7 +80,7 @@ TEST(UtilsTest, IsJSON)
 
 TEST(UtilsTest, BigAdd)
 {
-    static TestData<TestCase<std::string, std::string, std::string>> Data = {
+    static TestData<std::string, std::string, std::string> Data = {
         { "123", "123", "246" },
         { "1", "123", "124" },
         { "123", "2", "125" },

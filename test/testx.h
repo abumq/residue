@@ -52,22 +52,22 @@ namespace muflihun {
         };
         
         /**
-         * @brief A simple test case container that can be iterated using for (auto& testcase : data) ...
+         * @brief A test data wrapper
          */
         template <typename T>
-        using TestData = const std::vector<T>;
+        using TestDataW = const std::vector<T>;
         
         /**
-         * @brief A TestData wrapper to explicitly specify the test cases
+         * @brief A simple test case container that can be iterated using for (auto& testcase : data) ...
          */
         template <typename... T>
-        using TestDataWrapper = TestData<TestCase<T...>>;
+        using TestData = TestDataW<TestCase<T...>>;
         
         /**
-         * @brief A TestCaseWrapper to create test case with implicit type
+         * @brief A TestCase wrapper to create test case with implicit type
          */
         template <typename... T>
-        TestCase<T...> TestCaseWrapper(T... t) { return TestCase<T...>(t...); }
+        TestCase<T...> TestCaseW(T... t) { return TestCase<T...>(t...); }
         
     } // namespace testx
 } // namespace muflihun

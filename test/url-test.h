@@ -15,7 +15,7 @@ using namespace residue;
 
 using URLTestCase = TestCase<std::string, std::string, std::string, std::string, std::string, std::string>;
 
-static TestData<URLTestCase> URLTestData = {
+static TestDataW<URLTestCase> URLTestData = {
     { "https://192.168.1.100:3322/p1?q=1", "https", "192.168.1.100", "3322", "/p1", "q=1" },
     { "http://192.168.1.19:3000/p2?q2=2", "http", "192.168.1.19", "3000", "/p2", "q2=2" },
     { "HTTP://LOCALHOST:3000/PATH?QUERY1=1&QUERY2=2", "HTTP", "LOCALHOST", "3000", "/PATH", "QUERY1=1&QUERY2=2" },
