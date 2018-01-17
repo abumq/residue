@@ -12,7 +12,7 @@
 #include <easylogging++.h>
 #include <gtest/gtest.h>
 
-#define PARAM(v) std::get<v>(item)
+#define PARAM(v) item.get<v>()
 
 using namespace muflihun::testx;
 

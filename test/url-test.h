@@ -13,24 +13,26 @@
 
 using namespace residue;
 
+using TestCaseType = TestCaseWrapper<std::string, std::string, std::string, std::string, std::string, std::string>;
+
 static TestData<std::string, std::string, std::string, std::string, std::string, std::string> URLTestData = {
-    TestCase("https://192.168.1.100:3322/p1?q=1", "https", "192.168.1.100", "3322", "/p1", "q=1"),
-    TestCase("http://192.168.1.19:3000/p2?q2=2", "http", "192.168.1.19", "3000", "/p2", "q2=2"),
-    TestCase("HTTP://LOCALHOST:3000/PATH?QUERY1=1&QUERY2=2", "HTTP", "LOCALHOST", "3000", "/PATH", "QUERY1=1&QUERY2=2"),
-    TestCase("http://localhost:3000/path?query1=1&query2=2", "http", "localhost", "3000", "/path", "query1=1&query2=2"),
-    TestCase("http://localhost", "http", "localhost", "80", "", ""),
-    TestCase("http://localhost:3000", "http", "localhost", "3000", "", ""),
-    TestCase("http://localhost:3000/", "http", "localhost", "3000", "/", ""),
-    TestCase("localhost:3000/", "http", "localhost", "3000", "/", ""),
-    TestCase("localhost", "http", "localhost", "80", "", ""),
-    TestCase("http://localhost", "http", "localhost", "80", "", ""),
-    TestCase("https://localhost", "https", "localhost", "443", "", ""),
-    TestCase("localhost/", "http", "localhost", "80", "/", ""),
-    TestCase("HTTP://LOCALHOST:3000/PATH?QUERY1=1&QUERY2=2", "HTTP", "LOCALHOST", "3000", "/PATH", "QUERY1=1&QUERY2=2"),
+    TestCaseType("https://192.168.1.100:3322/p1?q=1", "https", "192.168.1.100", "3322", "/p1", "q=1"),
+    TestCaseType("http://192.168.1.19:3000/p2?q2=2", "http", "192.168.1.19", "3000", "/p2", "q2=2"),
+    TestCaseType("HTTP://LOCALHOST:3000/PATH?QUERY1=1&QUERY2=2", "HTTP", "LOCALHOST", "3000", "/PATH", "QUERY1=1&QUERY2=2"),
+    TestCaseType("http://localhost:3000/path?query1=1&query2=2", "http", "localhost", "3000", "/path", "query1=1&query2=2"),
+    TestCaseType("http://localhost", "http", "localhost", "80", "", ""),
+    TestCaseType("http://localhost:3000", "http", "localhost", "3000", "", ""),
+    TestCaseType("http://localhost:3000/", "http", "localhost", "3000", "/", ""),
+    TestCaseType("localhost:3000/", "http", "localhost", "3000", "/", ""),
+    TestCaseType("localhost", "http", "localhost", "80", "", ""),
+    TestCaseType("http://localhost", "http", "localhost", "80", "", ""),
+    TestCaseType("https://localhost", "https", "localhost", "443", "", ""),
+    TestCaseType("localhost/", "http", "localhost", "80", "/", ""),
+    TestCaseType("HTTP://LOCALHOST:3000/PATH?QUERY1=1&QUERY2=2", "HTTP", "LOCALHOST", "3000", "/PATH", "QUERY1=1&QUERY2=2"),
 
 };
 
-void testUrl(const Url& url, const std::tuple<std::string, std::string, std::string, std::string, std::string, std::string>& item)
+void testUrl(const Url& url, const TestCaseType& item)
 {
     ASSERT_EQ(url.protocol(), PARAM(1));
     ASSERT_EQ(url.host(), PARAM(2));
@@ -64,9 +66,9 @@ TEST(UrlTest, TestUrlsAssignment)
     const auto& item1 = URLTestData.at(0);
     const auto& item2 = URLTestData.at(1);
 
-    Url url1(std::get<0>(item1));
-    Url url2(std::get<0>(item2));
-    Url url3(std::get<0>(item1));
+    Url url1(item1.get<0>());
+    Url url2(item2.get<0>());
+    Url url3(item1.get<0>());
 
     testUrl(url1, item1);
     testUrl(url2, item2);

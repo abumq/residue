@@ -62,13 +62,14 @@ TEST(UtilsTest, ReplaceAll)
 
 TEST(UtilsTest, IsJSON)
 {
+    using TestCaseType = TestCaseWrapper<std::string, bool>;
     static TestData<std::string, bool> Data = {
-        TestCase("da024686f7f2da49da6c98253b42fe1c:erezutlgudgbtwza:i3eclcagfnUbK1B==", false),
-        TestCase("da024686f7f2da49da6c98253b42fe1c:i3eclcagfnUbK1B==", false),
-        TestCase("erezutlgudgbtwza:i3eclcagfnUbK1B==", false),
-        TestCase("i3eclcagfnUbK1B==", false),
-        TestCase("{'json':true}", true),
-        TestCase("   { ' json':true}", true),
+        TestCaseType("da024686f7f2da49da6c98253b42fe1c:erezutlgudgbtwza:i3eclcagfnUbK1B==", false),
+        TestCaseType("da024686f7f2da49da6c98253b42fe1c:i3eclcagfnUbK1B==", false),
+        TestCaseType("erezutlgudgbtwza:i3eclcagfnUbK1B==", false),
+        TestCaseType("i3eclcagfnUbK1B==", false),
+        TestCaseType("{'json':true}", true),
+        TestCaseType("   { ' json':true}", true),
     };
     for (const auto& item : Data) {
         auto first = PARAM(0);
@@ -79,16 +80,18 @@ TEST(UtilsTest, IsJSON)
 
 TEST(UtilsTest, BigAdd)
 {
+    using TestCaseType = TestCaseWrapper<std::string, std::string, std::string>;
+    
     static TestData<std::string, std::string, std::string> Data = {
-        TestCase("123", "123", "246"),
-        TestCase("1", "123", "124"),
-        TestCase("123", "2", "125"),
-        TestCase("12", "123", "135"),
-        TestCase("123", "14", "137"),
-        TestCase("123456789", "987654321", "1111111110"),
-        TestCase("234324828942934", "258149112886176", "492473941829110"),
-        TestCase("234324828942934", "23824283943242", "258149112886176"),
-        TestCase("234324828942934258149112886176258149112886176", "234324828942934258149112886176258149112886176", "468649657885868516298225772352516298225772352"),
+        TestCaseType("123", "123", "246"),
+        TestCaseType("1", "123", "124"),
+        TestCaseType("123", "2", "125"),
+        TestCaseType("12", "123", "135"),
+        TestCaseType("123", "14", "137"),
+        TestCaseType("123456789", "987654321", "1111111110"),
+        TestCaseType("234324828942934", "258149112886176", "492473941829110"),
+        TestCaseType("234324828942934", "23824283943242", "258149112886176"),
+        TestCaseType("234324828942934258149112886176258149112886176", "234324828942934258149112886176258149112886176", "468649657885868516298225772352516298225772352"),
     };
     for (const auto& item : Data) {
         auto first = PARAM(0);
