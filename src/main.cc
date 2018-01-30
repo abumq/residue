@@ -147,18 +147,8 @@ void printVersion(bool addSpaces = false)
 #ifdef RESIDUE_HAS_EXTENSIONS
     std::cout << " (with extension support) [Python " << RESIDUE_PYTHON_VERSION << "]";
 #endif
-    std::cout << std::endl;
-    if (addSpaces) {
-        std::cout << "          ";
-    }
-    std::cout << "[" << __DATE__ << ", " << __TIME__ << "]" << std::endl;
-    if (addSpaces) {
-        std::cout << "          ";
-    }
-    std::cout << "Based on Easylogging++ v" << el::VersionInfo::version() << std::endl;
-    if (addSpaces) {
-        std::cout << std::endl;
-    }
+    std::cout << "\n" << (addSpaces ? "  " : "") << "Built on "
+              << __DATE__ << ", " << __TIME__ << std::endl;
 }
 
 void interruptHandler(int)
