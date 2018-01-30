@@ -11,16 +11,17 @@
 #include <cstdio>
 #include <fstream>
 #include <memory>
-#include "include/Ripe.h"
+#include "deps/ripe/Ripe.h"
 #include "test.h"
-#include "test/license-manager-for-test.h"
 #include "src/core/configuration.h"
 #include "src/core/registry.h"
 #include "src/logging/user-log-builder.h"
 #include "src/logging/log-request-handler.h"
 #include "src/connect/connection-request.h"
+#include "license-manager-for-test.h"
 
 using namespace residue;
+using namespace licensepp;
 
 static const char* kConfigurationFile = "configuration.json";
 static const char* kLoggerConfDefault = "default-logger.conf";

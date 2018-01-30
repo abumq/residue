@@ -8,7 +8,6 @@
 #include "test.h"
 #include "configuration-test.h"
 #include "utils-test.h"
-#include "license-manager-test.h"
 #include "crypto-test.h"
 #include "url-test.h"
 #include "admin-request-test.h"
