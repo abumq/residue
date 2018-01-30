@@ -39,6 +39,7 @@
 #endif
 #include "include/log.h"
 #include "src/core/configuration.h"
+#include "src/crypto/base64.h"
 #include "src/core/registry.h"
 #include "src/core/command-handler.h"
 #include "src/core/residue-exception.h"
@@ -140,7 +141,7 @@ std::tuple<bool, el::LogBuilder*> setupEasylogging(Configuration* configuration)
 
 void printVersion(bool addSpaces = false)
 {
-    std::cout << "Residue v" << RESIDUE_VERSION;
+    std::cout <<  (addSpaces ? "  " : "") << "Residue v" << RESIDUE_VERSION;
 #ifdef RESIDUE_SPECIAL_EDITION
     std::cout << "-SE";
 #endif
@@ -224,13 +225,10 @@ int main(int argc, char* argv[])
     }
     el::Helpers::setCrashHandler(elppCrashHandler);
 
-std::string art(R"(
-  ___        _    _
- | _ \___ __(_)__| |_  _ ___
- |   / -_|_-< / _` | || / -_)
- |_|_\___/__/_\__,_|\_,_\___|
-  )");
-    std::cout << art;
+    std::cout << Base64::decode("ICBfX18gICAgICAgIF8gICAgXwogfCBfIFx"
+                                "fX18gX18oXylfX3wgfF8gIF8gX19fCiB8ICA"
+                                "gLyAtX3xfLTwgLyBfYCB8IHx8IC8gLV8pCiB"
+                                "8X3xfXF9fXy9fXy9fXF9fLF98XF8sX1xfX198") << std::endl;
     printVersion(true);
 
     Configuration config(argv[1]);
