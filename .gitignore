@@ -1,6 +1,6 @@
 logs/*
 .DS_Store
-CMakeLists.txt.user
+CMakeLists.txt.user*
 CMakeFiles/*
 build/*
 samples/clients/java
