@@ -70,6 +70,6 @@ We're also actively working on client libraries for residue in other languages. 
 | `master` | GNU/Linux 4.4 / Ubuntu 4.8.4 64-bit / `g++-7` | [![Build Status](https://travis-matrix-badges.herokuapp.com/repos/muflihun/residue/branches/master/5)](https://travis-ci.org/muflihun/residue) |
 
 # License
-Please see [LICENSE.md](/LICENSE.md) for licensing. You are free to use or share the binaries however the residue server license must obtained from an authorised authority in order to host the server.
+Please see [LICENSE.md](/LICENSE.md) for licensing.
 
   [banner]: https://raw.githubusercontent.com/muflihun/residue/master/docs/Residue.png
