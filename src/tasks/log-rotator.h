@@ -24,7 +24,6 @@
 
 #include <unordered_map>
 #include <vector>
-#include <tuple>
 #include "src/tasks/task.h"
 
 namespace residue {
@@ -43,7 +42,11 @@ public:
     ///
     static const unsigned long LENIENCY_THRESHOLD;
 
-    using ArchiveItem = std::tuple<std::string, std::string, std::map<std::string, std::string>>;
+    struct ArchiveItem {
+        std::string loggerId;
+        std::string archiveFilename;
+        std::map<std::string, std::string> files;
+    };
 
     explicit LogRotator(Registry* registry,
                         unsigned int interval);

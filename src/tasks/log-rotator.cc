@@ -119,13 +119,10 @@ void LogRotator::archiveRotatedItems()
     RVLOG_IF(!m_archiveItems.empty(), RV_DETAILS) << "Archiving rotated logs... [Total loggers: " << m_archiveItems.size() << "]";
     for (auto item : m_archiveItems) {
         std::thread t([&]() {
-            std::string loggerId = std::get<0>(item);
-            std::string archiveFilename = std::get<1>(item);
-            std::map<std::string, std::string> files = std::get<2>(item);
             el::Helpers::setThreadName("LogArchiver");
-            RLOG(INFO) << "Archiving for [" << loggerId << "] => [" << archiveFilename
-                       << "] containing " << files.size() << " files";
-            archiveAndCompress(loggerId, archiveFilename, files);
+            RLOG(INFO) << "Archiving for [" << item.loggerId << "] => [" << item.archiveFilename
+                       << "] containing " << item.files.size() << " files";
+            archiveAndCompress(item.loggerId, item.archiveFilename, item.files);
         });
         t.join();
     }
@@ -323,7 +320,7 @@ void LogRotator::rotate(const std::string& loggerId)
     float timeTakenInSec = static_cast<float>(m_timeTaken / 1000.0f);
     DRVLOG_IF(loggerId != RESIDUE_LOGGER_ID, RV_DEBUG) << "Took " << timeTakenInSec << " s rotate logs for logger [" << loggerId << "] (" << files.size() << " files)";
 #endif
-    m_archiveItems.push_back(std::make_tuple(loggerId, destinationDir + el::base::consts::kFilePathSeperator + archiveFilename, files));
+    m_archiveItems.push_back({loggerId, destinationDir + el::base::consts::kFilePathSeperator + archiveFilename, files});
 }
 
 void LogRotator::archiveAndCompress(const std::string& loggerId, const std::string& archiveFilename, const std::map<std::string, std::string>& files) {
