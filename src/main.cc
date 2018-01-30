@@ -81,7 +81,7 @@ std::string getVerboseSeverityName(const el::LogMessage* message)
     return VERBOSE_SEVERITY_MAP.at(message->verboseLevel());
 }
 
-std::tuple<bool, el::LogBuilder*> setupEasylogging(Configuration* configuration)
+el::LogBuilder* configureLogging(Configuration* configuration)
 {
     // Configure Easylogging++ to custom settings for residue server
 
@@ -136,7 +136,7 @@ std::tuple<bool, el::LogBuilder*> setupEasylogging(Configuration* configuration)
     configurator->setUserLogBuilder(static_cast<const UserLogBuilder*>(logBuilder.get()));
     configurator->setEnabled(true);
 
-    return std::make_tuple(true, logBuilder.get());
+    return logBuilder.get();
 }
 
 void printVersion(bool addSpaces = false)
@@ -228,7 +228,9 @@ int main(int argc, char* argv[])
     std::cout << Base64::decode("ICBfX18gICAgICAgIF8gICAgXwogfCBfIFx"
                                 "fX18gX18oXylfX3wgfF8gIF8gX19fCiB8ICA"
                                 "gLyAtX3xfLTwgLyBfYCB8IHx8IC8gLV8pCiB"
-                                "8X3xfXF9fXy9fXy9fXF9fLF98XF8sX1xfX198") << std::endl;
+                                "8X3xfXF9fXy9fXy9fXF9fLF98XF8sX1xfX198")
+              << std::endl;
+
     printVersion(true);
 
     Configuration config(argv[1]);
@@ -242,11 +244,9 @@ int main(int argc, char* argv[])
         RVLOG(RV_NOTICE) << "Unknown loggers are not be allowed";
     }
 
-    std::tuple<bool, el::LogBuilder*> elSetup = setupEasylogging(&config);
+    el::LogBuilder* logBuilder = configureLogging(&config);
 
-    if (!std::get<0>(elSetup)) {
-        return 1;
-    }
+    CHECK_NOTNULL(logBuilder) << "Unexpected error while configuring Easylogging++";
 
     try {
         Registry registry(&config);
@@ -276,7 +276,7 @@ int main(int argc, char* argv[])
         threads.push_back(std::thread([&]() {
             el::Helpers::setThreadName("LogHandler");
             boost::asio::io_service io_service;
-            LogRequestHandler logRequestHandler(&registry, std::get<1>(elSetup));
+            LogRequestHandler logRequestHandler(&registry, logBuilder);
             logRequestHandler.start(); // Start handling incoming requests
             Server svr(io_service, config.loggingPort(), &logRequestHandler);
             io_service.run();
