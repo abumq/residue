@@ -28,7 +28,6 @@
 #include <unordered_map>
 #include <unordered_set>
 #include <vector>
-#include "deps/licensepp/include/license.h"
 #include "src/non-copyable.h"
 #include "src/clients/client.h"
 #include "src/core/json-object.h"
@@ -94,7 +93,6 @@ public:
     void load(const std::string& configurationFile);
     void loadFromInput(std::string&& jsonStr);
     bool validateConfigFile(const std::string& filename) const;
-    bool loadAndValidateLicense();
 
     inline void reload()
     {
@@ -278,16 +276,6 @@ public:
         return m_serverRSASecret;
     }
 
-    inline const std::string& licenseeSignature() const
-    {
-        return m_licenseeSignature;
-    }
-
-    inline const std::string& licenseContents() const
-    {
-        return m_licenseContents;
-    }
-
     inline unsigned int keySize(const std::string& clientId) const
     {
         if (clientId.empty() || m_keySizes.find(clientId) == m_keySizes.end()) {
@@ -321,11 +309,6 @@ public:
         return m_knownClientsEndpoint;
     }
 
-    inline const licensepp::License* license() const
-    {
-        return &m_license;
-    }
-
     std::string findLoggerUser(const std::string& loggerId) const;
 
     inline unsigned int fileMode() const
@@ -335,8 +318,6 @@ public:
 
 private:
     friend class Clients;
-
-    licensepp::License m_license;
 
     std::string m_configurationFile;
 
@@ -383,11 +364,6 @@ private:
     std::string m_archivedLogDirectory;
     std::string m_archivedLogFilename;
     std::string m_archivedLogCompressedFilename;
-
-    std::string m_licenseKeyPath;
-    std::string m_licenseeSignaturePath;
-    std::string m_licenseContents;
-    std::string m_licenseeSignature;
 
     std::string m_serverKey;
     RSA::KeyPair m_serverRSAKey;

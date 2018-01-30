@@ -93,9 +93,6 @@ void Configuration::loadFromInput(std::string&& jsonStr)
     m_serverRSAKey.privateKey.clear();
     m_serverRSAKey.publicKey.clear();
 #endif
-    m_licenseContents.clear();
-    m_licenseeSignaturePath.clear();
-    m_licenseeSignature.clear();
     m_knownLoggerUserMap.clear();
     m_knownClientDefaultLogger.clear();
     m_logExtensions.clear();
@@ -110,35 +107,6 @@ void Configuration::loadFromInput(std::string&& jsonStr)
         m_errors = jsonObject.lastError();
         return;
     }
-
-    m_licenseKeyPath = jsonObject.getString("license_key_path", "");
-    if (m_licenseKeyPath.empty()) {
-        errorStream << "  Please enter license_key_path in configuration" << std::endl;
-    } else {
-        std::ifstream licensePathFile(m_licenseKeyPath);
-        if (!licensePathFile.is_open()) {
-            errorStream << "  Unable to read file [" << m_licenseKeyPath << "]. Make sure residue has read permissions to the file." << std::endl;
-        } else {
-            m_licenseContents = std::string((std::istreambuf_iterator<char>(licensePathFile)),
-                                              (std::istreambuf_iterator<char>()));
-            licensePathFile.close();
-        }
-    }
-
-    m_licenseeSignaturePath = jsonObject.getString("licensee_signature_path", "");
-    if (!m_licenseeSignaturePath.empty()) {
-        std::ifstream signPathFileStream(m_licenseeSignaturePath);
-        if (!signPathFileStream.is_open()) {
-            errorStream << "  Unable to read file [" << m_licenseeSignaturePath << "]. Make sure residue has read permissions to the file." << std::endl;
-        } else {
-            m_licenseeSignature = std::string((std::istreambuf_iterator<char>(signPathFileStream)),
-                                              (std::istreambuf_iterator<char>()));
-            signPathFileStream.close();
-            Utils::trim(m_licenseeSignature);
-        }
-    }
-
-    loadAndValidateLicense();
 
     m_adminPort = jsonObject.getUInt("admin_port", 8776);
     m_connectPort = jsonObject.getUInt("connect_port", 8777);
@@ -691,10 +659,6 @@ bool Configuration::save(const std::string& outputFile)
 {
     std::lock_guard<std::mutex> lock(m_mutex);
     JsonObject::Json j;
-    j["license_key_path"] = m_licenseKeyPath;
-    if (!m_licenseeSignaturePath.empty()) {
-        j["licensee_signature_path"] = m_licenseeSignaturePath;
-    }
     j["admin_port"] = adminPort();
     j["connect_port"] = connectPort();
     j["token_port"] = tokenPort();
@@ -884,15 +848,6 @@ bool Configuration::validateConfigFile(const std::string& filename) const
     }
     fs.close();
     return result;
-}
-
-bool Configuration::loadAndValidateLicense()
-{
-    m_license.setLicensee("default");
-    m_license.setExpiryDate(Utils::nowUtc() + 100000);
-    m_license.setIssuingAuthorityId("default");
-    m_license.setIssueDate(Utils::nowUtc() - 100000);
-    return true;
 }
 
 void Configuration::load(const std::string& configurationFile)

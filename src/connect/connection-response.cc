@@ -71,9 +71,6 @@ void ConnectionResponse::serialize(std::string& output) const
         ss << "-SE";
 #endif
         serverInfo.insert(std::make_pair("version", ss.str()));
-        serverInfo.insert(std::make_pair("licensee", m_configuration->license()->licensee()));
-        serverInfo.insert(std::make_pair("license_expiry", m_configuration->license()->formattedExpiry()));
-        serverInfo.insert(std::make_pair("licensing_authority", m_configuration->license()->issuingAuthorityId()));
         root["server_info"] = serverInfo;
     }
     if (!m_errorText.empty()) {

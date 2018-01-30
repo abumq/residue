@@ -250,15 +250,6 @@ std::string art(R"(
         return 1;
     }
 
-    if (config.loadAndValidateLicense()) {
-        //LicenseManager licenseManager;
-        //std::cout << "Licensed to " << config.license()->licensee() << " by " << licenseManager.getIssuingAuthority(config.license())->name() << std::endl;
-        //std::cout << "Subscription is active until " << config.license()->formattedExpiry() << std::endl << std::endl;
-    } else {
-        RLOG(ERROR) << "Your residue server license is no longer valid. Expiry: " << config.license()->formattedExpiry();
-        return 1;
-    }
-
     if (!config.hasFlag(Configuration::Flag::ALLOW_UNKNOWN_LOGGERS)) {
         RVLOG(RV_NOTICE) << "Unknown loggers are not be allowed";
     }
@@ -327,13 +318,6 @@ std::string art(R"(
             registry.setLogRotator(&rotator);
             rotator.start();
         }));
-
-        // license checker task
-        /*threads.push_back(std::thread([&]() {
-            el::Helpers::setThreadName("LicenseCheckerTask");
-            LicenseCheckerTask licenseCheckerTask(&registry, 86400); // daily check
-            licenseCheckerTask.start();
-        }));*/
 
         // auto updater
         threads.push_back(std::thread([&]() {

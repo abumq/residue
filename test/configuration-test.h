@@ -33,10 +33,8 @@
 #include "src/logging/user-log-builder.h"
 #include "src/logging/log-request-handler.h"
 #include "src/connect/connection-request.h"
-#include "license-manager-for-test.h"
 
 using namespace residue;
-using namespace licensepp;
 
 static const char* kConfigurationFile = "configuration.json";
 static const char* kLoggerConfDefault = "default-logger.conf";
@@ -45,7 +43,6 @@ static const char* kLoggerConfResidue = "residue-logger.conf";
 static const char* kLoggerConfMuflihun = "muflihun-logger.conf";
 static const char* kPrivateKeyFile = "private-key-for-test.pem";
 static const char* kPublicKeyFile = "public-key-for-test.pem";
-static const char* kLicenseFileForTesting = "license_file_for_testing";
 
 class ConfigurationTest : public ::testing::Test
 {
@@ -98,15 +95,6 @@ protected:
         fs.flush();
         fs.close();
 
-        LicenseManagerForTest l;
-        const IssuingAuthority* authority = &(LicenseManagerKeysForTest::LICENSE_ISSUING_AUTHORITIES.at(0));
-        fs.open(kLicenseFileForTesting, std::fstream::out);
-        fs << l.issue("residue-test-case", 24U, authority).toString();
-        fs.flush();
-        fs.close();
-
-        LOG(INFO) << "Issued license for testing!";
-
         // keys
         LOG(INFO) << "generating keypair";
         Ripe::writeRSAKeyPair(kPublicKeyFile, kPrivateKeyFile);
@@ -116,7 +104,6 @@ protected:
         fs.open (kConfigurationFile, std::fstream::out);
         fs << std::string(R"(
                           {
-                              "license_key_path": "license_file_for_testing",
                               "admin_port": 87761,
                               "connect_port": 87771,
                               "token_port": 87781,
