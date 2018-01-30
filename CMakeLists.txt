@@ -125,16 +125,25 @@ include_directories (${CMAKE_SOURCE_DIR})
 
 if (use_mine)
     set (CRYPTO_LIBS
-        include/Ripe.cc
-        include/mine.cc)
+        deps/ripe/Ripe.cc
+        deps/mine/mine.cc)
 else()
     set (CRYPTO_LIBS
-        include/Ripe.cc)
+        deps/ripe/Ripe.cc)
 endif()
+
+
+file(GLOB licensepp_SRC
+    "deps/licensepp/src/*"
+    "deps/licensepp/src/external/*"
+    "deps/licensepp/src/crypto/*"
+)
 
 set (SOURCE_FILES
 
     ${CRYPTO_LIBS}
+
+    ${licensepp_SRC}
 
     src/connect/connection-request.cc
     src/connect/connection-request-handler.cc
@@ -150,9 +159,8 @@ set (SOURCE_FILES
 
     src/clients/client.cc
 
-    src/licensing/license.cc
-    src/licensing/issuing-authority.cc
     src/licensing/license-manager-keys.cc
+    src/licensing/license-manager.cc
 
     src/logging/log-request-handler.cc
     src/logging/log-request.cc
@@ -232,59 +240,62 @@ set (CMAKE_INSTALL_RPATH "${CMAKE_INSTALL_PREFIX}/lib")
 
 
 ## Override easylogging++ path
-set(EASYLOGGINGPP_INCLUDE_DIR "include/")
+set(EASYLOGGINGPP_INCLUDE_DIR "deps/easyloggingpp/")
 
 ############# CONFIG VALIDATOR TOOL ###############
 
-add_executable (residue-config-validator-bin
-    tools/config-validator/main.cc
-    ${EASYLOGGINGPP_INCLUDE_DIR}/easylogging++.cc
-)
+if (false)
+    add_executable (residue-config-validator-bin
+        tools/config-validator/main.cc
+        ${EASYLOGGINGPP_INCLUDE_DIR}/easylogging++.cc
+    )
 
-target_compile_definitions (residue-config-validator-bin PUBLIC
-    ELPP_NO_DEFAULT_LOG_FILE
-    ELPP_NO_LOG_TO_FILE
-    ELPP_STL_LOGGING
-    AUTO_INITIALIZE_EASYLOGGINGPP
-    ELPP_DEFAULT_LOGGING_FLAGS=4096
-)
+    target_compile_definitions (residue-config-validator-bin PUBLIC
+        ELPP_NO_DEFAULT_LOG_FILE
+        ELPP_NO_LOG_TO_FILE
+        ELPP_STL_LOGGING
+        AUTO_INITIALIZE_EASYLOGGINGPP
+        ELPP_DEFAULT_LOGGING_FLAGS=4096
+    )
 
-target_link_libraries (residue-config-validator-bin
-    residue-core)
+    target_link_libraries (residue-config-validator-bin
+        residue-core)
 
-set_target_properties (residue-config-validator-bin PROPERTIES
-    OUTPUT_NAME "residue-config-validator"
-    VERSION ${RESIDUE_VERSION}
-)
+    set_target_properties (residue-config-validator-bin PROPERTIES
+        OUTPUT_NAME "residue-config-validator"
+        VERSION ${RESIDUE_VERSION}
+    )
 
-#install (TARGETS residue-config-validator-bin DESTINATION bin)
+    #install (TARGETS residue-config-validator-bin DESTINATION bin)
+endif()
 
 
 ############# LICENSE_MANAGER TOOL ###############
 
-add_executable (residue-license-manager-bin
-    tools/license-manager/main.cc
-    ${EASYLOGGINGPP_INCLUDE_DIR}/easylogging++.cc
-)
+if (false)
+    add_executable (residue-license-manager-bin
+        tools/license-manager/main.cc
+        ${EASYLOGGINGPP_INCLUDE_DIR}/easylogging++.cc
+    )
 
-target_compile_definitions (residue-license-manager-bin PUBLIC
-    ELPP_NO_DEFAULT_LOG_FILE
-    ELPP_NO_LOG_TO_FILE
-    ELPP_STL_LOGGING
-    AUTO_INITIALIZE_EASYLOGGINGPP
-    ELPP_DEFAULT_LOGGING_FLAGS=4096
-)
+    target_compile_definitions (residue-license-manager-bin PUBLIC
+        ELPP_NO_DEFAULT_LOG_FILE
+        ELPP_NO_LOG_TO_FILE
+        ELPP_STL_LOGGING
+        AUTO_INITIALIZE_EASYLOGGINGPP
+        ELPP_DEFAULT_LOGGING_FLAGS=4096
+    )
 
-target_link_libraries (residue-license-manager-bin
-    residue-core)
+    target_link_libraries (residue-license-manager-bin
+        residue-core)
 
-set_target_properties (residue-license-manager-bin PROPERTIES
-    OUTPUT_NAME "residue-license-manager"
-    VERSION ${RESIDUE_VERSION}
-)
+    set_target_properties (residue-license-manager-bin PROPERTIES
+        OUTPUT_NAME "residue-license-manager"
+        VERSION ${RESIDUE_VERSION}
+    )
 
-#install (TARGETS residue-license-manager-bin DESTINATION bin)
-
+    #install (TARGETS residue-license-manager-bin DESTINATION bin)
+endif()
 
 ############# RESIDUE BINARY ###############
 
@@ -327,7 +338,7 @@ if (test)
     enable_testing()
 
     add_executable (residue-unit-tests
-        include/Ripe.cc
+        deps/ripe/Ripe.cc
         test/main.cc
         ${EASYLOGGINGPP_INCLUDE_DIR}/easylogging++.cc
     )

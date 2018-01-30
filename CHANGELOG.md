@@ -1,5 +1,9 @@
 # Change Log
 
+## [Unreleased]
+### Updates
+- Integrated License++ as dependency
+
 ## [1.2.2]
 ### Added
 - Extension support via python (disabled in official releases - see EXTENSIONS.md under `docs/`)
