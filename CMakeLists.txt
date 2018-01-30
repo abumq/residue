@@ -159,8 +159,6 @@ set (SOURCE_FILES
 
     src/clients/client.cc
 
-    src/licensing/license-manager-keys.cc
-
     src/logging/log-request-handler.cc
     src/logging/log-request.cc
     src/logging/user-log-builder.cc
@@ -201,7 +199,6 @@ set (SOURCE_FILES
     src/extensions/log-extension.cc
 
     src/tasks/log-rotator.cc
-    src/tasks/license-checker-task.cc
     src/tasks/auto-updater.cc
     src/tasks/client-integrity-task.cc
     src/tasks/task.cc
@@ -271,7 +268,7 @@ endif()
 
 ############# LICENSE_MANAGER TOOL ###############
 
-if (true)
+if (false)
     add_executable (residue-license-manager-bin
         tools/license-manager/main.cc
         ${EASYLOGGINGPP_INCLUDE_DIR}/easylogging++.cc

@@ -13,6 +13,7 @@
 #include <memory>
 #include "deps/ripe/Ripe.h"
 #include "test.h"
+#include "src/core/residue-exception.h"
 #include "src/core/configuration.h"
 #include "src/core/registry.h"
 #include "src/logging/user-log-builder.h"
@@ -31,21 +32,6 @@ static const char* kLoggerConfMuflihun = "muflihun-logger.conf";
 static const char* kPrivateKeyFile = "private-key-for-test.pem";
 static const char* kPublicKeyFile = "public-key-for-test.pem";
 static const char* kLicenseFileForTesting = "license_file_for_testing";
-
-class ConfigurationForTest : public Configuration {
-public:
-    virtual bool loadAndValidateLicense()
-    {
-        try {
-            LicenseManagerForTest licenseManager;
-            m_license.load(m_licenseContents);
-            return licenseManager.validate(&m_license, true, m_licenseeSignature);
-        } catch (const ResidueException& e) {
-            RLOG(ERROR) << "Failed to load the license " << e.what();
-        }
-        return false;
-    }
-};
 
 class ConfigurationTest : public ::testing::Test
 {
@@ -99,7 +85,7 @@ protected:
         fs.close();
 
         LicenseManagerForTest l;
-        const IssuingAuthority* authority = &(LicenseManagerKeys::LICENSE_ISSUING_AUTHORITIES.at(0));
+        const IssuingAuthority* authority = &(LicenseManagerKeysForTest::LICENSE_ISSUING_AUTHORITIES.at(0));
         fs.open(kLicenseFileForTesting, std::fstream::out);
         fs << l.issue("residue-test-case", 24U, authority).toString();
         fs.flush();
@@ -204,7 +190,7 @@ protected:
         fs.flush();
         fs.close();
         LOG(INFO) << "conf saved";
-        conf = std::unique_ptr<ConfigurationForTest>(new ConfigurationForTest(kConfigurationFile));
+        conf = std::unique_ptr<Configuration>(new Configuration(kConfigurationFile));
         if (!conf->isValid()) {
             std::cout << "ERRORS: " << conf->errors() << std::endl;
         }
