@@ -43,7 +43,7 @@ class LogRequest;
 ///
 /// \brief Residue server configuration
 ///
-class Configuration : NonCopyable
+class Configuration final : NonCopyable
 {
 public:
 

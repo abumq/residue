@@ -60,20 +60,20 @@ using boost::asio::ip::tcp;
 
 INITIALIZE_EASYLOGGINGPP
 
-static bool exitOnInterrupt = false;
+static bool s_exitOnInterrupt = false;
 
 static const std::map<int, std::string> VERBOSE_SEVERITY_MAP
 {
-    { RV_CRAZY, "vCRAZY" },
-    { RV_TRACE, "vTRACE" },
-    { RV_DEBUG, "vDEBUG" },
+    { RV_CRAZY,   "vCRAZY"   },
+    { RV_TRACE,   "vTRACE"   },
+    { RV_DEBUG,   "vDEBUG"   },
     { RV_DETAILS, "vDETAILS" },
-    { RV_5, "5" },
-    { RV_ERROR, "vERROR" },
+    { RV_5,       "5"        },
+    { RV_ERROR,   "vERROR"   },
     { RV_WARNING, "vWARNING" },
-    { RV_NOTICE, "vNOTICE" },
-    { RV_INFO, "vINFO" },
-    { 0, "" }
+    { RV_NOTICE,  "vNOTICE"  },
+    { RV_INFO,    "vINFO"    },
+    { 0,          ""         }
 };
 
 std::string getVerboseSeverityName(const el::LogMessage* message)
@@ -154,15 +154,16 @@ void printVersion(bool addSpaces = false)
 
 void interruptHandler(int)
 {
-    if (exitOnInterrupt) {
+    if (s_exitOnInterrupt) {
         el::Helpers::crashAbort(SIGINT);
     } else {
         std::cerr << "(To exit, press ^C again or type quit)" << std::endl;
-        exitOnInterrupt = true;
+        s_exitOnInterrupt = true;
     }
 }
 
-void generalTerminateHandler(int sig, bool showMsg) {
+void generalTerminateHandler(int sig, bool showMsg)
+{
     if (showMsg) {
         std::cerr << "Application abnormally terminated." << std::endl;
         std::cerr << "Please report it to us on https://github.com/muflihun/residue/issues" << std::endl;
@@ -171,11 +172,13 @@ void generalTerminateHandler(int sig, bool showMsg) {
     el::Helpers::crashAbort(sig);
 }
 
-void elppCrashHandler(int sig) {
+void elppCrashHandler(int sig)
+{
     generalTerminateHandler(sig, true);
 }
 
-void terminateHandler() {
+void terminateHandler()
+{
     generalTerminateHandler(11, false);
 }
 
@@ -322,7 +325,7 @@ int main(int argc, char* argv[])
 
         if (registry.configuration()->hasFlag(Configuration::Flag::ACCEPT_INPUT)) {
             signal(SIGINT, interruptHandler); // SIGINT = interrupt
-            commandHandler.start(&exitOnInterrupt);
+            commandHandler.start(&s_exitOnInterrupt);
 
             // We aren't accepting any input anymore, detach all the threads
             // to safely end them all
