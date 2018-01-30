@@ -160,7 +160,6 @@ set (SOURCE_FILES
     src/clients/client.cc
 
     src/licensing/license-manager-keys.cc
-    src/licensing/license-manager.cc
 
     src/logging/log-request-handler.cc
     src/logging/log-request.cc
