@@ -21,7 +21,6 @@
 
 #include <iomanip>
 #include <sstream>
-#include <tuple>
 #include "include/log.h"
 #include "src/net/session.h"
 #include "src/core/registry.h"
@@ -88,9 +87,7 @@ void Session::sendToHandler(std::string&& data)
 {
     DRVLOG(RV_TRACE) << "Bytes: " << data;
     m_requestHandler->setSession(this);
-    RawRequest req = std::make_tuple(std::move(data),
-                                     m_socket.remote_endpoint().address().to_string(),
-                                     Utils::now());
+    RawRequest req { std::move(data), m_socket.remote_endpoint().address().to_string(), Utils::now() };
     m_requestHandler->handle(std::move(req));
 }
 

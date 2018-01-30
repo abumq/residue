@@ -40,13 +40,23 @@ class AdminRequest;
 class ConnectionRequest;
 
 ///
-/// \brief Raw request tuple created for each session
+/// \brief Raw request structure created for each session
 ///
-using RawRequest = std::tuple<
-    std::string, // data
-    std::string, // ip
-    unsigned long // date_received
->;
+struct RawRequest {
+    std::string data;
+    std::string ip;
+    unsigned long dateReceived;
+};
+
+///
+/// \brief Request structure with decrypted data
+///
+struct DecryptedRequest {
+    Client* client;
+    std::string plainRequestStr;
+    Request::StatusCode statusCode;
+    std::string errorText;
+};
 
 ///
 /// \brief Type of incomming request
@@ -57,16 +67,6 @@ enum class RawRequestType {
     JSON,
     UNKNOWN
 };
-
-///
-/// \brief Request tuple with decrypted data
-///
-using DecryptedRequest = std::tuple<
-    Client*,
-    std::string, // request data
-    Request::StatusCode,
-    std::string // error text (if any)
->;
 
 class RequestHandler : NonCopyable
 {
@@ -111,10 +111,8 @@ protected:
                        bool tryServerAESKey = false,
                        bool decompress = false)
     {
-        std::string& requestStr = std::get<0>(rawRequest);
-        std::string& ipAddress = std::get<1>(rawRequest);
-        unsigned long& dateReceived = std::get<2>(rawRequest);
-        handle(std::move(requestStr), std::move(ipAddress), std::move(dateReceived), request, defaultStatus, tryServerRSAKey, tryServerAESKey, decompress);
+        handle(std::move(rawRequest.data), std::move(rawRequest.ip), std::move(rawRequest.dateReceived),
+               request, defaultStatus, tryServerRSAKey, tryServerAESKey, decompress);
     }
 
     ///
@@ -148,11 +146,11 @@ protected:
 #endif
         DecryptedRequest dr = decryptRequest(requestStr, defaultStatus);
 
-        request->m_client = std::get<0>(dr);
+        request->m_client = dr.client;
 
-        std::string plainRequestStr = std::get<1>(dr);
-        request->m_statusCode = std::get<2>(dr);
-        request->m_errorText = std::get<3>(dr);
+        std::string plainRequestStr = dr.plainRequestStr;
+        request->m_statusCode = dr.statusCode;
+        request->m_errorText = dr.errorText;
         request->m_ipAddr = std::move(ipAddr);
         request->m_dateReceived = std::move(dateReceived);
         decompressIfNeeded(plainRequestStr);
@@ -184,10 +182,10 @@ protected:
             // Try with server AES key
             try {
                 dr = decryptRequest(requestStr, defaultStatus, m_registry->configuration()->serverKey(), true);
-                request->m_client = std::get<0>(dr);
-                std::string plainRequestStr = std::get<1>(dr);
-                request->m_statusCode = std::get<2>(dr);
-                request->m_errorText = std::get<3>(dr);
+                request->m_client = dr.client;
+                std::string plainRequestStr = dr.plainRequestStr;
+                request->m_statusCode = dr.statusCode;
+                request->m_errorText = dr.errorText;
                 request->deserialize(std::move(plainRequestStr));
             } catch (const std::exception& e) {
                 DRVLOG(RV_ERROR) << e.what();

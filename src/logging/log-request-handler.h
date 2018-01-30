@@ -26,7 +26,6 @@
 #include <vector>
 #include <thread>
 #include <string>
-#include <tuple>
 #include "src/core/request-handler.h"
 #include "src/logging/user-log-builder.h"
 #include "src/logging/logging-queue.h"

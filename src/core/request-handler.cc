@@ -50,7 +50,7 @@ DecryptedRequest RequestHandler::decryptRequest(const std::string& requestStr,
         requestInput = requestInput.substr(pos + 1);
         pos = requestInput.find_first_of(':');
         if (!ignoreClient && pos == std::string::npos) {
-            return std::make_tuple(nullptr, requestInput, Request::StatusCode::BAD_REQUEST, "Malformed request. No client ID");
+            return { nullptr, requestInput, Request::StatusCode::BAD_REQUEST, "Malformed request. No client ID" };
         }
         std::string clientId = requestInput.substr(0, pos);
 #if RESIDUE_DEBUG
@@ -58,7 +58,7 @@ DecryptedRequest RequestHandler::decryptRequest(const std::string& requestStr,
         DRVLOG(RV_CRAZY) << "IV: " << iv;
 #endif
         if (!ignoreClient && (existingClient = m_registry->findClient(clientId)) == nullptr) {
-            return std::make_tuple(nullptr, requestInput, Request::StatusCode::BAD_REQUEST, "Client not connected yet");
+            return { nullptr, requestInput, Request::StatusCode::BAD_REQUEST, "Client not connected yet" };
         }
         std::string requestBase64 = requestInput.substr(pos + 1);
 #if RESIDUE_DEBUG
@@ -74,7 +74,7 @@ DecryptedRequest RequestHandler::decryptRequest(const std::string& requestStr,
             RLOG(ERROR) << "Exception thrown during decryption: " << e.what();
         }
 
-        return std::make_tuple(existingClient, requestInput, Request::StatusCode::CONTINUE, "");
+        return { existingClient, requestInput, Request::StatusCode::CONTINUE, "" };
     }
-    return std::make_tuple(nullptr, requestInput, defaultStatus, "");
+    return { nullptr, requestInput, defaultStatus, "" };
 }

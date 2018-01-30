@@ -28,7 +28,6 @@
 #include <functional>
 #include <fstream>
 #include <memory>
-#include <tuple>
 #include <thread>
 #include <utility>
 #include <boost/asio.hpp>
