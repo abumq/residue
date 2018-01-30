@@ -1,5 +1,4 @@
 {
-    "license_key_path": "samples/license_file.key",
     "admin_port": 8776,
     "connect_port": 8777,
     "token_port": 8778,
