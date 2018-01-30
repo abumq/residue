@@ -2,7 +2,7 @@
 //  python.h
 //  Residue
 //
-//  Copyright © 2017 Muflihun Labs
+//  Copyright 2017-present Muflihun Labs
 //
 
 #ifndef ResiduePython_h
