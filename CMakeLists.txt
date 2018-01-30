@@ -132,18 +132,9 @@ else()
         deps/ripe/Ripe.cc)
 endif()
 
-
-file(GLOB licensepp_SRC
-    "deps/licensepp/src/*"
-    "deps/licensepp/src/external/*"
-    "deps/licensepp/src/crypto/*"
-)
-
 set (SOURCE_FILES
 
     ${CRYPTO_LIBS}
-
-    ${licensepp_SRC}
 
     src/connect/connection-request.cc
     src/connect/connection-request-handler.cc
