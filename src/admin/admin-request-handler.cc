@@ -55,6 +55,7 @@ void AdminRequestHandler::handle(RawRequest&& rawRequest)
     }
     std::string cmd;
     std::vector<std::string> params;
+    params.reserve(6); // following pushes maximum of 6 parameters in any case
 
     switch (request.type()) {
     case AdminRequest::Type::RELOAD_CONFIG:
@@ -112,7 +113,7 @@ void AdminRequestHandler::handle(RawRequest&& rawRequest)
     if (!cmd.empty()) {
         std::stringstream fullCmd;
         fullCmd << cmd;
-        for (std::string p : params) {
+        for (const std::string& p : params) {
             fullCmd << " " << p;
         }
         RLOG(INFO) << "Running command via admin request: " << fullCmd.str();
