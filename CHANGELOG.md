@@ -1,8 +1,6 @@
 # Change Log
 
 ## [Unreleased]
-### Updates
-- Integrated License++ as dependency
 
 ## [1.2.2]
 ### Added
