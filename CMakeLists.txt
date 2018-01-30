@@ -243,7 +243,7 @@ set(EASYLOGGINGPP_INCLUDE_DIR "deps/easyloggingpp/")
 
 ############# CONFIG VALIDATOR TOOL ###############
 
-if (false)
+if (true)
     add_executable (residue-config-validator-bin
         tools/config-validator/main.cc
         ${EASYLOGGINGPP_INCLUDE_DIR}/easylogging++.cc
@@ -271,7 +271,7 @@ endif()
 
 ############# LICENSE_MANAGER TOOL ###############
 
-if (false)
+if (true)
     add_executable (residue-license-manager-bin
         tools/license-manager/main.cc
         ${EASYLOGGINGPP_INCLUDE_DIR}/easylogging++.cc

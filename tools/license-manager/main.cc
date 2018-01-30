@@ -1,8 +1,9 @@
 //
-//  License Manager tool for Residue
+// License++
 //
-//  https://muflihun.github.io/residue
-//  Copyright © 2017 Muflihun Labs
+// Copyright © 2018-present Muflihun Labs
+//
+// https://muflihun.github.io/licensepp/
 //
 
 #include <cstring>
@@ -11,17 +12,15 @@
 #include <iostream>
 #include <string>
 #include "src/licensing/license-manager.h"
-#include "src/licensing/license.h"
-#include "src/utils/utils.h"
 
 using namespace residue;
 
 void displayUsage() {
-    std::cout << "USAGE: residue-license-manager [--validate <file> --signature <signature>] [--issue --licensee <licensee> --signature <licensee_signature> --period <validation_period> --authority <issuing_authority> --passphrase <passphrase_for_issuing_authority>]" << std::endl;
+    std::cout << "USAGE: license-manager [--validate <file> --signature <signature>] [--issue --licensee <licensee> --signature <licensee_signature> --period <validation_period> --authority <issuing_authority> --passphrase <passphrase_for_issuing_authority>]" << std::endl;
 }
 
 void displayVersion() {
-    std::cout << "License Manager v" << RESIDUE_VERSION << std::endl;
+    std::cout << "License Manager v1.0.0" << std::endl;
 }
 
 int main(int argc, char* argv[])
@@ -42,18 +41,18 @@ int main(int argc, char* argv[])
     std::string secret;
     std::string authority = "default";
     unsigned int period = 0U;
-    bool issue = false;
-    bool validate = false;
+    bool doIssue = false;
+    bool doValidate = false;
 
     for (int i = 0; i < argc; i++) {
         std::string arg(argv[i]);
         if (arg == "--validate" && i < argc) {
             licenseFile = argv[++i];
-            validate = true;
+            doValidate = true;
         } else if (arg == "--signature" && i < argc) {
             signature = argv[++i];
         } else if (arg == "--issue" && i < argc) {
-            issue = true;
+            doIssue = true;
         } else if (arg == "--licensee" && i < argc) {
             licensee = argv[++i];
         } else if (arg == "--period" && i < argc) {
@@ -65,27 +64,23 @@ int main(int argc, char* argv[])
         }
     }
 
-    residue::LicenseManager licenseManager;
-    if (validate && !licenseFile.empty()) {
-        std::ifstream stream(licenseFile);
-        if (!stream.is_open()) {
-            std::cerr << "Failed to open file " << licenseFile << std::endl;
-        } else {
-
-            std::string licenseKey = std::string((std::istreambuf_iterator<char>(stream)),
-                                              (std::istreambuf_iterator<char>()));
-            stream.close();
-            residue::License license;
-            license.load(licenseKey);
-            if (!licenseManager.validate(&license, true, signature)) {
-                std::cout << "License is not valid";
-            } else {
-                std::cout << "Licensed to " << license.licensee() << std::endl;
-                std::cout << "Subscription is active until " << license.formattedExpiry() << std::endl << std::endl;
+    LicenseManager licenseManager;
+    if (doValidate && !licenseFile.empty()) {
+        License license;
+        try {
+            if (license.loadFromFile(licenseFile)) {
+                if (!licenseManager.validate(&license, true, signature)) {
+                    std::cout << "License is not valid" << std::endl;
+                } else {
+                    std::cout << "Licensed to " << license.licensee() << std::endl;
+                    std::cout << "Subscription is active until " << license.formattedExpiry() << std::endl << std::endl;
+                }
             }
+        } catch (LicenseException& e) {
+            std::cerr << "Exception thrown " << e.what() << std::endl;
         }
-    } else if (issue) {
-        const IssuingAuthority* issuingAuthority = nullptr;
+    } else if (doIssue) {
+        const licensepp::IssuingAuthority* issuingAuthority = nullptr;
         for (const auto& a : LicenseManagerKeys::LICENSE_ISSUING_AUTHORITIES) {
             if (a.id() == authority) {
                 issuingAuthority = &(a);
@@ -95,7 +90,7 @@ int main(int argc, char* argv[])
             std::cout << "Invalid issuing authority." << std::endl;
             return 1;
         }
-        License license = licenseManager.issue(licensee, period, issuingAuthority, secret, signature);
+        licensepp::License license = licenseManager.issue(licensee, period, issuingAuthority, secret, signature);
         std::cout << license.toString() << std::endl;
         std::cout << "Licensed to " << license.licensee() << std::endl;
         std::cout << "Subscription is active until " << license.formattedExpiry() << std::endl << std::endl;
