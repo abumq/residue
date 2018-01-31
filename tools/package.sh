@@ -41,8 +41,8 @@ echo "Creating $PACK.tar.gz ..."
 mkdir $PACK
 cp residue-$VERSION $PACK/residue
 cp residue-config-validator-$VERSION $PACK/residue-config-validator
-cp residue-license-manager-$VERSION $PACK/residue-license-manager
-$STRIP $PACK/residue-license-manager
+# cp residue-license-manager-$VERSION $PACK/residue-license-manager
+# $STRIP $PACK/residue-license-manager
 $STRIP $PACK/residue-config-validator
 $STRIP $PACK/residue
 
