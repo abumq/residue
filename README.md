@@ -53,8 +53,8 @@ Please note, you will need _libstdc++_ (C++11) runtime libraries (please refer t
  * macOS 10.11 (El Capitan) or higher (64-bit)
  * Amazon Linux AMI 2017.03 or higher
  * Fedora 24 or higher (64-bit)
- * Fedora 19 or higher (64-bit) ([SE Only](https://github.com/muflihun/residue/blob/master/docs/INSTALL.md#special-edition))
- * CentOS 7 or higher (64-bit)
+ * Fedora 19 or higher (64-bit)
+ * CentOS 7 or higher (64-bit) ([SE Only](https://github.com/muflihun/residue/blob/master/docs/INSTALL.md#special-edition))
  
 Other distributions that _should_ work (but have not yet been tested)
  * Oracle Linux
