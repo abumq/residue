@@ -25,7 +25,6 @@
 
 #include "src/plugins/update.h"
 #include "src/plugins/reset.h"
-#include "src/plugins/check-license.h"
 #include "src/plugins/reload-config.h"
 #include "src/plugins/session-details.h"
 #include "src/plugins/stats.h"
@@ -85,7 +84,6 @@ CommandHandler::CommandHandler(Registry* registry) :
     registerPlugin(std::unique_ptr<Plugin>(new Update(registry)));
     registerPlugin(std::unique_ptr<Plugin>(new Reset(registry)));
     registerPlugin(std::unique_ptr<Plugin>(new ReloadConfig(registry)));
-    registerPlugin(std::unique_ptr<Plugin>(new CheckLicense(registry)));
     registerPlugin(std::unique_ptr<Plugin>(new SessionDetails(registry)));
     registerPlugin(std::unique_ptr<Plugin>(new Stats(registry)));
     registerPlugin(std::unique_ptr<Plugin>(new Rotate(registry)));

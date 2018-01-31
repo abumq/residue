@@ -177,7 +177,6 @@ set (SOURCE_FILES
     src/plugins/plugin.cc
     src/plugins/update.cc
     src/plugins/reset.cc
-    src/plugins/check-license.cc
     src/plugins/reload-config.cc
     src/plugins/session-details.cc
     src/plugins/stats.cc
