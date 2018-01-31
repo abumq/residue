@@ -26,7 +26,7 @@ if [ `grep -o ' -O0 ' ../CMakeLists.txt -c` != "0" ];then
     exit;
 fi
 
-PACK=residue-$VERSION-x86_64-$TYPE
+PACK=residue-$VERSION-$TYPE-x86_64
 
 if [ -d "$PACK" ];then
     echo "Error: $PACK already exist. Remove $PACK first"
