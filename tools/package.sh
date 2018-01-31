@@ -11,13 +11,24 @@ STRIP=strip
 TYPE=$1
 VERSION=$2
 
+DEBUG_VERSION=$3
+if [ "$DEBUG_VERSION" = "" ];then
+    DEBUG_VERSION="OFF"
+fi
+
+SPECIAL_EDITION_VERSION=$4
+if [ "$SPECIAL_EDITION_VERSION" = "" ];then
+    SPECIAL_EDITION_VERSION="OFF"
+fi
+
 if [ "$SHASUM" = "" ];then
     export SHASUM="shasum"
 fi
 
+
 if [ "$TYPE" = "" ] || [ "$VERSION" = "" ];then
-    echo "Usage: $0 <type> version>"
-    echo "  example: $0 darwin $RIPE_VERSION"
+    echo "Usage: $0 <type> <version> <debug=OFF> <special_edition=OFF>"
+    echo "  example: $0 darwin 1.2.3 OFF OFF"
     exit;
 fi
 
@@ -34,7 +45,7 @@ if [ -d "$PACK" ];then
 fi
 
 
-cmake -DCMAKE_BUILD_TYPE=Release -Duse_mine=OFF -Ddebug=OFF -Dprofiling=OFF -Dproduction=ON ..
+cmake -DCMAKE_BUILD_TYPE=Release -Duse_mine=OFF -Ddebug=$DEBUG_VERSION -Dprofiling=OFF -Dproduction=ON -Dspecial_edition=$SPECIAL_EDITION_VERSION ..
 make
 
 echo "Creating $PACK.tar.gz ..."
