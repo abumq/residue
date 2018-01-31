@@ -1,5 +1,4 @@
 {
-    "license_key_path": "samples/license_file.key",
     "admin_port": 8776,
     "connect_port": 8777,
     "token_port": 8778,
@@ -36,8 +35,8 @@
             "public_key": "samples/keys/client-256-public.pem",
             "key_size": 128,
             "loggers": ["sample-app"],
-			"default_logger": "sample-app"
-		        },
+            "default_logger": "sample-app"
+        },
         {
             "client_id": "muflihun00102031",
             "public_key": "samples/keys/encrypted-pubkey.pem"

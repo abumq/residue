@@ -9,10 +9,26 @@
 [![Version](https://img.shields.io/github/release/muflihun/residue.svg)](https://github.com/muflihun/residue/releases/latest)
 [![Donate](https://img.shields.io/badge/Donate-PayPal-green.svg)](https://www.paypal.me/MuflihunDotCom/25)
 
-# Overview
-Residue is an effort to standardize application logging and making logging as a *microservice* by implementing simple logging API, easily configurable, build-in log rotators, simple way to format your log messages according to need of your application and most of all language-independent.
+# Overview 
+Residue is an effort to standardize application logging and by implementing simple logging API, easily configurable, build-in log rotators, simple way to format your log messages according to need of your application and most of all language-independent.
 
-It is fully configurable and supports high-level security, compression and asyncronous operations. It uses [Easylogging++](https://github.com/muflihun/easyloggingpp) under the hood, that itself is a feature-rich library.
+# Details
+Logging is an essential part of any application. But not all the devices can store these logs on the same device where the application is running. For this reason, the logs must be transferred to a remote system.
+
+Currently, there are two ways to do this:
+
+ 1. Collect log messages locally and have a scheduled task to synchronize all the log files to a remote system.
+ 2. Using real-time message forwarding protocols.
+ 
+First one has many drawbacks especially when you need to debug a remote application in real-time. Also, transferring files in bulk can be heavy on network and possibly slow.
+
+Second one is what residue client does. It delievers log messages in real-time to the (residue) server. 
+
+Residue is fully configurable and supports high-level security, compression and asyncronous operations. It uses [Easylogging++](https://github.com/muflihun/easyloggingpp) under the hood, that itself is a feature-rich library.
+
+You can choose to integrate similar solutions like (`rsyslog`)[https://github.com/rsyslog/rsyslog] however residue has a lot of other built-in features that other solutions may lack, like built-in log rotation, bulk message forwarding etc. 
+
+Next section lists some of the notable features.
 
 # Features
 Some of the notable features are listed below
@@ -70,6 +86,6 @@ We're also actively working on client libraries for residue in other languages. 
 | `master` | GNU/Linux 4.4 / Ubuntu 4.8.4 64-bit / `g++-7` | [![Build Status](https://travis-matrix-badges.herokuapp.com/repos/muflihun/residue/branches/master/5)](https://travis-ci.org/muflihun/residue) |
 
 # License
-Please see [LICENSE.md](/LICENSE.md) for licensing. You are free to use or share the binaries however the residue server license must obtained from an authorised authority in order to host the server.
+Please see [LICENSE](/LICENSE) for licensing information.
 
   [banner]: https://raw.githubusercontent.com/muflihun/residue/master/docs/Residue.png

@@ -9,12 +9,6 @@ Residue is fully configurable to support various features and for security. Conf
 
 You can use [Server Config Tool](https://muflihun.github.io/residue/create-server-config) to create configurations for your server
 
-### `license_key_path`
-[String] Path to valid residue license.
-
-### `licensee_signature_path`
-[Optional, String] Path to license signature (if any)
-
 ### `admin_port`
 [Integer] Port that admin server listens to. All the admin requests are sent to this port. These requests must be encrypted using [`server_key`](#server_key).
 

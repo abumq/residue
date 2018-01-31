@@ -13,7 +13,7 @@ option (special_edition "Special edition build" OFF)
 
 set (RESIDUE_MAJOR "1")
 set (RESIDUE_MINOR "2")
-set (RESIDUE_PATCH "2")
+set (RESIDUE_PATCH "3")
 set (RESIDUE_VERSION "${RESIDUE_MAJOR}.${RESIDUE_MINOR}.${RESIDUE_PATCH}")
 set (RESIDUE_NAME "Residue")
 
@@ -125,11 +125,11 @@ include_directories (${CMAKE_SOURCE_DIR})
 
 if (use_mine)
     set (CRYPTO_LIBS
-        include/Ripe.cc
-        include/mine.cc)
+        deps/ripe/Ripe.cc
+        deps/mine/mine.cc)
 else()
     set (CRYPTO_LIBS
-        include/Ripe.cc)
+        deps/ripe/Ripe.cc)
 endif()
 
 set (SOURCE_FILES
@@ -149,10 +149,6 @@ set (SOURCE_FILES
     src/admin/admin-request-handler.cc
 
     src/clients/client.cc
-
-    src/licensing/license.cc
-    src/licensing/issuing-authority.cc
-    src/licensing/license-manager-keys.cc
 
     src/logging/log-request-handler.cc
     src/logging/log-request.cc
@@ -181,7 +177,6 @@ set (SOURCE_FILES
     src/plugins/plugin.cc
     src/plugins/update.cc
     src/plugins/reset.cc
-    src/plugins/check-license.cc
     src/plugins/reload-config.cc
     src/plugins/session-details.cc
     src/plugins/stats.cc
@@ -194,7 +189,6 @@ set (SOURCE_FILES
     src/extensions/log-extension.cc
 
     src/tasks/log-rotator.cc
-    src/tasks/license-checker-task.cc
     src/tasks/auto-updater.cc
     src/tasks/client-integrity-task.cc
     src/tasks/task.cc
@@ -232,59 +226,62 @@ set (CMAKE_INSTALL_RPATH "${CMAKE_INSTALL_PREFIX}/lib")
 
 
 ## Override easylogging++ path
-set(EASYLOGGINGPP_INCLUDE_DIR "include/")
+set(EASYLOGGINGPP_INCLUDE_DIR "deps/easyloggingpp/")
 
 ############# CONFIG VALIDATOR TOOL ###############
 
-add_executable (residue-config-validator-bin
-    tools/config-validator/main.cc
-    ${EASYLOGGINGPP_INCLUDE_DIR}/easylogging++.cc
-)
+if (true)
+    add_executable (residue-config-validator-bin
+        tools/config-validator/main.cc
+        ${EASYLOGGINGPP_INCLUDE_DIR}/easylogging++.cc
+    )
 
-target_compile_definitions (residue-config-validator-bin PUBLIC
-    ELPP_NO_DEFAULT_LOG_FILE
-    ELPP_NO_LOG_TO_FILE
-    ELPP_STL_LOGGING
-    AUTO_INITIALIZE_EASYLOGGINGPP
-    ELPP_DEFAULT_LOGGING_FLAGS=4096
-)
+    target_compile_definitions (residue-config-validator-bin PUBLIC
+        ELPP_NO_DEFAULT_LOG_FILE
+        ELPP_NO_LOG_TO_FILE
+        ELPP_STL_LOGGING
+        AUTO_INITIALIZE_EASYLOGGINGPP
+        ELPP_DEFAULT_LOGGING_FLAGS=4096
+    )
 
-target_link_libraries (residue-config-validator-bin
-    residue-core)
+    target_link_libraries (residue-config-validator-bin
+        residue-core)
 
-set_target_properties (residue-config-validator-bin PROPERTIES
-    OUTPUT_NAME "residue-config-validator"
-    VERSION ${RESIDUE_VERSION}
-)
+    set_target_properties (residue-config-validator-bin PROPERTIES
+        OUTPUT_NAME "residue-config-validator"
+        VERSION ${RESIDUE_VERSION}
+    )
 
-#install (TARGETS residue-config-validator-bin DESTINATION bin)
+    #install (TARGETS residue-config-validator-bin DESTINATION bin)
+endif()
 
 
 ############# LICENSE_MANAGER TOOL ###############
 
-add_executable (residue-license-manager-bin
-    tools/license-manager/main.cc
-    ${EASYLOGGINGPP_INCLUDE_DIR}/easylogging++.cc
-)
+if (false)
+    add_executable (residue-license-manager-bin
+        tools/license-manager/main.cc
+        ${EASYLOGGINGPP_INCLUDE_DIR}/easylogging++.cc
+    )
 
-target_compile_definitions (residue-license-manager-bin PUBLIC
-    ELPP_NO_DEFAULT_LOG_FILE
-    ELPP_NO_LOG_TO_FILE
-    ELPP_STL_LOGGING
-    AUTO_INITIALIZE_EASYLOGGINGPP
-    ELPP_DEFAULT_LOGGING_FLAGS=4096
-)
+    target_compile_definitions (residue-license-manager-bin PUBLIC
+        ELPP_NO_DEFAULT_LOG_FILE
+        ELPP_NO_LOG_TO_FILE
+        ELPP_STL_LOGGING
+        AUTO_INITIALIZE_EASYLOGGINGPP
+        ELPP_DEFAULT_LOGGING_FLAGS=4096
+    )
 
-target_link_libraries (residue-license-manager-bin
-    residue-core)
+    target_link_libraries (residue-license-manager-bin
+        residue-core)
 
-set_target_properties (residue-license-manager-bin PROPERTIES
-    OUTPUT_NAME "residue-license-manager"
-    VERSION ${RESIDUE_VERSION}
-)
+    set_target_properties (residue-license-manager-bin PROPERTIES
+        OUTPUT_NAME "residue-license-manager"
+        VERSION ${RESIDUE_VERSION}
+    )
 
-#install (TARGETS residue-license-manager-bin DESTINATION bin)
-
+    #install (TARGETS residue-license-manager-bin DESTINATION bin)
+endif()
 
 ############# RESIDUE BINARY ###############
 
@@ -327,7 +324,7 @@ if (test)
     enable_testing()
 
     add_executable (residue-unit-tests
-        include/Ripe.cc
+        deps/ripe/Ripe.cc
         test/main.cc
         ${EASYLOGGINGPP_INCLUDE_DIR}/easylogging++.cc
     )

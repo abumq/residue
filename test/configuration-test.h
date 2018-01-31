@@ -1,8 +1,22 @@
 //
 //  configuration-test.h
-//  Residue Tests
+//  Residue
 //
-//  Copyright © 2017 Muflihun Labs
+//  Copyright 2017-present Muflihun Labs
+//
+//  Author: @abumusamq
+//
+//  Licensed under the Apache License, Version 2.0 (the "License");
+//  you may not use this file except in compliance with the License.
+//  You may obtain a copy of the License at
+//
+//    http://www.apache.org/licenses/LICENSE-2.0
+//
+//  Unless required by applicable law or agreed to in writing, software
+//  distributed under the License is distributed on an "AS IS" BASIS,
+//  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+//  See the License for the specific language governing permissions and
+//  limitations under the License.
 //
 
 #ifndef CONFIGURATION_TEST_H
@@ -11,9 +25,9 @@
 #include <cstdio>
 #include <fstream>
 #include <memory>
-#include "include/Ripe.h"
+#include "deps/ripe/Ripe.h"
 #include "test.h"
-#include "test/license-manager-for-test.h"
+#include "src/core/residue-exception.h"
 #include "src/core/configuration.h"
 #include "src/core/registry.h"
 #include "src/logging/user-log-builder.h"
@@ -29,7 +43,7 @@ static const char* kLoggerConfResidue = "residue-logger.conf";
 static const char* kLoggerConfMuflihun = "muflihun-logger.conf";
 static const char* kPrivateKeyFile = "private-key-for-test.pem";
 static const char* kPublicKeyFile = "public-key-for-test.pem";
-static const char* kLicenseFileForTesting = "license_file_for_testing";
+
 class ConfigurationTest : public ::testing::Test
 {
 protected:
@@ -81,15 +95,6 @@ protected:
         fs.flush();
         fs.close();
 
-        LicenseManagerForTest l;
-        const IssuingAuthority* authority = &(UnitTestLicenseKeys::LICENSE_ISSUING_AUTHORITIES.at(0));
-        fs.open(kLicenseFileForTesting, std::fstream::out);
-        fs << l.issue("residue-test-case", 24U, authority).toString();
-        fs.flush();
-        fs.close();
-
-        LOG(INFO) << "Issued license for testing!";
-
         // keys
         LOG(INFO) << "generating keypair";
         Ripe::writeRSAKeyPair(kPublicKeyFile, kPrivateKeyFile);
@@ -99,7 +104,6 @@ protected:
         fs.open (kConfigurationFile, std::fstream::out);
         fs << std::string(R"(
                           {
-                              "license_key_path": "license_file_for_testing",
                               "admin_port": 87761,
                               "connect_port": 87771,
                               "token_port": 87781,

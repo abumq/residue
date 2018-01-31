@@ -120,22 +120,8 @@ install:
  - make
  - sudo make install
 
-## Ripe Binaries
- - wget https://github.com/muflihun/ripe/releases/download/v4.1.0/ripe-4.1.0-x86_64-linux.tar.gz
- - tar xf ripe-4.1.0-x86_64-linux.tar.gz
- - sudo cp ripe-4.1.0 /usr/bin/ripe
-
-## Set env variable for ripe
- - echo $LD_LIBRARY_PATH
- - export LD_LIBRARY_PATH=/usr/lib:$LD_LIBRARY_PATH
- - export RIPE="sudo LD_LIBRARY_PATH=$LD_LIBRARY_PATH ripe"
- - $RIPE --version
-
 ## Build
  - cd "${TRAVIS_BUILD_DIR}"
- - echo $RIPE
- - ./scm d
- - cat src/logging/custom-logging.h
  - mkdir build
  - cd build
  - cmake -Dtest=ON -Dtravis=ON -Denable_extensions=OFF ..
