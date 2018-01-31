@@ -1,6 +1,9 @@
 # Change Log
 
-## [Unreleased]
+## [1.2.3] - 31-01-2018
+### Updates
+- Removed licensing
+- Minor tweaks for performance
 
 ## [1.2.2]
 ### Added
