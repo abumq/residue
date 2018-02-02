@@ -40,17 +40,17 @@ Task::Task(const std::string& name,
     m_lastExecution(0UL),
     m_executing(false)
 {
-    rescheduleFromNow();
 }
 
 void Task::start()
 {
+    rescheduleFromNow();
     RVLOG(RV_INFO) << "Scheduled [" << m_name << "] to run every " << m_interval
                    << "; next execution at ["
                    << formattedNextExecution() << "]";
 
     while (true) {
-        RVLOG(RV_DEBUG) << "Scheduled [" << m_name << "] waiting... [" << m_nextWait << "]";
+        DRVLOG(RV_DEBUG) << "Scheduled [" << m_name << "] waiting... [" << m_nextWait << "]";
         std::this_thread::sleep_for(m_nextWait);
         if (m_executing) {
             RLOG(WARNING) << "Task [" << m_name << "] already running, started ["
@@ -68,12 +68,17 @@ void Task::start()
     }
 }
 
+unsigned long Task::calculateRoundOff() const
+{
+    return m_roundOff > 0 ? m_roundOff - (Utils::now() % m_roundOff) : 0;
+}
+
 void Task::rescheduleFromNow()
 {
     if (m_roundOff > 0) {
-        const unsigned long nearestRoundOff = m_roundOff - (Utils::now() % m_roundOff);
-        m_nextExecution = Utils::now() + nearestRoundOff;
-        m_nextWait = std::chrono::seconds(nearestRoundOff);
+        unsigned long roundOff = calculateRoundOff();
+        m_nextExecution = Utils::now() + roundOff;
+        m_nextWait = std::chrono::seconds(roundOff);
     } else {
         m_nextExecution = Utils::now() + m_interval.count();
         m_nextWait = m_interval;

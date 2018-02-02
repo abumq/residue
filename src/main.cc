@@ -316,11 +316,10 @@ int main(int argc, char* argv[])
 
         START_LOG_ROTATOR("HourlyLogRotator", HourlyLogRotator);
         START_LOG_ROTATOR("SixHoursLogRotator", SixHoursLogRotator);
-        START_LOG_ROTATOR("TwelveLogRotator", TwelveLogRotator);
+        START_LOG_ROTATOR("TwelveHoursLogRotator", TwelveHoursLogRotator);
         START_LOG_ROTATOR("DailyLogRotator", DailyLogRotator);
         START_LOG_ROTATOR("WeeklyLogRotator", WeeklyLogRotator);
         START_LOG_ROTATOR("MonthlyLogRotator", MonthlyLogRotator);
-        START_LOG_ROTATOR("QuarterlyLogRotator", QuarterlyLogRotator);
         START_LOG_ROTATOR("YearlyLogRotator", YearlyLogRotator);
 
         #undef START_LOG_ROTATOR

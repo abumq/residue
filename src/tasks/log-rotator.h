@@ -25,8 +25,8 @@
 #include <unordered_map>
 #include <map>
 #include <vector>
-#include "src/tasks/task.h"
 #include "src/core/configuration.h"
+#include "src/tasks/task.h"
 
 namespace residue {
 
@@ -38,6 +38,7 @@ class Registry;
 class LogRotator : public Task
 {
 public:
+    virtual ~LogRotator() = default;
     ///
     /// \brief If log rotator is running and frequency is this threshold (in seconds) away,
     /// it will run it anyway
@@ -56,15 +57,18 @@ public:
     void rotate(const std::string& loggerId);
     void archiveRotatedItems();
     std::string checkStatus(const std::string& loggerId);
+
+    virtual unsigned long calculateRoundOff() const override;
 protected:
     virtual void execute() override;
 private:
+    std::vector<ArchiveItem> m_archiveItems;
+    std::unordered_map<std::string, unsigned long> m_lastRotation;
+    Configuration::RotationFrequency m_freq;
+
     void archiveAndCompress(const std::string&,
                             const std::string&,
                             const std::map<std::string, std::string>&);
-
-    std::vector<ArchiveItem> m_archiveItems;
-    std::unordered_map<std::string, unsigned long> m_lastRotation;
 };
 
 #define DECL_LOG_ROTATOR(ID, NAME, FREQ)\
@@ -78,11 +82,10 @@ public:\
 
 DECL_LOG_ROTATOR("HourlyLogRotator", HourlyLogRotator, HOURLY);
 DECL_LOG_ROTATOR("SixHoursLogRotator", SixHoursLogRotator, SIX_HOURS);
-DECL_LOG_ROTATOR("TwelveLogRotator", TwelveLogRotator, TWELVE_HOURS);
+DECL_LOG_ROTATOR("TwelveHoursLogRotator", TwelveHoursLogRotator, TWELVE_HOURS);
 DECL_LOG_ROTATOR("DailyLogRotator", DailyLogRotator, DAILY);
 DECL_LOG_ROTATOR("WeeklyLogRotator", WeeklyLogRotator, WEEKLY);
 DECL_LOG_ROTATOR("MonthlyLogRotator", MonthlyLogRotator, MONTHLY);
-DECL_LOG_ROTATOR("QuarterlyLogRotator", QuarterlyLogRotator, QUARTERLY);
 DECL_LOG_ROTATOR("YearlyLogRotator", YearlyLogRotator, YEARLY);
 
 #undef DECL_LOG_ROTATOR

@@ -428,8 +428,6 @@ void Configuration::loadKnownLoggers(const JsonObject::Json& json, std::stringst
                 frequency = RotationFrequency::WEEKLY;
             } else if (rotationFreq == "MONTHLY") {
                 frequency = RotationFrequency::MONTHLY;
-            } else if (rotationFreq == "QUARTERLY") {
-                frequency = RotationFrequency::QUARTERLY;
             } else if (rotationFreq == "YEARLY") {
                 frequency = RotationFrequency::YEARLY;
             } else {
@@ -759,9 +757,6 @@ bool Configuration::save(const std::string& outputFile)
                 break;
             case MONTHLY:
                 frequencyStr = "MONTHLY";
-                break;
-            case QUARTERLY:
-                frequencyStr = "QUARTERLY";
                 break;
             case YEARLY:
                 frequencyStr = "YEARLY";

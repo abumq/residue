@@ -76,6 +76,10 @@ public:
         return formattedExecution(m_lastExecution);
     }
 
+    virtual unsigned long calculateRoundOff() const;
+
+    void rescheduleFromNow();
+
 protected:
     std::string m_name;
     Registry* m_registry;
@@ -91,8 +95,6 @@ private:
     {
         return Utils::formatTime(e, "%H:%m:%s on %a %d %b, %Y");
     }
-
-    void rescheduleFromNow();
     virtual void execute() = 0;
 };
 }

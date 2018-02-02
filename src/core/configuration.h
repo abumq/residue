@@ -82,7 +82,6 @@ public:
         DAILY = RotationFrequency::HOURLY * 24,
         WEEKLY = RotationFrequency::DAILY * 7,
         MONTHLY = RotationFrequency::WEEKLY * 4,
-        QUARTERLY = RotationFrequency::MONTHLY * 3,
         YEARLY = RotationFrequency::MONTHLY * 12
     };
 
