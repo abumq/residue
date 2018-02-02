@@ -40,7 +40,7 @@ public:
     explicit Task(const std::string& name,
                   Registry* registry,
                   unsigned int intervalInSeconds,
-                  bool roundOffToNearestHour = false);
+                  unsigned long roundOffInSeconds = 0);
     virtual ~Task() = default;
 
     void start();
@@ -72,7 +72,7 @@ protected:
     Registry* m_registry;
     unsigned long m_started;
     std::chrono::seconds m_interval;
-    bool m_roundOff;
+    unsigned long m_roundOff;
     unsigned long m_nextExecution;
     unsigned long m_lastExecution;
     std::atomic<bool> m_executing;

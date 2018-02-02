@@ -31,11 +31,11 @@ using namespace residue;
 Task::Task(const std::string& name,
            Registry* registry,
            unsigned int intervalInSeconds,
-           bool roundOffToNearestHour) :
+           unsigned long roundOffInSeconds) :
     m_name(name),
     m_registry(registry),
     m_interval(std::chrono::seconds(intervalInSeconds)),
-    m_roundOff(roundOffToNearestHour),
+    m_roundOff(roundOffInSeconds),
     m_nextExecution(0UL),
     m_lastExecution(0UL),
     m_executing(false)
@@ -53,9 +53,9 @@ void Task::start()
             RLOG(WARNING) << "Task [" << m_name << "] already running. Skipping!";
             continue;
         }
-        if (m_roundOff) {
-            unsigned long secondsUntilNearestHour = 3600 - (Utils::now() % 3600);
-            std::this_thread::sleep_for(std::chrono::seconds(secondsUntilNearestHour));
+        if (m_roundOff > 0) {
+            unsigned long secondsUntilNearestOffset = m_roundOff - (Utils::now() % m_roundOff);
+            std::this_thread::sleep_for(std::chrono::seconds(secondsUntilNearestOffset));
         }
         m_executing = true;
         m_lastExecution = Utils::now();

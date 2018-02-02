@@ -39,7 +39,7 @@ const unsigned long LogRotator::LENIENCY_THRESHOLD = 60 * 5; // 5 minutes
 
 LogRotator::LogRotator(Registry* registry,
                        unsigned int interval) :
-    Task("LogRotator", registry, interval, true)
+    Task("LogRotator", registry, interval, Configuration::RotationFrequency::HOURLY)
 {
 }
 
