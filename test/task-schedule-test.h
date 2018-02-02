@@ -46,7 +46,7 @@ class SimpleTaskWithRoundOff final : public Task
 {
 public:
     explicit SimpleTaskWithRoundOff(unsigned int interval) :
-        Task("SimpleTaskWithRoundOff", nullptr, interval, true)
+        Task("SimpleTaskWithRoundOff", nullptr, interval, 3600)
     {
     }
 
@@ -61,8 +61,8 @@ TEST(TaskScheduleTest, TestBasicSchedule)
     const unsigned long now = Utils::now();
     int interv = 20;
     SimpleTask t(interv);
-    ASSERT_EQ(t.nextExecution(), now + interv);
-    ASSERT_EQ(t.intervalCount(), interv);
+    ASSERT_EQ(now + interv, t.nextExecution());
+    ASSERT_EQ(interv, t.intervalCount());
 }
 
 #endif // TASK_SCHEDULE_TEST_H

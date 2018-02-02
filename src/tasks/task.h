@@ -70,7 +70,6 @@ protected:
 
     std::string m_name;
     Registry* m_registry;
-    unsigned long m_started;
     std::chrono::seconds m_interval;
     unsigned long m_roundOff;
     unsigned long m_nextExecution;

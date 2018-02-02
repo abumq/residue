@@ -45,8 +45,9 @@ Task::Task(const std::string& name,
 
 void Task::start()
 {
-    m_started = Utils::now();
-    RVLOG(RV_INFO) << "Scheduled [" << m_name << "] to run every " << m_interval;
+    RVLOG(RV_INFO) << "Scheduled [" << m_name << "] to run every " << m_interval
+                   << "seconds; next execution at " << Utils::formatTime(m_nextExecution);
+
     while (true) {
         std::this_thread::sleep_for(m_interval);
         if (m_executing) {

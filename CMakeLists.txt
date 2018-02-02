@@ -188,10 +188,11 @@ set (SOURCE_FILES
     src/extensions/extension.cc
     src/extensions/log-extension.cc
 
-    src/tasks/log-rotator.cc
     src/tasks/auto-updater.cc
     src/tasks/client-integrity-task.cc
     src/tasks/task.cc
+    src/tasks/log-rotator/log-rotator.cc
+    src/tasks/log-rotator/hourly-log-rotator.cc
 
     src/utils/tar.cc
     src/utils/utils.cc

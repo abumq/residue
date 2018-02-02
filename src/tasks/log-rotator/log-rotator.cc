@@ -27,8 +27,8 @@
 #include <set>
 #include <thread>
 #include "include/log.h"
+#include "src/tasks/log-rotator/log-rotator.h"
 #include "src/utils/utils.h"
-#include "src/tasks/log-rotator.h"
 #include "src/core/registry.h"
 #include "src/core/configuration.h"
 #include "src/crypto/zlib.h"
@@ -38,8 +38,9 @@ using namespace residue;
 const unsigned long LogRotator::LENIENCY_THRESHOLD = 60 * 5; // 5 minutes
 
 LogRotator::LogRotator(Registry* registry,
-                       unsigned int interval) :
-    Task("LogRotator", registry, interval, Configuration::RotationFrequency::HOURLY)
+                       unsigned int interval,
+                       unsigned long roundOff) :
+    Task("LogRotator", registry, interval, roundOff)
 {
 }
 

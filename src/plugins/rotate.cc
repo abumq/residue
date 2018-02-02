@@ -21,7 +21,7 @@
 
 #include "src/plugins/rotate.h"
 #include "src/core/registry.h"
-#include "src/tasks/log-rotator.h"
+#include "src/tasks/log-rotator/log-rotator.h"
 
 using namespace residue;
 
@@ -42,6 +42,10 @@ void Rotate::execute(std::vector<std::string>&& params, std::ostringstream& resu
     }
     if (el::Loggers::getLogger(loggerId, false) == nullptr) {
         result << "Logger [" << loggerId << "] not yet registered" << std::endl;
+        return;
+    }
+    if (registry()->logRotator() == null) {
+        result << "Log rotator pointer is null [UNEXPECTED] - report to https://github.com/muflihun/residue" << std::endl;
         return;
     }
     if (hasParam(params, "--check-only")) {

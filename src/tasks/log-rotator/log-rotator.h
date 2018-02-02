@@ -23,6 +23,7 @@
 #define LogRotator_h
 
 #include <unordered_map>
+#include <map>
 #include <vector>
 #include "src/tasks/task.h"
 
@@ -33,7 +34,7 @@ class Registry;
 ///
 /// \brief Log rotator task
 ///
-class LogRotator final : public Task
+class LogRotator : public Task
 {
 public:
     ///
@@ -49,7 +50,8 @@ public:
     };
 
     explicit LogRotator(Registry* registry,
-                        unsigned int interval);
+                        unsigned int interval,
+                        unsigned long roundOff);
     void rotate(const std::string& loggerId);
     void archiveRotatedItems();
     std::string checkStatus(const std::string& loggerId);

@@ -34,9 +34,9 @@
 namespace residue {
 
 class Configuration;
-class LogRotator;
 class ClientIntegrityTask;
 class AutoUpdater;
+class LogRotator;
 
 ///
 /// \brief Registry for client with helper functions

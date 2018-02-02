@@ -276,3 +276,11 @@ unsigned long long Utils::nowUtc()
     nowTm = std::gmtime(&t);
     return nowTm != nullptr ? mktime(nowTm) : 0;
 }
+
+std::string Utils::formatTime(unsigned long time, const char* format)
+{
+    struct timeval t;
+    t.tv_sec = time;
+    el::base::SubsecondPrecision ssPrec(3);
+    return el::base::utils::DateTime::timevalToString(t, format, &ssPrec);
+}
