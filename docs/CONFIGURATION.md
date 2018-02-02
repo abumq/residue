@@ -223,15 +223,17 @@ Turn off delay: `0` (not recommended)
 
 Possible format specifiers:
 
- * `%original`: Path to original log file
- * `%logger`: Logger ID
- * `%hour`: 24-hours zero padded hour (`09`, `13`, `14`, ...)
- * `%wday`: Day of the week (`sun`, `mon`, ...)
- * `%day`: Day of month (`1`, `2`, ...)
- * `%month`: Month name (`jan`, `feb`, ...)
- * `%quarter`: Month quarter (`1`, `2`, `3`, `4`)
- * `%year`: Year (`2017`, ...)
- * `%level`: log level (`info`, `error`, ...)
+|   Format specifier    |   Description   |
+|-----------------------|-----------------|
+| `%original` | Path to original log file |
+| `%logger` | Logger ID |
+| `%hour` | 24-hours zero padded hour (`09`, `13`, `14`, ...) |
+| `%wday` | Day of the week (`sun`, `mon`, ...) |
+| `%day` | Day of month (`1`, `2`, ...) |
+| `%month` | Month name (`jan`, `feb`, ...) |
+| `%quarter` | Month quarter (`1`, `2`, `3`, `4`) |
+| `%year` | Year (`2017`, ...) |
+| `%level` | log level (`info`, `error`, ...) |
 
 Default: It must be provided by user
 
@@ -240,15 +242,17 @@ Default: It must be provided by user
 
 Possible format specifiers:
 
- * `%logger`: Logger ID
- * `%min`: Zero padded hour (`09`, `13`, `14`, ...) - the time when log rotator actually ran
- * `%hour`: 24-hours zero padded hour (`09`, `13`, `14`, ...)
- * `%wday`: Day of the week (`sun`, `mon`, ...)
- * `%day`: Day of month (`1`, `2`, ...)
- * `%month`: Month name (`jan`, `feb`, ...)
- * `%quarter`: Month quarter (`1`, `2`, `3`, `4`)
- * `%year`: Year (`2017`, ...)
- * `%level`: log level (`info`, `error`, ...)
+|   Format specifier    |   Description   |
+|-----------------------|-----------------|
+| `%logger`| Logger ID |
+| `%min`| Zero padded hour (`09`, `13`, `14`, ...) - the time when log rotator actually ran |
+| `%hour`| 24-hours zero padded hour (`09`, `13`, `14`, ...) |
+| `%wday`| Day of the week (`sun`, `mon`, ...) |
+| `%day`| Day of month (`1`, `2`, ...) |
+| `%month`| Month name (`jan`, `feb`, ...) |
+| `%quarter`| Month quarter (`1`, `2`, `3`, `4`) |
+| `%year`| Year (`2017`, ...) |
+| `%level`| log level (`info`, `error`, ...) |
 
 Default: It must be provided by user.
 
@@ -257,13 +261,15 @@ Default: It must be provided by user.
 
 Possible format specifiers:
 
- * `%logger`: Logger ID
- * `%hour`: 24-hours zero padded hour (`09`, `13`, `14`, ...)
- * `%wday`: Day of the week (`sun`, `mon`, ...)
- * `%day`: Day of month (`1`, `2`, ...)
- * `%month`: Month name (`jan`, `feb`, ...)
- * `%quarter`: Month quarter (`1`, `2`, `3`, `4`)
- * `%year`: Year (`2017`, ...)
+|   Format specifier    |   Description   |
+|-----------------------|-----------------|
+| `%logger` | Logger ID |
+| `%hour` | 24-hours zero padded hour (`09`, `13`, `14`, ...) |
+| `%wday` | Day of the week (`sun`, `mon`, ...) |
+| `%day` | Day of month (`1`, `2`, ...) |
+| `%month` | Month name (`jan`, `feb`, ...) |
+| `%quarter` | Month quarter (`1`, `2`, `3`, `4`) |
+| `%year` | Year (`2017`, ...) |
 
 Default: It must be provided by user.
 
@@ -390,8 +396,17 @@ Default: `false`
 #### `known_loggers`::`rotation_freq`
 [String] One of [`never`, `hourly`, `six_hours`, `twelve_hours`, `daily`, `weekly`, `monthly`, `yearly`] to specify rotation frequency for corresponding log files. This is rotated regardless of file size.
 
-Log rotation rounds off to the nearest denominator, e.g, following table shows you how the task is scheduled if server was started on for example `Fri 02 Feb 2018, 22:34:12`
+Log rotation rounds off to the nearest denominator. To get better understanding of this round off, consider following table. Let's say you started the server at `Sat 03 Feb 2018, 01:34:12`
 
+|   Frequency        |       Next Schedule         |
+|--------------------|-----------------------------|
+| `hourly`           | `Sat 03 Feb 2018, 02:00:00` |
+| `six_hours`        | `Sat 03 Feb 2018, 06:00:00` |
+| `twelve_hours`     | `Sat 03 Feb 2018, 12:00:00` |
+| `daily`            | `Sun 04 Feb 2018, 00:00:00` |
+| `weekly`           | `Mon 05 Feb 2018, 00:00:00` |
+| `monthly`          | `Thu 01 Mar 2018, 00:00:00` |
+| `yearly`           | `Tue 01 Jan 2019, 00:00:00` |
 
 Default: `never`
 
