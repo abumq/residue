@@ -1,5 +1,9 @@
 # Change Log
 
+## [Unreleased]
+### Fixes
+- Log rotator task - daily, weekly, monthly and yearly schedule (issue #49)
+
 ## [1.2.3] - 31-01-2018
 ### Updates
 - Removed licensing
