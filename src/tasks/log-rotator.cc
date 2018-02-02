@@ -27,7 +27,7 @@
 #include <set>
 #include <thread>
 #include "include/log.h"
-#include "src/tasks/log-rotator/log-rotator.h"
+#include "src/tasks/log-rotator.h"
 #include "src/utils/utils.h"
 #include "src/core/registry.h"
 #include "src/core/configuration.h"
@@ -37,10 +37,10 @@ using namespace residue;
 
 const unsigned long LogRotator::LENIENCY_THRESHOLD = 60 * 5; // 5 minutes
 
-LogRotator::LogRotator(Registry* registry,
-                       unsigned int interval,
-                       unsigned long roundOff) :
-    Task("LogRotator", registry, interval, roundOff)
+LogRotator::LogRotator(const std::string& name,
+                       Registry* registry,
+                       Configuration::RotationFrequency freq) :
+    Task(name, registry, freq, freq)
 {
 }
 
@@ -58,15 +58,10 @@ std::string LogRotator::checkStatus(const std::string& loggerId)
 
         auto iter = m_lastRotation.find(loggerId);
         unsigned long lastRotated = iter == m_lastRotation.end() ? 0L : iter->second;
-        el::base::SubsecondPrecision ssPrec(3);
-        struct timeval tval;
         std::stringstream ss;
         ss << "Scheduled to run ";
         if (lastRotated == 0L) {
-            ss << "in next execution (";
-            tval.tv_sec = static_cast<long>(nextExecution());
-            ss << el::base::utils::DateTime::timevalToString(tval, "%d %b, %Y %H:%m:%s", &ssPrec);
-            ss << ")";
+            ss << " @ [" << formattedNextExecution() << "]";
         } else {
             unsigned long nextRotation = lastRotated + freq;
             bool skippedLast = false;
@@ -76,8 +71,7 @@ std::string LogRotator::checkStatus(const std::string& loggerId)
                 nextRotation = nextRotation + freq;
                 skippedLast = true;
             }
-            tval.tv_sec = static_cast<long>(nextRotation);
-            ss << "at " << el::base::utils::DateTime::timevalToString(tval, "%d %b, %Y %H:%m:%s", &ssPrec);
+            ss << "at " << Utils::formatTime(nextRotation, "%d %b, %Y %H:%m:%s");
             if (skippedLast) {
                 ss << "\nLast rotation was skipped because of time inconsitency.";
             }

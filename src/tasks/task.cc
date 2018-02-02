@@ -40,23 +40,22 @@ Task::Task(const std::string& name,
     m_lastExecution(0UL),
     m_executing(false)
 {
-    m_nextExecution = Utils::now() + m_interval.count();
+    rescheduleFromNow();
 }
 
 void Task::start()
 {
     RVLOG(RV_INFO) << "Scheduled [" << m_name << "] to run every " << m_interval
-                   << "seconds; next execution at " << Utils::formatTime(m_nextExecution);
+                   << "; next execution at ["
+                   << formattedNextExecution() << "]";
 
     while (true) {
-        std::this_thread::sleep_for(m_interval);
+        RVLOG(RV_DEBUG) << "Scheduled [" << m_name << "] waiting... [" << m_nextWait << "]";
+        std::this_thread::sleep_for(m_nextWait);
         if (m_executing) {
-            RLOG(WARNING) << "Task [" << m_name << "] already running. Skipping!";
+            RLOG(WARNING) << "Task [" << m_name << "] already running, started ["
+                          << formattedLastExecution() << "]. Skipping!";
             continue;
-        }
-        if (m_roundOff > 0) {
-            unsigned long secondsUntilNearestOffset = m_roundOff - (Utils::now() % m_roundOff);
-            std::this_thread::sleep_for(std::chrono::seconds(secondsUntilNearestOffset));
         }
         m_executing = true;
         m_lastExecution = Utils::now();
@@ -64,6 +63,19 @@ void Task::start()
         execute();
         RVLOG(RV_INFO) << "Finished task [" << m_name << "]";
         m_executing = false;
+        rescheduleFromNow();
+        RVLOG(RV_DEBUG) << "Rescheduled task [" << m_name << "] at [" << formattedNextExecution() << "]";
+    }
+}
+
+void Task::rescheduleFromNow()
+{
+    if (m_roundOff > 0) {
+        const unsigned long nearestRoundOff = m_roundOff - (Utils::now() % m_roundOff);
+        m_nextExecution = Utils::now() + nearestRoundOff;
+        m_nextWait = std::chrono::seconds(nearestRoundOff);
+    } else {
         m_nextExecution = Utils::now() + m_interval.count();
+        m_nextWait = m_interval;
     }
 }

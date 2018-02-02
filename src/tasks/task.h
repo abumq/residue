@@ -26,6 +26,7 @@
 #include <atomic>
 #include <chrono>
 #include "src/non-copyable.h"
+#include "src/utils/utils.h"
 
 namespace residue {
 
@@ -65,16 +66,34 @@ public:
         return m_interval.count();
     }
 
-protected:
-    virtual void execute() = 0;
+    inline std::string formattedNextExecution() const
+    {
+        return formattedExecution(m_nextExecution);
+    }
 
+    inline std::string formattedLastExecution() const
+    {
+        return formattedExecution(m_lastExecution);
+    }
+
+protected:
     std::string m_name;
     Registry* m_registry;
     std::chrono::seconds m_interval;
     unsigned long m_roundOff;
     unsigned long m_nextExecution;
+    std::chrono::seconds m_nextWait;
     unsigned long m_lastExecution;
     std::atomic<bool> m_executing;
+
+private:
+    inline std::string formattedExecution(unsigned long e) const
+    {
+        return Utils::formatTime(e, "%H:%m:%s on %a %d %b, %Y");
+    }
+
+    void rescheduleFromNow();
+    virtual void execute() = 0;
 };
 }
 #endif /* Task_h */

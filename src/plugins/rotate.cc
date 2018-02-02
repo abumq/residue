@@ -21,7 +21,7 @@
 
 #include "src/plugins/rotate.h"
 #include "src/core/registry.h"
-#include "src/tasks/log-rotator/log-rotator.h"
+#include "src/tasks/log-rotator.h"
 
 using namespace residue;
 

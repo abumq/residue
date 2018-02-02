@@ -26,6 +26,7 @@
 #include <map>
 #include <vector>
 #include "src/tasks/task.h"
+#include "src/core/configuration.h"
 
 namespace residue {
 
@@ -49,9 +50,9 @@ public:
         std::map<std::string, std::string> files;
     };
 
-    explicit LogRotator(Registry* registry,
-                        unsigned int interval,
-                        unsigned long roundOff);
+    explicit LogRotator(const std::string& name,
+                        Registry* registry,
+                        Configuration::RotationFrequency freq);
     void rotate(const std::string& loggerId);
     void archiveRotatedItems();
     std::string checkStatus(const std::string& loggerId);
@@ -65,5 +66,26 @@ private:
     std::vector<ArchiveItem> m_archiveItems;
     std::unordered_map<std::string, unsigned long> m_lastRotation;
 };
+
+#define DECL_LOG_ROTATOR(ID, NAME, FREQ)\
+class NAME final : public LogRotator\
+{\
+public:\
+    explicit NAME(Registry* registry) \
+        : LogRotator(ID, registry, Configuration::RotationFrequency::FREQ) \
+    {}\
+}
+
+DECL_LOG_ROTATOR("HourlyLogRotator", HourlyLogRotator, HOURLY);
+DECL_LOG_ROTATOR("SixHoursLogRotator", SixHoursLogRotator, SIX_HOURS);
+DECL_LOG_ROTATOR("TwelveLogRotator", TwelveLogRotator, TWELVE_HOURS);
+DECL_LOG_ROTATOR("DailyLogRotator", DailyLogRotator, DAILY);
+DECL_LOG_ROTATOR("WeeklyLogRotator", WeeklyLogRotator, WEEKLY);
+DECL_LOG_ROTATOR("MonthlyLogRotator", MonthlyLogRotator, MONTHLY);
+DECL_LOG_ROTATOR("QuarterlyLogRotator", QuarterlyLogRotator, QUARTERLY);
+DECL_LOG_ROTATOR("YearlyLogRotator", YearlyLogRotator, YEARLY);
+
+#undef DECL_LOG_ROTATOR
+
 }
 #endif /* LogRotator_h */

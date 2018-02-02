@@ -52,7 +52,7 @@
 #include "src/tokenization/token-request-handler.h"
 #include "src/tasks/client-integrity-task.h"
 #include "src/tasks/auto-updater.h"
-#include "src/tasks/log-rotator/hourly-log-rotator.h"
+#include "src/tasks/log-rotator.h"
 
 using namespace residue;
 using boost::asio::ip::tcp;
@@ -307,11 +307,17 @@ int main(int argc, char* argv[])
         // log rotator tasks
         threads.push_back(std::thread([&]() {
             el::Helpers::setThreadName("HourlyLogRotator");
-            HourlyLogRotator rotator(&registry); // lowest denominator
+            HourlyLogRotator rotator(&registry);
             registry.addLogRotator(&rotator);
             rotator.start();
         }));
-
+        threads.push_back(std::thread([&]() {
+            el::Helpers::setThreadName("DailyLogRotator");
+            DailyLogRotator rotator(&registry);
+            registry.addLogRotator(&rotator);
+            rotator.start();
+        }));
+#if 0 // TODO: Undo this
         // auto updater
         threads.push_back(std::thread([&]() {
             el::Helpers::setThreadName("AutoUpdater");
@@ -324,7 +330,7 @@ int main(int argc, char* argv[])
             }
             task.start();
         }));
-
+#endif
         if (registry.configuration()->hasFlag(Configuration::Flag::ACCEPT_INPUT)) {
             signal(SIGINT, interruptHandler); // SIGINT = interrupt
             commandHandler.start(&s_exitOnInterrupt);

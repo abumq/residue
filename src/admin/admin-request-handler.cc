@@ -25,7 +25,7 @@
 #include "src/core/configuration.h"
 #include "src/core/command-handler.h"
 #include "src/net/session.h"
-#include "src/tasks/log-rotator/log-rotator.h"
+#include "src/tasks/log-rotator.h"
 
 using namespace residue;
 
