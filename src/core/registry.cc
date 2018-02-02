@@ -30,7 +30,6 @@ using namespace residue;
 
 Registry::Registry(Configuration* configuration) :
     m_configuration(configuration),
-    m_logRotator(nullptr),
     m_clientIntegrityTask(nullptr),
     m_autoUpdater(nullptr),
     m_bytesSent("0"),

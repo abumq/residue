@@ -308,7 +308,7 @@ int main(int argc, char* argv[])
         threads.push_back(std::thread([&]() {
             el::Helpers::setThreadName("HourlyLogRotator");
             HourlyLogRotator rotator(&registry); // lowest denominator
-            // registry.setLogRotator(&rotator);
+            registry.addLogRotator(&rotator);
             rotator.start();
         }));
 

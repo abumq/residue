@@ -44,29 +44,30 @@ void Rotate::execute(std::vector<std::string>&& params, std::ostringstream& resu
         result << "Logger [" << loggerId << "] not yet registered" << std::endl;
         return;
     }
-    if (registry()->logRotator() == null) {
-        result << "Log rotator pointer is null [UNEXPECTED] - report to https://github.com/muflihun/residue" << std::endl;
-        return;
-    }
     if (hasParam(params, "--check-only")) {
-        result << registry()->logRotator()->checkStatus(loggerId) << std::endl;
+        for (auto& rotator : registry()->logRotators()) {
+            result << rotator->checkStatus(loggerId) << std::endl;
+        }
         return;
     }
     if (ignoreConfirmation || getConfirmation("This ignores the original rotation frequency and forces to run the rotation.\n"
                                               "This will change the rotation schedule for this logger.\n\n"
                                               "--check-only: To only check the next scheduled time\n"
                                               "--ignore-archive: To run the log rotation (if no --check-only provided) but do not archive and compress\n")) {
-        if (registry()->logRotator()->isExecuting()) {
-            result << "Log rotator already running, please try later\n";
-            return;
-        }
-        result << "Rotating logs for [" << loggerId << "]\n";
-        registry()->logRotator()->rotate(loggerId);
-        if (!hasParam(params, "--ignore-archive")) {
-            result << "Archiving logs for [" << loggerId << "]\n";
-            registry()->logRotator()->archiveRotatedItems();
-        } else {
-            result << "Ignoring archive rotated logs for [" << loggerId << "]\n";
+        for (auto& rotator : registry()->logRotators()) {
+            if (rotator->isExecuting()) {
+                result << "Log rotator already running, please try later\n";
+                return;
+            }
+            result << "Rotating logs for [" << loggerId << "]\n";
+            rotator->rotate(loggerId);
+            if (!hasParam(params, "--ignore-archive")) {
+                result << "Archiving logs for [" << loggerId << "]\n";
+                rotator->archiveRotatedItems();
+            } else {
+                result << "Ignoring archive rotated logs for [" << loggerId << "]\n";
+            }
+
         }
     }
 }

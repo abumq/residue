@@ -25,6 +25,7 @@
 #include <mutex>
 #include <string>
 #include <unordered_map>
+#include <vector>
 #include "src/non-copyable.h"
 #include "src/clients/client.h"
 #include "src/core/command-handler.h"
@@ -109,14 +110,16 @@ public:
         return m_mutex;
     }
 
-    inline LogRotator* logRotator()
+    inline std::vector<LogRotator*>& logRotators()
     {
-        return m_logRotator;
+        return m_logRotators;
     }
 
-    inline void setLogRotator(LogRotator* logRotator)
+    inline void addLogRotator(LogRotator* logRotator)
     {
-        m_logRotator = logRotator;
+        if (std::find(m_logRotators.begin(), m_logRotators.end(), logRotator) == m_logRotators.end()) {
+            m_logRotators.push_back(logRotator);
+        }
     }
 
     inline ClientIntegrityTask* clientIntegrityTask()
@@ -144,7 +147,7 @@ private:
     friend class CommandHandler;
 
     Configuration* m_configuration;
-    LogRotator* m_logRotator;
+    std::vector<LogRotator*> m_logRotators;
     ClientIntegrityTask* m_clientIntegrityTask;
     AutoUpdater* m_autoUpdater;
 
