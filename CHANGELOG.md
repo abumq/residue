@@ -7,6 +7,10 @@
 ### Updates
 - Debug printed in server version in connection response if build has debug logs enabled
 
+### Internal
+- Extra logging for debugging
+- LogArchiver thread name starts with log rotator name for different frequencies
+
 ## [1.2.3] - 31-01-2018
 ### Updates
 - Removed licensing
