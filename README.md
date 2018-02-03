@@ -60,13 +60,9 @@ Other distributions that _should_ work (but have not yet been tested)
  * Amazon Linux AMI 2016.03
 
 # Compatibility And Integration
-No matter what language is your application written in, residue is compatible and can be used as central logging server. All you need is client library. You can either write your own using [CLIENT_DEVELOPMENT.md](/docs/CLIENT_DEVELOPMENT.md) guidelines or use existing one.
+No matter what language is your application written in, residue is compatible and can be used as central logging server. All you need is client library. You can either write your own using [CLIENT_DEVELOPMENT.md](/docs/CLIENT_DEVELOPMENT.md) guidelines or use [one of the existing ones](https://github.com/search?q=topic%3Aresidue-client+org%3Amuflihun&type=Repositories).
 
-C++: If your application is written in C++ you can use [CLIENT_API.md](/docs/CLIENT_API.md) to start integrating. If you're already using Easylogging++ or similar logging library (that supports `LOG` helper macros) in your application, integration can be done in no more than 2 minutes.
-
-Java: A very massive commercial application that has multiple dependencies and modules and it was using Log4J logging library took us no more than half hour to fully replace existing library with [residue java client library](https://github.com/muflihun/residue-java).
-
-We're also actively working on client libraries for residue in other languages. Please feel free to contribute.
+We're also actively working on client libraries for residue in other languages. Please feel free to [contribute](/CONTRIBUTING.md).
 
 # Build Matrix
 
