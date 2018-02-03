@@ -36,7 +36,7 @@ void displayFormattedResult(const LogRotator* logRotator,
     const char* format = "%a, %d/%b/%Y %H:%m:%s";
     std::string formatted = Utils::formatTime(newEpoch, format);
     std::string orig = Utils::formatTime(item.get<0>(), format);
-    std::cout << orig << " ==> " << formatted << " (" << newEpoch << ")" << std::endl;
+    std::cout << orig << " (" << item.get<0>() << ")" << " ==> " << formatted << " (" << newEpoch << ")" << std::endl;
 }
 
 TEST(LogRotatorScheduleTest, HourlyRoundOffCalculation)
@@ -184,12 +184,16 @@ TEST(LogRotatorScheduleTest, YearlyRoundOffCalculation)
         { 1522498897, (0*86400) + (9*2419200) + (23 * 86400) + 2303, "Sat, 31/Mar/2018 23:21:37" },
         { 1519906897, (30*86400) + (9*2419200) + (23 * 86400) + 2303, "Thu, 01/Mar/2018 23:21:37" },
 
+        // with dst
         { 1525094497, (0*86400) + (8*2419200) + (21 * 86400) + 2303, "Mon, 30/Apr/2018 23:21:37 "},
         { 1525008097, (1*86400) + (8*2419200) + (21 * 86400) + 2303, "Sun, 29/Apr/2018 23:21:37 "},
         { 1530451297, (30*86400) + (5*2419200) + (13 * 86400) + 2303, "Sun, 01/Jul/2018 23:21:37" },
         { 1532956897, (1*86400) + (5*2419200) + (13 * 86400) + 2303, "Mon, 30/Jul/2018 23:21:37" },
         { 1533043297, (0*86400) + (5*2419200) + (13 * 86400) + 2303, "Tue, 31/Jul/2018 23:21:37" },
+        { 1535721697, (0*86400) + (4*2419200) + (10 * 86400) + 2303, "Fri, 31/Aug/2018 23:21:37" },
+        { 1538313697, (0*86400) + (3*2419200) + (8 * 86400) + 2303, "Sun, 30/Sep/2018 23:21:37" },
 
+        { 1540988497, (0*86400) + (2*2419200) + (5 * 86400) + 2303, "Wed, 31/Oct/2018 23:21:37" },
         { 1546345297, (30*86400) + (11*2419200) + (26 * 86400) + 2303, "Tue, 01/Jan/2019 23:21:37" },
         { 1546258897, (0*86400) + (0*2419200) + (0 * 86400) + 2303, "Mon, 31/Dec/2018 23:21:37" },
         { 1609417297, (0*86400) + (0*2419200) + (0 * 86400) + 2303, "Mon, 31/Dec/2020 23:21:37 - leap year" },
@@ -202,21 +206,25 @@ TEST(LogRotatorScheduleTest, YearlyRoundOffCalculation)
         ASSERT_EQ(item.get<1>(), logRotator.calculateRoundOff(item.get<0>())) << item.get<2>();
 
         displayFormattedResult(&logRotator, item);
-#if 0
+
+        std::cout << "Diff: " << logRotator.calculateRoundOff(item.get<0>()) << std::endl;
         unsigned long newEpoch = item.get<0>() + logRotator.calculateRoundOff(item.get<0>());
         int year = atoi(Utils::formatTime(newEpoch, "%Y").c_str());
+        int month = atoi(Utils::formatTime(item.get<0>(), "%M").c_str());
+        bool dst = month >= 4 && month <= 9;
+        int extra = dst ? 3600 : 0;
+
         switch (year) {
         case 2019:
-            ASSERT_EQ(newEpoch, 1546261200);
+            ASSERT_EQ(newEpoch, 1546261200 + extra);
             break;
         case 2020:
-            ASSERT_EQ(newEpoch, 1577797200);
+            ASSERT_EQ(newEpoch, 1577797200 + extra);
             break;
         case 2021:
-            ASSERT_EQ(newEpoch, 1609419600);
+            ASSERT_EQ(newEpoch, 1609419600 + extra);
             break;
         }
-#endif
     }
 }
 
