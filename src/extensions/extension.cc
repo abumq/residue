@@ -20,7 +20,7 @@
 //
 
 #include "src/extensions/extension.h"
-#include "include/Python.h"
+#include "src/extensions/python.h"
 #include "src/utils/utils.h"
 
 using namespace residue;

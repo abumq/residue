@@ -35,7 +35,7 @@
 #ifdef RESIDUE_USE_MINE
 #   include "deps/mine/mine.h"
 #endif
-#include "src/extensions/Python.h"
+#include "src/extensions/python.h"
 #include "src/logging/log.h"
 #include "src/core/configuration.h"
 #include "src/crypto/base64.h"

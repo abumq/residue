@@ -1,5 +1,5 @@
 //
-//  Python.h
+//  python.h
 //  Residue
 //
 //  Copyright 2017-present Muflihun Labs
