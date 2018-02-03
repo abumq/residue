@@ -396,17 +396,17 @@ Default: `false`
 #### `known_loggers`::`rotation_freq`
 [String] One of [`never`, `hourly`, `six_hours`, `twelve_hours`, `daily`, `weekly`, `monthly`, `yearly`] to specify rotation frequency for corresponding log files. This is rotated regardless of file size.
 
-Log rotation rounds off to the nearest denominator. To get better understanding of this round off, consider following table. Let's say you started the server at `Sat 03 Feb 2018, 01:34:12`
+Log rotation rounds off to the nearest denominator. To get better understanding of this round off, consider following table.
 
-|   Frequency        |       Next Schedule         |
-|--------------------|-----------------------------|
-| `hourly`           | `Sat 03 Feb 2018, 02:00:00` |
-| `six_hours`        | `Sat 03 Feb 2018, 06:00:00` |
-| `twelve_hours`     | `Sat 03 Feb 2018, 12:00:00` |
-| `daily`            | `Sun 04 Feb 2018, 00:00:00` |
-| `weekly`           | `Mon 05 Feb 2018, 00:00:00` |
-| `monthly`          | `Thu 01 Mar 2018, 00:00:00` |
-| `yearly`           | `Tue 01 Jan 2019, 00:00:00` |
+|   Frequency        |       Next Schedule                             |
+|--------------------|-------------------------------------------------|
+| `hourly`           | Last second of hour                             |
+| `six_hours`        | Last second of sixth of day, i.e, 6, 12, 18, 00 |
+| `twelve_hours`     | Last second of twelveth of day, i.e, 12, 00     |
+| `daily`            | Last second of the day i.e, 23:59:59            |
+| `weekly`           | Sun 23:59:59                                    |
+| `monthly`          | Last day of month at 23:59:59                   |
+| `yearly`           | Last day of the year at 23:59:59                |
 
 Default: `never`
 

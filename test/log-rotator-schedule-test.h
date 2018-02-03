@@ -51,7 +51,7 @@ TEST(LogRotatorScheduleTest, HourlyRoundOffCalculation)
     for (auto& item : TData) {
         HourlyLogRotator logRotator(nullptr);
 
-        ASSERT_EQ(item.get<1>(), logRotator.calculateRoundOff(item.get<0>())) << item.get<2>();
+        ASSERT_EQ(item.get<1>() - 1, logRotator.calculateRoundOff(item.get<0>())) << item.get<2>();
 
         displayFormattedResult(&logRotator, item);
     }
@@ -69,7 +69,7 @@ TEST(LogRotatorScheduleTest, SixHoursRoundOffCalculation)
     for (auto& item : TData) {
         SixHoursLogRotator logRotator(nullptr);
 
-        ASSERT_EQ(item.get<1>(), logRotator.calculateRoundOff(item.get<0>())) << item.get<2>();
+        ASSERT_EQ(item.get<1>() - 1, logRotator.calculateRoundOff(item.get<0>())) << item.get<2>();
 
         displayFormattedResult(&logRotator, item);
     }
@@ -87,7 +87,7 @@ TEST(LogRotatorScheduleTest, TwelveHoursRoundOffCalculation)
     for (auto& item : TData) {
         TwelveHoursLogRotator logRotator(nullptr);
 
-        ASSERT_EQ(item.get<1>(), logRotator.calculateRoundOff(item.get<0>())) << item.get<2>();
+        ASSERT_EQ(item.get<1>() - 1, logRotator.calculateRoundOff(item.get<0>())) << item.get<2>();
 
         displayFormattedResult(&logRotator, item);
     }
@@ -105,7 +105,7 @@ TEST(LogRotatorScheduleTest, DailyRoundOffCalculation)
     for (auto& item : TData) {
         DailyLogRotator logRotator(nullptr);
 
-        ASSERT_EQ(item.get<1>(), logRotator.calculateRoundOff(item.get<0>())) << item.get<2>();
+        ASSERT_EQ(item.get<1>() - 1, logRotator.calculateRoundOff(item.get<0>())) << item.get<2>();
 
         displayFormattedResult(&logRotator, item);
     }
@@ -129,7 +129,7 @@ TEST(LogRotatorScheduleTest, WeeklyRoundOffCalculation)
     for (auto& item : TData) {
         WeeklyLogRotator logRotator(nullptr);
 
-        ASSERT_EQ(item.get<1>(), logRotator.calculateRoundOff(item.get<0>())) << item.get<2>();
+        ASSERT_EQ(item.get<1>() - 1, logRotator.calculateRoundOff(item.get<0>())) << item.get<2>();
 
         displayFormattedResult(&logRotator, item);
     }
@@ -161,7 +161,7 @@ TEST(LogRotatorScheduleTest, MonthlyRoundOffCalculation)
     for (auto& item : TData) {
         MonthlyLogRotator logRotator(nullptr);
 
-        ASSERT_EQ(item.get<1>(), logRotator.calculateRoundOff(item.get<0>())) << item.get<2>();
+        ASSERT_EQ(item.get<1>() - 1, logRotator.calculateRoundOff(item.get<0>())) << item.get<2>();
 
         displayFormattedResult(&logRotator, item);
     }
@@ -203,26 +203,23 @@ TEST(LogRotatorScheduleTest, YearlyRoundOffCalculation)
     for (auto& item : TData) {
         YearlyLogRotator logRotator(nullptr);
 
-        ASSERT_EQ(item.get<1>(), logRotator.calculateRoundOff(item.get<0>())) << item.get<2>();
+        ASSERT_EQ(item.get<1>() - 1, logRotator.calculateRoundOff(item.get<0>())) << item.get<2>();
 
         displayFormattedResult(&logRotator, item);
 
-        std::cout << "Diff: " << logRotator.calculateRoundOff(item.get<0>()) << std::endl;
         unsigned long newEpoch = item.get<0>() + logRotator.calculateRoundOff(item.get<0>());
-        int year = atoi(Utils::formatTime(newEpoch, "%Y").c_str());
+        int year = atoi(Utils::formatTime(item.get<0>(), "%Y").c_str());
         int month = atoi(Utils::formatTime(item.get<0>(), "%M").c_str());
         bool dst = month >= 4 && month <= 9;
-        int extra = dst ? 3600 : 0;
-
         switch (year) {
+        case 2018:
+            ASSERT_EQ(newEpoch, 1546261199 + (dst ? 3600 : 0));
+            break;
         case 2019:
-            ASSERT_EQ(newEpoch, 1546261200 + extra);
+            ASSERT_EQ(newEpoch, 1577797199 + (dst ? 3600 : 0));
             break;
         case 2020:
-            ASSERT_EQ(newEpoch, 1577797200 + extra);
-            break;
-        case 2021:
-            ASSERT_EQ(newEpoch, 1609419600 + extra);
+            ASSERT_EQ(newEpoch, 1609419599 + (dst ? 3600 : 0));
             break;
         }
     }

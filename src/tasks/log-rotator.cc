@@ -370,7 +370,7 @@ unsigned long LogRotator::calculateSecondsToMidnight(unsigned long now) const
 
 unsigned long HourlyLogRotator::calculateRoundOff(unsigned long now) const
 {
-    return 3600 - (now % 3600);
+    return (3600 - (now % 3600)) - 1;
 }
 
 unsigned long SixHoursLogRotator::calculateRoundOff(unsigned long now) const
@@ -387,7 +387,7 @@ unsigned long SixHoursLogRotator::calculateRoundOff(unsigned long now) const
     if (nextHour == 0 || nextHour == 12) {
         hoursToNextIter = 0;
     }
-    return minRoundOff + (hoursToNextIter * 3600);
+    return (minRoundOff + (hoursToNextIter * 3600)) - 1;
 }
 
 unsigned long TwelveHoursLogRotator::calculateRoundOff(unsigned long now) const
@@ -405,12 +405,12 @@ unsigned long TwelveHoursLogRotator::calculateRoundOff(unsigned long now) const
     if (next24Hour == 0 || next24Hour == 12) {
         hoursToNextIter = 0;
     }
-    return minRoundOff + (hoursToNextIter * 3600);
+    return (minRoundOff + (hoursToNextIter * 3600)) - 1;
 }
 
 unsigned long DailyLogRotator::calculateRoundOff(unsigned long now) const
 {
-    return calculateSecondsToMidnight(now);
+    return calculateSecondsToMidnight(now) - 1;
 }
 
 unsigned long WeeklyLogRotator::calculateRoundOff(unsigned long now) const
@@ -439,7 +439,7 @@ unsigned long WeeklyLogRotator::calculateRoundOff(unsigned long now) const
                      << " Weekday: " << weekDayStr
                      << " daysToNextMonday " << daysToNextMonday;
 
-    return secsToNextMidnight + (daysToNextMonday * 86400);
+    return (secsToNextMidnight + (daysToNextMonday * 86400)) - 1;
 }
 
 unsigned long MonthlyLogRotator::calculateRoundOff(unsigned long now) const
@@ -478,7 +478,7 @@ unsigned long MonthlyLogRotator::calculateRoundOff(unsigned long now) const
                      << " monthDayStr " << monthDayStr
                      << " lastDayOfThisMonth " << lastDayOfThisMonth;
 
-    return secsToNextMidnight + (daysToNextMonth * 86400);
+    return (secsToNextMidnight + (daysToNextMonth * 86400)) - 1;
 }
 
 unsigned long YearlyLogRotator::calculateRoundOff(unsigned long now) const
@@ -527,5 +527,5 @@ unsigned long YearlyLogRotator::calculateRoundOff(unsigned long now) const
                      << " monthsToNextYear: " << monthsToNextYear
                      << " extraDays: " << extraDays;
 
-    return secsToNextMidnight + (daysToNextMonth * 86400) + (monthsToNextYear * 28 * 86400) + (extraDays * 86400);
+    return (secsToNextMidnight + (daysToNextMonth * 86400) + (monthsToNextYear * 28 * 86400) + (extraDays * 86400)) - 1;
 }
