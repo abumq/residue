@@ -387,7 +387,7 @@ unsigned long SixHoursLogRotator::calculateRoundOff(unsigned long now) const
     if (nextHour == 0 || nextHour == 12) {
         hoursToNextIter = 0;
     }
-    return (minRoundOff + (hoursToNextIter * 3600)) - 1;
+    return minRoundOff + (hoursToNextIter * 3600);
 }
 
 unsigned long TwelveHoursLogRotator::calculateRoundOff(unsigned long now) const
@@ -405,7 +405,7 @@ unsigned long TwelveHoursLogRotator::calculateRoundOff(unsigned long now) const
     if (next24Hour == 0 || next24Hour == 12) {
         hoursToNextIter = 0;
     }
-    return (minRoundOff + (hoursToNextIter * 3600)) - 1;
+    return minRoundOff + (hoursToNextIter * 3600);
 }
 
 unsigned long DailyLogRotator::calculateRoundOff(unsigned long now) const

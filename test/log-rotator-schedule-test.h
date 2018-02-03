@@ -69,7 +69,7 @@ TEST(LogRotatorScheduleTest, SixHoursRoundOffCalculation)
     for (auto& item : TData) {
         SixHoursLogRotator logRotator(nullptr);
 
-        ASSERT_EQ(item.get<1>() - 1, logRotator.calculateRoundOff(item.get<0>())) << item.get<2>();
+        ASSERT_EQ(item.get<1>(), logRotator.calculateRoundOff(item.get<0>())) << item.get<2>();
 
         displayFormattedResult(&logRotator, item);
     }
@@ -87,7 +87,7 @@ TEST(LogRotatorScheduleTest, TwelveHoursRoundOffCalculation)
     for (auto& item : TData) {
         TwelveHoursLogRotator logRotator(nullptr);
 
-        ASSERT_EQ(item.get<1>() - 1, logRotator.calculateRoundOff(item.get<0>())) << item.get<2>();
+        ASSERT_EQ(item.get<1>(), logRotator.calculateRoundOff(item.get<0>())) << item.get<2>();
 
         displayFormattedResult(&logRotator, item);
     }
