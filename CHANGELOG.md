@@ -4,6 +4,9 @@
 ### Fixes
 - Log rotator task - daily, weekly, monthly and yearly schedule (issue #49)
 
+### Updates
+- Debug printed in server version in connection response if build has debug logs enabled
+
 ## [1.2.3] - 31-01-2018
 ### Updates
 - Removed licensing
