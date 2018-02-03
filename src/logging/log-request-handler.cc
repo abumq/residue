@@ -312,7 +312,7 @@ bool LogRequestHandler::isRequestAllowed(const LogRequest* request) const
     // Ensure flag is on
     bool allowed = m_registry->configuration()->hasFlag(Configuration::Flag::ALLOW_UNKNOWN_LOGGERS);
     if (!allowed) {
-        // we're not allowed to use unknown loggers. we make sure the current logger is actually unknown.
+        // we're not allowed to use unknown loggers. we make sure the current logger is actually known.
         allowed = m_registry->configuration()->isKnownLogger(request->loggerId());
     }
     if (allowed) {
