@@ -33,8 +33,10 @@ void displayFormattedResult(const LogRotator* logRotator,
                             const TestCase<unsigned long, unsigned long, std::string>& item)
 {
     unsigned long newEpoch = item.get<0>() + logRotator->calculateRoundOff(item.get<0>());
-    std::string formatted = Utils::formatTime(newEpoch, "%a, %d/%b/%Y %H:%m:%s");
-    std::cout << formatted << " <<= " << item.get<2>() << std::endl;
+    const char* format = "%a, %d/%b/%Y %H:%m:%s";
+    std::string formatted = Utils::formatTime(newEpoch, format);
+    std::string orig = Utils::formatTime(item.get<0>(), format);
+    std::cout << orig << " ==> " << formatted << " (" << newEpoch << ")" << std::endl;
 }
 
 TEST(LogRotatorScheduleTest, HourlyRoundOffCalculation)
@@ -181,11 +183,13 @@ TEST(LogRotatorScheduleTest, YearlyRoundOffCalculation)
         { 1522326097, (2*86400) + (9*2419200) + (23 * 86400) + 2303, "Thu, 29/Mar/2018 23:21:37" },
         { 1522498897, (0*86400) + (9*2419200) + (23 * 86400) + 2303, "Sat, 31/Mar/2018 23:21:37" },
         { 1519906897, (30*86400) + (9*2419200) + (23 * 86400) + 2303, "Thu, 01/Mar/2018 23:21:37" },
+
         { 1525094497, (0*86400) + (8*2419200) + (21 * 86400) + 2303, "Mon, 30/Apr/2018 23:21:37 "},
         { 1525008097, (1*86400) + (8*2419200) + (21 * 86400) + 2303, "Sun, 29/Apr/2018 23:21:37 "},
         { 1530451297, (30*86400) + (5*2419200) + (13 * 86400) + 2303, "Sun, 01/Jul/2018 23:21:37" },
         { 1532956897, (1*86400) + (5*2419200) + (13 * 86400) + 2303, "Mon, 30/Jul/2018 23:21:37" },
         { 1533043297, (0*86400) + (5*2419200) + (13 * 86400) + 2303, "Tue, 31/Jul/2018 23:21:37" },
+
         { 1546345297, (30*86400) + (11*2419200) + (26 * 86400) + 2303, "Tue, 01/Jan/2019 23:21:37" },
         { 1546258897, (0*86400) + (0*2419200) + (0 * 86400) + 2303, "Mon, 31/Dec/2018 23:21:37" },
         { 1609417297, (0*86400) + (0*2419200) + (0 * 86400) + 2303, "Mon, 31/Dec/2020 23:21:37 - leap year" },
@@ -198,7 +202,21 @@ TEST(LogRotatorScheduleTest, YearlyRoundOffCalculation)
         ASSERT_EQ(item.get<1>(), logRotator.calculateRoundOff(item.get<0>())) << item.get<2>();
 
         displayFormattedResult(&logRotator, item);
-
+#if 0
+        unsigned long newEpoch = item.get<0>() + logRotator.calculateRoundOff(item.get<0>());
+        int year = atoi(Utils::formatTime(newEpoch, "%Y").c_str());
+        switch (year) {
+        case 2019:
+            ASSERT_EQ(newEpoch, 1546261200);
+            break;
+        case 2020:
+            ASSERT_EQ(newEpoch, 1577797200);
+            break;
+        case 2021:
+            ASSERT_EQ(newEpoch, 1609419600);
+            break;
+        }
+#endif
     }
 }
 
