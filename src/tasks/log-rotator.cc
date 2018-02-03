@@ -87,12 +87,29 @@ void LogRotator::execute()
         std::string loggerId = pair.first;
         Configuration::RotationFrequency freq = pair.second;
 
+        if (freq == Configuration::RotationFrequency::NEVER) {
+            return;
+        }
+
         const unsigned long now = Utils::now();
+#if 1
+        if (now >= nextExecution()) {
+            // should not need leniency...? ;/
+            RLOG(INFO) << "Starting log rotation for logger [" << loggerId << "]";
+            rotate(loggerId);
+            RLOG(INFO) << "Finished log rotation for logger [" << loggerId << "]";
+        } else {
+            RLOG(DEBUG) << "Ignoring rotation for [" << loggerId << "] - Reason: " << " now "
+                       << now << ", schedule " << formattedNextExecution();
+        }
+#else
+
+        // ---------- old
+
         auto iter = m_lastRotation.find(loggerId);
         unsigned long lastRotated = iter == m_lastRotation.end() ? 0L : iter->second;
-        bool runRotation = freq != Configuration::RotationFrequency::NEVER
-                && ((lastRotated == 0L && freq == Configuration::RotationFrequency::HOURLY)
-                    || now - lastRotated >= (freq - LENIENCY_THRESHOLD));
+        bool runRotation = (lastRotated == 0L && freq == Configuration::RotationFrequency::HOURLY)
+                || now - lastRotated >= (freq - LENIENCY_THRESHOLD);
         if (runRotation) {
             RLOG(INFO) << "Rotating logs for logger [" << loggerId << "]";
             rotate(loggerId);
@@ -102,6 +119,7 @@ void LogRotator::execute()
             RLOG(DEBUG) << "Ignoring rotation for [" << loggerId << "] - Reason: " << " lastRotated="
                        << lastRotated << ", delta: " << (now - lastRotated) << " < " << (freq - LENIENCY_THRESHOLD);
         }
+#endif
     }
 
     archiveRotatedItems();
@@ -110,7 +128,7 @@ void LogRotator::execute()
 void LogRotator::archiveRotatedItems()
 {
     RVLOG_IF(!m_archiveItems.empty(), RV_DETAILS) << "Archiving rotated logs... [Total loggers: " << m_archiveItems.size() << "]";
-    for (auto item : m_archiveItems) {
+    for (auto& item : m_archiveItems) {
         std::thread t([&]() {
             el::Helpers::setThreadName(name() + "::LogArchiver");
             RLOG(INFO) << "Archiving for [" << item.loggerId << "] => [" << item.archiveFilename
