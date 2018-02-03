@@ -65,6 +65,11 @@ public:
         return m_interval.count();
     }
 
+    inline std::string name() const
+    {
+        return m_name;
+    }
+
     inline std::string formattedNextExecution() const
     {
         return formattedExecution(m_nextExecution);
