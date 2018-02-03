@@ -29,9 +29,17 @@
 
 using namespace residue;
 
+void displayFormattedResult(const LogRotator* logRotator,
+                            const TestCase<unsigned long, unsigned long, std::string>& item)
+{
+    unsigned long newEpoch = item.get<0>() + logRotator->calculateRoundOff(item.get<0>());
+    std::string formatted = Utils::formatTime(newEpoch, "%a, %d/%b/%Y %H:%m:%s");
+    std::cout << formatted << " <<= " << item.get<2>() << std::endl;
+}
+
 TEST(LogRotatorScheduleTest, HourlyRoundOffCalculation)
 {
-    TestData<int, unsigned long, std::string> TData = {
+    TestData<unsigned long, unsigned long, std::string> TData = {
         { 1517579594, 406, "Fri, 02/Feb/2018 00:53:14" },
         { 1517570594, 2206, "Fri, 02/Feb/2018 22:23:14" },
         { 1517608394, 406, "Sat, 03/Feb/2018 08:53:14" },
@@ -43,15 +51,13 @@ TEST(LogRotatorScheduleTest, HourlyRoundOffCalculation)
 
         ASSERT_EQ(item.get<1>(), logRotator.calculateRoundOff(item.get<0>())) << item.get<2>();
 
-        unsigned long newEpoch = item.get<0>() + logRotator.calculateRoundOff(item.get<0>());
-        std::string formatted = Utils::formatTime(newEpoch, "%a, %d/%M/%Y %H:%m:%s");
-        std::cout << formatted << " <<= " << item.get<2>() << std::endl;
+        displayFormattedResult(&logRotator, item);
     }
 }
 
 TEST(LogRotatorScheduleTest, SixHoursRoundOffCalculation)
 {
-    TestData<int, unsigned long, std::string> TData = {
+    TestData<unsigned long, unsigned long, std::string> TData = {
         { 1517570594, 5806, "Fri, 02/Feb/2018 22:23:14" },
         { 1517579594, 18406, "Sat, 03/Feb/2018 00:53:14" },
         { 1517608394, 11206, "Sat, 03/Feb/2018 08:53:14" },
@@ -63,15 +69,13 @@ TEST(LogRotatorScheduleTest, SixHoursRoundOffCalculation)
 
         ASSERT_EQ(item.get<1>(), logRotator.calculateRoundOff(item.get<0>())) << item.get<2>();
 
-        unsigned long newEpoch = item.get<0>() + logRotator.calculateRoundOff(item.get<0>());
-        std::string formatted = Utils::formatTime(newEpoch, "%a, %d/%M/%Y %H:%m:%s");
-        std::cout << formatted << " <<= " << item.get<2>() << std::endl;
+        displayFormattedResult(&logRotator, item);
     }
 }
 
 TEST(LogRotatorScheduleTest, TwelveHoursRoundOffCalculation)
 {
-    TestData<int, unsigned long, std::string> TData = {
+    TestData<unsigned long, unsigned long, std::string> TData = {
         { 1517570594, 5806, "Fri, 02/Feb/2018 22:23:14" },
         { 1517579594, 40006, "Sat, 03/Feb/2018 00:53:14" },
         { 1517608394, 11206, "Sat, 03/Feb/2018 08:53:14" },
@@ -83,15 +87,13 @@ TEST(LogRotatorScheduleTest, TwelveHoursRoundOffCalculation)
 
         ASSERT_EQ(item.get<1>(), logRotator.calculateRoundOff(item.get<0>())) << item.get<2>();
 
-        unsigned long newEpoch = item.get<0>() + logRotator.calculateRoundOff(item.get<0>());
-        std::string formatted = Utils::formatTime(newEpoch, "%a, %d/%M/%Y %H:%m:%s");
-        std::cout << formatted << " <<= " << item.get<2>() << std::endl;
+        displayFormattedResult(&logRotator, item);
     }
 }
 
 TEST(LogRotatorScheduleTest, DailyRoundOffCalculation)
 {
-    TestData<int, unsigned long, std::string> TData = {
+    TestData<unsigned long, unsigned long, std::string> TData = {
         { 1517570594, 5806, "Fri, 02/Feb/2018 22:23:14" },
         { 1517579594, 83206, "Sat, 03/Feb/2018 00:53:14" },
         { 1517608394, 54406, "Sat, 03/Feb/2018 08:53:14" },
@@ -103,15 +105,13 @@ TEST(LogRotatorScheduleTest, DailyRoundOffCalculation)
 
         ASSERT_EQ(item.get<1>(), logRotator.calculateRoundOff(item.get<0>())) << item.get<2>();
 
-        unsigned long newEpoch = item.get<0>() + logRotator.calculateRoundOff(item.get<0>());
-        std::string formatted = Utils::formatTime(newEpoch, "%a, %d/%M/%Y %H:%m:%s");
-        std::cout << formatted << " <<= " << item.get<2>() << std::endl;
+        displayFormattedResult(&logRotator, item);
     }
 }
 
 TEST(LogRotatorScheduleTest, WeeklyRoundOffCalculation)
 {
-    TestData<int, unsigned long, std::string> TData = {
+    TestData<unsigned long, unsigned long, std::string> TData = {
         //             days in
         //            until next
         //              monday
@@ -129,15 +129,13 @@ TEST(LogRotatorScheduleTest, WeeklyRoundOffCalculation)
 
         ASSERT_EQ(item.get<1>(), logRotator.calculateRoundOff(item.get<0>())) << item.get<2>();
 
-        unsigned long newEpoch = item.get<0>() + logRotator.calculateRoundOff(item.get<0>());
-        std::string formatted = Utils::formatTime(newEpoch, "%a, %d/%M/%Y %H:%m:%s");
-        std::cout << formatted << " <<= " << item.get<2>() << std::endl;
+        displayFormattedResult(&logRotator, item);
     }
 }
 
 TEST(LogRotatorScheduleTest, MonthlyRoundOffCalculation)
 {
-    TestData<int, unsigned long, std::string> TData = {
+    TestData<unsigned long, unsigned long, std::string> TData = {
         //             days in
         //            next month
         { 1517570594, (26*86400) + 5806, "Fri, 02/Feb/2018 22:23:14"  },
@@ -163,16 +161,14 @@ TEST(LogRotatorScheduleTest, MonthlyRoundOffCalculation)
 
         ASSERT_EQ(item.get<1>(), logRotator.calculateRoundOff(item.get<0>())) << item.get<2>();
 
-        unsigned long newEpoch = item.get<0>() + logRotator.calculateRoundOff(item.get<0>());
-        std::string formatted = Utils::formatTime(newEpoch, "%a, %d/%M/%Y %H:%m:%s");
-        std::cout << formatted << " <<= " << item.get<2>() << std::endl;
+        displayFormattedResult(&logRotator, item);
     }
 }
 
 TEST(LogRotatorScheduleTest, YearlyRoundOffCalculation)
 {
 
-    TestData<int, unsigned long, std::string> TData = {
+    TestData<unsigned long, unsigned long, std::string> TData = {
         //             days in       months to    extra days
         //            next month     next year
         { 1517570594, (26*86400) + (10*2419200) + (26 * 86400) + 5806, "Fri, 02/Feb/2018 22:23:14"  },
@@ -184,9 +180,9 @@ TEST(LogRotatorScheduleTest, YearlyRoundOffCalculation)
         { 1522412497, (1*86400) + (9*2419200) + (23 * 86400) + 2303, "Fri, 30/Mar/2018 23:21:37" },
         { 1522326097, (2*86400) + (9*2419200) + (23 * 86400) + 2303, "Thu, 29/Mar/2018 23:21:37" },
         { 1522498897, (0*86400) + (9*2419200) + (23 * 86400) + 2303, "Sat, 31/Mar/2018 23:21:37" },
+        { 1519906897, (30*86400) + (9*2419200) + (23 * 86400) + 2303, "Thu, 01/Mar/2018 23:21:37" },
         { 1525094497, (0*86400) + (8*2419200) + (21 * 86400) + 2303, "Mon, 30/Apr/2018 23:21:37 "},
         { 1525008097, (1*86400) + (8*2419200) + (21 * 86400) + 2303, "Sun, 29/Apr/2018 23:21:37 "},
-        { 1519906897, (30*86400) + (9*2419200) + (23 * 86400) + 2303, "Thu, 01/Mar/2018 23:21:37" },
         { 1530451297, (30*86400) + (5*2419200) + (13 * 86400) + 2303, "Sun, 01/Jul/2018 23:21:37" },
         { 1532956897, (1*86400) + (5*2419200) + (13 * 86400) + 2303, "Mon, 30/Jul/2018 23:21:37" },
         { 1533043297, (0*86400) + (5*2419200) + (13 * 86400) + 2303, "Tue, 31/Jul/2018 23:21:37" },
@@ -201,9 +197,7 @@ TEST(LogRotatorScheduleTest, YearlyRoundOffCalculation)
 
         ASSERT_EQ(item.get<1>(), logRotator.calculateRoundOff(item.get<0>())) << item.get<2>();
 
-        unsigned long newEpoch = item.get<0>() + logRotator.calculateRoundOff(item.get<0>());
-        std::string formatted = Utils::formatTime(newEpoch, "%a, %d/%M/%Y %H:%m:%s");
-        std::cout << formatted << " <<= " << item.get<2>() << std::endl;
+        displayFormattedResult(&logRotator, item);
 
     }
 }
