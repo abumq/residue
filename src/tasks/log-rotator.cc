@@ -114,7 +114,7 @@ void LogRotator::archiveRotatedItems()
         std::thread t([&]() {
             el::Helpers::setThreadName("LogArchiver");
             RLOG(INFO) << "Archiving for [" << item.loggerId << "] => [" << item.archiveFilename
-                       << "] containing " << item.files.size() << " files";
+                       << "] containing " << item.files.size() << " file(s)";
             archiveAndCompress(item.loggerId, item.archiveFilename, item.files);
         });
         t.join();
@@ -329,7 +329,7 @@ void LogRotator::archiveAndCompress(const std::string& loggerId, const std::stri
         return;
     }
 
-    for (auto f : files) {
+    for (auto& f : files) {
         RVLOG(RV_DETAILS) << "Removing plain file [" << f.first << "] (" << Utils::bytesToHumanReadable(Utils::fileSize(f.first.c_str())) << ")";
         if (::remove(f.first.c_str()) != 0 ) {
             RLOG(ERROR) << "Error removing file [" << f.first << "] " << std::strerror(errno);
