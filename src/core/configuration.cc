@@ -27,7 +27,7 @@
 #include <iostream>
 #include <sstream>
 #include <algorithm>
-#include "include/log.h"
+#include "src/logging/log.h"
 #include "src/core/configuration.h"
 #include "src/core/json-object.h"
 #include "src/crypto/aes.h"

@@ -24,7 +24,7 @@
 #include <vector>
 #include <set>
 #include <thread>
-#include "include/log.h"
+#include "src/logging/log.h"
 #include "src/tasks/log-rotator.h"
 #include "src/utils/utils.h"
 #include "src/core/registry.h"

@@ -20,7 +20,7 @@
 //
 
 #include <chrono>
-#include "include/log.h"
+#include "src/logging/log.h"
 
 namespace std {
 namespace chrono {

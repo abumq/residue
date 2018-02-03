@@ -20,7 +20,7 @@
 //
 
 #include <vector>
-#include "include/log.h"
+#include "src/logging/log.h"
 #include "src/tasks/client-integrity-task.h"
 #include "src/core/registry.h"
 #include "src/clients/client.h"

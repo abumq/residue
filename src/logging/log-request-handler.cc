@@ -19,7 +19,7 @@
 //  limitations under the License.
 //
 
-#include "include/log.h"
+#include "src/logging/log.h"
 #include "src/logging/log-request-handler.h"
 #include "src/logging/log-request.h"
 #include "src/logging/user-log-builder.h"

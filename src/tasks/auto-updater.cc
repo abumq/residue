@@ -19,7 +19,7 @@
 //  limitations under the License.
 //
 
-#include "include/log.h"
+#include "src/logging/log.h"
 #include "src/tasks/auto-updater.h"
 #include "src/core/registry.h"
 #include "src/core/configuration.h"

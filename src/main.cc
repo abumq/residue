@@ -31,12 +31,12 @@
 #include <thread>
 #include <utility>
 #include <boost/asio.hpp>
-#include "include/Python.h"
 #include "deps/ripe/Ripe.h"
 #ifdef RESIDUE_USE_MINE
 #   include "deps/mine/mine.h"
 #endif
-#include "include/log.h"
+#include "src/extensions/Python.h"
+#include "src/logging/log.h"
 #include "src/core/configuration.h"
 #include "src/crypto/base64.h"
 #include "src/core/registry.h"

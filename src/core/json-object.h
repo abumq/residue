@@ -23,7 +23,7 @@
 #define JsonObject_h
 
 #include "deps/json/json.h"
-#include "include/log.h"
+#include "src/logging/log.h"
 #include "src/non-copyable.h"
 
 namespace residue {

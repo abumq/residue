@@ -23,7 +23,7 @@
 #define LogExtension_h
 
 #include <string>
-#include "include/log.h"
+#include "src/logging/log.h"
 #include "src/extensions/extension.h"
 
 namespace residue {

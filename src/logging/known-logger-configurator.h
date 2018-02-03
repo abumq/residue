@@ -22,7 +22,7 @@
 #ifndef KnownLoggerConfigurator_h
 #define KnownLoggerConfigurator_h
 
-#include "include/log.h"
+#include "src/logging/log.h"
 #include "src/non-copyable.h"
 #include "src/utils/utils.h"
 

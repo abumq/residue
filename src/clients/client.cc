@@ -21,7 +21,7 @@
 
 #include <chrono>
 #include <mutex>
-#include "include/log.h"
+#include "src/logging/log.h"
 #include "src/core/configuration.h"
 #include "src/clients/client.h"
 #include "src/connect/connection-request.h"

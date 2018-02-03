@@ -19,7 +19,7 @@
 //  limitations under the License.
 //
 
-#include "include/log.h"
+#include "src/logging/log.h"
 #include "src/admin/admin-request.h"
 #include "src/core/json-object.h"
 #include "src/utils/utils.h"

@@ -22,7 +22,7 @@
 #ifndef ResidueLogDispatcher_h
 #define ResidueLogDispatcher_h
 
-#include "include/log.h"
+#include "src/logging/log.h"
 #include "src/non-copyable.h"
 #include "src/utils/utils.h"
 #include "src/extensions/log-extension.h"

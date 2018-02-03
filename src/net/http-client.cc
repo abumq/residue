@@ -24,7 +24,7 @@
 #else
 #include <boost/asio.hpp>
 #endif
-#include "include/log.h"
+#include "src/logging/log.h"
 #include "src/net/http-client.h"
 #include "src/net/url.h"
 #include "src/core/residue-exception.h"

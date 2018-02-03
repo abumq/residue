@@ -29,7 +29,7 @@
 #include <string>
 #include <random>
 #include <algorithm>
-#include "include/log.h"
+#include "src/logging/log.h"
 #include "src/core/configuration.h"
 #include "src/core/residue-exception.h"
 #include "src/utils/tar.h"

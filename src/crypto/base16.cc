@@ -24,7 +24,7 @@
 #else
 #include "deps/ripe/Ripe.h"
 #endif
-#include "include/log.h"
+#include "src/logging/log.h"
 #include "src/crypto/base16.h"
 
 using namespace residue;

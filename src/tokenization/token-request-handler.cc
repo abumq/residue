@@ -20,7 +20,7 @@
 //
 
 #include <sstream>
-#include "include/log.h"
+#include "src/logging/log.h"
 #include "src/tokenization/token-request-handler.h"
 #include "src/tokenization/token-request.h"
 #include "src/core/configuration.h"

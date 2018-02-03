@@ -22,7 +22,7 @@
 #ifndef UserLogBuilder_h
 #define UserLogBuilder_h
 
-#include "include/log.h"
+#include "src/logging/log.h"
 #include "src/non-copyable.h"
 
 namespace residue {

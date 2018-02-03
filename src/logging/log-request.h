@@ -22,7 +22,7 @@
 #ifndef LogRequest_h
 #define LogRequest_h
 
-#include "include/log.h"
+#include "src/logging/log.h"
 #include "src/core/request.h"
 #include "src/core/json-object.h"
 
