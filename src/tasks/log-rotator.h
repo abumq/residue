@@ -56,7 +56,7 @@ public:
                         Configuration::RotationFrequency freq);
     void rotate(const std::string& loggerId);
     void archiveRotatedItems();
-    std::string checkStatus(const std::string& loggerId);
+    std::string checkStatus(const std::string& loggerId) const;
 protected:
     virtual void execute() override;
 

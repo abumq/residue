@@ -42,7 +42,7 @@ LogRotator::LogRotator(const std::string& name,
 {
 }
 
-std::string LogRotator::checkStatus(const std::string& loggerId)
+std::string LogRotator::checkStatus(const std::string& loggerId) const
 {
     auto rotationFrequencies = m_registry->configuration()->rotationFreqencies();
     for (const auto& pair : rotationFrequencies) {
@@ -57,9 +57,9 @@ std::string LogRotator::checkStatus(const std::string& loggerId)
         auto iter = m_lastRotation.find(loggerId);
         unsigned long lastRotated = iter == m_lastRotation.end() ? 0L : iter->second;
         std::stringstream ss;
-        ss << "Scheduled to run ";
+        ss << name() << " scheduled to run ";
         if (lastRotated == 0L) {
-            ss << " @ [" << formattedNextExecution() << "]";
+            ss << "@ [" << formattedNextExecution() << "]";
         } else {
             unsigned long nextRotation = lastRotated + freq;
             bool skippedLast = false;
@@ -69,7 +69,7 @@ std::string LogRotator::checkStatus(const std::string& loggerId)
                 nextRotation = nextRotation + freq;
                 skippedLast = true;
             }
-            ss << "at " << Utils::formatTime(nextRotation, "%d %b, %Y %H:%m:%s");
+            ss << "@ " << Utils::formatTime(nextRotation, "%d %b, %Y %H:%m:%s");
             if (skippedLast) {
                 ss << "\nLast rotation was skipped because of time inconsitency.";
             }
