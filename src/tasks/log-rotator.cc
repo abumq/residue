@@ -97,7 +97,7 @@ void LogRotator::execute()
             RLOG(INFO) << "Rotating logs for logger [" << loggerId << "]";
             rotate(loggerId);
             m_lastRotation[loggerId] = Utils::now();
-            RLOG(INFO) << "[" << loggerId << "] rescheduled for rotation at [" << m_lastRotation[loggerId] << "]";
+            RLOG(INFO) << "[" << loggerId << "] finished rotation at [" << m_lastRotation[loggerId] << "]";
         } else {
             RLOG(DEBUG) << "Ignoring rotation for [" << loggerId << "] - Reason: " << " lastRotated="
                        << lastRotated << ", delta: " << (now - lastRotated) << " < " << (freq - LENIENCY_THRESHOLD);
