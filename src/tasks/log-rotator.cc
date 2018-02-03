@@ -565,5 +565,15 @@ unsigned long YearlyLogRotator::calculateRoundOff(unsigned long now) const
     for (int i = month + 1; i <= 12; ++i) {
         extraDays += MONTH_MAX_DAYS_MAP.at(i) - 28;
     }
+    /*
+    std::cout << " monthDay: " << monthDay
+            << " lastDayOfThisMonth: " << lastDayOfThisMonth
+            << " daysToNextMonth: " << daysToNextMonth
+            << " secsToNextMonth: " << secsToNextMonth
+            << " secsToNextMidnight: " << secsToNextMidnight
+            << " extraDays: " << extraDays
+            << " monthsToNextYear: " << monthsToNextYear
+            << std::endl;
+    */
     return secsToNextMonth + (monthsToNextYear * 28 * 86400) + (extraDays * 86400);
 }
