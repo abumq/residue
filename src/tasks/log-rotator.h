@@ -59,6 +59,8 @@ public:
     std::string checkStatus(const std::string& loggerId);
 protected:
     virtual void execute() override;
+
+    unsigned long calculateSecondsToMidnight(unsigned long now) const;
 private:
     std::vector<ArchiveItem> m_archiveItems;
     std::unordered_map<std::string, unsigned long> m_lastRotation;

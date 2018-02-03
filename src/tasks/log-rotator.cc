@@ -359,6 +359,15 @@ void LogRotator::archiveAndCompress(const std::string& loggerId, const std::stri
     }
 }
 
+unsigned long LogRotator::calculateSecondsToMidnight(unsigned long now) const
+{
+    unsigned long minRoundOff = 3600 - (now % 3600);
+    std::string next24HourStr = Utils::formatTime(minRoundOff + now, "%H");
+    int next24Hour = atoi(next24HourStr.c_str());
+    int hoursToNextIter = next24Hour == 0 || next24Hour == 12 ? 0 : 24 - next24Hour; // nearest day
+    return minRoundOff + (hoursToNextIter * 3600);
+}
+
 unsigned long HourlyLogRotator::calculateRoundOff(unsigned long now) const
 {
     return 3600 - (now % 3600);
@@ -401,12 +410,7 @@ unsigned long TwelveHoursLogRotator::calculateRoundOff(unsigned long now) const
 
 unsigned long DailyLogRotator::calculateRoundOff(unsigned long now) const
 {
-    unsigned long minRoundOff = 3600 - (now % 3600);
-
-    std::string next24HourStr = Utils::formatTime(minRoundOff + now, "%H");
-    int next24Hour = atoi(next24HourStr.c_str());
-    int hoursToNextIter = next24Hour == 0 || next24Hour == 12 ? 0 : 24 - next24Hour;
-    return minRoundOff + (hoursToNextIter * 3600);
+    return calculateSecondsToMidnight(now);
 }
 
 unsigned long WeeklyLogRotator::calculateRoundOff(unsigned long now) const
@@ -423,24 +427,18 @@ unsigned long WeeklyLogRotator::calculateRoundOff(unsigned long now) const
     };
 
     // Section-1
-    unsigned long minRoundOff = 3600 - (now % 3600);
-    std::string next24HourStr = Utils::formatTime(minRoundOff + now, "%H");
-    int next24Hour = atoi(next24HourStr.c_str());
-    int hoursToNextIter = next24Hour == 0 || next24Hour == 12 ? 0 : 24 - next24Hour; // nearest day
-    int secsToNextMidnight = minRoundOff + (hoursToNextIter * 3600);
+    int secsToNextMidnight = calculateSecondsToMidnight(now);
 
     // Section-2
     std::string weekDayStr = Utils::formatTime(now + secsToNextMidnight, "%a");
     int weekDay = WEEK_DAYS_MAP.at(weekDayStr);
 
     int daysToNextMonday = weekDay == 1 ? 0 : (7 - weekDay) + 1;
-    /*
-    std::cout
-            << "now: " << Utils::formatTime(now, "%a, %d/%M/%Y %h:%m:%s")
-            << " Weekday: " << weekDayStr
-              << " daysToNextMonday " << daysToNextMonday
-              << std::endl;
-    */
+
+    DRVLOG(RV_DEBUG) << "now: " << Utils::formatTime(now, "%a, %d/%M/%Y %h:%m:%s")
+                     << " Weekday: " << weekDayStr
+                     << " daysToNextMonday " << daysToNextMonday;
+
     return secsToNextMidnight + (daysToNextMonday * 86400);
 }
 
@@ -463,11 +461,7 @@ unsigned long MonthlyLogRotator::calculateRoundOff(unsigned long now) const
     };
 
     // Section-1
-    unsigned long minRoundOff = 3600 - (now % 3600);
-    std::string next24HourStr = Utils::formatTime(minRoundOff + now, "%H");
-    int next24Hour = atoi(next24HourStr.c_str());
-    int hoursToNextIter = next24Hour == 0 || next24Hour == 12 ? 0 : 24 - next24Hour; // nearest day
-    int secsToNextMidnight = minRoundOff + (hoursToNextIter * 3600);
+    int secsToNextMidnight = calculateSecondsToMidnight(now);
 
     // Section-2
     std::string monthStr = Utils::formatTime(secsToNextMidnight + now, "%M");
@@ -476,16 +470,14 @@ unsigned long MonthlyLogRotator::calculateRoundOff(unsigned long now) const
     int monthDay = atoi(monthDayStr.c_str());
     int lastDayOfThisMonth = LAST_DAY_OF_MONTH_MAP.at(month);
     int daysToNextMonth = monthDay == 1 ? 0 : (lastDayOfThisMonth - monthDay) + 1;
-/*
-    std::cout
-            << " now " << Utils::formatTime(now, "%a, %d/%M/%Y %h:%m:%s")
-            << " secsToNextMidnight " << secsToNextMidnight
-            << " daysToNextMonth " << daysToNextMonth
-            << " monthDay " << monthDay
-            << " monthDayStr " << monthDayStr
-            << " lastDayOfThisMonth " << lastDayOfThisMonth
-            << std::endl;
-    */
+
+    DRVLOG(RV_DEBUG) << " now " << Utils::formatTime(now, "%a, %d/%M/%Y %h:%m:%s")
+                     << " secsToNextMidnight " << secsToNextMidnight
+                     << " daysToNextMonth " << daysToNextMonth
+                     << " monthDay " << monthDay
+                     << " monthDayStr " << monthDayStr
+                     << " lastDayOfThisMonth " << lastDayOfThisMonth;
+
     return secsToNextMidnight + (daysToNextMonth * 86400);
 }
 
@@ -508,11 +500,7 @@ unsigned long YearlyLogRotator::calculateRoundOff(unsigned long now) const
     };
 
     // Section-1
-    unsigned long minRoundOff = 3600 - (now % 3600);
-    std::string next24HourStr = Utils::formatTime(minRoundOff + now, "%H");
-    int next24Hour = atoi(next24HourStr.c_str());
-    int hoursToNextIter = next24Hour == 0 || next24Hour == 12 ? 0 : 24 - next24Hour; // nearest day
-    int secsToNextMidnight = minRoundOff + (hoursToNextIter * 3600);
+    int secsToNextMidnight = calculateSecondsToMidnight(now);
 
     // Section-2
     std::string monthStr = Utils::formatTime(secsToNextMidnight + now, "%M");
@@ -521,22 +509,23 @@ unsigned long YearlyLogRotator::calculateRoundOff(unsigned long now) const
     int monthDay = atoi(monthDayStr.c_str());
     int lastDayOfThisMonth = LAST_DAY_OF_MONTH_MAP.at(month);
     int daysToNextMonth = monthDay == 1 ? 0 : (lastDayOfThisMonth - monthDay) + 1;
-    int secsToNextMonth = secsToNextMidnight + (daysToNextMonth * 86400);
 
     // Section-3
-    int monthsToNextYear = month == 1 ? 0 : (12 - month) + 1;
+    int monthsToNextYear = (12 - month) + (daysToNextMonth == 0 ? 1 : 0);
+    if (monthsToNextYear == 12) {
+        monthsToNextYear = 0;
+    }
     int extraDays = 0;
-    for (int i = month + 1; i <= 12; ++i) {
-        extraDays += LAST_DAY_OF_MONTH_MAP.at(i) - 28;
+    for (int i = monthsToNextYear - 1; i >= 0 && monthsToNextYear > 0; --i) {
+        extraDays += LAST_DAY_OF_MONTH_MAP.at(12 - i) - 28;
     }
 
-    std::cout
-            << " now " << Utils::formatTime(now, "%a, %d/%M/%Y %h:%m:%s")
-            << " month: " << month
-            << " secsToNextMonth: " << secsToNextMonth
-            << " extraDays: " << extraDays
-            << " monthsToNextYear: " << monthsToNextYear
-            << std::endl;
+    DRVLOG(RV_DEBUG) << " now " << Utils::formatTime(now, "%a, %d/%M/%Y %h:%m:%s")
+                     << " month: " << month
+                     << " secsToNextMidnight " << secsToNextMidnight
+                     << " daysToNextMonth: " << daysToNextMonth
+                     << " monthsToNextYear: " << monthsToNextYear
+                     << " extraDays: " << extraDays;
 
-    return secsToNextMonth + (monthsToNextYear * 28 * 86400) + (extraDays * 86400);
+    return secsToNextMidnight + (daysToNextMonth * 86400) + (monthsToNextYear * 28 * 86400) + (extraDays * 86400);
 }
