@@ -434,22 +434,9 @@ unsigned long DailyLogRotator::calculateRoundOff(unsigned long now) const
     // setup based on minRoundOff and now
     std::string next24HourStr = Utils::formatTime(minRoundOff + now, "%H");
     int next24Hour = atoi(next24HourStr.c_str());
-    const std::map<std::string, int> WEEK_DAYS_MAP = {
-        { "Mon", 1 },
-        { "Tue", 2 },
-        { "Wed", 3 },
-        { "Thu", 4 },
-        { "Fri", 5 },
-        { "Sat", 6 },
-        { "Sun", 7 }
-    };
-    std::string weekDayStr = Utils::formatTime(minRoundOff + now, "%a");
-    int weekDay = WEEK_DAYS_MAP.at(weekDayStr);
 
-    int hoursToNextIter = next24Hour == 0 || next24Hour == 12 ? 0 : 24 - next24Hour; // nearest day
-    int secsToNextMidnight = minRoundOff + (hoursToNextIter * 3600);
-    int daysToNextMonday = 7 - weekDay;
-    return secsToNextMidnight + (daysToNextMonday * 86400);
+    int hoursToNextIter = next24Hour == 0 || next24Hour == 12 ? 0 : 24 - next24Hour;
+    return minRoundOff + (hoursToNextIter * 3600);
 }
 
 unsigned long WeeklyLogRotator::calculateRoundOff(unsigned long now) const
