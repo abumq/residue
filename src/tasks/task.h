@@ -40,8 +40,7 @@ class Task : NonCopyable
 public:
     explicit Task(const std::string& name,
                   Registry* registry,
-                  unsigned int intervalInSeconds,
-                  unsigned long roundOffInSeconds = 0);
+                  unsigned int intervalInSeconds);
     virtual ~Task() = default;
 
     void start();
@@ -76,7 +75,7 @@ public:
         return formattedExecution(m_lastExecution);
     }
 
-    virtual unsigned long calculateRoundOff() const;
+    virtual unsigned long calculateRoundOff(unsigned long now = Utils::now()) const;
 
     void rescheduleFromNow();
 
@@ -84,7 +83,6 @@ protected:
     std::string m_name;
     Registry* m_registry;
     std::chrono::seconds m_interval;
-    unsigned long m_roundOff;
     unsigned long m_nextExecution;
     std::chrono::seconds m_nextWait;
     unsigned long m_lastExecution;

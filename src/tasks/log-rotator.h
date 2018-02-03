@@ -57,14 +57,11 @@ public:
     void rotate(const std::string& loggerId);
     void archiveRotatedItems();
     std::string checkStatus(const std::string& loggerId);
-
-    virtual unsigned long calculateRoundOff() const override;
 protected:
     virtual void execute() override;
 private:
     std::vector<ArchiveItem> m_archiveItems;
     std::unordered_map<std::string, unsigned long> m_lastRotation;
-    Configuration::RotationFrequency m_freq;
 
     void archiveAndCompress(const std::string&,
                             const std::string&,
@@ -78,6 +75,8 @@ public:\
     explicit NAME(Registry* registry) \
         : LogRotator(ID, registry, Configuration::RotationFrequency::FREQ) \
     {}\
+    \
+    virtual unsigned long calculateRoundOff(unsigned long now) const override;\
 }
 
 DECL_LOG_ROTATOR("HourlyLogRotator", HourlyLogRotator, HOURLY);

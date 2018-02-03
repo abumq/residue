@@ -30,12 +30,10 @@ using namespace residue;
 
 Task::Task(const std::string& name,
            Registry* registry,
-           unsigned int intervalInSeconds,
-           unsigned long roundOffInSeconds) :
+           unsigned int intervalInSeconds) :
     m_name(name),
     m_registry(registry),
     m_interval(std::chrono::seconds(intervalInSeconds)),
-    m_roundOff(roundOffInSeconds),
     m_nextExecution(0UL),
     m_lastExecution(0UL),
     m_executing(false)
@@ -68,15 +66,15 @@ void Task::start()
     }
 }
 
-unsigned long Task::calculateRoundOff() const
+unsigned long Task::calculateRoundOff(unsigned long) const
 {
-    return m_roundOff > 0 ? m_roundOff - (Utils::now() % m_roundOff) : 0;
+    return 0;
 }
 
 void Task::rescheduleFromNow()
 {
-    if (m_roundOff > 0) {
-        unsigned long roundOff = calculateRoundOff();
+    unsigned long roundOff = calculateRoundOff();
+    if (roundOff > 0) {
         m_nextExecution = Utils::now() + roundOff;
         m_nextWait = std::chrono::seconds(roundOff);
     } else {

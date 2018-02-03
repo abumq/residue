@@ -42,25 +42,12 @@ public:
     }
 };
 
-class SimpleTaskWithRoundOff final : public Task
-{
-public:
-    explicit SimpleTaskWithRoundOff(unsigned int interval) :
-        Task("SimpleTaskWithRoundOff", nullptr, interval, 3600)
-    {
-    }
-
-    virtual void execute() override
-    {
-        LOG(INFO) << "SimpleTaskWithRoundOff::execute()";
-    }
-};
-
 TEST(TaskScheduleTest, TestBasicSchedule)
 {
     const unsigned long now = Utils::now();
     int interv = 20;
     SimpleTask t(interv);
+    t.rescheduleFromNow();
     ASSERT_EQ(now + interv, t.nextExecution());
     ASSERT_EQ(interv, t.intervalCount());
 }

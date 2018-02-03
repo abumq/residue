@@ -40,8 +40,7 @@ const unsigned long LogRotator::LENIENCY_THRESHOLD = 60 * 5; // 5 minutes
 LogRotator::LogRotator(const std::string& name,
                        Registry* registry,
                        Configuration::RotationFrequency freq) :
-    Task(name, registry, freq, freq),
-    m_freq(freq)
+    Task(name, registry, freq)
 {
 }
 
@@ -80,139 +79,6 @@ std::string LogRotator::checkStatus(const std::string& loggerId)
         return ss.str();
     }
     return "Not scheduled";
-}
-
-unsigned long LogRotator::calculateRoundOff() const
-{
-    unsigned long now = Utils::now();
-    unsigned long minRoundOff = 3600 - (now % 3600);
-
-    //
-    // for six hours
-    //now = 1517570594; // 22:23:14 - should should be 1 because roundoff=11 - 12 = 1
-    //now = 1517579594; // 00:53:14 - should should be 5 because roundoff=1 - 6 = 5
-    //now = 1517608394; // 08:53:14 - should should be 3 because roundoff=9 - 12 = 3
-    //now = 1517626394; // 13:53:14 - should should be 4 because roundoff=2 - 6 = 4
-    //
-    // for twelve hours
-    //now = 1517570594; // 22:23:14 - should should be 1 because roundoff=23 - 24 = 1
-    //now = 1517579594; // 00:53:14 - should should be 5+6=11 because roundoff=1 - 12 = 11
-    //now = 1517608394; // 08:53:14 - should should be 3 because roundoff=9 - 12 = 3
-    //now = 1517626394; // 13:53:14 - should should be 4+6=10 because roundoff=14 - 24 = 10
-    //
-    // for daily (24 hours)
-    //now = 1517570594; // 22:23:14 - should should be 1 because roundoff=23 - 24 = 1
-    //now = 1517579594; // 00:53:14 - should should be 5+6+12=23 because roundoff=1 - 24 = 11
-    //now = 1517608394; // 08:53:14 - should should be 3+12=15 because roundoff=9 - 24 = 15
-    //now = 1517626394; // 13:53:14 - should should be 4+6=10 because roundoff=14 - 24 = 10
-    //
-    // weekly
-    //now = 1517574097; // Fri, 02/Feb/2018 23:21:27 - should should be 2 because min_roundoff = 24 (i.e, sat 00:00) sat->sun->mon = 2
-    //now = 1517833297; // Mon, 05/Feb/2018 23:21:27 - should should be 6 because min_roundoff = 24 (i.e, tue 00:00) tue->wed->thu->fri->sat->sun->mon = 6
-    //now = 1517660497; // Sun, 03/Feb/2018 23:21:27 - should should be 0 because next day is monday
-    //
-    // monthly
-    //now = 1517574097; // Fri, 02/Feb/2018 23:21:27 - should should be 26 because min_roundoff = 24 (i.e, sat 03/Feb) 28-3 = 25
-    //now = 1519734097; // Tue, 27/Feb/2018 23:21:27 - should should be 1
-    //now = 1519820497; // Wed, 28/Feb/2018 23:21:27 - should should be 0 because next day is next month
-    //
-    // yearly
-    //now = 1517574097; // Fri, 02/Feb/2018 23:21:27 - should be 9 (round off mar), extra days = 26
-
-
-    // setup based on minRoundOff and now
-    std::string next24HourStr = Utils::formatTime(minRoundOff + now, "%H");
-    std::string monthDayStr = Utils::formatTime(minRoundOff + now, "%d");
-    std::string yearStr = Utils::formatTime(minRoundOff + now, "%Y");
-    std::string nextHourStr = Utils::formatTime(minRoundOff + now, "%h");
-    std::string monthStr = Utils::formatTime(minRoundOff + now, "%M");
-    int next24Hour = atoi(next24HourStr.c_str());
-    int nextHour = atoi(nextHourStr.c_str());
-    int monthDay = atoi(monthDayStr.c_str());
-    int year = atoi(yearStr.c_str());
-    int month = atoi(monthStr.c_str());
-    const std::map<std::string, int> WEEK_DAYS_MAP = {
-        { "Mon", 1 },
-        { "Tue", 2 },
-        { "Wed", 3 },
-        { "Thu", 4 },
-        { "Fri", 5 },
-        { "Sat", 6 },
-        { "Sun", 7 }
-    };
-    std::string weekDayStr = Utils::formatTime(minRoundOff + now, "%a");
-    int weekDay = WEEK_DAYS_MAP.at(weekDayStr);
-    const std::map<int, int> MONTH_MAX_DAYS_MAP = {
-        { 1, 31 },
-        { 2, year % 4 == 0 ? 29 : 28 },
-        { 3, 31 },
-        { 4, 30 },
-        { 5, 31 },
-        { 6, 30 },
-        { 7, 31 },
-        { 8, 31 },
-        { 9, 30 },
-        { 10, 31 },
-        { 11, 30 },
-        { 12, 31 }
-    };
-    int lastDayOfThisMonth = MONTH_MAX_DAYS_MAP.at(month);
-
-    // calculations
-    if (m_freq == Configuration::RotationFrequency::HOURLY) {
-        return minRoundOff;
-    }
-    if (m_freq == Configuration::RotationFrequency::SIX_HOURS) {
-        int hoursToNextIter = 12 - nextHour;
-        if (hoursToNextIter > 6) {
-            hoursToNextIter -= 6;
-        }
-        if (nextHour == 0 || nextHour == 12) {
-            hoursToNextIter = 0;
-        }
-        return minRoundOff + (hoursToNextIter * 3600);
-    }
-    if (m_freq == Configuration::RotationFrequency::TWELVE_HOURS) {
-        int hoursToNextIter = 24 - next24Hour;
-        if (hoursToNextIter > 12) {
-            hoursToNextIter -= 12;
-        }
-
-        if (next24Hour == 0 || next24Hour == 12) {
-            hoursToNextIter = 0;
-        }
-        return minRoundOff + (hoursToNextIter * 3600);
-    }
-    if (m_freq == Configuration::RotationFrequency::DAILY) {
-        int hoursToNextIter = next24Hour == 0 || next24Hour == 12 ? 0 : 24 - next24Hour;
-        return minRoundOff + (hoursToNextIter * 3600);
-    }
-    if (m_freq == Configuration::RotationFrequency::WEEKLY) {
-
-        int hoursToNextIter = next24Hour == 0 || next24Hour == 12 ? 0 : 24 - next24Hour; // nearest day
-        int secsToNextMidnight = minRoundOff + (hoursToNextIter * 3600);
-        int daysToNextMonday = 7 - weekDay;
-        return secsToNextMidnight + (daysToNextMonday * 86400);
-    }
-    if (m_freq == Configuration::RotationFrequency::MONTHLY) {
-        int hoursToNextIter = next24Hour == 0 || next24Hour == 12 ? 0 : 24 - next24Hour; // nearest day
-        int secsToNextMidnight = minRoundOff + (hoursToNextIter * 3600);
-        int daysToNextMonth = monthDay == lastDayOfThisMonth ? 0 : (lastDayOfThisMonth - monthDay);
-        return secsToNextMidnight + (daysToNextMonth * 86400);
-    }
-    if (m_freq == Configuration::RotationFrequency::YEARLY) {
-        int hoursToNextIter = next24Hour == 0 || next24Hour == 12 ? 0 : 24 - next24Hour; // nearest day
-        int secsToNextMidnight = minRoundOff + (hoursToNextIter * 3600);
-        int daysToNextMonth = lastDayOfThisMonth - monthDay;
-        int secsToNextMonth = secsToNextMidnight + (daysToNextMonth * 86400);
-        int monthsToNextYear = 12 - month;
-        int extraDays = 0;
-        for (int i = month + 1; i <= 12; ++i) {
-            extraDays += MONTH_MAX_DAYS_MAP.at(i) - 28;
-        }
-        return secsToNextMonth + (monthsToNextYear * 28 * 86400) + (extraDays * 86400);
-    }
-    throw ResidueException("Invalid frequency for log rotation");
 }
 
 void LogRotator::execute()
@@ -493,4 +359,226 @@ void LogRotator::archiveAndCompress(const std::string& loggerId, const std::stri
     } else {
         RLOG(ERROR) << "Failed to compress rotated log for logger [" << loggerId << "]. Destination name: [" << archiveFilename + "]";
     }
+}
+
+unsigned long HourlyLogRotator::calculateRoundOff(unsigned long now) const
+{
+    return 3600 - (now % 3600);
+}
+
+unsigned long SixHoursLogRotator::calculateRoundOff(unsigned long now) const
+{
+    unsigned long minRoundOff = 3600 - (now % 3600);
+
+    //
+    // for six hours
+    //now = 1517570594; // 22:23:14 - should should be 1 because roundoff=11 - 12 = 1
+    //now = 1517579594; // 00:53:14 - should should be 5 because roundoff=1 - 6 = 5
+    //now = 1517608394; // 08:53:14 - should should be 3 because roundoff=9 - 12 = 3
+    //now = 1517626394; // 13:53:14 - should should be 4 because roundoff=2 - 6 = 4
+
+
+    // setup based on minRoundOff and now
+    std::string nextHourStr = Utils::formatTime(minRoundOff + now, "%h");
+    int nextHour = atoi(nextHourStr.c_str());
+
+    int hoursToNextIter = 12 - nextHour;
+    if (hoursToNextIter > 6) {
+        hoursToNextIter -= 6;
+    }
+    if (nextHour == 0 || nextHour == 12) {
+        hoursToNextIter = 0;
+    }
+    return minRoundOff + (hoursToNextIter * 3600);
+}
+
+unsigned long TwelveHoursLogRotator::calculateRoundOff(unsigned long now) const
+{
+    unsigned long minRoundOff = 3600 - (now % 3600);
+
+    //
+    // for twelve hours
+    //now = 1517570594; // 22:23:14 - should should be 1 because roundoff=23 - 24 = 1
+    //now = 1517579594; // 00:53:14 - should should be 5+6=11 because roundoff=1 - 12 = 11
+    //now = 1517608394; // 08:53:14 - should should be 3 because roundoff=9 - 12 = 3
+    //now = 1517626394; // 13:53:14 - should should be 4+6=10 because roundoff=14 - 24 = 10
+
+
+    // setup based on minRoundOff and now
+    std::string next24HourStr = Utils::formatTime(minRoundOff + now, "%H");
+    int next24Hour = atoi(next24HourStr.c_str());
+
+    int hoursToNextIter = 24 - next24Hour;
+    if (hoursToNextIter > 12) {
+        hoursToNextIter -= 12;
+    }
+
+    if (next24Hour == 0 || next24Hour == 12) {
+        hoursToNextIter = 0;
+    }
+    return minRoundOff + (hoursToNextIter * 3600);
+}
+
+unsigned long DailyLogRotator::calculateRoundOff(unsigned long now) const
+{
+    unsigned long minRoundOff = 3600 - (now % 3600);
+
+    //
+    // for daily (24 hours)
+    //now = 1517570594; // 22:23:14 - should should be 1 because roundoff=23 - 24 = 1
+    //now = 1517579594; // 00:53:14 - should should be 5+6+12=23 because roundoff=1 - 24 = 11
+    //now = 1517608394; // 08:53:14 - should should be 3+12=15 because roundoff=9 - 24 = 15
+    //now = 1517626394; // 13:53:14 - should should be 4+6=10 because roundoff=14 - 24 = 10
+
+
+    // setup based on minRoundOff and now
+    std::string next24HourStr = Utils::formatTime(minRoundOff + now, "%H");
+    int next24Hour = atoi(next24HourStr.c_str());
+    const std::map<std::string, int> WEEK_DAYS_MAP = {
+        { "Mon", 1 },
+        { "Tue", 2 },
+        { "Wed", 3 },
+        { "Thu", 4 },
+        { "Fri", 5 },
+        { "Sat", 6 },
+        { "Sun", 7 }
+    };
+    std::string weekDayStr = Utils::formatTime(minRoundOff + now, "%a");
+    int weekDay = WEEK_DAYS_MAP.at(weekDayStr);
+
+    int hoursToNextIter = next24Hour == 0 || next24Hour == 12 ? 0 : 24 - next24Hour; // nearest day
+    int secsToNextMidnight = minRoundOff + (hoursToNextIter * 3600);
+    int daysToNextMonday = 7 - weekDay;
+    return secsToNextMidnight + (daysToNextMonday * 86400);
+}
+
+unsigned long WeeklyLogRotator::calculateRoundOff(unsigned long now) const
+{
+    unsigned long minRoundOff = 3600 - (now % 3600);
+
+    //
+    // weekly
+    //now = 1517574097; // Fri, 02/Feb/2018 23:21:27 - should should be 2 because min_roundoff = 24 (i.e, sat 00:00) sat->sun->mon = 2
+    //now = 1517833297; // Mon, 05/Feb/2018 23:21:27 - should should be 6 because min_roundoff = 24 (i.e, tue 00:00) tue->wed->thu->fri->sat->sun->mon = 6
+    //now = 1517660497; // Sun, 03/Feb/2018 23:21:27 - should should be 0 because next day is monday
+
+
+    // setup based on minRoundOff and now
+    std::string next24HourStr = Utils::formatTime(minRoundOff + now, "%H");
+    int next24Hour = atoi(next24HourStr.c_str());
+    const std::map<std::string, int> WEEK_DAYS_MAP = {
+        { "Mon", 1 },
+        { "Tue", 2 },
+        { "Wed", 3 },
+        { "Thu", 4 },
+        { "Fri", 5 },
+        { "Sat", 6 },
+        { "Sun", 7 }
+    };
+    std::string weekDayStr = Utils::formatTime(minRoundOff + now, "%a");
+    int weekDay = WEEK_DAYS_MAP.at(weekDayStr);
+
+    // calculations
+    int hoursToNextIter = next24Hour == 0 || next24Hour == 12 ? 0 : 24 - next24Hour; // nearest day
+    int secsToNextMidnight = minRoundOff + (hoursToNextIter * 3600);
+    int daysToNextMonday = 7 - weekDay;
+    return secsToNextMidnight + (daysToNextMonday * 86400);
+}
+
+unsigned long MonthlyLogRotator::calculateRoundOff(unsigned long now) const
+{
+    unsigned long minRoundOff = 3600 - (now % 3600);
+    //
+    // monthly
+    //now = 1517574097; // Fri, 02/Feb/2018 23:21:27 - should should be 26 because min_roundoff = 24 (i.e, sat 03/Feb) 28-3 = 25
+    //now = 1519734097; // Tue, 27/Feb/2018 23:21:27 - should should be 1
+    //now = 1519820497; // Wed, 28/Feb/2018 23:21:27 - should should be 0 because next day is next month
+
+
+    // setup based on minRoundOff and now
+    std::string next24HourStr = Utils::formatTime(minRoundOff + now, "%H");
+    std::string monthDayStr = Utils::formatTime(minRoundOff + now, "%d");
+    std::string yearStr = Utils::formatTime(minRoundOff + now, "%Y");
+    std::string nextHourStr = Utils::formatTime(minRoundOff + now, "%h");
+    std::string monthStr = Utils::formatTime(minRoundOff + now, "%M");
+    int next24Hour = atoi(next24HourStr.c_str());
+    int nextHour = atoi(nextHourStr.c_str());
+    int monthDay = atoi(monthDayStr.c_str());
+    int year = atoi(yearStr.c_str());
+    int month = atoi(monthStr.c_str());
+    const std::map<std::string, int> WEEK_DAYS_MAP = {
+        { "Mon", 1 },
+        { "Tue", 2 },
+        { "Wed", 3 },
+        { "Thu", 4 },
+        { "Fri", 5 },
+        { "Sat", 6 },
+        { "Sun", 7 }
+    };
+    std::string weekDayStr = Utils::formatTime(minRoundOff + now, "%a");
+    int weekDay = WEEK_DAYS_MAP.at(weekDayStr);
+    const std::map<int, int> MONTH_MAX_DAYS_MAP = {
+        { 1, 31 },
+        { 2, year % 4 == 0 ? 29 : 28 },
+        { 3, 31 },
+        { 4, 30 },
+        { 5, 31 },
+        { 6, 30 },
+        { 7, 31 },
+        { 8, 31 },
+        { 9, 30 },
+        { 10, 31 },
+        { 11, 30 },
+        { 12, 31 }
+    };
+    int lastDayOfThisMonth = MONTH_MAX_DAYS_MAP.at(month);
+    int hoursToNextIter = next24Hour == 0 || next24Hour == 12 ? 0 : 24 - next24Hour; // nearest day
+    int secsToNextMidnight = minRoundOff + (hoursToNextIter * 3600);
+    int daysToNextMonth = monthDay == lastDayOfThisMonth ? 0 : (lastDayOfThisMonth - monthDay);
+    return secsToNextMidnight + (daysToNextMonth * 86400);
+}
+
+unsigned long YearlyLogRotator::calculateRoundOff(unsigned long now) const
+{
+    unsigned long minRoundOff = 3600 - (now % 3600);
+    //
+    // yearly
+    //now = 1517574097; // Fri, 02/Feb/2018 23:21:27 - should be 9 (round off mar), extra days = 26
+
+
+    // setup based on minRoundOff and now
+    std::string next24HourStr = Utils::formatTime(minRoundOff + now, "%H");
+    std::string monthDayStr = Utils::formatTime(minRoundOff + now, "%d");
+    std::string yearStr = Utils::formatTime(minRoundOff + now, "%Y");
+    std::string monthStr = Utils::formatTime(minRoundOff + now, "%M");
+    int next24Hour = atoi(next24HourStr.c_str());
+    int monthDay = atoi(monthDayStr.c_str());
+    int year = atoi(yearStr.c_str());
+    int month = atoi(monthStr.c_str());
+    const std::map<int, int> MONTH_MAX_DAYS_MAP = {
+        { 1, 31 },
+        { 2, year % 4 == 0 ? 29 : 28 },
+        { 3, 31 },
+        { 4, 30 },
+        { 5, 31 },
+        { 6, 30 },
+        { 7, 31 },
+        { 8, 31 },
+        { 9, 30 },
+        { 10, 31 },
+        { 11, 30 },
+        { 12, 31 }
+    };
+    int lastDayOfThisMonth = MONTH_MAX_DAYS_MAP.at(month);
+
+    int hoursToNextIter = next24Hour == 0 || next24Hour == 12 ? 0 : 24 - next24Hour; // nearest day
+    int secsToNextMidnight = minRoundOff + (hoursToNextIter * 3600);
+    int daysToNextMonth = lastDayOfThisMonth - monthDay;
+    int secsToNextMonth = secsToNextMidnight + (daysToNextMonth * 86400);
+    int monthsToNextYear = 12 - month;
+    int extraDays = 0;
+    for (int i = month + 1; i <= 12; ++i) {
+        extraDays += MONTH_MAX_DAYS_MAP.at(i) - 28;
+    }
+    return secsToNextMonth + (monthsToNextYear * 28 * 86400) + (extraDays * 86400);
 }
