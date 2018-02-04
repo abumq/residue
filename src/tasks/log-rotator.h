@@ -58,7 +58,7 @@ public:
     void archiveRotatedItems();
     std::string checkStatus(const std::string& loggerId) const;
 protected:
-    virtual void execute() override;
+    virtual void execute(unsigned long now) override;
 
     unsigned long calculateSecondsToMidnight(unsigned long now) const;
 private:

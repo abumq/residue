@@ -39,7 +39,7 @@ AutoUpdater::AutoUpdater(Registry* registry,
 
 }
 
-void AutoUpdater::execute()
+void AutoUpdater::execute(unsigned long)
 {
     std::string newVer;
     if (check(&newVer)) {

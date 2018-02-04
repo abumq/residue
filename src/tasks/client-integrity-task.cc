@@ -34,7 +34,7 @@ ClientIntegrityTask::ClientIntegrityTask(Registry* registry,
 {
 }
 
-void ClientIntegrityTask::execute()
+void ClientIntegrityTask::execute(unsigned long)
 {
     auto* list = &(m_registry->clients());
     for (auto clientIter = list->begin(); clientIter != list->end();) {

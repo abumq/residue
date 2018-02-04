@@ -79,7 +79,7 @@ std::string LogRotator::checkStatus(const std::string& loggerId) const
     return "Not scheduled";
 }
 
-void LogRotator::execute()
+void LogRotator::execute(unsigned long now)
 {
     // Check frequency for each logger with frequency
     auto rotationFrequencies = m_registry->configuration()->rotationFreqencies();
@@ -91,7 +91,6 @@ void LogRotator::execute()
             return;
         }
 
-        const unsigned long now = Utils::now();
 #if 1
         if (now >= nextExecution()) {
             // should not need leniency...? ;/

@@ -36,7 +36,7 @@ public:
     {
     }
 
-    virtual void execute() override
+    virtual void execute(unsigned long) override
     {
         LOG(INFO) << "SimpleTask::execute()";
     }
