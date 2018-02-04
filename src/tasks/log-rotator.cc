@@ -95,7 +95,7 @@ void LogRotator::execute()
 #if 1
         if (now >= nextExecution()) {
             // should not need leniency...? ;/
-            RLOG(INFO) << "Starting log rotation for logger [" << loggerId << "]";
+            RLOG(INFO) << "Starting log rotation for logger [" << loggerId << "] {" << now << " >= " << nextExecution() << "}";
             rotate(loggerId);
             RLOG(INFO) << "Finished log rotation for logger [" << loggerId << "]";
         } else {
