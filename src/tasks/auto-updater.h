@@ -41,7 +41,7 @@ public:
                         unsigned int interval);
     bool check(std::string* newVersion);
 protected:
-    virtual void execute(unsigned long now) override;
+    virtual void execute() override;
 
 };
 }

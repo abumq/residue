@@ -38,7 +38,7 @@ public:
     explicit ClientIntegrityTask(Registry* registry,
                                  unsigned int interval);
 protected:
-    virtual void execute(unsigned long now) override;
+    virtual void execute() override;
 };
 }
 #endif /* ClientIntegrityTask_h */
