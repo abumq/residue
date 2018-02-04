@@ -13,7 +13,7 @@ option (special_edition "Special edition build" OFF)
 
 set (RESIDUE_MAJOR "1")
 set (RESIDUE_MINOR "3")
-set (RESIDUE_PATCH "0-beta")
+set (RESIDUE_PATCH "0-beta.2")
 set (RESIDUE_VERSION "${RESIDUE_MAJOR}.${RESIDUE_MINOR}.${RESIDUE_PATCH}")
 set (RESIDUE_NAME "Residue")
 
