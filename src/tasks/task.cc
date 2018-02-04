@@ -42,7 +42,7 @@ Task::Task(const std::string& name,
 
 void Task::start()
 {
-    rescheduleFromNow();
+    rescheduleFrom(Utils::now());
     RVLOG(RV_INFO) << "Scheduled [" << m_name << "] to run every " << m_interval
                    << "; next execution at ["
                    << formattedNextExecution() << "]";
@@ -58,10 +58,10 @@ void Task::start()
         m_executing = true;
         m_lastExecution = Utils::now();
         RVLOG(RV_INFO) << "Executing task [" << m_name << "]";
-        execute();
+        execute(Utils::now());
         RVLOG(RV_INFO) << "Finished task [" << m_name << "]";
         m_executing = false;
-        rescheduleFromNow();
+        rescheduleFrom(Utils::now());
         RVLOG(RV_DEBUG) << "Rescheduled task [" << m_name << "] at [" << formattedNextExecution() << "]";
     }
 }
@@ -71,14 +71,14 @@ unsigned long Task::calculateRoundOff(unsigned long) const
     return 0;
 }
 
-void Task::rescheduleFromNow()
+void Task::rescheduleFrom(unsigned long now)
 {
-    unsigned long roundOff = calculateRoundOff();
+    unsigned long roundOff = calculateRoundOff(now);
     if (roundOff > 0) {
-        m_nextExecution = Utils::now() + roundOff;
+        m_nextExecution = now + roundOff;
         m_nextWait = std::chrono::seconds(roundOff);
     } else {
-        m_nextExecution = Utils::now() + m_interval.count();
+        m_nextExecution = now + m_interval.count();
         m_nextWait = m_interval;
     }
 }

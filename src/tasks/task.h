@@ -80,9 +80,9 @@ public:
         return formattedExecution(m_lastExecution);
     }
 
-    virtual unsigned long calculateRoundOff(unsigned long now = Utils::now()) const;
+    virtual unsigned long calculateRoundOff(unsigned long now) const;
 
-    void rescheduleFromNow();
+    void rescheduleFrom(unsigned long now);
 
 protected:
     std::string m_name;
@@ -98,7 +98,8 @@ private:
     {
         return Utils::formatTime(e, "%H:%m:%s on %a %d %b, %Y");
     }
-    virtual void execute(unsigned long now = Utils::now()) = 0;
+
+    virtual void execute(unsigned long now) = 0;
 };
 }
 #endif /* Task_h */

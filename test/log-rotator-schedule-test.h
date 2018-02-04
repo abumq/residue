@@ -23,6 +23,7 @@
 #define LOG_ROTATOR_SCHEDULE_TEST_H
 
 #include <map>
+#include <memory>
 #include "test.h"
 #include "src/utils/utils.h"
 #include "src/tasks/log-rotator.h"
@@ -223,6 +224,62 @@ TEST(LogRotatorScheduleTest, YearlyRoundOffCalculation)
             break;
         }
     }
+}
+
+class SimpleTaskWithCustomRoundOff final : public LogRotator
+{
+public:
+    explicit SimpleTaskWithCustomRoundOff() :
+        LogRotator("SimpleTaskWithCustomRoundOff", nullptr, Configuration::RotationFrequency::DAILY),
+        m_executed(false)
+    {
+    }
+
+    virtual void execute(unsigned long now) override
+    {
+        Configuration::RotationFrequency freq = Configuration::RotationFrequency::DAILY;
+        unsigned long freqNextExecution = 0;
+
+        std::unique_ptr<LogRotator> logRotator;
+        switch (freq) {
+        case Configuration::RotationFrequency::DAILY:
+            logRotator = std::unique_ptr<DailyLogRotator>(new DailyLogRotator(nullptr));
+            break;
+        default:
+            freqNextExecution = 0;
+        }
+
+        freqNextExecution = now + logRotator->calculateRoundOff(now);
+        std::cout << "Rotator base: " << logRotator->name()
+                  << " freqNextExecution " << freqNextExecution
+                  << " now " << now << std::endl;
+
+        m_executed = now >= freqNextExecution;;
+    }
+
+    virtual unsigned long calculateRoundOff(unsigned long now) const override
+    {
+        return calculateSecondsToMidnight(now) - 1;
+    }
+
+    bool m_executed;
+};
+
+TEST(LogRotatorScheduleTest, HourlyExecutionSchedule)
+{
+    SimpleTaskWithCustomRoundOff task;
+
+    ASSERT_FALSE(task.m_executed) << "Task should not have run yet";
+    task.rescheduleFrom(1517702459);
+
+    std::cout << "Next exec " << task.formattedNextExecution() << std::endl;
+    ASSERT_EQ(task.nextExecution(), 1517749199) << "Next execution should be nearest midnight";
+
+    task.execute(1517705999); // at 11:59:59
+    ASSERT_FALSE(task.m_executed) << "Task should not have run at 11:59:59";
+
+    task.execute(1517749199); // at 23:59:59
+    ASSERT_TRUE(task.m_executed) << "Task should have run now";
 }
 
 #endif // LOG_ROTATOR_SCHEDULE_TEST_H

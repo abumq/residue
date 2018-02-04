@@ -381,7 +381,7 @@ unsigned long LogRotator::calculateSecondsToMidnight(unsigned long now) const
     unsigned long minRoundOff = 3600 - (now % 3600);
     std::string next24HourStr = Utils::formatTime(minRoundOff + now, "%H");
     int next24Hour = atoi(next24HourStr.c_str());
-    int hoursToNextIter = next24Hour == 0 || next24Hour == 12 ? 0 : 24 - next24Hour; // nearest day
+    int hoursToNextIter = next24Hour == 0 ? 0 : 24 - next24Hour; // nearest day
     return minRoundOff + (hoursToNextIter * 3600);
 }
 

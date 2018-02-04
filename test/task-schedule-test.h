@@ -47,7 +47,7 @@ TEST(TaskScheduleTest, TestBasicSchedule)
     const unsigned long now = Utils::now();
     int interv = 20;
     SimpleTask t(interv);
-    t.rescheduleFromNow();
+    t.rescheduleFrom(now);
     ASSERT_EQ(now + interv, t.nextExecution());
     ASSERT_EQ(interv, t.intervalCount());
 }
