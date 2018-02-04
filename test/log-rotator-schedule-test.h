@@ -226,51 +226,53 @@ TEST(LogRotatorScheduleTest, YearlyRoundOffCalculation)
     }
 }
 
-class SimpleTaskWithCustomRoundOff final : public LogRotator
-{
-public:
-    explicit SimpleTaskWithCustomRoundOff() :
-        LogRotator("SimpleTaskWithCustomRoundOff", nullptr, Configuration::RotationFrequency::DAILY),
-        m_executed(false)
-    {
-    }
-
-    virtual void execute(unsigned long now) override
-    {
-        Configuration::RotationFrequency freq = Configuration::RotationFrequency::DAILY;
-        unsigned long freqNextExecution = 0;
-
-        std::unique_ptr<LogRotator> logRotator;
-        switch (freq) {
-        case Configuration::RotationFrequency::DAILY:
-            logRotator = std::unique_ptr<DailyLogRotator>(new DailyLogRotator(nullptr));
-            break;
-        default:
-            freqNextExecution = 0;
-        }
-
-        freqNextExecution = now + logRotator->calculateRoundOff(now);
-        std::cout << "Rotator base: " << logRotator->name()
-                  << " freqNextExecution " << freqNextExecution
-                  << " now " << now << std::endl;
-
-        m_executed = now >= freqNextExecution;;
-    }
-
-    virtual unsigned long calculateRoundOff(unsigned long now) const override
-    {
-        return calculateSecondsToMidnight(now) - 1;
-    }
-
-    bool m_executed;
+#define CREATE_LOG_ROTATOR_FOR_TEST(BASE)\
+class BASE##ForTest : public BASE\
+{\
+public:\
+    explicit BASE##ForTest() :\
+        BASE(nullptr),\
+        m_executed(false)\
+    { }\
+\
+    virtual void execute(unsigned long now) override\
+    {\
+        m_executed = shouldRun(now);\
+    }\
+\
+    bool m_executed;\
 };
+
+CREATE_LOG_ROTATOR_FOR_TEST(HourlyLogRotator)
+CREATE_LOG_ROTATOR_FOR_TEST(SixHoursLogRotator)
+CREATE_LOG_ROTATOR_FOR_TEST(TwelveHoursLogRotator)
+CREATE_LOG_ROTATOR_FOR_TEST(DailyLogRotator)
+CREATE_LOG_ROTATOR_FOR_TEST(WeeklyLogRotator)
+CREATE_LOG_ROTATOR_FOR_TEST(MonthlyLogRotator)
+CREATE_LOG_ROTATOR_FOR_TEST(YearlyLogRotator)
+
+#undef CREATE_LOG_ROTATOR_FOR_TEST
 
 TEST(LogRotatorScheduleTest, HourlyExecutionSchedule)
 {
-    SimpleTaskWithCustomRoundOff task;
+    HourlyLogRotatorForTest task;
 
     ASSERT_FALSE(task.m_executed) << "Task should not have run yet";
-    task.rescheduleFrom(1517702459);
+    task.rescheduleFrom(1517702459); // Sun Feb 04 2018 11:00:59
+
+    std::cout << "Next exec " << task.formattedNextExecution() << std::endl;
+    ASSERT_EQ(task.nextExecution(), 1517705999) << "Next execution should be nearest hour";
+
+    task.execute(1517705999); // at 11:59:59
+    ASSERT_TRUE(task.m_executed) << "Task should run at 11:59:59";
+}
+
+TEST(LogRotatorScheduleTest, DailyExecutionSchedule)
+{
+    DailyLogRotatorForTest task;
+
+    ASSERT_FALSE(task.m_executed) << "Task should not have run yet";
+    task.rescheduleFrom(1517702459); // Sun Feb 04 2018 11:00:59
 
     std::cout << "Next exec " << task.formattedNextExecution() << std::endl;
     ASSERT_EQ(task.nextExecution(), 1517749199) << "Next execution should be nearest midnight";
@@ -278,8 +280,11 @@ TEST(LogRotatorScheduleTest, HourlyExecutionSchedule)
     task.execute(1517705999); // at 11:59:59
     ASSERT_FALSE(task.m_executed) << "Task should not have run at 11:59:59";
 
+    task.execute(1517709599); // at 12:59:59
+    ASSERT_FALSE(task.m_executed) << "Task should not have run at 12:59:59";
+
     task.execute(1517749199); // at 23:59:59
-    ASSERT_TRUE(task.m_executed) << "Task should have run now";
+    ASSERT_TRUE(task.m_executed) << "Task should have run at 23:59:59";
 }
 
 #endif // LOG_ROTATOR_SCHEDULE_TEST_H

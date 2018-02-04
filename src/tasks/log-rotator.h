@@ -65,6 +65,7 @@ protected:
     virtual void execute(unsigned long now) override;
 
     unsigned long calculateSecondsToMidnight(unsigned long now) const;
+    bool shouldRun(unsigned long now);
 private:
     std::vector<ArchiveItem> m_archiveItems;
     std::unordered_map<std::string, unsigned long> m_lastRotation;
@@ -76,7 +77,7 @@ private:
 };
 
 #define DECL_LOG_ROTATOR(ID, NAME, FREQ)\
-class NAME final : public LogRotator\
+class NAME : public LogRotator\
 {\
 public:\
     explicit NAME(Registry* registry) \

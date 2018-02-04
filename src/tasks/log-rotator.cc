@@ -42,53 +42,6 @@ LogRotator::LogRotator(const std::string& name,
     m_frequency(freq)
 {
 }
-/*
-std::string LogRotator::checkStatus(const std::string& loggerId, const LogRotator* logRotator) const
-{
-    auto rotationFrequencies = m_registry->configuration()->rotationFreqencies();
-    for (const auto& pair : rotationFrequencies) {
-        if (loggerId != pair.first) {
-            continue;
-        }
-        Configuration::RotationFrequency freq = pair.second;
-        if (freq == Configuration::RotationFrequency::NEVER) {
-            return "Not scheduled";
-        }
-
-        std::string rotator;
-        std::string nextExecution;
-
-        switch (freq) {
-        case Configuration::RotationFrequency::DAILY:
-            DailyLogRotator logRotator(nullptr);
-            rotator = logRotator.name();
-            nextExecution = logRotator.formattedNextExecution();
-        }
-
-        auto iter = m_lastRotation.find(loggerId);
-        unsigned long lastRotated = iter == m_lastRotation.end() ? 0L : iter->second;
-        std::stringstream ss;
-        ss << name() << " scheduled to run ";
-        if (lastRotated == 0L) {
-            ss << "@ [" << formattedNextExecution() << "]";
-        } else {
-            unsigned long nextRotation = lastRotated + freq;
-            bool skippedLast = false;
-            if (Utils::now() > nextRotation) {
-                // if next rotation is already past (just in case)
-                // show the freq after this one
-                nextRotation = nextRotation + freq;
-                skippedLast = true;
-            }
-            ss << "@ " << Utils::formatTime(nextRotation, "%d %b, %Y %H:%m:%s");
-            if (skippedLast) {
-                ss << "\nLast rotation was skipped because of time inconsitency.";
-            }
-        }
-        return ss.str();
-    }
-    return "Not scheduled";
-}*/
 
 void LogRotator::execute(unsigned long now)
 {
@@ -96,45 +49,22 @@ void LogRotator::execute(unsigned long now)
     auto rotationFrequencies = m_registry->configuration()->rotationFreqencies();
     for (const auto& pair : rotationFrequencies) {
         std::string loggerId = pair.first;
-        Configuration::RotationFrequency freq = pair.second;
-
-        if (freq == Configuration::RotationFrequency::NEVER) {
-            return;
-        }
-
-        unsigned long freqNextExecution = now + calculateRoundOff(now);
-
-#if 1
-        if (now >= freqNextExecution) {
-            DRVLOG(RV_INFO) << "Log rotator " << name() << " running {" << now << " >= " << freqNextExecution << "}";
+        if (shouldRun(now)) {
             RLOG(INFO) << "Starting log rotation for logger [" << loggerId << "]";
             rotate(loggerId);
             RLOG(INFO) << "Finished log rotation for logger [" << loggerId << "]";
         } else {
             RLOG(DEBUG) << "Ignoring rotation for [" << loggerId << "] - Reason: " << " now "
-                       << now << ", schedule " << freqNextExecution;
+                       << now << ", schedule " << formattedNextExecution();
         }
-#else
-
-        // ---------- old
-
-        auto iter = m_lastRotation.find(loggerId);
-        unsigned long lastRotated = iter == m_lastRotation.end() ? 0L : iter->second;
-        bool runRotation = (lastRotated == 0L && freq == Configuration::RotationFrequency::HOURLY)
-                || now - lastRotated >= (freq - LENIENCY_THRESHOLD);
-        if (runRotation) {
-            RLOG(INFO) << "Rotating logs for logger [" << loggerId << "]";
-            rotate(loggerId);
-            m_lastRotation[loggerId] = Utils::now();
-            RLOG(INFO) << "[" << loggerId << "] finished rotation at [" << m_lastRotation[loggerId] << "]";
-        } else {
-            RLOG(DEBUG) << "Ignoring rotation for [" << loggerId << "] - Reason: " << " lastRotated="
-                       << lastRotated << ", delta: " << (now - lastRotated) << " < " << (freq - LENIENCY_THRESHOLD);
-        }
-#endif
     }
 
     archiveRotatedItems();
+}
+
+bool LogRotator::shouldRun(unsigned long now)
+{
+    return now >= now + calculateRoundOff(now);
 }
 
 void LogRotator::archiveRotatedItems()
