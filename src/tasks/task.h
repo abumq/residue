@@ -99,7 +99,7 @@ private:
         return Utils::formatTime(e, "%H:%m:%s on %a %d %b, %Y");
     }
 
-    virtual void execute(unsigned long now) = 0;
+    virtual void execute() = 0;
 };
 }
 #endif /* Task_h */

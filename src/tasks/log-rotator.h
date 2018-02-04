@@ -62,7 +62,7 @@ public:
         return m_frequency;
     }
 protected:
-    virtual void execute(unsigned long now) override;
+    virtual void execute() override;
 
     unsigned long calculateSecondsToMidnight(unsigned long now) const;
 private:

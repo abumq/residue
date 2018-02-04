@@ -43,7 +43,7 @@ LogRotator::LogRotator(const std::string& name,
 {
 }
 
-void LogRotator::execute(unsigned long now)
+void LogRotator::execute()
 {
     auto rotationFrequencies = m_registry->configuration()->rotationFreqencies();
     for (const auto& pair : rotationFrequencies) {

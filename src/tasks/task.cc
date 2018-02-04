@@ -58,7 +58,7 @@ void Task::start()
         m_executing = true;
         m_lastExecution = Utils::now();
         RVLOG(RV_INFO) << "Executing task [" << m_name << "]";
-        execute(Utils::now());
+        execute();
         RVLOG(RV_INFO) << "Finished task [" << m_name << "]";
         m_executing = false;
         rescheduleFrom(Utils::now());
