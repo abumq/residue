@@ -45,9 +45,8 @@ void LogRotator::execute()
 {
     auto rotationFrequencies = m_registry->configuration()->rotationFreqencies();
     for (const auto& pair : rotationFrequencies) {
-        std::string loggerId = pair.first;
-
         if (m_frequency == pair.second) {
+            std::string loggerId = pair.first;
             RLOG(INFO) << "Starting log rotation for logger [" << loggerId << "]";
             rotate(loggerId);
             RLOG(INFO) << "Finished log rotation for logger [" << loggerId << "]";
