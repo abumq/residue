@@ -49,8 +49,21 @@ void LogRotator::execute(unsigned long now)
     auto rotationFrequencies = m_registry->configuration()->rotationFreqencies();
     for (const auto& pair : rotationFrequencies) {
         std::string loggerId = pair.first;
+
+        if (pair.second == Configuration::RotationFrequency::NEVER) {
+            continue;
+        }
+
         if (shouldRun(now)) {
             RLOG(INFO) << "Starting log rotation for logger [" << loggerId << "]";
+#if RESIDUE_DEBUG
+            unsigned long roundOff = calculateRoundOff(now - LENIENCY_THRESHOLD);
+            RLOG(DEBUG) << "Logger [" << loggerId << "] rotating because"
+                        << " now " << now
+                        << " calculated round off (without leniency): " << roundOff
+                        << " calculated round off (with leniency): " << calculateRoundOff(now)
+                        << " delta (with leniency) " << (now - LENIENCY_THRESHOLD) + roundOff;
+#endif // RESIDUE_DEBUG
             rotate(loggerId);
             RLOG(INFO) << "Finished log rotation for logger [" << loggerId << "]";
         } else {
@@ -64,7 +77,7 @@ void LogRotator::execute(unsigned long now)
 
 bool LogRotator::shouldRun(unsigned long now)
 {
-    return now >= now + calculateRoundOff(now);
+    return now >= (now - LENIENCY_THRESHOLD) + calculateRoundOff(now - LENIENCY_THRESHOLD);
 }
 
 void LogRotator::archiveRotatedItems()
