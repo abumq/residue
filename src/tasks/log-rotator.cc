@@ -57,9 +57,6 @@ void LogRotator::execute(unsigned long now)
             RLOG(INFO) << "Starting log rotation for logger [" << loggerId << "]";
             rotate(loggerId);
             RLOG(INFO) << "Finished log rotation for logger [" << loggerId << "]";
-        } else {
-            RLOG(DEBUG) << "Ignoring rotation for [" << loggerId << "] - Reason: " << " now "
-                       << now << ", schedule " << formattedNextExecution();
         }
     }
 
