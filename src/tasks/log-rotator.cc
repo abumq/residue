@@ -91,15 +91,17 @@ void LogRotator::execute(unsigned long now)
             return;
         }
 
+        unsigned long freqNextExecution = now + calculateRoundOff(now);
+
 #if 1
-        if (now >= nextExecution()) {
-            // should not need leniency...? ;/
-            RLOG(INFO) << "Starting log rotation for logger [" << loggerId << "] {" << now << " >= " << nextExecution() << "}";
+        if (now >= freqNextExecution) {
+            DRVLOG(RV_INFO) << "Log rotator " << name() << " running {" << now << " >= " << freqNextExecution << "}";
+            RLOG(INFO) << "Starting log rotation for logger [" << loggerId << "]";
             rotate(loggerId);
             RLOG(INFO) << "Finished log rotation for logger [" << loggerId << "]";
         } else {
             RLOG(DEBUG) << "Ignoring rotation for [" << loggerId << "] - Reason: " << " now "
-                       << now << ", schedule " << formattedNextExecution();
+                       << now << ", schedule " << freqNextExecution;
         }
 #else
 
