@@ -33,8 +33,6 @@
 
 using namespace residue;
 
-const unsigned long LogRotator::LENIENCY_THRESHOLD = 60 * 5; // 5 minutes
-
 LogRotator::LogRotator(const std::string& name,
                        Registry* registry,
                        Configuration::RotationFrequency freq) :
@@ -49,11 +47,7 @@ void LogRotator::execute()
     for (const auto& pair : rotationFrequencies) {
         std::string loggerId = pair.first;
 
-        if (pair.second == Configuration::RotationFrequency::NEVER) {
-            continue;
-        }
-
-        if (name() == rotatorName()) {
+        if (name() == LogRotator::rotatorNameByFreq(pair.second)) {
             RLOG(INFO) << "Starting log rotation for logger [" << loggerId << "]";
             rotate(loggerId);
             RLOG(INFO) << "Finished log rotation for logger [" << loggerId << "]";
@@ -315,9 +309,9 @@ void LogRotator::archiveAndCompress(const std::string& loggerId, const std::stri
     }
 }
 
-std::string LogRotator::rotatorName() const
+std::string LogRotator::rotatorNameByFreq(Configuration::RotationFrequency freq)
 {
-    switch (m_frequency) {
+    switch (freq) {
     case Configuration::RotationFrequency::HOURLY:
         return "HourlyLogRotator";
     case Configuration::RotationFrequency::SIX_HOURS:

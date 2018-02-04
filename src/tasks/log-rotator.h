@@ -38,13 +38,6 @@ class Registry;
 class LogRotator : public Task
 {
 public:
-    virtual ~LogRotator() = default;
-    ///
-    /// \brief If log rotator is running and frequency is this threshold (in seconds) away,
-    /// it will run it anyway
-    ///
-    static const unsigned long LENIENCY_THRESHOLD;
-
     struct ArchiveItem {
         std::string loggerId;
         std::string archiveFilename;
@@ -54,6 +47,8 @@ public:
     explicit LogRotator(const std::string& name,
                         Registry* registry,
                         Configuration::RotationFrequency freq);
+    virtual ~LogRotator() = default;
+
     void rotate(const std::string& loggerId);
     void archiveRotatedItems();
 
@@ -74,7 +69,7 @@ private:
                             const std::string&,
                             const std::map<std::string, std::string>&);
 
-    std::string rotatorName() const;
+    static std::string rotatorNameByFreq(Configuration::RotationFrequency freq);
 };
 
 #define DECL_LOG_ROTATOR(ID, NAME, FREQ)\
