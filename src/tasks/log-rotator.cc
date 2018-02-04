@@ -47,7 +47,7 @@ void LogRotator::execute()
     for (const auto& pair : rotationFrequencies) {
         std::string loggerId = pair.first;
 
-        if (name() == LogRotator::rotatorNameByFreq(pair.second)) {
+        if (m_frequency == pair.second) {
             RLOG(INFO) << "Starting log rotation for logger [" << loggerId << "]";
             rotate(loggerId);
             RLOG(INFO) << "Finished log rotation for logger [" << loggerId << "]";
@@ -306,28 +306,6 @@ void LogRotator::archiveAndCompress(const std::string& loggerId, const std::stri
         }
     } else {
         RLOG(ERROR) << "Failed to compress rotated log for logger [" << loggerId << "]. Destination name: [" << archiveFilename + "]";
-    }
-}
-
-std::string LogRotator::rotatorNameByFreq(Configuration::RotationFrequency freq)
-{
-    switch (freq) {
-    case Configuration::RotationFrequency::HOURLY:
-        return "HourlyLogRotator";
-    case Configuration::RotationFrequency::SIX_HOURS:
-        return "SixHoursLogRotator";
-    case Configuration::RotationFrequency::TWELVE_HOURS:
-        return "TwelveHoursLogRotator";
-    case Configuration::RotationFrequency::DAILY:
-        return "DailyLogRotator";
-    case Configuration::RotationFrequency::WEEKLY:
-        return "WeeklyLogRotator";
-    case Configuration::RotationFrequency::MONTHLY:
-        return "MonthlyLogRotator";
-    case Configuration::RotationFrequency::YEARLY:
-        return "YearlyLogRotator";
-    default:
-        return "Never";
     }
 }
 

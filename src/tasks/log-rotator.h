@@ -68,8 +68,6 @@ private:
     void archiveAndCompress(const std::string&,
                             const std::string&,
                             const std::map<std::string, std::string>&);
-
-    static std::string rotatorNameByFreq(Configuration::RotationFrequency freq);
 };
 
 #define DECL_LOG_ROTATOR(ID, NAME, FREQ)\
