@@ -45,8 +45,23 @@ void Rotate::execute(std::vector<std::string>&& params, std::ostringstream& resu
         return;
     }
     if (hasParam(params, "--check-only")) {
-        for (auto& rotator : registry()->logRotators()) {
-            result << rotator->checkStatus(loggerId) << std::endl;
+        const auto& frequencies = registry()->configuration()->rotationFreqencies();
+        const auto& freqPair = frequencies.find(loggerId);
+        if (freqPair != frequencies.end()) {
+            if (freqPair->second == Configuration::RotationFrequency::NEVER) {
+                result << "Not scheduled";
+            } else {
+                for (const auto& rotator : registry()->logRotators()) {
+                    if (rotator->frequency() == freqPair->second) {
+                        result << "Logger [" << loggerId << "] uses ["
+                               << rotator->name() << "] scheduled for next run @ ["
+                               << rotator->formattedNextExecution() << "]";
+                        break;
+                    }
+                }
+            }
+        } else {
+            result << "Not scheduled";
         }
         return;
     }

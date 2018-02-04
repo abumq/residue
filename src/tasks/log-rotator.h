@@ -56,7 +56,11 @@ public:
                         Configuration::RotationFrequency freq);
     void rotate(const std::string& loggerId);
     void archiveRotatedItems();
-    std::string checkStatus(const std::string& loggerId) const;
+
+    inline Configuration::RotationFrequency frequency() const
+    {
+        return m_frequency;
+    }
 protected:
     virtual void execute(unsigned long now) override;
 
@@ -64,6 +68,7 @@ protected:
 private:
     std::vector<ArchiveItem> m_archiveItems;
     std::unordered_map<std::string, unsigned long> m_lastRotation;
+    Configuration::RotationFrequency m_frequency;
 
     void archiveAndCompress(const std::string&,
                             const std::string&,

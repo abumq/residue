@@ -38,11 +38,12 @@ const unsigned long LogRotator::LENIENCY_THRESHOLD = 60 * 5; // 5 minutes
 LogRotator::LogRotator(const std::string& name,
                        Registry* registry,
                        Configuration::RotationFrequency freq) :
-    Task(name, registry, freq)
+    Task(name, registry, freq),
+    m_frequency(freq)
 {
 }
-
-std::string LogRotator::checkStatus(const std::string& loggerId) const
+/*
+std::string LogRotator::checkStatus(const std::string& loggerId, const LogRotator* logRotator) const
 {
     auto rotationFrequencies = m_registry->configuration()->rotationFreqencies();
     for (const auto& pair : rotationFrequencies) {
@@ -52,6 +53,16 @@ std::string LogRotator::checkStatus(const std::string& loggerId) const
         Configuration::RotationFrequency freq = pair.second;
         if (freq == Configuration::RotationFrequency::NEVER) {
             return "Not scheduled";
+        }
+
+        std::string rotator;
+        std::string nextExecution;
+
+        switch (freq) {
+        case Configuration::RotationFrequency::DAILY:
+            DailyLogRotator logRotator(nullptr);
+            rotator = logRotator.name();
+            nextExecution = logRotator.formattedNextExecution();
         }
 
         auto iter = m_lastRotation.find(loggerId);
@@ -77,7 +88,7 @@ std::string LogRotator::checkStatus(const std::string& loggerId) const
         return ss.str();
     }
     return "Not scheduled";
-}
+}*/
 
 void LogRotator::execute(unsigned long now)
 {
