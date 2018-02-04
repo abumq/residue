@@ -32,20 +32,19 @@ if (profiling)
 endif()
 
 if (debug)
-    message ("-- DEBUGGING IS ON")
+    message ("==> DEBUGGING IS ON")
     add_definitions (-DRESIDUE_DEBUG=1)
 else()
-    message ("-- DEBUGGING IS OFF")
     add_definitions (-DRESIDUE_DEBUG=0)
 endif()
 
 if (production)
-    message ("-- PRODUCTION BUILD")
+    message ("==> PRODUCTION BUILD")
     add_definitions (-DRESIDUE_PRODUCTION)
 endif()
 
 if (special_edition)
-    message ("-- SPECIAL EDITION BUILD")
+    message ("==> SPECIAL EDITION BUILD")
     add_definitions (-DRESIDUE_SPECIAL_EDITION)
 endif()
 
@@ -58,7 +57,7 @@ include (FindCURL)
 #require_cpp11()
 check_apple()
 
-list (APPEND CMAKE_CXX_FLAGS " -std=c++11 -O3 -Wall -Wextra -pedantic -pedantic-errors -Werror -Wfatal-errors -Wundef -Wno-unused-variable -Wno-unknown-warning-option -Wno-pessimizing-move ")
+list (APPEND CMAKE_CXX_FLAGS " -std=c++11 -O3 -Wall -Wextra -pedantic -pedantic-errors -Wundef -Wno-unused-variable -Wno-deprecated-declarations -Wno-unknown-warning-option -Wno-pessimizing-move ")
 
 if (CMAKE_BUILD_TYPE EQUAL "DEBUG" OR CMAKE_BUILD_TYPE EQUAL "RELWITHDEBINFO")
     message ("-- Exporting debug symbols")
@@ -79,16 +78,12 @@ if (${CURL_FOUND})
     add_definitions (-DRESIDUE_HAS_CURL)
     include_directories (${CURL_INCLUDE_DIRS})
     message ("-- libcurl: " ${CURL_LIBRARIES} " version: " ${CURL_VERSION_STRING})
-else()
-    message ("--==> libcurl not found")
 endif()
 
 find_package(ZLIB REQUIRED)
 if (ZLIB_FOUND)
     include_directories(${ZLIB_INCLUDE_DIRS})
     message ("-- libz: " ${ZLIB_LIBRARIES} " version: " ${ZLIB_VERSION_STRING})
-else()
-    message ("--==> libz not found")
 endif(ZLIB_FOUND)
 
 # Boost
@@ -110,7 +105,7 @@ if (enable_extensions)
     #message ("-- python: " ${PYTHON_LIBRARY} " include: " ${PYTHON_INCLUDE_DIRS} " version: " ${PYTHONLIBS_VERSION_STRING})
 else()
     set (PYTHON_LIBRARY "")
-    message ("--==> Extensions are disabled")
+    message ("==> Extensions are disabled")
 endif()
 
 # Check for cryptopp (static)
@@ -318,6 +313,8 @@ add_custom_target (all_placeholder SOURCES ${all_headers})
 if (test)
 
     find_package (gtest REQUIRED)
+
+    message ("-- gtest library: ${gtest_SOURCE_DIR}")
 
     include_directories (${gtest_SOURCE_DIR}/include ${gtest_SOURCE_DIR})
 
