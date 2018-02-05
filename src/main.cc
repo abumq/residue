@@ -332,7 +332,8 @@ int main(int argc, char* argv[])
             std::string newVer;
             if (task.check(&newVer)) {
                 std::cout << "A newer version " << newVer
-                          << " is available for download. Please visit https://muflihun.github.io/residue/";
+                          << " is available for download. Please visit https://muflihun.github.io/residue/"
+                          << std::endl;
             }
             task.start();
         }));
