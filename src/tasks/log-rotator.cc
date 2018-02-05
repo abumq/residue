@@ -78,8 +78,16 @@ void LogRotator::rotate(const std::string& loggerId)
     unsigned long m_timeTaken;
     RESIDUE_PROFILE_START(t_rotation);
 #endif
-    time_t tt = std::chrono::system_clock::to_time_t(std::chrono::system_clock::now());
-    tm local_tm = *localtime(&tt);
+
+    // we resolve all the format specifiers based on when the
+    // task started instead of now, because loggers can take time
+    // and may end up having a different values for format specifiers
+    // for two loggers that were suppose to have same
+    // e.g, logger A ran at 23:59:59 and took a while to archive
+    // and then logger B ran at 00:00:00 so the %day will to resolve different
+    // days for each loggers
+
+    tm local_tm = Utils::timeToTm(lastExecution());
 
     int currentMin = local_tm.tm_min;
     int currentHour = local_tm.tm_hour;

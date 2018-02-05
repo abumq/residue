@@ -32,8 +32,8 @@ using namespace residue;
 
 #ifdef RESIDUE_ON_CI
 // CI IS ON UTC
-static unsigned long s_offset = -(11*3600)
-static unsigned long s_soffset = -(1*3600)
+static unsigned long s_offset = -(11*3600);
+static unsigned long s_soffset = -(1*3600);
 #else
 static unsigned long s_offset = 0;
 static unsigned long s_soffset = 0;

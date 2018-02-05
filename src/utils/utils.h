@@ -117,6 +117,8 @@ public:
 
     static std::string formatTime(unsigned long time, const char* format = "%h:%m:%s");
 
+    static tm timeToTm(unsigned long epochInSec);
+
     // serization
     static bool isJSON(const std::string& data);
 

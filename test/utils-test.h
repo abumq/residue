@@ -160,4 +160,17 @@ TEST(UtilsTest, CreatePath)
     ASSERT_TRUE(Utils::fileExists("a_custom_directory2/is/a/path/"));
 }
 
+TEST(UtilsTest, TimeToTmTest)
+{
+    unsigned long epoch = 1540988497; // Wed, 31/Oct/2018 23:21:37
+    tm time = Utils::timeToTm(epoch);
+    ASSERT_EQ(time.tm_sec, 37);
+    ASSERT_EQ(time.tm_min, 21);
+    ASSERT_EQ(time.tm_hour, 23);
+    ASSERT_EQ(time.tm_mday, 31);
+    ASSERT_EQ(time.tm_mon, 10 - 1);
+    ASSERT_EQ(time.tm_year + 1900, 2018);
+    ASSERT_STREQ(time.tm_zone, "AEDT");
+}
+
 #endif // UTILS_TEST_H

@@ -284,3 +284,12 @@ std::string Utils::formatTime(unsigned long time, const char* format)
     el::base::SubsecondPrecision ssPrec(3);
     return el::base::utils::DateTime::timevalToString(t, format, &ssPrec);
 }
+
+tm Utils::timeToTm(unsigned long epochInSec)
+{
+    struct timeval tval;
+    tval.tv_sec = epochInSec;
+    tm tmObj;
+    el::base::utils::DateTime::buildTimeInfo(&tval, &tmObj);
+    return tmObj;
+}
