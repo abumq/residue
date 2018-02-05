@@ -19,11 +19,13 @@ This document shows you steps to install residue server on your machine. You can
 ## Dependencies
   * C++11 (or higher)
   * Boost v1.53 or higher [Components: [system](http://www.boost.org/doc/libs/1_62_0/libs/system/doc/index.html)]
-  * [Easylogging++](https://github.com/muflihun/easyloggingpp) v9.95.2
+  * [Easylogging++](https://github.com/muflihun/easyloggingpp) v9.95.0 (Included)
   * [Crypto++](https://www.cryptopp.com/) v5.6.5+ [with Pem Pack](https://raw.githubusercontent.com/muflihun/muflihun.github.io/master/downloads/pem_pack.zip)
   * [CMake Toolchains](https://cmake.org/) v2.8.12
   * [zlib-devel](https://zlib.net/)
   * [libcurl-devel](https://curl.haxx.se/libcurl/)
+  * [libncurses](https://www.gnu.org/software/ncurses/) (Optional)
+  * [libreadline](https://tiswww.case.edu/php/chet/readline/rltop.html) (Optional)
   * [Google Testing Framework](https://github.com/google/googletest/blob/master/googletest/docs/Primer.md)
   
 ## Get Code
@@ -46,13 +48,14 @@ make
 
 You can define following options in CMake (using `-D<option>=ON`)
 
-|    Option    | Description                     |
-| ------------ | ------------------------------- |
-| `test`       | Compile unit tests              |
-| `debug`      | Turn on debug logging           |
-| `production` | Compile for production use      |
-| `profiling`  | Turn on profiling information for making server faster (goes together with `debug`) |
-| `use_mine` | Use mine crypto library (instead of ripe) whereever possible |
+|    Option    | Description                     | Default |
+| ------------ | ------------------------------- |---------|
+| `test`       | Compile unit tests              | `OFF`   |
+| `debug`      | Turn on debug logging           | `OFF`   |
+| `production` | Compile for production use      | `OFF`   |
+| `profiling`  | Turn on profiling information for making server faster (goes together with `debug`) | `OFF` |
+| `use_mine` | Use mine crypto library (instead of ripe) whereever possible | `OFF` |
+| `use_readline_lib` | Specifies whether to use readline lib or use custom (built-in input taker) | `ON` |
 
 Please consider running unit tests before you move on.
 
