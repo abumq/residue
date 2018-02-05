@@ -10,6 +10,7 @@ option (profiling "Turns profiling on for various scenarios" OFF)
 option (enable_extensions "Enables extensions support for the build" OFF)
 option (use_mine "Use mine whereever possible" OFF)
 option (special_edition "Special edition build" OFF)
+option (use_readline_lib "Force using custom read line" ON)
 
 set (RESIDUE_MAJOR "1")
 set (RESIDUE_MINOR "3")
@@ -60,18 +61,16 @@ check_apple()
 list (APPEND CMAKE_CXX_FLAGS " -std=c++11 -O3 -Wall -Wextra -pedantic -pedantic-errors -Wundef -Wno-unused-variable -Wno-deprecated-declarations -Wno-unknown-warning-option -Wno-pessimizing-move ")
 
 if (CMAKE_BUILD_TYPE EQUAL "DEBUG" OR CMAKE_BUILD_TYPE EQUAL "RELWITHDEBINFO")
-    message ("-- Exporting debug symbols")
+    message ("==> EXPORTING DEBUG SYMBOLS")
 endif()
 
 if (travis)
     add_definitions (-DRESIDUE_ON_CI)
 endif()
 
-message ("-- Check for Easylogging++")
-find_package (EASYLOGGINGPP REQUIRED)
-include_directories (${EASYLOGGINGPP_INCLUDE_DIR})
+#find_package (EASYLOGGINGPP REQUIRED)
+#include_directories (${EASYLOGGINGPP_INCLUDE_DIR})
 
-message ("-- Check for libcurl")
 find_package (CURL REQUIRED)
 
 if (${CURL_FOUND})
@@ -105,7 +104,22 @@ if (enable_extensions)
     #message ("-- python: " ${PYTHON_LIBRARY} " include: " ${PYTHON_INCLUDE_DIRS} " version: " ${PYTHONLIBS_VERSION_STRING})
 else()
     set (PYTHON_LIBRARY "")
-    message ("==> Extensions are disabled")
+endif()
+
+# Readline
+if (use_readline_lib)
+    find_package(Readline REQUIRED)
+    if (READLINE_FOUND)
+        add_definitions (-DRESIDUE_USE_READLINE_LIB)
+        include_directories(${Readline_INCLUDE_DIR})
+        message ("-- libreadline: " ${Readline_LIBRARY})
+    else()
+        set (Readline_LIBRARY "")
+        message ("==> USING CUSTOM READLINE (libReadline not found)")
+    endif()
+else()
+    set (Readline_LIBRARY "")
+    message ("==> USING CUSTOM READLINE (Forced via flag)")
 endif()
 
 # Check for cryptopp (static)
@@ -199,6 +213,7 @@ set (SHARED_REQUIRED_LIBS
     ${ZLIB_LIBRARIES}
     ${CRYPTOPP_LIBRARIES}
     ${PYTHON_LIBRARY}
+    ${Readline_LIBRARY}
 )
 
 ############# RESIDUE CORE LIB (STATIC) ###############

@@ -19,6 +19,10 @@
 //  limitations under the License.
 //
 
+#ifdef RESIDUE_USE_READLINE_LIB
+#   include <readline/readline.h>
+#   include <readline/history.h>
+#endif // RESIDUE_USE_READLINE_LIB
 #include "src/logging/log.h"
 #include "src/cli/command-handler.h"
 #include "src/utils/utils.h"
@@ -139,8 +143,17 @@ void CommandHandler::takeInput(bool* exitOnInterrupt)
 {
     std::string input;
     std::this_thread::sleep_for(std::chrono::milliseconds(10));
+#ifdef RESIDUE_USE_READLINE_LIB
+    char* line = readline("Residue > ");
+    if (line != nullptr) {
+        add_history(line);
+        input = std::string(line);
+        free(line);
+    }
+#else
     std::cout << std::endl << "Residue > ";
     std::getline(std::cin, input);
+#endif
     if (!input.empty()) {
         *exitOnInterrupt = false; // reset as user entered a command
         std::vector<std::string> params;
