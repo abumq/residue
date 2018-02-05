@@ -166,11 +166,11 @@ TEST(UtilsTest, TimeToTmTest)
     tm time = Utils::timeToTm(epoch);
     ASSERT_EQ(time.tm_sec, 37);
     ASSERT_EQ(time.tm_min, 21);
-    ASSERT_EQ(time.tm_hour, 23 - offsetTimezone);
+    ASSERT_EQ(time.tm_hour, 23);
     ASSERT_EQ(time.tm_mday, 31);
     ASSERT_EQ(time.tm_mon, 10 - 1);
     ASSERT_EQ(time.tm_year + 1900, 2018);
-    ASSERT_STREQ(time.tm_zone, offsetTimezone == 11 ? "AEDT" : 0);
+    ASSERT_STREQ(time.tm_zone, "AEDT");
 }
 
 #endif // UTILS_TEST_H

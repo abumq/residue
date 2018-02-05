@@ -30,9 +30,6 @@
 
 using namespace residue;
 
-static unsigned long s_offset = offsetTimezone * 3600;
-static unsigned long s_soffset = offsetTimezone == 0 ? 0 : 1 * 3600;
-
 void displayFormattedResult(const LogRotator* logRotator,
                             const TestCase<unsigned long, unsigned long, std::string>& item)
 {
@@ -73,7 +70,7 @@ TEST(LogRotatorScheduleTest, SixHoursRoundOffCalculation)
     for (auto& item : TData) {
         SixHoursLogRotator logRotator(nullptr);
 
-        ASSERT_EQ(item.get<1>() - s_soffset, logRotator.calculateRoundOff(item.get<0>())) << item.get<2>();
+        ASSERT_EQ(item.get<1>(), logRotator.calculateRoundOff(item.get<0>())) << item.get<2>();
 
         displayFormattedResult(&logRotator, item);
     }
@@ -91,7 +88,7 @@ TEST(LogRotatorScheduleTest, TwelveHoursRoundOffCalculation)
     for (auto& item : TData) {
         TwelveHoursLogRotator logRotator(nullptr);
 
-        ASSERT_EQ(item.get<1>() - s_soffset, logRotator.calculateRoundOff(item.get<0>())) << item.get<2>();
+        ASSERT_EQ(item.get<1>(), logRotator.calculateRoundOff(item.get<0>())) << item.get<2>();
 
         displayFormattedResult(&logRotator, item);
     }
@@ -109,7 +106,7 @@ TEST(LogRotatorScheduleTest, DailyRoundOffCalculation)
     for (auto& item : TData) {
         DailyLogRotator logRotator(nullptr);
 
-        ASSERT_EQ((item.get<1>() - 1) + s_offset, logRotator.calculateRoundOff(item.get<0>())) << item.get<2>();
+        ASSERT_EQ(item.get<1>() - 1, logRotator.calculateRoundOff(item.get<0>())) << item.get<2>();
 
         displayFormattedResult(&logRotator, item);
     }
@@ -133,7 +130,7 @@ TEST(LogRotatorScheduleTest, WeeklyRoundOffCalculation)
     for (auto& item : TData) {
         WeeklyLogRotator logRotator(nullptr);
 
-        ASSERT_EQ((item.get<1>() - 1) + s_offset, logRotator.calculateRoundOff(item.get<0>())) << item.get<2>();
+        ASSERT_EQ(item.get<1>() - 1, logRotator.calculateRoundOff(item.get<0>())) << item.get<2>();
 
         displayFormattedResult(&logRotator, item);
     }
@@ -165,7 +162,7 @@ TEST(LogRotatorScheduleTest, MonthlyRoundOffCalculation)
     for (auto& item : TData) {
         MonthlyLogRotator logRotator(nullptr);
 
-        ASSERT_EQ((item.get<1>() - 1) + s_offset, logRotator.calculateRoundOff(item.get<0>())) << item.get<2>();
+        ASSERT_EQ(item.get<1>() - 1, logRotator.calculateRoundOff(item.get<0>())) << item.get<2>();
 
         displayFormattedResult(&logRotator, item);
     }
@@ -206,7 +203,7 @@ TEST(LogRotatorScheduleTest, YearlyRoundOffCalculation)
     for (auto& item : TData) {
         YearlyLogRotator logRotator(nullptr);
 
-        ASSERT_EQ((item.get<1>() - 1) + s_offset, logRotator.calculateRoundOff(item.get<0>())) << item.get<2>();
+        ASSERT_EQ(item.get<1>() - 1, logRotator.calculateRoundOff(item.get<0>())) << item.get<2>();
 
         displayFormattedResult(&logRotator, item);
 
