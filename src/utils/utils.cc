@@ -271,15 +271,15 @@ std::string Utils::bytesToHumanReadable(long size)
 
 unsigned long long Utils::nowUtc()
 {
-    std::time_t t = std::time(nullptr);
-    std::tm* nowTm;
+    time_t t = std::time(nullptr);
+    tm* nowTm;
     nowTm = std::gmtime(&t);
     return nowTm != nullptr ? mktime(nowTm) : 0;
 }
 
 std::string Utils::formatTime(unsigned long time, const char* format)
 {
-    struct timeval t;
+    timeval t;
     t.tv_sec = time;
     el::base::SubsecondPrecision ssPrec(3);
     return el::base::utils::DateTime::timevalToString(t, format, &ssPrec);
@@ -287,7 +287,7 @@ std::string Utils::formatTime(unsigned long time, const char* format)
 
 tm Utils::timeToTm(unsigned long epochInSec)
 {
-    struct timeval tval;
+    timeval tval;
     tval.tv_sec = epochInSec;
     tm tmObj;
     el::base::utils::DateTime::buildTimeInfo(&tval, &tmObj);

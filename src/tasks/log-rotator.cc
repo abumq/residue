@@ -87,7 +87,7 @@ void LogRotator::rotate(const std::string& loggerId)
     // and then logger B ran at 00:00:00 so the %day will to resolve different
     // days for each loggers
 
-    tm local_tm = Utils::timeToTm(lastExecution());
+    std::tm local_tm = Utils::timeToTm(lastExecution());
 
     int currentMin = local_tm.tm_min;
     int currentHour = local_tm.tm_hour;
