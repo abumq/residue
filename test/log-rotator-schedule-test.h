@@ -91,7 +91,7 @@ TEST(LogRotatorScheduleTest, TwelveHoursRoundOffCalculation)
     for (auto& item : TData) {
         TwelveHoursLogRotator logRotator(nullptr);
 
-        ASSERT_EQ((item.get<1>()) + offsetTimezone, logRotator.calculateRoundOff(item.get<0>())) << item.get<2>();
+        ASSERT_EQ(item.get<1>() - s_soffset, logRotator.calculateRoundOff(item.get<0>())) << item.get<2>();
 
         displayFormattedResult(&logRotator, item);
     }
@@ -109,7 +109,7 @@ TEST(LogRotatorScheduleTest, DailyRoundOffCalculation)
     for (auto& item : TData) {
         DailyLogRotator logRotator(nullptr);
 
-        ASSERT_EQ((item.get<1>() - 1) + offsetTimezone, logRotator.calculateRoundOff(item.get<0>())) << item.get<2>();
+        ASSERT_EQ((item.get<1>() - 1) + s_offset, logRotator.calculateRoundOff(item.get<0>())) << item.get<2>();
 
         displayFormattedResult(&logRotator, item);
     }
@@ -133,7 +133,7 @@ TEST(LogRotatorScheduleTest, WeeklyRoundOffCalculation)
     for (auto& item : TData) {
         WeeklyLogRotator logRotator(nullptr);
 
-        ASSERT_EQ((item.get<1>() - 1) + offsetTimezone, logRotator.calculateRoundOff(item.get<0>())) << item.get<2>();
+        ASSERT_EQ((item.get<1>() - 1) + s_offset, logRotator.calculateRoundOff(item.get<0>())) << item.get<2>();
 
         displayFormattedResult(&logRotator, item);
     }
@@ -165,7 +165,7 @@ TEST(LogRotatorScheduleTest, MonthlyRoundOffCalculation)
     for (auto& item : TData) {
         MonthlyLogRotator logRotator(nullptr);
 
-        ASSERT_EQ((item.get<1>() - 1) + offsetTimezone, logRotator.calculateRoundOff(item.get<0>())) << item.get<2>();
+        ASSERT_EQ((item.get<1>() - 1) + s_offset, logRotator.calculateRoundOff(item.get<0>())) << item.get<2>();
 
         displayFormattedResult(&logRotator, item);
     }
@@ -206,7 +206,7 @@ TEST(LogRotatorScheduleTest, YearlyRoundOffCalculation)
     for (auto& item : TData) {
         YearlyLogRotator logRotator(nullptr);
 
-        ASSERT_EQ((item.get<1>() - 1) + offsetTimezone, logRotator.calculateRoundOff(item.get<0>())) << item.get<2>();
+        ASSERT_EQ((item.get<1>() - 1) + s_offset, logRotator.calculateRoundOff(item.get<0>())) << item.get<2>();
 
         displayFormattedResult(&logRotator, item);
 
