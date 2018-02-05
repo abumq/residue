@@ -23,7 +23,7 @@
 #include "src/admin/admin-request-handler.h"
 #include "src/admin/admin-request.h"
 #include "src/core/configuration.h"
-#include "src/core/command-handler.h"
+#include "src/cli/command-handler.h"
 #include "src/net/session.h"
 #include "src/tasks/log-rotator.h"
 

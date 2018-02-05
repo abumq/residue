@@ -19,17 +19,17 @@
 //  limitations under the License.
 //
 
-#include "src/plugins/reload-config.h"
+#include "src/cli/reload-config.h"
 #include "src/core/registry.h"
 #include "src/core/configuration.h"
 
 using namespace residue;
 
 ReloadConfig::ReloadConfig(Registry* registry) :
-    Plugin("reload",
-              "Reloads configuration",
-              "reload",
-              registry)
+    Command("reload",
+            "Reloads configuration",
+            "reload",
+            registry)
 {
 }
 

@@ -19,17 +19,17 @@
 //  limitations under the License.
 //
 
-#include "src/plugins/session-details.h"
+#include "src/cli/session-details.h"
 #include "src/core/registry.h"
 #include "src/utils/utils.h"
 
 using namespace residue;
 
 SessionDetails::SessionDetails(Registry* registry) :
-    Plugin("sess",
-              "Displays current session details e.g, active sessions etc",
-              "sess [--stats]",
-              registry)
+    Command("sess",
+            "Displays current session details e.g, active sessions etc",
+            "sess [--stats]",
+            registry)
 {
 }
 

@@ -1,5 +1,5 @@
 //
-//  list-tokens.h
+//  rotate.h
 //  Residue
 //
 //  Copyright 2017-present Muflihun Labs
@@ -19,26 +19,26 @@
 //  limitations under the License.
 //
 
-#ifndef ListTokens_h
-#define ListTokens_h
+#ifndef Rotate_h
+#define Rotate_h
 
-#include "src/plugins/plugin.h"
+#include "src/cli/command.h"
 
 namespace residue {
 
 class Registry;
 
 ///
-/// \brief ListTokens plugin
+/// \brief Rotate command
 ///
-class ListTokens : public Plugin
+class Rotate : public Command
 {
 public:
-    ListTokens(Registry* registry);
+    Rotate(Registry* registry);
 
     virtual void execute(std::vector<std::string>&&, std::ostringstream&, bool) const override;
 
 };
 }
 
-#endif /* ListTokens_h */
+#endif /* Rotate_h */

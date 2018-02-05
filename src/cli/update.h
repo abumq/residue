@@ -1,5 +1,5 @@
 //
-//  reset.h
+//  update.h
 //  Residue
 //
 //  Copyright 2017-present Muflihun Labs
@@ -19,26 +19,26 @@
 //  limitations under the License.
 //
 
-#ifndef Reset_h
-#define Reset_h
+#ifndef Update_h
+#define Update_h
 
-#include "src/plugins/plugin.h"
+#include "src/cli/command.h"
 
 namespace residue {
 
 class Registry;
 
 ///
-/// \brief Reset plugin
+/// \brief Update command
 ///
-class Reset : public Plugin
+class Update : public Command
 {
 public:
-    Reset(Registry* registry);
+    Update(Registry* registry);
 
     virtual void execute(std::vector<std::string>&&, std::ostringstream&, bool) const override;
 
 };
 }
 
-#endif /* Reset_h */
+#endif /* Update_h */

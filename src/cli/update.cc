@@ -19,17 +19,17 @@
 //  limitations under the License.
 //
 
-#include "src/plugins/update.h"
+#include "src/cli/update.h"
 #include "src/core/registry.h"
 #include "src/tasks/auto-updater.h"
 
 using namespace residue;
 
 Update::Update(Registry* registry) :
-    Plugin("update",
-              "Check for updates and update the server.",
-              "update [--check-only]",
-              registry)
+    Command("update",
+            "Check for updates and update the server.",
+            "update [--check-only]",
+            registry)
 {
 }
 

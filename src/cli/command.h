@@ -1,5 +1,5 @@
 //
-//  plugin.h
+//  command.h
 //  Residue
 //
 //  Copyright 2017-present Muflihun Labs
@@ -19,8 +19,8 @@
 //  limitations under the License.
 //
 
-#ifndef Plugin_h
-#define Plugin_h
+#ifndef Command_h
+#define Command_h
 
 #include <algorithm>
 #include <sstream>
@@ -33,16 +33,21 @@ namespace residue {
 class Registry;
 
 ///
-/// \brief Base plugin interface
+/// \brief Base command interface
 ///
-class Plugin
+class Command
 {
 public:
-    Plugin(const std::string& id, const std::string& description, const std::string& help, Registry* registry);
+    Command(const std::string& name,
+            const std::string& description,
+            const std::string& help,
+            Registry* registry);
 
-    inline std::string id() const
+    virtual ~Command() = default;
+
+    inline std::string name() const
     {
-        return m_id;
+        return m_name;
     }
 
     inline std::string description() const
@@ -68,18 +73,18 @@ public:
     }
 
     ///
-    /// \brief getParamValue Get param value e.g, --client_id blah will return blah
+    /// \brief getParamValue Get param value e.g, --client-id blah will return blah
     ///
     std::string getParamValue(const std::vector<std::string>& params, const std::string& param) const;
 
     virtual void execute(std::vector<std::string>&&, std::ostringstream&, bool) const = 0;
 
 private:
-    std::string m_id;
+    std::string m_name;
     std::string m_description;
     std::string m_help;
     Registry* m_registry;
 };
 }
 
-#endif /* Plugin_h */
+#endif /* Command_h */

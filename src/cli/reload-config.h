@@ -1,5 +1,5 @@
 //
-//  stats.h
+//  reload-config.h
 //  Residue
 //
 //  Copyright 2017-present Muflihun Labs
@@ -19,26 +19,26 @@
 //  limitations under the License.
 //
 
-#ifndef Stats_h
-#define Stats_h
+#ifndef ReloadConfig_h
+#define ReloadConfig_h
 
-#include "src/plugins/plugin.h"
+#include "src/cli/command.h"
 
 namespace residue {
 
 class Registry;
 
 ///
-/// \brief Stats plugin
+/// \brief Reload config command
 ///
-class Stats : public Plugin
+class ReloadConfig : public Command
 {
 public:
-    Stats(Registry* registry);
+    ReloadConfig(Registry* registry);
 
     virtual void execute(std::vector<std::string>&&, std::ostringstream&, bool) const override;
 
 };
 }
 
-#endif /* Stats_h */
+#endif /* ReloadConfig_h */

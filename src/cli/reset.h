@@ -1,5 +1,5 @@
 //
-//  reload-config.h
+//  reset.h
 //  Residue
 //
 //  Copyright 2017-present Muflihun Labs
@@ -19,26 +19,26 @@
 //  limitations under the License.
 //
 
-#ifndef ReloadConfig_h
-#define ReloadConfig_h
+#ifndef Reset_h
+#define Reset_h
 
-#include "src/plugins/plugin.h"
+#include "src/cli/command.h"
 
 namespace residue {
 
 class Registry;
 
 ///
-/// \brief Reload config plugin
+/// \brief Reset command
 ///
-class ReloadConfig : public Plugin
+class Reset : public Command
 {
 public:
-    ReloadConfig(Registry* registry);
+    Reset(Registry* registry);
 
     virtual void execute(std::vector<std::string>&&, std::ostringstream&, bool) const override;
 
 };
 }
 
-#endif /* ReloadConfig_h */
+#endif /* Reset_h */

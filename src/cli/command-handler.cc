@@ -20,18 +20,17 @@
 //
 
 #include "src/logging/log.h"
-#include "src/core/command-handler.h"
+#include "src/cli/command-handler.h"
 #include "src/utils/utils.h"
-
-#include "src/plugins/update.h"
-#include "src/plugins/reset.h"
-#include "src/plugins/reload-config.h"
-#include "src/plugins/session-details.h"
-#include "src/plugins/stats.h"
-#include "src/plugins/rotate.h"
-#include "src/plugins/list-tokens.h"
-#include "src/plugins/list-logging-files.h"
-#include "src/plugins/clients.h"
+#include "src/cli/update.h"
+#include "src/cli/reset.h"
+#include "src/cli/reload-config.h"
+#include "src/cli/session-details.h"
+#include "src/cli/stats.h"
+#include "src/cli/rotate.h"
+#include "src/cli/list-tokens.h"
+#include "src/cli/list-logging-files.h"
+#include "src/cli/clients.h"
 
 using namespace residue;
 
@@ -41,26 +40,26 @@ CommandHandler::CommandHandler(Registry* registry) :
     m_running(false)
 {
 
-    registerCommand("quit", [&, this](std::vector<std::string>&&, std::ostringstream&, bool) {
+    registerRawCommand("quit", [&, this](std::vector<std::string>&&, std::ostringstream&, bool) {
         m_running = false;
     });
 
-    registerCommand("exit", [&, this](std::vector<std::string>&&, std::ostringstream&, bool) {
+    registerRawCommand("exit", [&, this](std::vector<std::string>&&, std::ostringstream&, bool) {
         m_running = false;
     });
 
-    registerCommand("history", [&, this](std::vector<std::string>&&, std::ostringstream& result, bool) {
+    registerRawCommand("history", [&, this](std::vector<std::string>&&, std::ostringstream& result, bool) {
         int i = 1;
         for (auto& c : m_history) {
             result << (i++) << " > " << c << std::endl;
         }
     });
 
-    registerCommand("help", [&, this](std::vector<std::string>&& params, std::ostringstream& result, bool) {
+    registerRawCommand("help", [&, this](std::vector<std::string>&& params, std::ostringstream& result, bool) {
         if (!params.empty()) {
-            const Plugin* ext = findById(params.at(0));
+            const Command* ext = findByName(params.at(0));
             if (ext != nullptr) {
-                std::string s(ext->id());
+                std::string s(ext->name());
                 result << Utils::toLower(s) << ":\n    "
                        << ext->description()
                        << "\nUsage:\n" << ext->help()
@@ -68,28 +67,28 @@ CommandHandler::CommandHandler(Registry* registry) :
             }
         } else {
             result << "Commands:" << std::endl;
-            for (const auto& c : m_commands) {
+            for (const auto& c : m_rawCommands) {
                 if (c.first != "help") {
                     std::string s(c.first);
                     result << "    " << Utils::toLower(s) << std::endl;
                 }
             }
-            for (const auto& c : m_plugins) {
-                std::string s(c->id());
+            for (const auto& c : m_commands) {
+                std::string s(c->name());
                 result << "    " << Utils::toLower(s) << std::endl;
             }
         }
     });
 
-    registerPlugin(std::unique_ptr<Plugin>(new Update(registry)));
-    registerPlugin(std::unique_ptr<Plugin>(new Reset(registry)));
-    registerPlugin(std::unique_ptr<Plugin>(new ReloadConfig(registry)));
-    registerPlugin(std::unique_ptr<Plugin>(new SessionDetails(registry)));
-    registerPlugin(std::unique_ptr<Plugin>(new Stats(registry)));
-    registerPlugin(std::unique_ptr<Plugin>(new Rotate(registry)));
-    registerPlugin(std::unique_ptr<Plugin>(new ListTokens(registry)));
-    registerPlugin(std::unique_ptr<Plugin>(new ListLoggingFiles(registry)));
-    registerPlugin(std::unique_ptr<Plugin>(new Clients(registry)));
+    registerCommand(std::unique_ptr<Command>(new Update(registry)));
+    registerCommand(std::unique_ptr<Command>(new Reset(registry)));
+    registerCommand(std::unique_ptr<Command>(new ReloadConfig(registry)));
+    registerCommand(std::unique_ptr<Command>(new SessionDetails(registry)));
+    registerCommand(std::unique_ptr<Command>(new Stats(registry)));
+    registerCommand(std::unique_ptr<Command>(new Rotate(registry)));
+    registerCommand(std::unique_ptr<Command>(new ListTokens(registry)));
+    registerCommand(std::unique_ptr<Command>(new ListLoggingFiles(registry)));
+    registerCommand(std::unique_ptr<Command>(new Clients(registry)));
 }
 
 void CommandHandler::handle(std::string&& cmd,
@@ -104,27 +103,27 @@ void CommandHandler::handle(std::string&& cmd,
         m_history.erase(m_history.begin());
     }
 
-    const Plugin* plugin = findById(cmd);
+    const Command* command = findByName(cmd);
 
-    if (plugin != nullptr) {
+    if (command != nullptr) {
         if (cmd != "history") {
             m_history.insert(cmd);
         }
-        plugin->execute(std::move(params), result, ignoreConfirmation);
-    } else if (m_commands.find(cmd) != m_commands.end()) {
+        command->execute(std::move(params), result, ignoreConfirmation);
+    } else if (m_rawCommands.find(cmd) != m_rawCommands.end()) {
         if (cmd != "history") {
             m_history.insert(cmd);
         }
-        m_commands.at(cmd)(std::move(params), result, ignoreConfirmation);
+        m_rawCommands.at(cmd)(std::move(params), result, ignoreConfirmation);
     }
 }
 
-const Plugin* CommandHandler::findById(const std::string& id) const
+const Command* CommandHandler::findByName(const std::string& name) const
 {
-    auto p = std::find_if(m_plugins.begin(), m_plugins.end(), [&](const std::unique_ptr<Plugin>& e) {
-        return e->id() == id;
+    auto p = std::find_if(m_commands.begin(), m_commands.end(), [&](const std::unique_ptr<Command>& e) {
+        return e->name() == name;
     });
-    if (p != m_plugins.end()) {
+    if (p != m_commands.end()) {
         return p->get();
     }
     return nullptr;

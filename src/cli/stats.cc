@@ -1,5 +1,5 @@
 //
-//  rotate.h
+//  stats.cc
 //  Residue
 //
 //  Copyright 2017-present Muflihun Labs
@@ -19,26 +19,20 @@
 //  limitations under the License.
 //
 
-#ifndef Rotate_h
-#define Rotate_h
+#include "src/cli/stats.h"
+#include "src/core/registry.h"
 
-#include "src/plugins/plugin.h"
+using namespace residue;
 
-namespace residue {
-
-class Registry;
-
-///
-/// \brief Rotate plugin
-///
-class Rotate : public Plugin
+Stats::Stats(Registry* registry) :
+    Command("stats",
+            "Display stats for all the sessions (bytes received and sent)",
+            "stats",
+            registry)
 {
-public:
-    Rotate(Registry* registry);
-
-    virtual void execute(std::vector<std::string>&&, std::ostringstream&, bool) const override;
-
-};
 }
 
-#endif /* Rotate_h */
+void Stats::execute(std::vector<std::string>&&, std::ostringstream& result, bool) const
+{
+    result << "Recv: " << registry()->bytesReceived() << ", Sent: " << registry()->bytesSent() << std::endl;
+}

@@ -1,5 +1,5 @@
 //
-//  list-logging-files.h
+//  list-tokens.h
 //  Residue
 //
 //  Copyright 2017-present Muflihun Labs
@@ -19,28 +19,26 @@
 //  limitations under the License.
 //
 
-#ifndef ListLoggingFiles_h
-#define ListLoggingFiles_h
+#ifndef ListTokens_h
+#define ListTokens_h
 
-#include "src/plugins/plugin.h"
+#include "src/cli/command.h"
 
 namespace residue {
 
 class Registry;
 
 ///
-/// \brief ListLoggingFiles plugin
+/// \brief ListTokens command
 ///
-class ListLoggingFiles : public Plugin
+class ListTokens : public Command
 {
 public:
-    ListLoggingFiles(Registry* registry);
+    ListTokens(Registry* registry);
 
     virtual void execute(std::vector<std::string>&&, std::ostringstream&, bool) const override;
-private:
-    std::string getFile(const std::string& loggerId, const std::string& levelStr) const;
 
 };
 }
 
-#endif /* ListLoggingFiles_h */
+#endif /* ListTokens_h */

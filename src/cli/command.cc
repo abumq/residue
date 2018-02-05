@@ -1,5 +1,5 @@
 //
-//  extension.cc
+//  command.cc
 //  Residue
 //
 //  Copyright 2017-present Muflihun Labs
@@ -19,20 +19,23 @@
 //  limitations under the License.
 //
 
-#include "src/plugins/plugin.h"
+#include "src/cli/command.h"
 #include "src/core/registry.h"
 
 using namespace residue;
 
-Plugin::Plugin(const std::string& id, const std::string& description, const std::string& help, Registry* registry) :
-    m_id(id),
+Command::Command(const std::string& name,
+                 const std::string& description,
+                 const std::string& help,
+                 Registry* registry) :
+    m_name(name),
     m_description(description),
     m_help(help),
     m_registry(registry)
 {
 }
 
-bool Plugin::getConfirmation(const std::string& help) const
+bool Command::getConfirmation(const std::string& help) const
 {
     std::cout << "Are you sure? (Y/N" << (help.empty() ? "" : "/?") << "): ";
     std::string confirm;
@@ -46,7 +49,8 @@ bool Plugin::getConfirmation(const std::string& help) const
     return false;
 }
 
-std::string Plugin::getParamValue(const std::vector<std::string>& params, const std::string& param) const
+std::string Command::getParamValue(const std::vector<std::string>& params,
+                                   const std::string& param) const
 {
     auto pos = std::find(params.begin(), params.end(), param);
     if (pos != params.end()) {

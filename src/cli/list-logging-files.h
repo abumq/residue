@@ -1,5 +1,5 @@
 //
-//  update.h
+//  list-logging-files.h
 //  Residue
 //
 //  Copyright 2017-present Muflihun Labs
@@ -19,26 +19,28 @@
 //  limitations under the License.
 //
 
-#ifndef Update_h
-#define Update_h
+#ifndef ListLoggingFiles_h
+#define ListLoggingFiles_h
 
-#include "src/plugins/plugin.h"
+#include "src/cli/command.h"
 
 namespace residue {
 
 class Registry;
 
 ///
-/// \brief Update plugin
+/// \brief ListLoggingFiles command
 ///
-class Update : public Plugin
+class ListLoggingFiles : public Command
 {
 public:
-    Update(Registry* registry);
+    ListLoggingFiles(Registry* registry);
 
     virtual void execute(std::vector<std::string>&&, std::ostringstream&, bool) const override;
+private:
+    std::string getFile(const std::string& loggerId, const std::string& levelStr) const;
 
 };
 }
 
-#endif /* Update_h */
+#endif /* ListLoggingFiles_h */

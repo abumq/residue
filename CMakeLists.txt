@@ -155,7 +155,6 @@ set (SOURCE_FILES
     src/core/response.cc
     src/core/json-object.cc
     src/core/configuration.cc
-    src/core/command-handler.cc
     src/core/registry.cc
 
     src/crypto/rsa.cc
@@ -169,16 +168,17 @@ set (SOURCE_FILES
     src/net/url.cc
     src/net/http-client.cc
 
-    src/plugins/plugin.cc
-    src/plugins/update.cc
-    src/plugins/reset.cc
-    src/plugins/reload-config.cc
-    src/plugins/session-details.cc
-    src/plugins/stats.cc
-    src/plugins/rotate.cc
-    src/plugins/list-tokens.cc
-    src/plugins/list-logging-files.cc
-    src/plugins/clients.cc
+    src/cli/command.cc
+    src/cli/command-handler.cc
+    src/cli/update.cc
+    src/cli/reset.cc
+    src/cli/reload-config.cc
+    src/cli/session-details.cc
+    src/cli/stats.cc
+    src/cli/rotate.cc
+    src/cli/list-tokens.cc
+    src/cli/list-logging-files.cc
+    src/cli/clients.cc
 
     src/extensions/extension.cc
     src/extensions/log-extension.cc

@@ -19,16 +19,16 @@
 //  limitations under the License.
 //
 
-#include "src/plugins/reset.h"
+#include "src/cli/reset.h"
 #include "src/core/registry.h"
 
 using namespace residue;
 
 Reset::Reset(Registry* registry) :
-    Plugin("reset",
-              "Resets the server to default state",
-              "reset",
-              registry)
+    Command("reset",
+            "Resets the server to default state",
+            "reset",
+            registry)
 {
 }
 

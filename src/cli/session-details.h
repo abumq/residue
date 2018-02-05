@@ -1,5 +1,5 @@
 //
-//  stats.cc
+//  session-details.h
 //  Residue
 //
 //  Copyright 2017-present Muflihun Labs
@@ -19,20 +19,26 @@
 //  limitations under the License.
 //
 
-#include "src/plugins/stats.h"
-#include "src/core/registry.h"
+#ifndef SessionDetails_h
+#define SessionDetails_h
 
-using namespace residue;
+#include "src/cli/command.h"
 
-Stats::Stats(Registry* registry) :
-    Plugin("stats",
-              "Display stats for all the sessions (bytes received and sent)",
-              "stats",
-              registry)
+namespace residue {
+
+class Registry;
+
+///
+/// \brief SessionDetails command
+///
+class SessionDetails : public Command
 {
+public:
+    SessionDetails(Registry* registry);
+
+    virtual void execute(std::vector<std::string>&&, std::ostringstream&, bool) const override;
+
+};
 }
 
-void Stats::execute(std::vector<std::string>&&, std::ostringstream& result, bool) const
-{
-    result << "Recv: " << registry()->bytesReceived() << ", Sent: " << registry()->bytesSent() << std::endl;
-}
+#endif /* SessionDetails_h */

@@ -1,5 +1,5 @@
 //
-//  session-details.h
+//  stats.h
 //  Residue
 //
 //  Copyright 2017-present Muflihun Labs
@@ -19,26 +19,26 @@
 //  limitations under the License.
 //
 
-#ifndef SessionDetails_h
-#define SessionDetails_h
+#ifndef Stats_h
+#define Stats_h
 
-#include "src/plugins/plugin.h"
+#include "src/cli/command.h"
 
 namespace residue {
 
 class Registry;
 
 ///
-/// \brief SessionDetails plugin
+/// \brief Stats command
 ///
-class SessionDetails : public Plugin
+class Stats : public Command
 {
 public:
-    SessionDetails(Registry* registry);
+    Stats(Registry* registry);
 
     virtual void execute(std::vector<std::string>&&, std::ostringstream&, bool) const override;
 
 };
 }
 
-#endif /* SessionDetails_h */
+#endif /* Stats_h */

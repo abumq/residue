@@ -19,17 +19,17 @@
 //  limitations under the License.
 //
 
-#include "src/plugins/rotate.h"
+#include "src/cli/rotate.h"
 #include "src/core/registry.h"
 #include "src/tasks/log-rotator.h"
 
 using namespace residue;
 
 Rotate::Rotate(Registry* registry) :
-    Plugin("rotate",
-              "Trigger log rotation manuall",
-              "rotate --logger-id <id> [--check-only] [--ignore-archive]",
-              registry)
+    Command("rotate",
+            "Trigger log rotation manually for specified logger",
+            "rotate --logger-id <id> [--check-only] [--ignore-archive]",
+            registry)
 {
 }
 

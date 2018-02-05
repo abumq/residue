@@ -19,17 +19,17 @@
 //  limitations under the License.
 //
 
-#include "src/plugins/list-logging-files.h"
+#include "src/cli/list-logging-files.h"
 #include "src/core/registry.h"
 #include "src/core/configuration.h"
 
 using namespace residue;
 
 ListLoggingFiles::ListLoggingFiles(Registry* registry) :
-    Plugin("files",
-              "Lists all the files associated to respective logger or client",
-              "files --client-id <id> [--logger-id <id>] [--levels <csv_levels>]",
-              registry)
+    Command("files",
+            "Lists all the files associated to respective logger or client",
+            "files --client-id <id> [--logger-id <id>] [--levels <csv_levels>]",
+            registry)
 {
 }
 

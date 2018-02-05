@@ -19,7 +19,7 @@
 //  limitations under the License.
 //
 
-#include "src/plugins/clients.h"
+#include "src/cli/clients.h"
 #include "src/core/registry.h"
 #include "src/core/configuration.h"
 #include "src/utils/utils.h"
@@ -27,10 +27,10 @@
 using namespace residue;
 
 Clients::Clients(Registry* registry) :
-    Plugin("clients",
-              "List, add or remove clients from the server configuration",
-              "clients [--list] [--add --client-id <id> --rsa-public-key-file <rsa_key>] [--remove --client-id <client-id>]",
-              registry)
+    Command("clients",
+            "List, add or remove clients from the server configuration",
+            "clients [--list] [--add --client-id <id> --rsa-public-key-file <rsa_key>] [--remove --client-id <client-id>]",
+            registry)
 {
 }
 

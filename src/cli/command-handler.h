@@ -28,7 +28,7 @@
 #include <vector>
 #include <unordered_map>
 #include "src/non-copyable.h"
-#include "src/plugins/plugin.h"
+#include "src/cli/command.h"
 
 namespace residue {
 
@@ -60,25 +60,25 @@ public:
 
 private:
 
-    inline void registerCommand(std::string&& cmd,
-                                CommandHandlerFunction&& action)
+    inline void registerRawCommand(std::string&& name,
+                                   CommandHandlerFunction&& action)
     {
-        m_commands.insert(std::make_pair(std::move(cmd), std::move(action)));
+        m_rawCommands.insert(std::make_pair(std::move(name), std::move(action)));
     }
 
-    inline void registerPlugin(std::unique_ptr<Plugin>&& plugin)
+    inline void registerCommand(std::unique_ptr<Command>&& command)
     {
-        m_plugins.insert(std::move(plugin));
+        m_commands.insert(std::move(command));
     }
 
-    const Plugin* findById(const std::string& id) const;
+    const Command* findByName(const std::string& name) const;
 
     void takeInput(bool *exitOnInterrupt);
 
     bool m_running;
     std::set<std::string> m_history;
-    std::set<std::unique_ptr<Plugin>> m_plugins;
-    std::unordered_map<std::string, CommandHandlerFunction> m_commands;
+    std::set<std::unique_ptr<Command>> m_commands;
+    std::unordered_map<std::string, CommandHandlerFunction> m_rawCommands;
 };
 }
 

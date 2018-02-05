@@ -22,16 +22,16 @@
 #ifndef Clients_h
 #define Clients_h
 
-#include "src/plugins/plugin.h"
+#include "src/cli/command.h"
 
 namespace residue {
 
 class Registry;
 
 ///
-/// \brief Clients plugin
+/// \brief Clients command
 ///
-class Clients : public Plugin
+class Clients : public Command
 {
 public:
     Clients(Registry* registry);

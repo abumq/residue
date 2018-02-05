@@ -28,7 +28,7 @@
 #include <vector>
 #include "src/non-copyable.h"
 #include "src/clients/client.h"
-#include "src/core/command-handler.h"
+#include "src/cli/command-handler.h"
 #include "src/net/session.h"
 #include "src/utils/utils.h"
 

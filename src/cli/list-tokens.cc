@@ -19,16 +19,16 @@
 //  limitations under the License.
 //
 
-#include "src/plugins/list-tokens.h"
+#include "src/cli/list-tokens.h"
 #include "src/core/registry.h"
 
 using namespace residue;
 
 ListTokens::ListTokens(Registry* registry) :
-    Plugin("tokens",
-              "List all the tokens and their respective status for client",
-              "tokens --client-id <id>",
-              registry)
+    Command("tokens",
+            "List all the tokens and their respective status for client",
+            "tokens --client-id <id>",
+            registry)
 {
 }
 
