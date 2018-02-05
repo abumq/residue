@@ -170,7 +170,6 @@ TEST(LogRotatorScheduleTest, MonthlyRoundOffCalculation)
 
 TEST(LogRotatorScheduleTest, YearlyRoundOffCalculation)
 {
-
     TestData<unsigned long, unsigned long, std::string> TData = {
         //             days in       months to    extra days
         //            next month     next year
@@ -178,7 +177,7 @@ TEST(LogRotatorScheduleTest, YearlyRoundOffCalculation)
         { 1519734097, (1*86400) + (10*2419200) + (26 * 86400) + 2303, "Tue, 27/Feb/2018 23:21:37" },
         { 1519820497, (0*86400) + (10*2419200) + (26 * 86400) + 2303, "Wed, 28/Feb/2018 23:21:37" },
         { 1582892497, (1*86400) + (10*2419200) + (26 * 86400) + 2303, "Fri, 28/Feb/2020 23:21:37 - leap year" },
-        { 1579090897, (16*86400) + (11*2419200) + (27 /* 29+1 because of leap year */ * 86400) + 2303, "Wed, 15/Jan/2020 23:21:37 - leap year" },
+        { 1579090897, (16*86400) + (11*2419200) + (27 /* 26+1 because of leap year */ * 86400) + 2303, "Wed, 15/Jan/2020 23:21:37 - leap year" },
         { 1520252497, (26*86400) + (9*2419200) + (23 * 86400) + 2303, "Mon, 05/Mar/2018 23:21:37" },
         { 1522412497, (1*86400) + (9*2419200) + (23 * 86400) + 2303, "Fri, 30/Mar/2018 23:21:37" },
         { 1522326097, (2*86400) + (9*2419200) + (23 * 86400) + 2303, "Thu, 29/Mar/2018 23:21:37" },
