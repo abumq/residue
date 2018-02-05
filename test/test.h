@@ -32,7 +32,7 @@ using namespace muflihun::testx;
 
 #ifdef RESIDUE_ON_CI
 // CI IS ON UTC
-unsigned long offsetTimezone = 11
+unsigned long offsetTimezone = 11;
 #else
 unsigned long offsetTimezone = 0;
 #endif
