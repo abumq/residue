@@ -42,12 +42,12 @@ AutoUpdater::AutoUpdater(Registry* registry,
 void AutoUpdater::execute()
 {
     std::string newVer;
-    if (check(&newVer)) {
+    if (hasNewVersion(&newVer)) {
         RLOG(INFO) << "You are running v" << RESIDUE_VERSION << ", new version is available: " << newVer;
     }
 }
 
-bool AutoUpdater::check(std::string* newVersion)
+bool AutoUpdater::hasNewVersion(std::string* newVersion)
 {
     std::string major = RESIDUE_VERSION_MAJOR;
     std::string minor = RESIDUE_VERSION_MINOR;
@@ -60,7 +60,7 @@ bool AutoUpdater::check(std::string* newVersion)
     RVLOG(RV_DEBUG) << "Calling github API...";
     resultFromApi = HttpClient::fetchUrlContents(LATEST_RELEASE_API_URL);
     RVLOG_IF(resultFromApi.empty(), RV_DEBUG) << "Github API returned no result. Connection issue!";
-    DRVLOG(RV_DEBUG) << "Github API result: " << resultFromApi;
+    DRVLOG(RV_CRAZY) << "Github API result: " << resultFromApi;
 
     try {
         std::string cleanResult = Utils::trim(resultFromApi);

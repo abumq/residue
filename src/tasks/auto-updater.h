@@ -39,7 +39,7 @@ public:
 
     explicit AutoUpdater(Registry* registry,
                         unsigned int interval);
-    bool check(std::string* newVersion);
+    bool hasNewVersion(std::string* newVersion);
 protected:
     virtual void execute() override;
 

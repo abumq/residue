@@ -330,7 +330,7 @@ int main(int argc, char* argv[])
             AutoUpdater task(&registry, 86400); // run daily
             registry.setAutoUpdater(&task);
             std::string newVer;
-            if (task.check(&newVer)) {
+            if (task.hasNewVersion(&newVer)) {
                 std::cout << "A newer version " << newVer
                           << " is available for download. Please visit https://muflihun.github.io/residue/"
                           << std::endl;

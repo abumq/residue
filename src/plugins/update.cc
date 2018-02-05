@@ -37,7 +37,7 @@ void Update::execute(std::vector<std::string>&& params, std::ostringstream& resu
 {
     if (params.empty() || params.at(0) == "--check-only") {
         std::string newVer;
-        if (registry()->autoUpdater()->check(&newVer)) {
+        if (registry()->autoUpdater()->hasNewVersion(&newVer)) {
             result << "You are running v" << RESIDUE_VERSION << ", new version is available: " << newVer << std::endl;
         } else {
             result << "You are running latest version v" << RESIDUE_VERSION << std::endl;
