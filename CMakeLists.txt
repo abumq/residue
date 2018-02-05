@@ -329,7 +329,7 @@ if (test)
 
     find_package (gtest REQUIRED)
 
-    include_directories (${gtest_SOURCE_DIR}/include ${gtest_SOURCE_DIR})
+    include_directories (${GTEST_INCLUDE_DIRS})
 
     enable_testing()
 
@@ -347,7 +347,7 @@ if (test)
     )
 
     # Standard linking to gtest stuff.
-    target_link_libraries (residue-unit-tests gtest gtest_main)
+    target_link_libraries (residue-unit-tests ${GTEST_LIBRARIES})
 
     # Extra linking for the project.
     target_link_libraries (residue-unit-tests residue-core)
