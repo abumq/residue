@@ -32,11 +32,10 @@ class Registry;
 /// \brief Task to check integrity of the clients (and their tokens).
 /// If invalid, this task will remove it from the registry
 ///
-class ClientIntegrityTask : public Task
+class ClientIntegrityTask final : public Task
 {
 public:
-    explicit ClientIntegrityTask(Registry* registry,
-                                 unsigned int interval);
+    ClientIntegrityTask(Registry* registry, unsigned int interval);
 protected:
     virtual void execute() override;
 };

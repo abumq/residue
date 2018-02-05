@@ -38,9 +38,9 @@ class Registry;
 class Task : NonCopyable
 {
 public:
-    explicit Task(const std::string& name,
-                  Registry* registry,
-                  unsigned int intervalInSeconds);
+    Task(const std::string& name,
+         Registry* registry,
+         unsigned int intervalInSeconds);
     virtual ~Task() = default;
 
     void start();
@@ -50,17 +50,17 @@ public:
         return m_executing;
     }
 
-    inline unsigned long nextExecution() const
+    inline types::Time nextExecution() const
     {
         return m_nextExecution;
     }
 
-    inline unsigned long lastExecution() const
+    inline types::Time lastExecution() const
     {
         return m_lastExecution;
     }
 
-    inline unsigned long intervalCount() const
+    inline types::Time intervalCount() const
     {
         return m_interval.count();
     }
@@ -80,21 +80,21 @@ public:
         return formattedExecution(m_lastExecution);
     }
 
-    virtual unsigned long calculateRoundOff(unsigned long now) const;
+    virtual types::Time calculateRoundOff(types::Time now) const;
 
-    void rescheduleFrom(unsigned long now);
+    void rescheduleFrom(types::Time now);
 
 protected:
     std::string m_name;
     Registry* m_registry;
     std::chrono::seconds m_interval;
-    unsigned long m_nextExecution;
+    types::Time m_nextExecution;
     std::chrono::seconds m_nextWait;
-    unsigned long m_lastExecution;
+    types::Time m_lastExecution;
     std::atomic<bool> m_executing;
 
 private:
-    inline std::string formattedExecution(unsigned long e) const
+    inline std::string formattedExecution(types::Time e) const
     {
         return Utils::formatTime(e, "%H:%m:%s on %a %d %b, %Y");
     }

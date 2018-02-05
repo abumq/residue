@@ -35,7 +35,7 @@ public:
     static const char kPathSeparator;
     static const char kPortSeparator;
 
-    Url(const std::string& url);
+    explicit Url(const std::string& url);
     Url(const Url&);
     Url& operator=(Url);
 

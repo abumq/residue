@@ -49,7 +49,7 @@ Client::~Client()
     DRVLOG(RV_TRACE) << "~Client " << m_id;
 }
 
-bool Client::isAlive(const unsigned long& compareTo) const
+bool Client::isAlive(const types::Time& compareTo) const
 {
     if (m_age == 0) {
         return true;
@@ -60,7 +60,7 @@ bool Client::isAlive(const unsigned long& compareTo) const
 bool Client::isValidToken(const std::string& loggerId,
                           const std::string& token,
                           const Registry* registry,
-                          const unsigned long& compareTo) const
+                          const types::Time& compareTo) const
 {
     DRVLOG(RV_DEBUG) << "Checking token " << token << " (client [" << m_id << "])";
     if (!registry->configuration()->hasFlag(Configuration::Flag::REQUIRES_TOKEN) || // ignore tokens

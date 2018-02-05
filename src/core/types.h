@@ -1,5 +1,5 @@
 //
-//  response.h
+//  types.h
 //  Residue
 //
 //  Copyright 2017-present Muflihun Labs
@@ -19,34 +19,16 @@
 //  limitations under the License.
 //
 
-#ifndef Response_h
-#define Response_h
+#ifndef Types_h
+#define Types_h
 
-#include <string>
-#include "src/non-copyable.h"
-#include "src/core/json-object.h"
+#include <chrono>
 
 namespace residue {
 
-///
-/// \brief Simple response
-///
-class Response : NonCopyable
-{
-public:
-
-    enum StatusCode : unsigned short
-    {
-        STATUS_OK = 0,
-        BAD_REQUEST = 1,
-        CONTINUE = 0
-    };
-
-    Response() = default;
-    virtual ~Response() = default;
-
-    void serialize(JsonObject::Json& root,
-                   std::string& output) const;
-};
+namespace types {
+using Time = std::time_t;
+using TimeMs = std::time_t;
 }
-#endif /* Response_h */
+}
+#endif /* Types_h */

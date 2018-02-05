@@ -41,9 +41,7 @@ public:
     static const std::string PACKET_DELIMITER;
     static const std::size_t PACKET_DELIMITER_SIZE;
 
-    explicit Session(tcp::socket&& socket,
-                     RequestHandler* requestHandler);
-
+    Session(tcp::socket&& socket, RequestHandler* requestHandler);
     ~Session();
 
     ///

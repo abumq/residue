@@ -37,7 +37,9 @@ class Configuration;
 class ResidueLogDispatcher final : public el::LogDispatchCallback, NonCopyable
 {
 public:
-    ResidueLogDispatcher() : m_configuration(nullptr) {}
+    ResidueLogDispatcher() : m_configuration(nullptr)
+    {
+    }
 
     inline void setConfiguration(Configuration* configuration)
     {

@@ -31,10 +31,10 @@ class Registry;
 ///
 /// \brief Clients command
 ///
-class Clients : public Command
+class Clients final : public Command
 {
 public:
-    Clients(Registry* registry);
+    explicit Clients(Registry* registry);
 
     virtual void execute(std::vector<std::string>&&, std::ostringstream&, bool) const override;
 

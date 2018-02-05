@@ -23,6 +23,11 @@
 
 using namespace residue;
 
+LoggingQueue::LoggingQueue() :
+    m_backlogQueue(&m_queue1),
+    m_dispatchQueue(&m_queue2)
+{
+}
 
 void LoggingQueue::switchContext()
 {

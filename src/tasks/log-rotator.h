@@ -38,15 +38,16 @@ class Registry;
 class LogRotator : public Task
 {
 public:
-    struct ArchiveItem {
+    struct ArchiveItem
+    {
         std::string loggerId;
         std::string archiveFilename;
         std::map<std::string, std::string> files;
     };
 
-    explicit LogRotator(const std::string& name,
-                        Registry* registry,
-                        Configuration::RotationFrequency freq);
+    LogRotator(const std::string& name,
+               Registry* registry,
+               Configuration::RotationFrequency freq);
     virtual ~LogRotator() = default;
 
     void rotate(const std::string& loggerId);
@@ -59,10 +60,9 @@ public:
 protected:
     virtual void execute() override;
 
-    unsigned long calculateSecondsToMidnight(unsigned long now) const;
+    types::Time calculateSecondsToMidnight(types::Time now) const;
 private:
     std::vector<ArchiveItem> m_archiveItems;
-    std::unordered_map<std::string, unsigned long> m_lastRotation;
     Configuration::RotationFrequency m_frequency;
 
     void archiveAndCompress(const std::string&,
@@ -78,7 +78,7 @@ public:\
         : LogRotator(ID, registry, Configuration::RotationFrequency::FREQ) \
     {}\
     \
-    virtual unsigned long calculateRoundOff(unsigned long now) const override;\
+    virtual types::Time calculateRoundOff(types::Time now) const override;\
 }
 
 DECL_LOG_ROTATOR("HourlyLogRotator", HourlyLogRotator, HOURLY);

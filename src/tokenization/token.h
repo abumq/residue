@@ -33,7 +33,7 @@ namespace residue {
 class Token final
 {
 public:
-    explicit Token(const std::string& data, int age = -1);
+    Token(const std::string& data, int age = -1);
     Token(const Token&);
     Token& operator=(Token);
 
@@ -47,13 +47,13 @@ public:
         return m_data;
     }
 
-    bool isValid(const unsigned long& compareTo = 0L) const;
+    bool isValid(const types::Time& compareTo = 0L) const;
     bool operator==(const std::string&) const;
     bool operator==(const Token&) const;
 private:
     std::string m_data;
     unsigned int m_age;
-    unsigned long m_dateCreated;
+    types::Time m_dateCreated;
 };
 
 using AccessCode = Token;

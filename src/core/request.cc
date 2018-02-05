@@ -40,7 +40,7 @@ bool Request::deserialize(std::string&& json)
         RLOG(ERROR) << "Malformed JSON request";
         DRVLOG(RV_DEBUG) << m_jsonObject.lastError();
     } else {
-        m_timestamp = m_jsonObject.get<unsigned long>("_t", 0UL);
+        m_timestamp = m_jsonObject.get<types::Time>("_t", 0UL);
         m_isValid = validateTimestamp();
 
         RVLOG_IF(!m_isValid, RV_DEBUG) << "Potential replay. Timestamp is "

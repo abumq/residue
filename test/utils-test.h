@@ -162,7 +162,7 @@ TEST(UtilsTest, CreatePath)
 
 TEST(UtilsTest, TimeToTmTest)
 {
-    unsigned long epoch = 1540988497; // Wed, 31/Oct/2018 23:21:37
+    types::Time epoch = 1540988497; // Wed, 31/Oct/2018 23:21:37
     tm time = Utils::timeToTm(epoch);
     ASSERT_EQ(time.tm_sec, 37);
     ASSERT_EQ(time.tm_min, 21);

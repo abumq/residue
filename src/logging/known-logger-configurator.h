@@ -38,7 +38,7 @@ class UserLogBuilder;
 class KnownLoggerConfigurator final : public el::LoggerRegistrationCallback, NonCopyable
 {
 public:
-    explicit KnownLoggerConfigurator() : m_configuration(nullptr)
+    KnownLoggerConfigurator() : m_configuration(nullptr)
     {
     }
 

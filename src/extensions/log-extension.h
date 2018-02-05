@@ -28,10 +28,10 @@
 
 namespace residue {
 
-class LogExtension : public Extension
+class LogExtension final : public Extension
 {
 public:
-    LogExtension(const std::string& module);
+    explicit LogExtension(const std::string& module);
 
     bool call(const el::LogDispatchData*,
               const std::string& logLine);

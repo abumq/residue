@@ -44,7 +44,7 @@ public:
 
 TEST(TaskScheduleTest, TestBasicSchedule)
 {
-    const unsigned long now = Utils::now();
+    const types::Time now = Utils::now();
     int interv = 20;
     SimpleTask t(interv);
     t.rescheduleFrom(now);

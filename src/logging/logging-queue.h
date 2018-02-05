@@ -33,14 +33,10 @@ namespace residue {
 ///
 /// \brief Logging queue with context switch feature
 ///
-class LoggingQueue
+class LoggingQueue final : NonCopyable
 {
 public:
-    LoggingQueue() :
-        m_backlogQueue(&m_queue1),
-        m_dispatchQueue(&m_queue2) {}
-
-    virtual ~LoggingQueue() = default;
+    LoggingQueue();
 
     inline std::mutex* lock() { return &m_mutex; }
 

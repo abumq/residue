@@ -27,6 +27,7 @@
 #include <chrono>
 #include "src/logging/log.h"
 #include "src/static-base.h"
+#include "src/core/types.h"
 
 namespace residue {
 
@@ -108,16 +109,16 @@ public:
     static std::string decompressString(const std::string& str);
 
     // date
-    static inline unsigned long now()
+    static inline types::Time now()
     {
         return std::chrono::system_clock::now().time_since_epoch() / std::chrono::seconds(1);
     }
 
-    static unsigned long long nowUtc();
+    static types::Time nowUtc();
 
-    static std::string formatTime(unsigned long time, const char* format = "%h:%m:%s");
+    static std::string formatTime(types::Time time, const char* format = "%h:%m:%s");
 
-    static std::tm timeToTm(unsigned long epochInSec);
+    static std::tm timeToTm(types::Time epochInSec);
 
     // serization
     static bool isJSON(const std::string& data);

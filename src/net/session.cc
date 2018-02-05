@@ -64,7 +64,7 @@ void Session::read()
                                   [&, this, self](boost::system::error_code ec, std::size_t numOfBytes) {
 
 #ifdef RESIDUE_PROFILING
-        //unsigned long m_timeTaken;
+        //types::Time m_timeTaken;
 #endif
         if (!ec) {
             RESIDUE_PROFILE_START(t_read);

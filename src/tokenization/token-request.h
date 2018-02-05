@@ -33,7 +33,7 @@ namespace residue {
 class TokenRequest final : public Request
 {
 public:
-    TokenRequest(const Configuration* conf);
+    explicit TokenRequest(const Configuration* conf);
 
     inline const std::string& loggerId() const
     {

@@ -31,10 +31,10 @@ class Registry;
 ///
 /// \brief Reload config command
 ///
-class ReloadConfig : public Command
+class ReloadConfig final : public Command
 {
 public:
-    ReloadConfig(Registry* registry);
+    explicit ReloadConfig(Registry* registry);
 
     virtual void execute(std::vector<std::string>&&, std::ostringstream&, bool) const override;
 

@@ -37,7 +37,7 @@ public:
     using Json = nlohmann::json;
     using Keys = std::vector<const char*>;
 
-    explicit JsonObject();
+    JsonObject();
 
     JsonObject(const Json& newRoot);
     JsonObject(Json&& newRoot);

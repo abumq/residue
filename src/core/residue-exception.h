@@ -35,7 +35,7 @@ public:
     ///
     /// \brief Main constructor
     ///
-    ResidueException(const std::string& msg) : runtime_error(msg) {}
+    explicit ResidueException(const std::string& msg) : runtime_error(msg) {}
 
     virtual ~ResidueException() = default;
 };

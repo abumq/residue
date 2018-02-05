@@ -42,16 +42,18 @@ class ConnectionRequest;
 ///
 /// \brief Raw request structure created for each session
 ///
-struct RawRequest {
+struct RawRequest
+{
     std::string data;
     std::string ip;
-    unsigned long dateReceived;
+    types::Time dateReceived;
 };
 
 ///
 /// \brief Request structure with decrypted data
 ///
-struct DecryptedRequest {
+struct DecryptedRequest
+{
     Client* client;
     std::string plainRequestStr;
     Request::StatusCode statusCode;
@@ -61,7 +63,8 @@ struct DecryptedRequest {
 ///
 /// \brief Type of incomming request
 ///
-enum class RawRequestType {
+enum class RawRequestType
+{
     AES,
     RSA,
     JSON,
@@ -122,7 +125,7 @@ protected:
     template <typename T = Request>
     void handle(std::string&& requestStr,
                 std::string&& ipAddr,
-                unsigned long&& dateReceived,
+                types::Time&& dateReceived,
                 T* request,
                 Request::StatusCode defaultStatus = Request::StatusCode::BAD_REQUEST,
                 bool tryServerRSAKey = false,

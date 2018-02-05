@@ -31,10 +31,10 @@ class Registry;
 ///
 /// \brief Reset command
 ///
-class Reset : public Command
+class Reset final : public Command
 {
 public:
-    Reset(Registry* registry);
+    explicit Reset(Registry* registry);
 
     virtual void execute(std::vector<std::string>&&, std::ostringstream&, bool) const override;
 

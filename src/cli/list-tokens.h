@@ -31,10 +31,10 @@ class Registry;
 ///
 /// \brief ListTokens command
 ///
-class ListTokens : public Command
+class ListTokens final : public Command
 {
 public:
-    ListTokens(Registry* registry);
+    explicit ListTokens(Registry* registry);
 
     virtual void execute(std::vector<std::string>&&, std::ostringstream&, bool) const override;
 

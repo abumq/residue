@@ -31,10 +31,10 @@ class Registry;
 ///
 /// \brief Update command
 ///
-class Update : public Command
+class Update final : public Command
 {
 public:
-    Update(Registry* registry);
+    explicit Update(Registry* registry);
 
     virtual void execute(std::vector<std::string>&&, std::ostringstream&, bool) const override;
 

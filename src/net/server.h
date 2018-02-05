@@ -38,7 +38,7 @@ class RequestHandler;
 class Server final : NonCopyable
 {
 public:
-    explicit Server(boost::asio::io_service& io_service, int port, RequestHandler* requestHandler);
+    Server(boost::asio::io_service& io_service, int port, RequestHandler* requestHandler);
     ~Server();
 private:
     void accept();

@@ -75,7 +75,7 @@ void LogRotator::archiveRotatedItems()
 void LogRotator::rotate(const std::string& loggerId)
 {
 #ifdef RESIDUE_PROFILING
-    unsigned long m_timeTaken;
+    types::Time m_timeTaken;
     RESIDUE_PROFILE_START(t_rotation);
 #endif
 
@@ -316,23 +316,23 @@ void LogRotator::archiveAndCompress(const std::string& loggerId, const std::stri
     }
 }
 
-unsigned long LogRotator::calculateSecondsToMidnight(unsigned long now) const
+types::Time LogRotator::calculateSecondsToMidnight(types::Time now) const
 {
-    unsigned long minRoundOff = 3600 - (now % 3600);
+    types::Time minRoundOff = 3600 - (now % 3600);
     std::string next24HourStr = Utils::formatTime(minRoundOff + now, "%H");
     int next24Hour = atoi(next24HourStr.c_str());
     int hoursToNextIter = next24Hour == 0 ? 0 : 24 - next24Hour; // nearest day
     return minRoundOff + (hoursToNextIter * 3600);
 }
 
-unsigned long HourlyLogRotator::calculateRoundOff(unsigned long now) const
+types::Time HourlyLogRotator::calculateRoundOff(types::Time now) const
 {
     return (3600 - (now % 3600)) - 1;
 }
 
-unsigned long SixHoursLogRotator::calculateRoundOff(unsigned long now) const
+types::Time SixHoursLogRotator::calculateRoundOff(types::Time now) const
 {
-    unsigned long minRoundOff = 3600 - (now % 3600);
+    types::Time minRoundOff = 3600 - (now % 3600);
 
     std::string nextHourStr = Utils::formatTime(minRoundOff + now, "%h");
     int nextHour = atoi(nextHourStr.c_str());
@@ -347,9 +347,9 @@ unsigned long SixHoursLogRotator::calculateRoundOff(unsigned long now) const
     return minRoundOff + (hoursToNextIter * 3600);
 }
 
-unsigned long TwelveHoursLogRotator::calculateRoundOff(unsigned long now) const
+types::Time TwelveHoursLogRotator::calculateRoundOff(types::Time now) const
 {
-    unsigned long minRoundOff = 3600 - (now % 3600);
+    types::Time minRoundOff = 3600 - (now % 3600);
 
     std::string next24HourStr = Utils::formatTime(minRoundOff + now, "%H");
     int next24Hour = atoi(next24HourStr.c_str());
@@ -365,12 +365,12 @@ unsigned long TwelveHoursLogRotator::calculateRoundOff(unsigned long now) const
     return minRoundOff + (hoursToNextIter * 3600);
 }
 
-unsigned long DailyLogRotator::calculateRoundOff(unsigned long now) const
+types::Time DailyLogRotator::calculateRoundOff(types::Time now) const
 {
     return calculateSecondsToMidnight(now) - 1;
 }
 
-unsigned long WeeklyLogRotator::calculateRoundOff(unsigned long now) const
+types::Time WeeklyLogRotator::calculateRoundOff(types::Time now) const
 {
 
     const std::map<std::string, int> WEEK_DAYS_MAP = {
@@ -399,7 +399,7 @@ unsigned long WeeklyLogRotator::calculateRoundOff(unsigned long now) const
     return (secsToNextMidnight + (daysToNextMonday * 86400)) - 1;
 }
 
-unsigned long MonthlyLogRotator::calculateRoundOff(unsigned long now) const
+types::Time MonthlyLogRotator::calculateRoundOff(types::Time now) const
 {
     const int year = atoi(Utils::formatTime(now, "%Y").c_str());
     const std::map<int, int> LAST_DAY_OF_MONTH_MAP = {
@@ -438,7 +438,7 @@ unsigned long MonthlyLogRotator::calculateRoundOff(unsigned long now) const
     return (secsToNextMidnight + (daysToNextMonth * 86400)) - 1;
 }
 
-unsigned long YearlyLogRotator::calculateRoundOff(unsigned long now) const
+types::Time YearlyLogRotator::calculateRoundOff(types::Time now) const
 {
     const int year = atoi(Utils::formatTime(now, "%Y").c_str());
     const std::map<int, int> LAST_DAY_OF_MONTH_MAP = {

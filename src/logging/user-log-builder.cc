@@ -27,7 +27,6 @@ using namespace residue;
 UserLogBuilder::UserLogBuilder() :
     m_request(nullptr)
 {
-
 }
 
 el::base::type::string_t UserLogBuilder::build(const el::LogMessage* logMessage,

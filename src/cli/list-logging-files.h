@@ -31,10 +31,10 @@ class Registry;
 ///
 /// \brief ListLoggingFiles command
 ///
-class ListLoggingFiles : public Command
+class ListLoggingFiles final : public Command
 {
 public:
-    ListLoggingFiles(Registry* registry);
+    explicit ListLoggingFiles(Registry* registry);
 
     virtual void execute(std::vector<std::string>&&, std::ostringstream&, bool) const override;
 private:

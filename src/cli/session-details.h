@@ -31,10 +31,10 @@ class Registry;
 ///
 /// \brief SessionDetails command
 ///
-class SessionDetails : public Command
+class SessionDetails final : public Command
 {
 public:
-    SessionDetails(Registry* registry);
+    explicit SessionDetails(Registry* registry);
 
     virtual void execute(std::vector<std::string>&&, std::ostringstream&, bool) const override;
 

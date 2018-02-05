@@ -31,10 +31,10 @@ class Registry;
 ///
 /// \brief Rotate command
 ///
-class Rotate : public Command
+class Rotate final : public Command
 {
 public:
-    Rotate(Registry* registry);
+    explicit Rotate(Registry* registry);
 
     virtual void execute(std::vector<std::string>&&, std::ostringstream&, bool) const override;
 

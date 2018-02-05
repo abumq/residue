@@ -39,9 +39,9 @@ class Configuration;
 class ConnectionResponse final : public Response
 {
 public:
-    explicit ConnectionResponse(Response::StatusCode, const std::string&);
-    explicit ConnectionResponse(const Client*,
-                                const Configuration* c = nullptr);
+    ConnectionResponse(Response::StatusCode, const std::string&);
+    ConnectionResponse(const Client*, const Configuration* c = nullptr);
+
     void serialize(std::string& output) const;
 
     inline void setLoggingPort(unsigned int loggingPort)
@@ -64,7 +64,7 @@ private:
     std::string m_key;
     std::string m_clientId;
     unsigned int m_clientAge;
-    unsigned long m_clientDateCreated;
+    types::Time m_clientDateCreated;
     bool m_isAcknowledged;
 
     friend class ConnectionRequestHandler;

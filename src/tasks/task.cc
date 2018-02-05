@@ -66,14 +66,14 @@ void Task::start()
     }
 }
 
-unsigned long Task::calculateRoundOff(unsigned long) const
+types::Time Task::calculateRoundOff(types::Time) const
 {
     return 0;
 }
 
-void Task::rescheduleFrom(unsigned long now)
+void Task::rescheduleFrom(types::Time now)
 {
-    unsigned long roundOff = calculateRoundOff(now);
+    types::Time roundOff = calculateRoundOff(now);
     if (roundOff > 0) {
         m_nextExecution = now + roundOff;
         m_nextWait = std::chrono::seconds(roundOff);

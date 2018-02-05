@@ -73,7 +73,7 @@ public:
         REQUIRES_TIMESTAMP = 1024,
     };
 
-    enum RotationFrequency : unsigned long
+    enum RotationFrequency : types::Time
     {
         NEVER = 0,
         HOURLY = 60 * 60,

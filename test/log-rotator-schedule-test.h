@@ -31,9 +31,9 @@
 using namespace residue;
 
 void displayFormattedResult(const LogRotator* logRotator,
-                            const TestCase<unsigned long, unsigned long, std::string>& item)
+                            const TestCase<types::Time, types::Time, std::string>& item)
 {
-    unsigned long newEpoch = item.get<0>() + logRotator->calculateRoundOff(item.get<0>());
+    types::Time newEpoch = item.get<0>() + logRotator->calculateRoundOff(item.get<0>());
     const char* format = "%a, %d/%b/%Y %H:%m:%s";
     std::string formatted = Utils::formatTime(newEpoch, format);
     std::string orig = Utils::formatTime(item.get<0>(), format);
@@ -42,7 +42,7 @@ void displayFormattedResult(const LogRotator* logRotator,
 
 TEST(LogRotatorScheduleTest, HourlyRoundOffCalculation)
 {
-    TestData<unsigned long, unsigned long, std::string> TData = {
+    TestData<types::Time, types::Time, std::string> TData = {
         { 1517579594, 406, "Fri, 02/Feb/2018 00:53:14" },
         { 1517570594, 2206, "Fri, 02/Feb/2018 22:23:14" },
         { 1517608394, 406, "Sat, 03/Feb/2018 08:53:14" },
@@ -60,7 +60,7 @@ TEST(LogRotatorScheduleTest, HourlyRoundOffCalculation)
 
 TEST(LogRotatorScheduleTest, SixHoursRoundOffCalculation)
 {
-    TestData<unsigned long, unsigned long, std::string> TData = {
+    TestData<types::Time, types::Time, std::string> TData = {
         { 1517570594, 5806, "Fri, 02/Feb/2018 22:23:14" },
         { 1517579594, 18406, "Sat, 03/Feb/2018 00:53:14" },
         { 1517608394, 11206, "Sat, 03/Feb/2018 08:53:14" },
@@ -78,7 +78,7 @@ TEST(LogRotatorScheduleTest, SixHoursRoundOffCalculation)
 
 TEST(LogRotatorScheduleTest, TwelveHoursRoundOffCalculation)
 {
-    TestData<unsigned long, unsigned long, std::string> TData = {
+    TestData<types::Time, types::Time, std::string> TData = {
         { 1517570594, 5806, "Fri, 02/Feb/2018 22:23:14" },
         { 1517579594, 40006, "Sat, 03/Feb/2018 00:53:14" },
         { 1517608394, 11206, "Sat, 03/Feb/2018 08:53:14" },
@@ -96,7 +96,7 @@ TEST(LogRotatorScheduleTest, TwelveHoursRoundOffCalculation)
 
 TEST(LogRotatorScheduleTest, DailyRoundOffCalculation)
 {
-    TestData<unsigned long, unsigned long, std::string> TData = {
+    TestData<types::Time, types::Time, std::string> TData = {
         { 1517570594, 5806, "Fri, 02/Feb/2018 22:23:14" },
         { 1517579594, 83206, "Sat, 03/Feb/2018 00:53:14" },
         { 1517608394, 54406, "Sat, 03/Feb/2018 08:53:14" },
@@ -114,7 +114,7 @@ TEST(LogRotatorScheduleTest, DailyRoundOffCalculation)
 
 TEST(LogRotatorScheduleTest, WeeklyRoundOffCalculation)
 {
-    TestData<unsigned long, unsigned long, std::string> TData = {
+    TestData<types::Time, types::Time, std::string> TData = {
         //             days in
         //            until next
         //              monday
@@ -138,7 +138,7 @@ TEST(LogRotatorScheduleTest, WeeklyRoundOffCalculation)
 
 TEST(LogRotatorScheduleTest, MonthlyRoundOffCalculation)
 {
-    TestData<unsigned long, unsigned long, std::string> TData = {
+    TestData<types::Time, types::Time, std::string> TData = {
         //             days in
         //            next month
         { 1517570594, (26*86400) + 5806, "Fri, 02/Feb/2018 22:23:14"  },
@@ -170,7 +170,7 @@ TEST(LogRotatorScheduleTest, MonthlyRoundOffCalculation)
 
 TEST(LogRotatorScheduleTest, YearlyRoundOffCalculation)
 {
-    TestData<unsigned long, unsigned long, std::string> TData = {
+    TestData<types::Time, types::Time, std::string> TData = {
         //             days in       months to    extra days
         //            next month     next year
         { 1517570594, (26*86400) + (10*2419200) + (26 * 86400) + 5806, "Fri, 02/Feb/2018 22:23:14"  },
@@ -207,7 +207,7 @@ TEST(LogRotatorScheduleTest, YearlyRoundOffCalculation)
 
         displayFormattedResult(&logRotator, item);
 
-        unsigned long newEpoch = item.get<0>() + logRotator.calculateRoundOff(item.get<0>());
+        types::Time newEpoch = item.get<0>() + logRotator.calculateRoundOff(item.get<0>());
         int year = atoi(Utils::formatTime(item.get<0>(), "%Y").c_str());
         int month = atoi(Utils::formatTime(item.get<0>(), "%M").c_str());
         bool dst = month >= 4 && month <= 9;

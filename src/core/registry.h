@@ -63,7 +63,7 @@ public:
         return m_clients;
     }
 
-    inline std::unordered_map<std::shared_ptr<Session>, unsigned long>& activeSessions()
+    inline std::unordered_map<std::shared_ptr<Session>, types::Time>& activeSessions()
     {
         return m_activeSessions;
     }
@@ -152,7 +152,7 @@ private:
     AutoUpdater* m_autoUpdater;
 
     std::unordered_map<std::string, Client> m_clients;
-    std::unordered_map<std::shared_ptr<Session>, unsigned long> m_activeSessions;
+    std::unordered_map<std::shared_ptr<Session>, types::Time> m_activeSessions;
 
     std::recursive_mutex m_mutex;
     std::recursive_mutex m_sessMutex;
