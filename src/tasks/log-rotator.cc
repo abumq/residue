@@ -62,8 +62,6 @@ void LogRotator::archiveRotatedItems()
     for (auto& item : m_archiveItems) {
         std::thread t([&]() {
             el::Helpers::setThreadName(name() + "::LogArchiver");
-            RLOG(INFO) << "Archiving for [" << item.loggerId << "] => [" << item.archiveFilename
-                       << "] containing " << item.files.size() << " file(s)";
             archiveAndCompress(item.loggerId, item.archiveFilename, item.files);
         });
         t.join();
@@ -275,8 +273,13 @@ void LogRotator::rotate(const std::string& loggerId)
 
 void LogRotator::archiveAndCompress(const std::string& loggerId, const std::string& archiveFilename, const std::map<std::string, std::string>& files) {
     if (files.empty()) {
+        RLOG(INFO) << "Ignoring archiving for [" << loggerId << "] => no files to archive";
         return;
     }
+
+    RLOG(INFO) << "Archiving for [" << loggerId << "] => [" << archiveFilename
+               << "] containing " << files.size() << " file(s)";
+
     // compress files after logger's lock is released
     RVLOG(RV_DETAILS) << "Compressing rotated files for logger [" << loggerId << "] to [" << archiveFilename << "]";
 
