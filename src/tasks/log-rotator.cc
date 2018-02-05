@@ -273,7 +273,7 @@ void LogRotator::rotate(const std::string& loggerId)
 
 void LogRotator::archiveAndCompress(const std::string& loggerId, const std::string& archiveFilename, const std::map<std::string, std::string>& files) {
     if (files.empty()) {
-        RLOG(INFO) << "Ignoring archiving for [" << loggerId << "] => no files to archive";
+        RLOG(INFO) << "No file to archive for [" << loggerId << "]";
         return;
     }
 
