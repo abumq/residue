@@ -92,7 +92,7 @@ void LogRotator::rotate(const std::string& loggerId)
     int currentDay = local_tm.tm_mday;
     std::string currentWDay = el::base::consts::kDaysAbbrev[local_tm.tm_wday];
     std::string currentMonth = el::base::consts::kMonthsAbbrev[local_tm.tm_mon];
-    std::string currentQuarter = std::to_string(std::ceil((local_tm.tm_mon + 1) / 3));
+    std::string currentQuarter = "Q" + std::to_string(std::ceil((local_tm.tm_mon + 1) / 3));
     std::string currentYear = std::to_string(local_tm.tm_year + 1900);
 
     std::string currentHourStr = currentHour < 10 ?

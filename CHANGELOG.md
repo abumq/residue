@@ -8,6 +8,7 @@
 
 ### Updates
 - Debug printed in server version in connection response if build has debug logs enabled
+- Quarter format specifier now has `Q` prefix
 
 ### Internal
 - Extra logging for debugging
