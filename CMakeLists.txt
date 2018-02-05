@@ -106,19 +106,21 @@ else()
     set (PYTHON_LIBRARY "")
 endif()
 
+
+set (READLINE_LIBS "")
 # Readline
 if (use_readline_lib)
     find_package(Readline REQUIRED)
     if (READLINE_FOUND)
         add_definitions (-DRESIDUE_USE_READLINE_LIB)
-        include_directories(${Readline_INCLUDE_DIR})
-        message ("-- libreadline: " ${Readline_LIBRARY})
+        include_directories(${READLINE_INCLUDE_DIR})
+        message ("-- libncurses: " ${READLINE_ncurses_LIBRARY})
+        message ("-- libreadline: " ${READLINE_readline_LIBRARY})
+        set (READLINE_LIBS "${READLINE_readline_LIBRARY} ${READLINE_ncurses_LIBRARY}")
     else()
-        set (Readline_LIBRARY "")
         message ("==> USING CUSTOM READLINE (libReadline not found)")
     endif()
 else()
-    set (Readline_LIBRARY "")
     message ("==> USING CUSTOM READLINE (Forced via flag)")
 endif()
 
@@ -213,7 +215,7 @@ set (SHARED_REQUIRED_LIBS
     ${ZLIB_LIBRARIES}
     ${CRYPTOPP_LIBRARIES}
     ${PYTHON_LIBRARY}
-    ${Readline_LIBRARY}
+    ${READLINE_LIBS}
 )
 
 ############# RESIDUE CORE LIB (STATIC) ###############
