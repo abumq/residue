@@ -14,7 +14,7 @@ option (use_readline_lib "Force using custom read line" ON)
 
 set (RESIDUE_MAJOR "1")
 set (RESIDUE_MINOR "3")
-set (RESIDUE_PATCH "0-beta.3")
+set (RESIDUE_PATCH "0-beta.4")
 set (RESIDUE_VERSION "${RESIDUE_MAJOR}.${RESIDUE_MINOR}.${RESIDUE_PATCH}")
 set (RESIDUE_NAME "Residue")
 
