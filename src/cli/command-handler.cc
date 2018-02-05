@@ -20,6 +20,7 @@
 //
 
 #ifdef RESIDUE_USE_READLINE_LIB
+#   include <cstdio>
 #   include <readline/readline.h>
 #   include <readline/history.h>
 #endif // RESIDUE_USE_READLINE_LIB
