@@ -1,6 +1,6 @@
 # Change Log
 
-## [Unreleased]
+## [1.3.0] - 06-02-2018
 ### Added
 - New clients CLI option `clean`
 
