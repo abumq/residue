@@ -10,7 +10,7 @@
 [![Donate](https://img.shields.io/badge/Donate-PayPal-green.svg)](https://www.paypal.me/MuflihunDotCom/25)
 
 # Overview 
-Residue is an effort to standardize application logging and by implementing simple logging API, easily configurable, build-in log rotators, simple way to format your log messages according to need of your application and most of all language-independent.
+Residue is an effort to standardize application logging by implementing simple logging API, making it easily configurable, build-in configurable log rotators, simple way to format your log messages according to need of your application and most of all language-independent.
 
 # Details
 Logging is an essential part of any application. But not all the applications can store these logs on the same device where they're running. For this reason, the logs must be transferred to a remote system.
@@ -44,8 +44,6 @@ Some of the notable features are listed below
  
 # Supported Platforms
 Residue binaries can be run directly on the following platforms. 
-
-Please note, you will need _libstdc++_ (C++11) runtime libraries (please refer to compiler version for the respective binary to check minimum version required)
 
  * Ubuntu 14.04 or higher (64-bit)
  * macOS 10.11 (El Capitan) or higher (64-bit)
