@@ -90,7 +90,7 @@ bool Task::kickOff(bool scheduled)
         RVLOG(RV_INFO) << "Manually starting task [" << m_name << "]";
     }
     execute();
-    RVLOG(RV_INFO) << "Starting task [" << m_name << "]"<< (scheduled ? "" : " (Manual)");
+    RVLOG(RV_INFO) << "Finished task [" << m_name << "]"<< (scheduled ? "" : " (Manual)");
     m_executing = false;
     return true;
 }
