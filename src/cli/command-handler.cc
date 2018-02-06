@@ -155,6 +155,7 @@ void CommandHandler::takeInput(bool* exitOnInterrupt)
     std::cout << std::endl << "Residue > ";
     std::getline(std::cin, input);
 #endif
+    Utils::trim(input);
     if (!input.empty()) {
         *exitOnInterrupt = false; // reset as user entered a command
         std::vector<std::string> params;
