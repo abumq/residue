@@ -122,5 +122,3 @@ You will need to run residue as root user. This is because residue needs to chan
 
 If you are just need to test the residue before you run it in production (in production you should always run it as root) you can use `--force-without-root` command-line argument.
 
-# What's Next?
-You can run demo to see how residue works. Please refer to [DEMO.md](/docs/DEMO.md) documentation
