@@ -19,7 +19,7 @@
 //  limitations under the License.
 //
 
-#include "include/log.h"
+#include "src/logging/log.h"
 #include "src/logging/log-request-handler.h"
 #include "src/logging/log-request.h"
 #include "src/logging/user-log-builder.h"
@@ -100,7 +100,7 @@ void LogRequestHandler::processRequestQueue()
     bool compressionEnabled = m_registry->configuration()->hasFlag(Configuration::Flag::COMPRESSION);
 
 #ifdef RESIDUE_PROFILING
-    unsigned long m_timeTaken;
+    types::Time m_timeTaken;
     RESIDUE_PROFILE_START(t_process_queue);
     std::size_t totalRequests = 0; // 1 for 1 request so for bulk of 50 this will be 50
 #endif
@@ -133,7 +133,7 @@ void LogRequestHandler::processRequestQueue()
                 // Create bulk request items
                 unsigned int itemCount = 0U;
                 JsonObject::Json j = request.jsonObject().root();
-                unsigned long lastClientValidation = Utils::now();
+                types::Time lastClientValidation = Utils::now();
                 Client* currentClient = request.client();
                 std::string lastKnownClientId = request.clientId();
                 DRVLOG(RV_DEBUG) << "Request client: " << currentClient;
@@ -312,7 +312,7 @@ bool LogRequestHandler::isRequestAllowed(const LogRequest* request) const
     // Ensure flag is on
     bool allowed = m_registry->configuration()->hasFlag(Configuration::Flag::ALLOW_UNKNOWN_LOGGERS);
     if (!allowed) {
-        // we're not allowed to use unknown loggers. we make sure the current logger is actually unknown.
+        // we're not allowed to use unknown loggers. we make sure the current logger is actually known.
         allowed = m_registry->configuration()->isKnownLogger(request->loggerId());
     }
     if (allowed) {

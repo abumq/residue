@@ -26,6 +26,7 @@
 #include <atomic>
 #include <chrono>
 #include "src/non-copyable.h"
+#include "src/utils/utils.h"
 
 namespace residue {
 
@@ -37,10 +38,9 @@ class Registry;
 class Task : NonCopyable
 {
 public:
-    explicit Task(const std::string& name,
-                  Registry* registry,
-                  unsigned int intervalInSeconds,
-                  bool roundOffToNearestHour = false);
+    Task(const std::string& name,
+         Registry* registry,
+         unsigned int intervalInSeconds);
     virtual ~Task() = default;
 
     void start();
@@ -50,32 +50,63 @@ public:
         return m_executing;
     }
 
-    inline unsigned long nextExecution() const
+    inline types::Time nextExecution() const
     {
         return m_nextExecution;
     }
 
-    inline unsigned long lastExecution() const
+    inline types::Time lastExecution() const
     {
         return m_lastExecution;
     }
 
-    inline unsigned long intervalCount() const
+    inline types::Time intervalCount() const
     {
         return m_interval.count();
     }
 
-protected:
-    virtual void execute() = 0;
+    inline std::string name() const
+    {
+        return m_name;
+    }
 
+    inline std::string formattedNextExecution() const
+    {
+        return formattedExecution(m_nextExecution);
+    }
+
+    inline std::string formattedLastExecution() const
+    {
+        return formattedExecution(m_lastExecution);
+    }
+
+    inline void setLastExecution(types::Time time)
+    {
+        m_lastExecution = time;
+    }
+
+    virtual types::Time calculateRoundOff(types::Time now) const;
+
+    void rescheduleFrom(types::Time now);
+
+    bool kickOff(bool scheduled = false);
+
+protected:
     std::string m_name;
     Registry* m_registry;
-    unsigned long m_started;
     std::chrono::seconds m_interval;
-    bool m_roundOff;
-    unsigned long m_nextExecution;
-    unsigned long m_lastExecution;
+    types::Time m_nextExecution;
+    std::chrono::seconds m_nextWait;
+    types::Time m_lastExecution;
     std::atomic<bool> m_executing;
+
+private:
+    inline std::string formattedExecution(types::Time e) const
+    {
+        return Utils::formatTime(e, "%H:%m:%s on %a %d %b, %Y");
+    }
+
+    virtual void execute() = 0;
 };
 }
 #endif /* Task_h */

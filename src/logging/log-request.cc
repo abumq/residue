@@ -37,7 +37,7 @@ bool LogRequest::deserialize(std::string&& json)
     if (Request::deserialize(std::move(json))) {
         m_clientId = m_jsonObject.getString("client_id", "");
 
-        m_datetime = resolveValue<MillisecondsEpoch>(&m_jsonObject, &LogRequestFieldDateTime);
+        m_datetime = resolveValue<types::TimeMs>(&m_jsonObject, &LogRequestFieldDateTime);
         m_token = resolveValue<std::string>(&m_jsonObject, &LogRequestFieldToken);
         m_loggerId = resolveValue<std::string>(&m_jsonObject, &LogRequestFieldLogger);
         m_filename = resolveValue<std::string>(&m_jsonObject, &LogRequestFieldFile);
@@ -63,9 +63,8 @@ bool LogRequest::validateTimestamp() const
 std::string LogRequest::formattedDatetime(const char* format, const el::base::MillisecondsWidth* msWidth) const
 {
     struct timeval tval;
-    const unsigned long usecOffSet = 1000000;
-    unsigned long epochInMs = datetime();
+    types::TimeMs epochInMs = datetime();
     tval.tv_sec = epochInMs / 1000;
-    tval.tv_usec = epochInMs % usecOffSet;
+    tval.tv_usec = epochInMs % 1000000;
     return el::base::utils::DateTime::timevalToString(tval, format, msWidth);
 }

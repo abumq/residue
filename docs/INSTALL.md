@@ -19,12 +19,13 @@ This document shows you steps to install residue server on your machine. You can
 ## Dependencies
   * C++11 (or higher)
   * Boost v1.53 or higher [Components: [system](http://www.boost.org/doc/libs/1_62_0/libs/system/doc/index.html)]
-  * [Easylogging++](https://github.com/muflihun/easyloggingpp) v9.95.2
+  * [Easylogging++](https://github.com/muflihun/easyloggingpp) v9.95.0 (Included)
   * [Crypto++](https://www.cryptopp.com/) v5.6.5+ [with Pem Pack](https://raw.githubusercontent.com/muflihun/muflihun.github.io/master/downloads/pem_pack.zip)
   * [CMake Toolchains](https://cmake.org/) v2.8.12
   * [zlib-devel](https://zlib.net/)
   * [libcurl-devel](https://curl.haxx.se/libcurl/)
-  * [Python](https://www.python.org) v2.7+ (optional, with extensions)
+  * [libncurses](https://www.gnu.org/software/ncurses/) (Optional)
+  * [libreadline](https://tiswww.case.edu/php/chet/readline/rltop.html) (Optional)
   * [Google Testing Framework](https://github.com/google/googletest/blob/master/googletest/docs/Primer.md)
   
 ## Get Code
@@ -47,14 +48,14 @@ make
 
 You can define following options in CMake (using `-D<option>=ON`)
 
-|    Option    | Description                     |
-| ------------ | ------------------------------- |
-| `test`       | Compile unit tests              |
-| `debug`      | Turn on debug logging           |
-| `production` | Compile for production use      |
-| `profiling`  | Turn on profiling information for making server faster (goes together with `debug`) |
-| `enable_extensions` | Enable extensions support for the build. Extensions require python |
-| `use_mine` | Use mine crypto library (instead of ripe) whereever possible |
+|    Option    | Description                     | Default |
+| ------------ | ------------------------------- |---------|
+| `test`       | Compile unit tests              | `OFF`   |
+| `debug`      | Turn on debug logging           | `OFF`   |
+| `production` | Compile for production use      | `OFF`   |
+| `profiling`  | Turn on profiling information for making server faster (goes together with `debug`) | `OFF` |
+| `use_mine` | Use mine crypto library (instead of ripe) whereever possible | `OFF` |
+| `use_readline_lib` | Specifies whether to use readline lib or use custom (built-in input taker) | `ON` |
 
 Please consider running unit tests before you move on.
 
@@ -68,7 +69,7 @@ The compilation process creates executable `residue` in build directory. You can
 make install
 ```
 
-If the default path (`/usr/local`) is not where you want things installed, then set the `CMAKE_INSTALL_PREFIX` option when running cmake. e.g,
+If the default path (`/usr/local/bin`) is not where you want things installed (which is not recommended), then set the `CMAKE_INSTALL_PREFIX` option when running cmake. e.g,
 
 ```
 cmake .. -DCMAKE_INSTALL_PREFIX=/usr/bin
@@ -87,19 +88,14 @@ sudo apt-get install -y cmake build-essential libcurl-dev libz-dev
 sudo apt-get install -y libboost-system-dev cmake
     # sudo yum install -y boost-devel boost-devel-static # for rpm
     
-## Python (Optional, if enable_extensions = ON)
-sudo apt-get install -y python-dev
-   # sudo yum install -y python-devel # for rpm
-   # or search by yum search python | grep -i devel and install appropriate dev package
-
 ## Google Testing Library
 wget -O gtest.tar.gz https://github.com/google/googletest/archive/release-1.7.0.tar.gz
 tar xf gtest.tar.gz
 cd googletest-release-1.7.0
 cmake -DBUILD_SHARED_LIBS=ON .
 make
-sudo cp -a include/gtest /usr/include
-sudo cp -a libgtest_main.so libgtest.so /usr/lib/
+cp -a include/gtest /usr/local/include
+cp -a libgtest_main.* libgtest.* /usr/local/lib/
 cd ..
 
 ## Easylogging++
@@ -126,5 +122,3 @@ You will need to run residue as root user. This is because residue needs to chan
 
 If you are just need to test the residue before you run it in production (in production you should always run it as root) you can use `--force-without-root` command-line argument.
 
-# What's Next?
-You can run demo to see how residue works. Please refer to [DEMO.md](/docs/DEMO.md) documentation

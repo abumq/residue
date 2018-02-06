@@ -22,7 +22,7 @@
 #ifndef UserLogBuilder_h
 #define UserLogBuilder_h
 
-#include "include/log.h"
+#include "src/logging/log.h"
 #include "src/non-copyable.h"
 
 namespace residue {
@@ -35,7 +35,7 @@ class LogRequest;
 class UserLogBuilder final : public el::LogBuilder, NonCopyable
 {
 public:
-    explicit UserLogBuilder();
+    UserLogBuilder();
     virtual el::base::type::string_t build(const el::LogMessage* logMessage,
                                    bool appendNewLine) const override;
 

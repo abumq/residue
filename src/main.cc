@@ -31,17 +31,17 @@
 #include <thread>
 #include <utility>
 #include <boost/asio.hpp>
-#include "include/Python.h"
 #include "deps/ripe/Ripe.h"
 #ifdef RESIDUE_USE_MINE
 #   include "deps/mine/mine.h"
 #endif
-#include "include/log.h"
+#include "src/extensions/python.h"
+#include "src/logging/log.h"
 #include "src/core/configuration.h"
 #include "src/crypto/base64.h"
 #include "src/core/registry.h"
-#include "src/core/command-handler.h"
 #include "src/core/residue-exception.h"
+#include "src/cli/command-handler.h"
 #include "src/logging/user-log-builder.h"
 #include "src/logging/residue-log-dispatcher.h"
 #include "src/logging/log-request-handler.h"
@@ -304,13 +304,25 @@ int main(int argc, char* argv[])
             task.start();
         }));
 
-        // log rotator task
-        threads.push_back(std::thread([&]() {
-            el::Helpers::setThreadName("LogRotator");
-            LogRotator rotator(&registry, Configuration::RotationFrequency::HOURLY); // lowest denominator
-            registry.setLogRotator(&rotator);
-            rotator.start();
-        }));
+        // log rotator tasks
+
+        #define START_LOG_ROTATOR(THREAD_NAME, NAME)\
+        threads.push_back(std::thread([&]() {\
+            el::Helpers::setThreadName(THREAD_NAME);\
+            NAME rotator(&registry);\
+            registry.addLogRotator(&rotator);\
+            rotator.start();\
+        }))
+
+        START_LOG_ROTATOR("HourlyLogRotator", HourlyLogRotator);
+        START_LOG_ROTATOR("SixHoursLogRotator", SixHoursLogRotator);
+        START_LOG_ROTATOR("TwelveHoursLogRotator", TwelveHoursLogRotator);
+        START_LOG_ROTATOR("DailyLogRotator", DailyLogRotator);
+        START_LOG_ROTATOR("WeeklyLogRotator", WeeklyLogRotator);
+        START_LOG_ROTATOR("MonthlyLogRotator", MonthlyLogRotator);
+        START_LOG_ROTATOR("YearlyLogRotator", YearlyLogRotator);
+
+        #undef START_LOG_ROTATOR
 
         // auto updater
         threads.push_back(std::thread([&]() {
@@ -318,9 +330,10 @@ int main(int argc, char* argv[])
             AutoUpdater task(&registry, 86400); // run daily
             registry.setAutoUpdater(&task);
             std::string newVer;
-            if (task.check(&newVer)) {
+            if (task.hasNewVersion(&newVer)) {
                 std::cout << "A newer version " << newVer
-                          << " is available for download. Please visit https://muflihun.github.io/residue/";
+                          << " is available for download. Please visit https://muflihun.github.io/residue/"
+                          << std::endl;
             }
             task.start();
         }));

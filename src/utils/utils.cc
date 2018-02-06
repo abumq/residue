@@ -29,7 +29,7 @@
 #include <string>
 #include <random>
 #include <algorithm>
-#include "include/log.h"
+#include "src/logging/log.h"
 #include "src/core/configuration.h"
 #include "src/core/residue-exception.h"
 #include "src/utils/tar.h"
@@ -269,10 +269,27 @@ std::string Utils::bytesToHumanReadable(long size)
     return ss.str();
 }
 
-unsigned long long Utils::nowUtc()
+types::Time Utils::nowUtc()
 {
     std::time_t t = std::time(nullptr);
     std::tm* nowTm;
     nowTm = std::gmtime(&t);
-    return nowTm != nullptr ? mktime(nowTm) : 0;
+    return nowTm != nullptr ? std::mktime(nowTm) : 0;
+}
+
+std::string Utils::formatTime(types::Time time, const char* format)
+{
+    struct timeval t;
+    t.tv_sec = time;
+    el::base::SubsecondPrecision ssPrec(3);
+    return el::base::utils::DateTime::timevalToString(t, format, &ssPrec);
+}
+
+std::tm Utils::timeToTm(types::Time epochInSec)
+{
+    struct timeval tval;
+    tval.tv_sec = epochInSec;
+    std::tm tmObj;
+    el::base::utils::DateTime::buildTimeInfo(&tval, &tmObj);
+    return tmObj;
 }

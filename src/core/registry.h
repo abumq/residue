@@ -25,18 +25,19 @@
 #include <mutex>
 #include <string>
 #include <unordered_map>
+#include <vector>
 #include "src/non-copyable.h"
 #include "src/clients/client.h"
-#include "src/core/command-handler.h"
+#include "src/cli/command-handler.h"
 #include "src/net/session.h"
 #include "src/utils/utils.h"
 
 namespace residue {
 
 class Configuration;
-class LogRotator;
 class ClientIntegrityTask;
 class AutoUpdater;
+class LogRotator;
 
 ///
 /// \brief Registry for client with helper functions
@@ -62,7 +63,7 @@ public:
         return m_clients;
     }
 
-    inline std::unordered_map<std::shared_ptr<Session>, unsigned long>& activeSessions()
+    inline std::unordered_map<std::shared_ptr<Session>, types::Time>& activeSessions()
     {
         return m_activeSessions;
     }
@@ -109,14 +110,16 @@ public:
         return m_mutex;
     }
 
-    inline LogRotator* logRotator()
+    inline std::vector<LogRotator*>& logRotators()
     {
-        return m_logRotator;
+        return m_logRotators;
     }
 
-    inline void setLogRotator(LogRotator* logRotator)
+    inline void addLogRotator(LogRotator* logRotator)
     {
-        m_logRotator = logRotator;
+        if (std::find(m_logRotators.begin(), m_logRotators.end(), logRotator) == m_logRotators.end()) {
+            m_logRotators.push_back(logRotator);
+        }
     }
 
     inline ClientIntegrityTask* clientIntegrityTask()
@@ -144,12 +147,12 @@ private:
     friend class CommandHandler;
 
     Configuration* m_configuration;
-    LogRotator* m_logRotator;
+    std::vector<LogRotator*> m_logRotators;
     ClientIntegrityTask* m_clientIntegrityTask;
     AutoUpdater* m_autoUpdater;
 
     std::unordered_map<std::string, Client> m_clients;
-    std::unordered_map<std::shared_ptr<Session>, unsigned long> m_activeSessions;
+    std::unordered_map<std::shared_ptr<Session>, types::Time> m_activeSessions;
 
     std::recursive_mutex m_mutex;
     std::recursive_mutex m_sessMutex;

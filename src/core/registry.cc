@@ -21,7 +21,7 @@
 
 #include <utility>
 #include <algorithm>
-#include "include/log.h"
+#include "src/logging/log.h"
 #include "src/core/registry.h"
 #include "src/utils/utils.h"
 #include "src/core/configuration.h"
@@ -30,7 +30,6 @@ using namespace residue;
 
 Registry::Registry(Configuration* configuration) :
     m_configuration(configuration),
-    m_logRotator(nullptr),
     m_clientIntegrityTask(nullptr),
     m_autoUpdater(nullptr),
     m_bytesSent("0"),

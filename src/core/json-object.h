@@ -23,7 +23,7 @@
 #define JsonObject_h
 
 #include "deps/json/json.h"
-#include "include/log.h"
+#include "src/logging/log.h"
 #include "src/non-copyable.h"
 
 namespace residue {
@@ -37,7 +37,7 @@ public:
     using Json = nlohmann::json;
     using Keys = std::vector<const char*>;
 
-    explicit JsonObject();
+    JsonObject();
 
     JsonObject(const Json& newRoot);
     JsonObject(Json&& newRoot);

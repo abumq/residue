@@ -124,6 +124,8 @@ install:
  - cd "${TRAVIS_BUILD_DIR}"
  - mkdir build
  - cd build
+ - export TZ=Australia/Canberra
+ - date
  - cmake -Dtest=ON -Dtravis=ON -Denable_extensions=OFF ..
  - sudo make
  - ls -l

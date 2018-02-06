@@ -42,7 +42,7 @@ public:
         CONTINUE = 0
     };
 
-    explicit Response() = default;
+    Response() = default;
     virtual ~Response() = default;
 
     void serialize(JsonObject::Json& root,

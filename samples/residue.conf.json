@@ -27,7 +27,7 @@
     "client_integrity_task_interval": 300,
     "dispatch_delay": 1,
     "archived_log_directory": "%original/backups/%logger/",
-    "archived_log_filename": "%hour-%min-%day-%month-%year.log",
+    "archived_log_filename": "%level-%hour-%min-%day-%month-%year.log",
     "archived_log_compressed_filename": "%hour-%min-%day-%month-%year.tar.gz",
     "known_clients": [
         {
@@ -56,7 +56,7 @@
         {
             "logger_id": "sample-app",
             "configuration_file": "samples/configurations/sample-app-Logger.conf",
-            "rotation_freq": "never",
+            "rotation_freq": "hourly",
             "access_codes_blacklist": [
                 "ii3faf",
                 "ii3fa2"

@@ -22,8 +22,11 @@
 #ifndef LogRotator_h
 #define LogRotator_h
 
-#include <unordered_map>
+#include <map>
 #include <vector>
+#include <unordered_map>
+#include <unordered_set>
+#include "src/core/configuration.h"
 #include "src/tasks/task.h"
 
 namespace residue {
@@ -33,35 +36,77 @@ class Registry;
 ///
 /// \brief Log rotator task
 ///
-class LogRotator final : public Task
+class LogRotator : public Task
 {
 public:
-    ///
-    /// \brief If log rotator is running and frequency is this threshold (in seconds) away,
-    /// it will run it anyway
-    ///
-    static const unsigned long LENIENCY_THRESHOLD;
-
-    struct ArchiveItem {
+    struct ArchiveItem
+    {
         std::string loggerId;
         std::string archiveFilename;
         std::map<std::string, std::string> files;
     };
 
-    explicit LogRotator(Registry* registry,
-                        unsigned int interval);
+    struct BackupItem
+    {
+        std::string sourceFilename;
+        std::string destinationDir;
+        std::string targetFilename;
+    };
+
+    struct RotateTarget
+    {
+        std::string destinationDir;
+        std::string archiveFilename;
+        std::vector<BackupItem> items;
+    };
+
+    LogRotator(const std::string& name,
+               Registry* registry,
+               Configuration::RotationFrequency freq);
+    virtual ~LogRotator() = default;
+
+    inline Configuration::RotationFrequency frequency() const
+    {
+        return m_frequency;
+    }
+
     void rotate(const std::string& loggerId);
     void archiveRotatedItems();
-    std::string checkStatus(const std::string& loggerId);
 protected:
     virtual void execute() override;
+
+    types::Time calculateSecondsToMidnight(types::Time now) const;
 private:
+    std::vector<ArchiveItem> m_archiveItems;
+    Configuration::RotationFrequency m_frequency;
+
+    RotateTarget createRotateTarget(const std::string& loggerId) const;
+
     void archiveAndCompress(const std::string&,
                             const std::string&,
                             const std::map<std::string, std::string>&);
-
-    std::vector<ArchiveItem> m_archiveItems;
-    std::unordered_map<std::string, unsigned long> m_lastRotation;
 };
+
+#define DECL_LOG_ROTATOR(ID, NAME, FREQ)\
+class NAME : public LogRotator\
+{\
+public:\
+    explicit NAME(Registry* registry) \
+        : LogRotator(ID, registry, Configuration::RotationFrequency::FREQ) \
+    {}\
+    \
+    virtual types::Time calculateRoundOff(types::Time now) const override;\
+}
+
+DECL_LOG_ROTATOR("HourlyLogRotator", HourlyLogRotator, HOURLY);
+DECL_LOG_ROTATOR("SixHoursLogRotator", SixHoursLogRotator, SIX_HOURS);
+DECL_LOG_ROTATOR("TwelveHoursLogRotator", TwelveHoursLogRotator, TWELVE_HOURS);
+DECL_LOG_ROTATOR("DailyLogRotator", DailyLogRotator, DAILY);
+DECL_LOG_ROTATOR("WeeklyLogRotator", WeeklyLogRotator, WEEKLY);
+DECL_LOG_ROTATOR("MonthlyLogRotator", MonthlyLogRotator, MONTHLY);
+DECL_LOG_ROTATOR("YearlyLogRotator", YearlyLogRotator, YEARLY);
+
+#undef DECL_LOG_ROTATOR
+
 }
 #endif /* LogRotator_h */

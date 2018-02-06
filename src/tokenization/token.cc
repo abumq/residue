@@ -56,7 +56,7 @@ bool Token::operator==(const Token& other) const
     return m_data == other.m_data;
 }
 
-bool Token::isValid(const unsigned long& compareTo) const
+bool Token::isValid(const types::Time& compareTo) const
 {
     if (m_age == 0) {
         return true;

@@ -223,49 +223,57 @@ Turn off delay: `0` (not recommended)
 
 Possible format specifiers:
 
- * `%original`: Path to original log file
- * `%logger`: Logger ID
- * `%hour`: 24-hours zero padded hour (`09`, `13`, `14`, ...)
- * `%wday`: Day of the week (`sun`, `mon`, ...)
- * `%day`: Day of month (`1`, `2`, ...)
- * `%month`: Month name (`jan`, `feb`, ...)
- * `%quarter`: Month quarter (`1`, `2`, `3`, `4`)
- * `%year`: Year (`2017`, ...)
- * `%level`: log level (`info`, `error`, ...)
+|   Format specifier    |   Description   |
+|-----------------------|-----------------|
+| `%original` | Path to original log file |
+| `%logger` | Logger ID |
+| `%hour` | 24-hours zero padded hour (`09`, `13`, `14`, ...) |
+| `%wday` | Day of the week (`sun`, `mon`, ...) |
+| `%day` | Day of month (`1`, `2`, ...) |
+| `%month` | Month name (`jan`, `feb`, ...) |
+| `%quarter` | Month quarter (`Q1`, `Q2`, `Q3`, `Q4`) |
+| `%year` | Year (`2016`, `2017`, `2018`, ...) |
 
 Default: It must be provided by user
+Example: `%original/backups/%logger/`
 
 ### `archived_log_filename`
 [String] Default filename for archived log files.
 
 Possible format specifiers:
 
- * `%logger`: Logger ID
- * `%min`: Zero padded hour (`09`, `13`, `14`, ...) - the time when log rotator actually ran
- * `%hour`: 24-hours zero padded hour (`09`, `13`, `14`, ...)
- * `%wday`: Day of the week (`sun`, `mon`, ...)
- * `%day`: Day of month (`1`, `2`, ...)
- * `%month`: Month name (`jan`, `feb`, ...)
- * `%quarter`: Month quarter (`1`, `2`, `3`, `4`)
- * `%year`: Year (`2017`, ...)
- * `%level`: log level (`info`, `error`, ...)
+|   Format specifier    |   Description   |
+|-----------------------|-----------------|
+| `%logger`| Logger ID |
+| `%min`| Zero padded hour (`09`, `13`, `14`, ...) - the time when log rotator actually ran |
+| `%hour`| 24-hours zero padded hour (`09`, `13`, `14`, ...) |
+| `%wday`| Day of the week (`sun`, `mon`, ...) |
+| `%day`| Day of month (`1`, `2`, ...) |
+| `%month`| Month name (`jan`, `feb`, ...) |
+| `%quarter`| Month quarter (`1`, `2`, `3`, `4`) |
+| `%year`| Year (`2017`, ...) |
+| `%level`| log level (`info`, `error`, ...) |
 
 Default: It must be provided by user.
+Example: `%level-%hour-%min-%day-%month-%year.log`
 
 ### `archived_log_compressed_filename`
 [String] Filename for compressed archived log files. It should not contain `/` or `\` characters.
 
 Possible format specifiers:
 
- * `%logger`: Logger ID
- * `%hour`: 24-hours zero padded hour (`09`, `13`, `14`, ...)
- * `%wday`: Day of the week (`sun`, `mon`, ...)
- * `%day`: Day of month (`1`, `2`, ...)
- * `%month`: Month name (`jan`, `feb`, ...)
- * `%quarter`: Month quarter (`1`, `2`, `3`, `4`)
- * `%year`: Year (`2017`, ...)
+|   Format specifier    |   Description   |
+|-----------------------|-----------------|
+| `%logger` | Logger ID |
+| `%hour` | 24-hours zero padded hour (`09`, `13`, `14`, ...) |
+| `%wday` | Day of the week (`sun`, `mon`, ...) |
+| `%day` | Day of month (`1`, `2`, ...) |
+| `%month` | Month name (`jan`, `feb`, ...) |
+| `%quarter` | Month quarter (`1`, `2`, `3`, `4`) |
+| `%year` | Year (`2017`, ...) |
 
 Default: It must be provided by user.
+Example: `%hour-%min-%day-%month-%year.tar.gz`
 
 ### `known_clients`
 [Array] Object of client that are known to the server. These clients will have allocated RSA public key that will be used to transfer the symmetric key.
@@ -388,9 +396,19 @@ Maximum: [`max_token_age`](#max_token_age)
 Default: `false`
 
 #### `known_loggers`::`rotation_freq`
-[String] One of [`never`, `hourly`, `six_hours`, `twelve_hours`, `daily`, `weekly`, `monthly`, `quarterly`, `yearly`] to specify rotation frequency for corresponding log files. This is rotated regardless of file size.
+[String] One of [`never`, `hourly`, `six_hours`, `twelve_hours`, `daily`, `weekly`, `monthly`, `yearly`] to specify rotation frequency for corresponding log files. This is rotated regardless of file size.
 
-Please note, log rotation task starts from the time server starts. For example, if you start the server at `10:41` the next rotation for `hourly` frequency will be at `11:41`
+Log rotation rounds off to the nearest denominator. To get better understanding of this round off, consider following table.
+
+|   Frequency        |       Next Schedule                                      |
+|--------------------|----------------------------------------------------------|
+| `hourly`           | Last second of hour i.e, `<hour>:59:59`                  |
+| `six_hours`        | Every 6 hours i.e, at `06:00`, `12:00`, `18:00`, `00:00` |
+| `twelve_hours`     | Every 12 hours, i.e, at `12:00`, `00:00`                 |
+| `daily`            | Last second of the day i.e, `23:59:59`                   |
+| `weekly`           | Each sunday at `23:59:59`                                |
+| `monthly`          | Last day of each month at `23:59:59`                     |
+| `yearly`           | Last day of the each year at `23:59:59`                  |
 
 Default: `never`
 

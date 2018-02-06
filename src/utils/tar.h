@@ -30,11 +30,12 @@ namespace residue {
 ///
 /// \brief Utility functions to create TAR archive
 ///
-class Tar : NonCopyable
+class Tar final : NonCopyable
 {
 public:
-    Tar(std::ostream& m_out);
-    virtual ~Tar();
+    explicit Tar(std::ostream& m_out);
+    ~Tar();
+
     void finish();
     void put(const char* filename, const std::string& s);
     void put(const char* filename, const char* content, std::size_t len);

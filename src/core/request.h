@@ -25,6 +25,7 @@
 #include <string>
 #include "src/non-copyable.h"
 #include "src/core/json-object.h"
+#include "src/core/types.h"
 
 namespace residue {
 
@@ -49,7 +50,7 @@ public:
         CONTINUE = 0
     };
 
-    Request(const Configuration* conf);
+    explicit Request(const Configuration* conf);
     virtual ~Request() = default;
 
     inline bool isValid() const
@@ -83,7 +84,7 @@ public:
         return m_ipAddr;
     }
 
-    inline const unsigned long& dateReceived() const
+    inline const types::Time& dateReceived() const
     {
         return m_dateReceived;
     }
@@ -93,7 +94,7 @@ public:
         m_ipAddr = ipAddr;
     }
 
-    inline void setDateReceived(const unsigned long& dateReceived)
+    inline void setDateReceived(const types::Time& dateReceived)
     {
         m_dateReceived = dateReceived;
     }
@@ -106,7 +107,7 @@ public:
     template <class Other>
     inline bool typeOf() const
     {
-        return dynamic_cast<const Other*>(this) != nullptr;
+        return std::is_base_of<Request, Other>::value;
     }
 
     virtual bool validateTimestamp() const;
@@ -119,9 +120,9 @@ protected:
     StatusCode m_statusCode;
     std::string m_ipAddr;
 
-    unsigned long m_timestamp;
+    types::Time m_timestamp;
 
-    unsigned long m_dateReceived;
+    types::Time m_dateReceived;
 
     const Configuration* m_configuration;
 

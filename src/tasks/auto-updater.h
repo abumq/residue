@@ -37,9 +37,9 @@ class AutoUpdater final : public Task
 public:
     static const std::string LATEST_RELEASE_API_URL;
 
-    explicit AutoUpdater(Registry* registry,
-                        unsigned int interval);
-    bool check(std::string* newVersion);
+    AutoUpdater(Registry* registry, unsigned int interval);
+
+    bool hasNewVersion(std::string* newVersion);
 protected:
     virtual void execute() override;
 

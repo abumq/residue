@@ -43,7 +43,7 @@ bool LogExtension::call(const el::LogDispatchData* data,
     std::string threadId = logBuilder->request()->threadId();
     std::string clientId = logBuilder->request()->clientId();
     std::string applicationName = logBuilder->request()->applicationName();
-    LogRequest::MillisecondsEpoch datetime = logBuilder->request()->datetime();
+    types::TimeMs datetime = logBuilder->request()->datetime();
     std::string threadName = logBuilder->request()->threadName();
     std::string msg = data->logMessage()->message();
     std::string sourceFile = data->logMessage()->file();

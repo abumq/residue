@@ -45,7 +45,7 @@ public:
         FORCE_LOG_ROTATION = 6
     };
 
-    AdminRequest(const Configuration* conf);
+    explicit AdminRequest(const Configuration* conf);
 
     inline Type type() const
     {

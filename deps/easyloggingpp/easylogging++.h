@@ -13,6 +13,8 @@
 //  https://muflihun.github.io/easyloggingpp
 //  http://muflihun.com
 //
+//  This file is customized for residue
+//
 #ifndef EASYLOGGINGPP_H
 #define EASYLOGGINGPP_H
 // Compilers and C++0x/C++11 Evaluation
@@ -1256,9 +1258,8 @@ class DateTime : base::StaticClass {
   static unsigned long long getTimeDifference(const struct timeval& endTime, const struct timeval& startTime,
       base::TimestampUnit timestampUnit);
 
-
- private:
   static struct ::tm* buildTimeInfo(struct timeval* currTime, struct ::tm* timeInfo);
+ private:
   static char* parseFormat(char* buf, std::size_t bufSz, const char* format, const struct tm* tInfo,
                            std::size_t msec, const base::SubsecondPrecision* ssPrec);
 };

@@ -22,7 +22,7 @@
 #ifndef LogRequest_h
 #define LogRequest_h
 
-#include "include/log.h"
+#include "src/logging/log.h"
 #include "src/core/request.h"
 #include "src/core/json-object.h"
 
@@ -39,7 +39,7 @@ struct LogRequestField
 };
 
 static const LogRequestField<std::string> LogRequestFieldToken = { "token", "" };
-static const LogRequestField<unsigned long> LogRequestFieldDateTime = { "datetime", 0UL };
+static const LogRequestField<types::TimeMs> LogRequestFieldDateTime = { "datetime", 0UL };
 static const LogRequestField<el::base::type::string_t> LogRequestFieldMessage = { "msg", ELPP_LITERAL("") };
 static const LogRequestField<std::string> LogRequestFieldLogger = { "logger", "default" };
 static const LogRequestField<std::string> LogRequestFieldApplicationName = { "app", "" };
@@ -59,14 +59,12 @@ static const LogRequestField<el::base::type::EnumType> LogRequestFieldLevel = { 
 class LogRequest final : public Request
 {
 public:
-    using MillisecondsEpoch = unsigned long;
-
-    LogRequest(const Configuration* conf);
+    explicit LogRequest(const Configuration* conf);
 
     std::string formattedDatetime(const char* format,
                                   const el::base::MillisecondsWidth* msWidth) const;
 
-    inline const LogRequest::MillisecondsEpoch& datetime() const
+    inline const types::TimeMs& datetime() const
     {
         return m_datetime;
     }
@@ -158,7 +156,7 @@ private:
 
     std::string m_clientId;
     std::string m_token;
-    LogRequest::MillisecondsEpoch m_datetime;
+    types::TimeMs m_datetime;
     el::base::type::string_t m_msg;
     std::string m_loggerId;
     std::string m_filename;

@@ -47,8 +47,7 @@ class Configuration;
 class LogRequestHandler : public RequestHandler
 {
 public:
-    explicit LogRequestHandler(Registry*,
-                               el::LogBuilder*);
+    LogRequestHandler(Registry*, el::LogBuilder*);
     virtual ~LogRequestHandler();
 
     ///

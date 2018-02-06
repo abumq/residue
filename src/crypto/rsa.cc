@@ -23,7 +23,7 @@
 #ifdef RESIDUE_USE_MINE
 #include "deps/mine/mine.h"
 #endif
-#include "include/log.h"
+#include "src/logging/log.h"
 #include "src/crypto/rsa.h"
 #include "src/crypto/base64.h"
 

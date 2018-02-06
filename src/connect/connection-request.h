@@ -42,7 +42,7 @@ public:
         TOUCH = 3,
     };
 
-    ConnectionRequest(const Configuration* conf);
+    explicit ConnectionRequest(const Configuration* conf);
 
     inline const std::string& clientId() const
     {

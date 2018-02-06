@@ -93,12 +93,12 @@ public:
         return m_age;
     }
 
-    inline void setDateCreated(unsigned long dateCreated)
+    inline void setDateCreated(types::Time dateCreated)
     {
         m_dateCreated = dateCreated;
     }
 
-    inline unsigned long dateCreated() const
+    inline types::Time dateCreated() const
     {
         return m_dateCreated;
     }
@@ -138,18 +138,18 @@ public:
         return m_tokens;
     }
 
-    bool isAlive(const unsigned long& compareTo = 0L) const;
+    bool isAlive(const types::Time& compareTo = 0L) const;
 
     void addToken(const std::string&, const Token& token);
     void removeToken(const std::string&, const std::string& token);
     bool isValidToken(const std::string&,
                       const std::string&,
                       const Registry*,
-                      const unsigned long& compareTo = 0L) const;
+                      const types::Time& compareTo = 0L) const;
 
 private:
     std::string m_id;
-    unsigned long m_dateCreated;
+    types::Time m_dateCreated;
     unsigned int m_age;
     std::string m_rsaPublicKey;
     std::string m_key;

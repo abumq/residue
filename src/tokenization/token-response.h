@@ -36,10 +36,11 @@ class Client;
 class TokenResponse final : public Response
 {
 public:
+    explicit TokenResponse(bool);
     TokenResponse(Response::StatusCode, const std::string&);
-    TokenResponse(const std::string&, int life,
+    TokenResponse(const std::string&,
+                  int life,
                   const std::string& loggerId);
-    TokenResponse(bool);
 
     void serialize(std::string& output) const;
 

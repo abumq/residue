@@ -10,10 +10,11 @@ option (profiling "Turns profiling on for various scenarios" OFF)
 option (enable_extensions "Enables extensions support for the build" OFF)
 option (use_mine "Use mine whereever possible" OFF)
 option (special_edition "Special edition build" OFF)
+option (use_readline_lib "Force using custom read line" ON)
 
 set (RESIDUE_MAJOR "1")
-set (RESIDUE_MINOR "2")
-set (RESIDUE_PATCH "3")
+set (RESIDUE_MINOR "3")
+set (RESIDUE_PATCH "0")
 set (RESIDUE_VERSION "${RESIDUE_MAJOR}.${RESIDUE_MINOR}.${RESIDUE_PATCH}")
 set (RESIDUE_NAME "Residue")
 
@@ -32,20 +33,19 @@ if (profiling)
 endif()
 
 if (debug)
-    message ("-- DEBUGGING IS ON")
+    message ("==> DEBUGGING IS ON")
     add_definitions (-DRESIDUE_DEBUG=1)
 else()
-    message ("-- DEBUGGING IS OFF")
     add_definitions (-DRESIDUE_DEBUG=0)
 endif()
 
 if (production)
-    message ("-- PRODUCTION BUILD")
+    message ("==> PRODUCTION BUILD")
     add_definitions (-DRESIDUE_PRODUCTION)
 endif()
 
 if (special_edition)
-    message ("-- SPECIAL EDITION BUILD")
+    message ("==> SPECIAL EDITION BUILD")
     add_definitions (-DRESIDUE_SPECIAL_EDITION)
 endif()
 
@@ -58,37 +58,31 @@ include (FindCURL)
 #require_cpp11()
 check_apple()
 
-list (APPEND CMAKE_CXX_FLAGS " -std=c++11 -O3 -Wall -Wextra -pedantic -pedantic-errors -Werror -Wfatal-errors -Wundef -Wno-unused-variable -Wno-unknown-warning-option -Wno-pessimizing-move ")
+list (APPEND CMAKE_CXX_FLAGS " -std=c++11 -O3 -Wall -Wextra -pedantic -pedantic-errors -Wundef -Wno-unused-variable -Wno-deprecated-declarations -Wno-unknown-warning-option -Wno-pessimizing-move ")
 
 if (CMAKE_BUILD_TYPE EQUAL "DEBUG" OR CMAKE_BUILD_TYPE EQUAL "RELWITHDEBINFO")
-    message ("-- Exporting debug symbols")
+    message ("==> EXPORTING DEBUG SYMBOLS")
 endif()
 
 if (travis)
     add_definitions (-DRESIDUE_ON_CI)
 endif()
 
-message ("-- Check for Easylogging++")
-find_package (EASYLOGGINGPP REQUIRED)
-include_directories (${EASYLOGGINGPP_INCLUDE_DIR})
+#find_package (EASYLOGGINGPP REQUIRED)
+#include_directories (${EASYLOGGINGPP_INCLUDE_DIR})
 
-message ("-- Check for libcurl")
 find_package (CURL REQUIRED)
 
 if (${CURL_FOUND})
     add_definitions (-DRESIDUE_HAS_CURL)
     include_directories (${CURL_INCLUDE_DIRS})
     message ("-- libcurl: " ${CURL_LIBRARIES} " version: " ${CURL_VERSION_STRING})
-else()
-    message ("--==> libcurl not found")
 endif()
 
 find_package(ZLIB REQUIRED)
 if (ZLIB_FOUND)
     include_directories(${ZLIB_INCLUDE_DIRS})
     message ("-- libz: " ${ZLIB_LIBRARIES} " version: " ${ZLIB_VERSION_STRING})
-else()
-    message ("--==> libz not found")
 endif(ZLIB_FOUND)
 
 # Boost
@@ -110,7 +104,24 @@ if (enable_extensions)
     #message ("-- python: " ${PYTHON_LIBRARY} " include: " ${PYTHON_INCLUDE_DIRS} " version: " ${PYTHONLIBS_VERSION_STRING})
 else()
     set (PYTHON_LIBRARY "")
-    message ("--==> Extensions are disabled")
+endif()
+
+
+set (READLINE_LIBS "")
+# Readline
+if (use_readline_lib)
+    find_package(Readline REQUIRED)
+    if (READLINE_FOUND)
+        add_definitions (-DRESIDUE_USE_READLINE_LIB)
+        include_directories(${READLINE_INCLUDE_DIR})
+        message ("-- libncurses: " ${READLINE_ncurses_LIBRARY})
+        message ("-- libreadline: " ${READLINE_readline_LIBRARY})
+        set (READLINE_LIBS ${READLINE_readline_LIBRARY} ${READLINE_ncurses_LIBRARY})
+    else()
+        message ("==> USING CUSTOM READLINE (libReadline not found)")
+    endif()
+else()
+    message ("==> USING CUSTOM READLINE (Forced via flag)")
 endif()
 
 # Check for cryptopp (static)
@@ -160,7 +171,6 @@ set (SOURCE_FILES
     src/core/response.cc
     src/core/json-object.cc
     src/core/configuration.cc
-    src/core/command-handler.cc
     src/core/registry.cc
 
     src/crypto/rsa.cc
@@ -174,24 +184,25 @@ set (SOURCE_FILES
     src/net/url.cc
     src/net/http-client.cc
 
-    src/plugins/plugin.cc
-    src/plugins/update.cc
-    src/plugins/reset.cc
-    src/plugins/reload-config.cc
-    src/plugins/session-details.cc
-    src/plugins/stats.cc
-    src/plugins/rotate.cc
-    src/plugins/list-tokens.cc
-    src/plugins/list-logging-files.cc
-    src/plugins/clients.cc
+    src/cli/command.cc
+    src/cli/command-handler.cc
+    src/cli/update.cc
+    src/cli/reset.cc
+    src/cli/reload-config.cc
+    src/cli/session-details.cc
+    src/cli/stats.cc
+    src/cli/rotate.cc
+    src/cli/list-tokens.cc
+    src/cli/list-logging-files.cc
+    src/cli/clients.cc
 
     src/extensions/extension.cc
     src/extensions/log-extension.cc
 
-    src/tasks/log-rotator.cc
     src/tasks/auto-updater.cc
     src/tasks/client-integrity-task.cc
     src/tasks/task.cc
+    src/tasks/log-rotator.cc
 
     src/utils/tar.cc
     src/utils/utils.cc
@@ -204,6 +215,7 @@ set (SHARED_REQUIRED_LIBS
     ${ZLIB_LIBRARIES}
     ${CRYPTOPP_LIBRARIES}
     ${PYTHON_LIBRARY}
+    ${READLINE_LIBS}
 )
 
 ############# RESIDUE CORE LIB (STATIC) ###############
@@ -319,7 +331,7 @@ if (test)
 
     find_package (gtest REQUIRED)
 
-    include_directories (${gtest_SOURCE_DIR}/include ${gtest_SOURCE_DIR})
+    include_directories (${GTEST_INCLUDE_DIRS})
 
     enable_testing()
 
@@ -337,7 +349,7 @@ if (test)
     )
 
     # Standard linking to gtest stuff.
-    target_link_libraries (residue-unit-tests gtest gtest_main)
+    target_link_libraries (residue-unit-tests ${GTEST_LIBRARIES})
 
     # Extra linking for the project.
     target_link_libraries (residue-unit-tests residue-core)

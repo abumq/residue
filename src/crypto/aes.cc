@@ -24,7 +24,7 @@
 #else
 #include "deps/ripe/Ripe.h"
 #endif
-#include "include/log.h"
+#include "src/logging/log.h"
 #include "src/net/session.h"
 #include "src/crypto/aes.h"
 
