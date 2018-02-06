@@ -29,6 +29,9 @@ Displays server stats
 ### `clients`
 Number of connected clients (dead or alive)
 
+##### `clean`
+Runs client integrity task and cleans all the dead clients
+
 ##### `remove --client-id <client-id>`
 Removes the existing client. Please be careful with this command. If client has unprocessed requests it may crash.
 

@@ -50,17 +50,11 @@ void Task::start()
     while (true) {
         DRVLOG(RV_DEBUG) << "Scheduled [" << m_name << "] waiting... [" << m_nextWait << "]";
         std::this_thread::sleep_for(m_nextWait);
-        if (m_executing) {
+        if (!kickOff(true)) {
             RLOG(WARNING) << "Task [" << m_name << "] already running, started ["
                           << formattedLastExecution() << "]. Skipping!";
             continue;
         }
-        m_executing = true;
-        m_lastExecution = Utils::now();
-        RVLOG(RV_INFO) << "Executing task [" << m_name << "]";
-        execute();
-        RVLOG(RV_INFO) << "Finished task [" << m_name << "]";
-        m_executing = false;
         rescheduleFrom(Utils::now());
         RVLOG(RV_DEBUG) << "Rescheduled task [" << m_name << "] at [" << formattedNextExecution() << "]";
     }
@@ -81,4 +75,22 @@ void Task::rescheduleFrom(types::Time now)
         m_nextExecution = now + m_interval.count();
         m_nextWait = m_interval;
     }
+}
+
+bool Task::kickOff(bool scheduled)
+{
+    if (m_executing) {
+        return false;
+    }
+    m_executing = true;
+    m_lastExecution = Utils::now();
+    if (scheduled) {
+        RVLOG(RV_INFO) << "Starting task [" << m_name << "]";
+    } else {
+        RVLOG(RV_INFO) << "Manually starting task [" << m_name << "]";
+    }
+    execute();
+    RVLOG(RV_INFO) << "Starting task [" << m_name << "]"<< (scheduled ? "" : " (Manual)");
+    m_executing = false;
+    return true;
 }

@@ -1,6 +1,9 @@
 # Change Log
 
 ## [Unreleased]
+### Added
+- New clients CLI option `clean`
+
 ### Fixes
 - Log rotator task - daily, weekly, monthly and yearly schedule (issue #49)
 - Improved the command line handler to support arrow keys and history using up key

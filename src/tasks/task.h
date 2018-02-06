@@ -89,6 +89,8 @@ public:
 
     void rescheduleFrom(types::Time now);
 
+    bool kickOff(bool scheduled = false);
+
 protected:
     std::string m_name;
     Registry* m_registry;

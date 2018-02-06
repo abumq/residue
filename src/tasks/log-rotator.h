@@ -65,15 +65,13 @@ public:
                Configuration::RotationFrequency freq);
     virtual ~LogRotator() = default;
 
-    void rotate(const std::string& loggerId);
-    void archiveRotatedItems();
-
-    RotateTarget createRotateTarget(const std::string& loggerId) const;
-
     inline Configuration::RotationFrequency frequency() const
     {
         return m_frequency;
     }
+
+    void rotate(const std::string& loggerId);
+    void archiveRotatedItems();
 protected:
     virtual void execute() override;
 
@@ -81,6 +79,8 @@ protected:
 private:
     std::vector<ArchiveItem> m_archiveItems;
     Configuration::RotationFrequency m_frequency;
+
+    RotateTarget createRotateTarget(const std::string& loggerId) const;
 
     void archiveAndCompress(const std::string&,
                             const std::string&,

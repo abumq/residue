@@ -23,13 +23,14 @@
 #include "src/core/registry.h"
 #include "src/core/configuration.h"
 #include "src/utils/utils.h"
+#include "src/tasks/client-integrity-task.h"
 
 using namespace residue;
 
 Clients::Clients(Registry* registry) :
     Command("clients",
             "List, add or remove clients from the server configuration",
-            "clients [--list] [--add --client-id <id> --rsa-public-key-file <rsa_key>] [--remove --client-id <client-id>]",
+            "clients [list] [add --client-id <id> --rsa-public-key-file <rsa_key>] [remove --client-id <client-id>] [clean]",
             registry)
 {
 }
@@ -41,7 +42,16 @@ void Clients::execute(std::vector<std::string>&& params, std::ostringstream& res
     }
     if (hasParam(params, "list")) {
         list(result);
-    } else if (hasParam(params, "remove")) {
+    } else if (hasParam(params, "clean")) {
+        if (registry()->clientIntegrityTask()->isExecuting()) {
+            result << "\nAlready running, please try again later" << std::endl;;
+            return;
+        }
+
+        if (ignoreConfirmation || getConfirmation("This will run client integrity task and clean the expired clients")) {
+            registry()->clientIntegrityTask()->kickOff();
+        }
+    }else if (hasParam(params, "remove")) {
         const std::string clientId = getParamValue(params, "--client-id");
         if (clientId.empty()) {
             result << "\nNo client ID provided" << std::endl;
