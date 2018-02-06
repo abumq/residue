@@ -69,12 +69,18 @@ void Rotate::execute(std::vector<std::string>&& params, std::ostringstream& resu
                                               "This will change the rotation schedule for this logger.\n\n"
                                               "--check-only: To only check the next scheduled time\n"
                                               "--ignore-archive: To run the log rotation (if no --check-only provided) but do not archive and compress\n")) {
+        const auto& frequencies = registry()->configuration()->rotationFreqencies();
+        const auto& freqPair = frequencies.find(loggerId);
         for (auto& rotator : registry()->logRotators()) {
+            if (rotator->frequency() != freqPair->second) {
+                continue;
+            }
             if (rotator->isExecuting()) {
                 result << "Log rotator already running, please try later\n";
                 return;
             }
-            result << "Rotating logs for [" << loggerId << "]\n";
+            result << "Rotating logs for [" << loggerId << "] using [" << rotator->name() << "]\n";
+            rotator->setLastExecution(Utils::now());
             rotator->rotate(loggerId);
             if (!hasParam(params, "--ignore-archive")) {
                 result << "Archiving logs for [" << loggerId << "]\n";

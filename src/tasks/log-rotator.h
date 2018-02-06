@@ -22,9 +22,10 @@
 #ifndef LogRotator_h
 #define LogRotator_h
 
-#include <unordered_map>
 #include <map>
 #include <vector>
+#include <unordered_map>
+#include <unordered_set>
 #include "src/core/configuration.h"
 #include "src/tasks/task.h"
 
@@ -45,6 +46,13 @@ public:
         std::map<std::string, std::string> files;
     };
 
+    struct ArchiveFilenames
+    {
+        std::string destinationDir;
+        std::string rotatedFilename;
+        std::string archiveFilename;
+    };
+
     LogRotator(const std::string& name,
                Registry* registry,
                Configuration::RotationFrequency freq);
@@ -52,6 +60,12 @@ public:
 
     void rotate(const std::string& loggerId);
     void archiveRotatedItems();
+
+    ///
+    /// \brief This function builds archive filenames partially. It does not resolve
+    /// for %level (and %original as they can change by level)
+    ///
+    ArchiveFilenames resolveInitialFormatSpecifiers(const std::string& loggerId) const;
 
     inline Configuration::RotationFrequency frequency() const
     {

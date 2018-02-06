@@ -20,7 +20,6 @@
 //
 
 #include <iterator>
-#include <unordered_set>
 #include <vector>
 #include <set>
 #include <thread>
@@ -69,13 +68,8 @@ void LogRotator::archiveRotatedItems()
     m_archiveItems.clear();
 }
 
-
-void LogRotator::rotate(const std::string& loggerId)
+LogRotator::ArchiveFilenames LogRotator::resolveInitialFormatSpecifiers(const std::string& loggerId) const
 {
-#ifdef RESIDUE_PROFILING
-    types::Time m_timeTaken;
-    RESIDUE_PROFILE_START(t_rotation);
-#endif
 
     // we resolve all the format specifiers based on when the
     // task started instead of now, because loggers can take time
@@ -86,6 +80,8 @@ void LogRotator::rotate(const std::string& loggerId)
     // days for each loggers
 
     std::tm local_tm = Utils::timeToTm(lastExecution());
+
+    DRVLOG_IF(loggerId != RESIDUE_LOGGER_ID, RV_DEBUG) << "FSR: logger [" << loggerId << "]";
 
     int currentMin = local_tm.tm_min;
     int currentHour = local_tm.tm_hour;
@@ -132,136 +128,163 @@ void LogRotator::rotate(const std::string& loggerId)
                       std::string(el::base::consts::kFilePathSeperator),
                       el::base::consts::kFilePathSeperator);
 
-    std::unordered_set<std::string> fileByLevel;
-    std::map<std::string, std::set<std::string>> levelsInFilename;
+    DRVLOG_IF(loggerId != RESIDUE_LOGGER_ID, RV_DEBUG) << "FSR: partial result [" << destinationDir << "] ["
+                                                       << rotatedFilename << "] [" << archiveFilename << "]";
+    return { destinationDir, rotatedFilename, archiveFilename };
+}
 
-    el::Logger* logger = el::Loggers::getLogger(loggerId);
-    logger->acquireLock(); // NOTE: Be careful, do not log here using residue logger until releaseLock() below
 
-    auto insertNow = [&](const std::string& filename, const std::string& levelIdentifier) {
-        fileByLevel.insert(filename);
-        std::string customIdentifier = logger->typedConfigurations()->filename(el::Level::Global) == filename
-                ? "global" : levelIdentifier;
-        if (levelsInFilename.find(filename) == levelsInFilename.end()) {
-            levelsInFilename.insert(std::make_pair(filename, std::set<std::string> { customIdentifier }));
-        } else {
-            levelsInFilename[filename].insert(customIdentifier);
-        }
-    };
+void LogRotator::rotate(const std::string& loggerId)
+{
+#ifdef RESIDUE_PROFILING
+    types::Time m_timeTaken;
+    RESIDUE_PROFILE_START(t_rotation);
+#endif
 
-    std::string fnInfo = logger->typedConfigurations()->filename(el::Level::Info);
-    std::string fnError = logger->typedConfigurations()->filename(el::Level::Error);
-    std::string fnDebug = logger->typedConfigurations()->filename(el::Level::Debug);
-    std::string fnWarning = logger->typedConfigurations()->filename(el::Level::Warning);
-    std::string fnTrace = logger->typedConfigurations()->filename(el::Level::Trace);
-    std::string fnVerbose = logger->typedConfigurations()->filename(el::Level::Verbose);
-    std::string fnFatal = logger->typedConfigurations()->filename(el::Level::Fatal);
+    ArchiveFilenames archiveFilenames = resolveInitialFormatSpecifiers(loggerId);
 
-    // mv fnInfo -> mylogs-17-00-19-Feb-info.log
-    // mv fnError -> mylogs-17-00-19-Feb-error.log
-    //
-    // but if info, fatal and error are logging to /tmp/log/muflihun.log
-    // but if warning and verbose are logging to /tmp/log/verbose-muflihun.log
-    // and trace and debug is logging to /tmp/log/debug-muflihun.log
-    //
-    // we then:
-    // mv fnInfo (consequently fnError and fnFatal) to mylogs-17-00-19-Feb-info-error.log
-    // mv fnDebug (consequently fnTrace) to mylogs-17-00-19-Feb-debug.log
-    // mv fnWarning (consequently fnVerbose) to mylogs-17-00-19-Feb-warning-verbose.log
-
-    insertNow(fnInfo, "info");
-    insertNow(fnError, "error");
-    insertNow(fnDebug, "debug");
-    insertNow(fnWarning, "warning");
-    insertNow(fnTrace, "trace");
-    insertNow(fnVerbose, "verbose");
-    insertNow(fnFatal, "fatal");
-
-    // This set has three strings
-    // { /tmp/log/muflihun.log, /tmp/log/verbose-muflihun.log, /tmp/log/debug-muflihun.log }
-    // Our operation is target => destination map filenames by resolving format specifiers
+    std::string destinationDir = std::move(archiveFilenames.destinationDir);
+    std::string rotatedFilename = std::move(archiveFilenames.rotatedFilename);
+    std::string archiveFilename = std::move(archiveFilenames.archiveFilename);
 
     std::map<std::string, std::string> files;
-    std::for_each(fileByLevel.begin(), fileByLevel.end(), [&](const std::string& sourceFilename) {
-        std::string targetFilename = rotatedFilename;
-        const std::set<std::string>& levels = levelsInFilename.at(sourceFilename);
-        std::stringstream ss;
-        std::transform(levels.begin(), levels.end(),
-                       std::ostream_iterator<std::string>(ss, "-"), [](const std::string& s) {
-            return s;
+    el::Logger* logger = el::Loggers::getLogger(loggerId);
+
+    {
+        // NOTE: Be careful, do not log here using residue logger until this scope
+        std::lock_guard<std::recursive_mutex>(logger->lock());
+
+        std::unordered_set<std::string> fileByLevel;
+
+        std::map<std::string, std::set<std::string>> levelsInFilename;
+
+        el::Logger* logger = el::Loggers::getLogger(loggerId);
+        std::lock_guard<std::recursive_mutex>(logger->lock());
+
+        // mv fnInfo -> mylogs-17-00-19-Feb-info.log
+        // mv fnError -> mylogs-17-00-19-Feb-error.log
+        //
+        // but if info, fatal and error are logging to /tmp/log/muflihun.log
+        // but if warning and verbose are logging to /tmp/log/verbose-muflihun.log
+        // and trace and debug is logging to /tmp/log/debug-muflihun.log
+        //
+        // we then:
+        // mv fnInfo (consequently fnError and fnFatal) to mylogs-17-00-19-Feb-info-error.log
+        // mv fnDebug (consequently fnTrace) to mylogs-17-00-19-Feb-debug.log
+        // mv fnWarning (consequently fnVerbose) to mylogs-17-00-19-Feb-warning-verbose.log
+
+        const std::string globalFilename = logger->typedConfigurations()->filename(el::Level::Global);
+
+        el::base::type::EnumType lIndex = el::LevelHelper::kMinValid;
+        el::LevelHelper::forEachLevel(&lIndex, [&](void) -> bool {
+            el::Level level = el::LevelHelper::castFromInt(lIndex);
+            std::string levelIdentifier(el::LevelHelper::convertToString(level));
+            Utils::toLower(levelIdentifier);
+            std::string filename = logger->typedConfigurations()->filename(level);
+            DRVLOG_IF(loggerId != RESIDUE_LOGGER_ID, RV_DEBUG) << "FSR: level [" << levelIdentifier << "] => [" << filename << "]";
+
+            fileByLevel.insert(filename);
+            std::string customIdentifier = globalFilename == filename ? "global" : levelIdentifier;
+            if (levelsInFilename.find(filename) == levelsInFilename.end()) {
+                levelsInFilename.insert(std::make_pair(filename, std::set<std::string> { customIdentifier }));
+            } else {
+                levelsInFilename[filename].insert(customIdentifier);
+            }
+            return false;
         });
-        std::string levelName(ss.str());
-        levelName.erase(levelName.end() - 1); // Remove last hyphen
 
-        if (fileByLevel.size() > 1 && targetFilename.find("%level") == std::string::npos) {
-            // we have multiple files for each level but no level specifier provided in target filename,
-            // just prepend it
-            RLOG_IF(loggerId != RESIDUE_LOGGER_ID, INFO) << "Prepending 'level' format specifier in filename for logger ["
-                                                         << loggerId << "] as we have multiple filenames for levels";
-            targetFilename = "%level-" + targetFilename;
-        }
+        // This set has three strings
+        // { /tmp/log/muflihun.log, /tmp/log/verbose-muflihun.log, /tmp/log/debug-muflihun.log }
+        // Our operation is target => destination map filenames by resolving format specifiers
 
-        Utils::replaceAll(destinationDir, "%original/", "%original"); // just a clean up
+        std::for_each(fileByLevel.begin(), fileByLevel.end(), [&](const std::string& sourceFilename) {
+            std::string targetFilename = rotatedFilename; // we need copy to keep %level for other levels
+            const std::set<std::string>& levels = levelsInFilename.at(sourceFilename);
+            std::stringstream ss;
+            std::transform(levels.begin(), levels.end(),
+                           std::ostream_iterator<std::string>(ss, "-"), [](const std::string& s) {
+                return s;
+            });
+            std::string levelName(ss.str());
+            levelName.erase(levelName.end() - 1); // Remove last hyphen
 
-        Utils::replaceFirstWithEscape(destinationDir, "%level", levelName);
-        Utils::replaceFirstWithEscape(targetFilename, "%level", levelName);
-        Utils::replaceFirstWithEscape(destinationDir, "%original",
-                                      el::base::utils::File::extractPathFromFilename(sourceFilename));
+            if (fileByLevel.size() > 1 && targetFilename.find("%level") == std::string::npos) {
+                // we have multiple files for each level but no level specifier provided in target filename,
+                // just prepend it
+                RLOG_IF(loggerId != RESIDUE_LOGGER_ID, INFO) << "Prepending 'level' format specifier in filename for logger ["
+                                                             << loggerId << "] as we have multiple filenames for levels";
+                targetFilename = "%level-" + targetFilename;
+            }
 
-        if (!Utils::fileExists(destinationDir.c_str())) {
-            if (!Utils::createPath(destinationDir.c_str())) {
-                RLOG_IF(loggerId != RESIDUE_LOGGER_ID, ERROR) << "Failed to create path for log rotation: " << destinationDir;
+            Utils::replaceAll(destinationDir, "%original/", "%original"); // just a clean up
+
+            Utils::replaceFirstWithEscape(destinationDir, "%level", levelName);
+            Utils::replaceFirstWithEscape(targetFilename, "%level", levelName);
+            Utils::replaceFirstWithEscape(destinationDir, "%original",
+                                          el::base::utils::File::extractPathFromFilename(sourceFilename));
+
+            if (!Utils::fileExists(destinationDir.c_str())) {
+                if (!Utils::createPath(destinationDir.c_str())) {
+                    RLOG_IF(loggerId != RESIDUE_LOGGER_ID, ERROR) << "Failed to create path for log rotation: " << destinationDir;
+                    return;
+                }
+            }
+            std::string fullDestinationPath = destinationDir + targetFilename;
+            long fsize = Utils::fileSize(sourceFilename.c_str());
+            if (fsize > 0) {
+                RVLOG_IF(loggerId != RESIDUE_LOGGER_ID, RV_DETAILS) << "Rotating [" << sourceFilename
+                                                                    << "] => [" << fullDestinationPath
+                                                                    << "] (" << Utils::bytesToHumanReadable(fsize) << ")";
+                if (::rename(sourceFilename.c_str(), fullDestinationPath.c_str()) == 0) {
+                    files.insert(std::make_pair(fullDestinationPath, targetFilename));
+                } else {
+                    RLOG_IF(loggerId != RESIDUE_LOGGER_ID, ERROR) << "Error moving file ["
+                                                                  << sourceFilename << "] to ["
+                                                                  << fullDestinationPath << "] " << std::strerror(errno);
+                }
+            } else {
+                RVLOG_IF(loggerId != RESIDUE_LOGGER_ID, RV_DETAILS) << "Ignoring rotating empty file " << sourceFilename;
+            }
+        });
+
+        // Truncate log files
+
+        std::string fnInfo = logger->typedConfigurations()->filename(el::Level::Info);
+        std::string fnError = logger->typedConfigurations()->filename(el::Level::Error);
+        std::string fnDebug = logger->typedConfigurations()->filename(el::Level::Debug);
+        std::string fnWarning = logger->typedConfigurations()->filename(el::Level::Warning);
+        std::string fnTrace = logger->typedConfigurations()->filename(el::Level::Trace);
+        std::string fnVerbose = logger->typedConfigurations()->filename(el::Level::Verbose);
+        std::string fnFatal = logger->typedConfigurations()->filename(el::Level::Fatal);
+
+        el::base::type::fstream_t* fsInfo = logger->typedConfigurations()->fileStream(el::Level::Info);
+        el::base::type::fstream_t* fsError = logger->typedConfigurations()->fileStream(el::Level::Error);
+        el::base::type::fstream_t* fsDebug = logger->typedConfigurations()->fileStream(el::Level::Debug);
+        el::base::type::fstream_t* fsWarning = logger->typedConfigurations()->fileStream(el::Level::Warning);
+        el::base::type::fstream_t* fsTrace = logger->typedConfigurations()->fileStream(el::Level::Trace);
+        el::base::type::fstream_t* fsVerbose = logger->typedConfigurations()->fileStream(el::Level::Verbose);
+        el::base::type::fstream_t* fsFatal = logger->typedConfigurations()->fileStream(el::Level::Fatal);
+
+        std::unordered_set<std::string> doneList;
+        auto closeAndTrunc = [&](el::base::type::fstream_t* fs, const std::string& fn) {
+            if (doneList.find(fn) != doneList.end()) {
                 return;
             }
-        }
-        std::string fullDestinationPath = destinationDir + targetFilename;
-        long fsize = Utils::fileSize(sourceFilename.c_str());
-        if (fsize > 0) {
-            RVLOG_IF(loggerId != RESIDUE_LOGGER_ID, RV_DETAILS) << "Rotating [" << sourceFilename
-                                                                << "] => [" << fullDestinationPath
-                                                                << "] (" << Utils::bytesToHumanReadable(fsize) << ")";
-            if (::rename(sourceFilename.c_str(), fullDestinationPath.c_str()) == 0) {
-                files.insert(std::make_pair(fullDestinationPath, targetFilename));
-            } else {
-                RLOG_IF(loggerId != RESIDUE_LOGGER_ID, ERROR) << "Error moving file ["
-                                                              << sourceFilename << "] to ["
-                                                              << fullDestinationPath << "] " << std::strerror(errno);
-            }
-        } else {
-            RVLOG_IF(loggerId != RESIDUE_LOGGER_ID, RV_DETAILS) << "Ignoring rotating empty file " << sourceFilename;
-        }
-    });
+            fs->close();
+            fs->open(fn, std::fstream::out | std::fstream::trunc);
+            Utils::updateFilePermissions(fn.data(), logger, m_registry->configuration());
+            doneList.insert(fn);
+        };
 
-    // Truncate log files
+        closeAndTrunc(fsInfo, fnInfo);
+        closeAndTrunc(fsError, fnError);
+        closeAndTrunc(fsWarning, fnWarning);
+        closeAndTrunc(fsVerbose, fnVerbose);
+        closeAndTrunc(fsFatal, fnFatal);
+        closeAndTrunc(fsDebug, fnDebug);
+        closeAndTrunc(fsTrace, fnTrace);
 
-    el::base::type::fstream_t* fsInfo = logger->typedConfigurations()->fileStream(el::Level::Info);
-    el::base::type::fstream_t* fsError = logger->typedConfigurations()->fileStream(el::Level::Error);
-    el::base::type::fstream_t* fsDebug = logger->typedConfigurations()->fileStream(el::Level::Debug);
-    el::base::type::fstream_t* fsWarning = logger->typedConfigurations()->fileStream(el::Level::Warning);
-    el::base::type::fstream_t* fsTrace = logger->typedConfigurations()->fileStream(el::Level::Trace);
-    el::base::type::fstream_t* fsVerbose = logger->typedConfigurations()->fileStream(el::Level::Verbose);
-    el::base::type::fstream_t* fsFatal = logger->typedConfigurations()->fileStream(el::Level::Fatal);
-
-    std::unordered_set<std::string> doneList;
-    auto closeAndTrunc = [&](el::base::type::fstream_t* fs, const std::string& fn) {
-        if (doneList.find(fn) != doneList.end()) {
-            return;
-        }
-        fs->close();
-        fs->open(fn, std::fstream::out | std::fstream::trunc);
-        Utils::updateFilePermissions(fn.data(), logger, m_registry->configuration());
-        doneList.insert(fn);
-    };
-
-    closeAndTrunc(fsInfo, fnInfo);
-    closeAndTrunc(fsError, fnError);
-    closeAndTrunc(fsWarning, fnWarning);
-    closeAndTrunc(fsVerbose, fnVerbose);
-    closeAndTrunc(fsFatal, fnFatal);
-    closeAndTrunc(fsDebug, fnDebug);
-    closeAndTrunc(fsTrace, fnTrace);
-
-    logger->releaseLock();
+    } // scope for logger lock
 
 #ifdef RESIDUE_PROFILING
     RESIDUE_PROFILE_END(t_rotation, m_timeTaken);

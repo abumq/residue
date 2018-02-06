@@ -80,6 +80,11 @@ public:
         return formattedExecution(m_lastExecution);
     }
 
+    inline void setLastExecution(types::Time time)
+    {
+        m_lastExecution = time;
+    }
+
     virtual types::Time calculateRoundOff(types::Time now) const;
 
     void rescheduleFrom(types::Time now);
