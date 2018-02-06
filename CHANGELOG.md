@@ -5,6 +5,7 @@
 - Log rotator task - daily, weekly, monthly and yearly schedule (issue #49)
 - Improved the command line handler to support arrow keys and history using up key
 - Log rotators that take longer to archive now correctly resolve subsequent format specifiers
+- Log rotator did not resolve correct `%level` for destination directory
 
 ### Updates
 - Debug printed in server version in connection response if build has debug logs enabled

@@ -46,11 +46,18 @@ public:
         std::map<std::string, std::string> files;
     };
 
-    struct ArchiveFilenames
+    struct BackupItem
+    {
+        std::string sourceFilename;
+        std::string destinationDir;
+        std::string targetFilename;
+    };
+
+    struct RotateTarget
     {
         std::string destinationDir;
-        std::string rotatedFilename;
         std::string archiveFilename;
+        std::vector<BackupItem> items;
     };
 
     LogRotator(const std::string& name,
@@ -61,11 +68,7 @@ public:
     void rotate(const std::string& loggerId);
     void archiveRotatedItems();
 
-    ///
-    /// \brief This function builds archive filenames partially. It does not resolve
-    /// for %level (and %original as they can change by level)
-    ///
-    ArchiveFilenames resolveInitialFormatSpecifiers(const std::string& loggerId) const;
+    RotateTarget createRotateTarget(const std::string& loggerId) const;
 
     inline Configuration::RotationFrequency frequency() const
     {

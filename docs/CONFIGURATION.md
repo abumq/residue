@@ -231,11 +231,11 @@ Possible format specifiers:
 | `%wday` | Day of the week (`sun`, `mon`, ...) |
 | `%day` | Day of month (`1`, `2`, ...) |
 | `%month` | Month name (`jan`, `feb`, ...) |
-| `%quarter` | Month quarter (`1`, `2`, `3`, `4`) |
-| `%year` | Year (`2017`, ...) |
-| `%level` | log level (`info`, `error`, ...) |
+| `%quarter` | Month quarter (`Q1`, `Q2`, `Q3`, `Q4`) |
+| `%year` | Year (`2016`, `2017`, `2018`, ...) |
 
 Default: It must be provided by user
+Example: `%original/backups/%logger/`
 
 ### `archived_log_filename`
 [String] Default filename for archived log files.
@@ -255,6 +255,7 @@ Possible format specifiers:
 | `%level`| log level (`info`, `error`, ...) |
 
 Default: It must be provided by user.
+Example: `%level-%hour-%min-%day-%month-%year.log`
 
 ### `archived_log_compressed_filename`
 [String] Filename for compressed archived log files. It should not contain `/` or `\` characters.
@@ -272,6 +273,7 @@ Possible format specifiers:
 | `%year` | Year (`2017`, ...) |
 
 Default: It must be provided by user.
+Example: `%hour-%min-%day-%month-%year.tar.gz`
 
 ### `known_clients`
 [Array] Object of client that are known to the server. These clients will have allocated RSA public key that will be used to transfer the symmetric key.

@@ -68,7 +68,7 @@ void LogRotator::archiveRotatedItems()
     m_archiveItems.clear();
 }
 
-LogRotator::ArchiveFilenames LogRotator::resolveInitialFormatSpecifiers(const std::string& loggerId) const
+LogRotator::RotateTarget LogRotator::createRotateTarget(const std::string& loggerId) const
 {
 
     // we resolve all the format specifiers based on when the
@@ -109,45 +109,33 @@ LogRotator::ArchiveFilenames LogRotator::resolveInitialFormatSpecifiers(const st
         Utils::replaceFirstWithEscape(templ, "%year", currentYear);
     };
 
-    std::string destinationDir = m_registry->configuration()->getArchivedLogDirectory(loggerId);
+    std::string initDestinationDir = m_registry->configuration()->getArchivedLogDirectory(loggerId);
     std::string rotatedFilename = m_registry->configuration()->getArchivedLogFilename(loggerId);
     std::string archiveFilename = m_registry->configuration()->getArchivedLogCompressedFilename(loggerId);
 
     // For archiveFilename and rotatedFilename we do it twice for one may be in path
     // othe may be in the filename
-    resolveFormatSpecifiers(destinationDir);
+    resolveFormatSpecifiers(initDestinationDir);
     resolveFormatSpecifiers(rotatedFilename);
     resolveFormatSpecifiers(rotatedFilename);
     resolveFormatSpecifiers(archiveFilename);
     resolveFormatSpecifiers(archiveFilename);
 
-    destinationDir.append(el::base::consts::kFilePathSeperator);
+    initDestinationDir.append(el::base::consts::kFilePathSeperator);
     // Remove duplicate file separators
-    Utils::replaceAll(destinationDir,
+    Utils::replaceAll(initDestinationDir,
                       std::string(el::base::consts::kFilePathSeperator) +
                       std::string(el::base::consts::kFilePathSeperator),
                       el::base::consts::kFilePathSeperator);
 
-    DRVLOG_IF(loggerId != RESIDUE_LOGGER_ID, RV_DEBUG) << "FSR: partial result [" << destinationDir << "] ["
-                                                       << rotatedFilename << "] [" << archiveFilename << "]";
-    return { destinationDir, rotatedFilename, archiveFilename };
-}
+    Utils::replaceAll(initDestinationDir, "%original/", "%original"); // just a clean up
 
-
-void LogRotator::rotate(const std::string& loggerId)
-{
-#ifdef RESIDUE_PROFILING
-    types::Time m_timeTaken;
-    RESIDUE_PROFILE_START(t_rotation);
-#endif
-
-    ArchiveFilenames archiveFilenames = resolveInitialFormatSpecifiers(loggerId);
-
-    std::string destinationDir = std::move(archiveFilenames.destinationDir);
-    std::string rotatedFilename = std::move(archiveFilenames.rotatedFilename);
-    std::string archiveFilename = std::move(archiveFilenames.archiveFilename);
-
-    std::map<std::string, std::string> files;
+    // up until here we have:
+    //  * fully resolved archiveFilename
+    //  * partially resolved initDestinationDir and rotatedFilename
+    //      - rotatedFilename still needs to resolve %level
+    //      - initDestinationDir still needs to resolve %level and %original
+    std::vector<BackupItem> items;
     el::Logger* logger = el::Loggers::getLogger(loggerId);
 
     {
@@ -197,8 +185,11 @@ void LogRotator::rotate(const std::string& loggerId)
         // { /tmp/log/muflihun.log, /tmp/log/verbose-muflihun.log, /tmp/log/debug-muflihun.log }
         // Our operation is target => destination map filenames by resolving format specifiers
 
-        std::for_each(fileByLevel.begin(), fileByLevel.end(), [&](const std::string& sourceFilename) {
-            std::string targetFilename = rotatedFilename; // we need copy to keep %level for other levels
+        for (const auto& sourceFilename : fileByLevel) {
+
+            // we need copy to preserve %level for other levels
+            std::string targetFilename = rotatedFilename;
+
             const std::set<std::string>& levels = levelsInFilename.at(sourceFilename);
             std::stringstream ss;
             std::transform(levels.begin(), levels.end(),
@@ -211,59 +202,78 @@ void LogRotator::rotate(const std::string& loggerId)
             if (fileByLevel.size() > 1 && targetFilename.find("%level") == std::string::npos) {
                 // we have multiple files for each level but no level specifier provided in target filename,
                 // just prepend it
-                RLOG_IF(loggerId != RESIDUE_LOGGER_ID, INFO) << "Prepending 'level' format specifier in filename for logger ["
+                RLOG_IF(loggerId != RESIDUE_LOGGER_ID, INFO) << "FSR: Prepending 'level' format specifier in filename for logger ["
                                                              << loggerId << "] as we have multiple filenames for levels";
                 targetFilename = "%level-" + targetFilename;
             }
 
-            Utils::replaceAll(destinationDir, "%original/", "%original"); // just a clean up
+            Utils::replaceFirstWithEscape(initDestinationDir, "%original",
+                                          el::base::utils::File::extractPathFromFilename(sourceFilename));
+
+            std::string destinationDir = initDestinationDir;
 
             Utils::replaceFirstWithEscape(destinationDir, "%level", levelName);
             Utils::replaceFirstWithEscape(targetFilename, "%level", levelName);
-            Utils::replaceFirstWithEscape(destinationDir, "%original",
-                                          el::base::utils::File::extractPathFromFilename(sourceFilename));
 
-            if (!Utils::fileExists(destinationDir.c_str())) {
-                if (!Utils::createPath(destinationDir.c_str())) {
-                    RLOG_IF(loggerId != RESIDUE_LOGGER_ID, ERROR) << "Failed to create path for log rotation: " << destinationDir;
+            RLOG_IF(loggerId != RESIDUE_LOGGER_ID, INFO) << "FSR: [" << sourceFilename << "] => [" << destinationDir << "] as [" << targetFilename << "]";
+
+            items.push_back({ sourceFilename, destinationDir, targetFilename });
+        };
+    }
+
+    Utils::replaceAll(initDestinationDir, "%level", ""); // absolutely cannot have levels
+
+    RLOG_IF(loggerId != RESIDUE_LOGGER_ID, INFO) << "FSR: Result: [" << initDestinationDir << "] [" << archiveFilename << "] with [" << items.size() << "] items";
+
+    return { initDestinationDir, archiveFilename, items };
+}
+
+void LogRotator::rotate(const std::string& loggerId)
+{
+#ifdef RESIDUE_PROFILING
+    types::Time m_timeTaken;
+    RESIDUE_PROFILE_START(t_rotation);
+#endif
+
+    const RotateTarget rotateTarget = createRotateTarget(loggerId);
+
+    std::map<std::string, std::string> files;
+    el::Logger* logger = el::Loggers::getLogger(loggerId);
+
+    {
+        // NOTE: Be careful, do not log here using residue logger until this scope
+
+        std::lock_guard<std::recursive_mutex>(logger->lock());
+
+        // Create backups
+
+        for (const auto& backItem : rotateTarget.items) {
+
+            if (!Utils::fileExists(backItem.destinationDir.c_str())) {
+                if (!Utils::createPath(backItem.destinationDir.c_str())) {
+                    RLOG_IF(loggerId != RESIDUE_LOGGER_ID, ERROR) << "Failed to create path for log rotation: " << backItem.destinationDir;
                     return;
                 }
             }
-            std::string fullDestinationPath = destinationDir + targetFilename;
-            long fsize = Utils::fileSize(sourceFilename.c_str());
+            std::string fullDestinationPath = backItem.destinationDir + backItem.targetFilename;
+            long fsize = Utils::fileSize(backItem.sourceFilename.c_str());
             if (fsize > 0) {
-                RVLOG_IF(loggerId != RESIDUE_LOGGER_ID, RV_DETAILS) << "Rotating [" << sourceFilename
+                RVLOG_IF(loggerId != RESIDUE_LOGGER_ID, RV_DETAILS) << "Rotating [" << backItem.sourceFilename
                                                                     << "] => [" << fullDestinationPath
                                                                     << "] (" << Utils::bytesToHumanReadable(fsize) << ")";
-                if (::rename(sourceFilename.c_str(), fullDestinationPath.c_str()) == 0) {
-                    files.insert(std::make_pair(fullDestinationPath, targetFilename));
+                if (::rename(backItem.sourceFilename.c_str(), fullDestinationPath.c_str()) == 0) {
+                    files.insert(std::make_pair(fullDestinationPath, backItem.targetFilename));
                 } else {
                     RLOG_IF(loggerId != RESIDUE_LOGGER_ID, ERROR) << "Error moving file ["
-                                                                  << sourceFilename << "] to ["
+                                                                  << backItem.sourceFilename << "] to ["
                                                                   << fullDestinationPath << "] " << std::strerror(errno);
                 }
             } else {
-                RVLOG_IF(loggerId != RESIDUE_LOGGER_ID, RV_DETAILS) << "Ignoring rotating empty file " << sourceFilename;
+                RVLOG_IF(loggerId != RESIDUE_LOGGER_ID, RV_DETAILS) << "Ignoring rotating empty file " << backItem.sourceFilename;
             }
-        });
+        }
 
         // Truncate log files
-
-        std::string fnInfo = logger->typedConfigurations()->filename(el::Level::Info);
-        std::string fnError = logger->typedConfigurations()->filename(el::Level::Error);
-        std::string fnDebug = logger->typedConfigurations()->filename(el::Level::Debug);
-        std::string fnWarning = logger->typedConfigurations()->filename(el::Level::Warning);
-        std::string fnTrace = logger->typedConfigurations()->filename(el::Level::Trace);
-        std::string fnVerbose = logger->typedConfigurations()->filename(el::Level::Verbose);
-        std::string fnFatal = logger->typedConfigurations()->filename(el::Level::Fatal);
-
-        el::base::type::fstream_t* fsInfo = logger->typedConfigurations()->fileStream(el::Level::Info);
-        el::base::type::fstream_t* fsError = logger->typedConfigurations()->fileStream(el::Level::Error);
-        el::base::type::fstream_t* fsDebug = logger->typedConfigurations()->fileStream(el::Level::Debug);
-        el::base::type::fstream_t* fsWarning = logger->typedConfigurations()->fileStream(el::Level::Warning);
-        el::base::type::fstream_t* fsTrace = logger->typedConfigurations()->fileStream(el::Level::Trace);
-        el::base::type::fstream_t* fsVerbose = logger->typedConfigurations()->fileStream(el::Level::Verbose);
-        el::base::type::fstream_t* fsFatal = logger->typedConfigurations()->fileStream(el::Level::Fatal);
 
         std::unordered_set<std::string> doneList;
         auto closeAndTrunc = [&](el::base::type::fstream_t* fs, const std::string& fn) {
@@ -276,13 +286,13 @@ void LogRotator::rotate(const std::string& loggerId)
             doneList.insert(fn);
         };
 
-        closeAndTrunc(fsInfo, fnInfo);
-        closeAndTrunc(fsError, fnError);
-        closeAndTrunc(fsWarning, fnWarning);
-        closeAndTrunc(fsVerbose, fnVerbose);
-        closeAndTrunc(fsFatal, fnFatal);
-        closeAndTrunc(fsDebug, fnDebug);
-        closeAndTrunc(fsTrace, fnTrace);
+
+        el::base::type::EnumType lIndex = el::LevelHelper::kMinValid;
+        el::LevelHelper::forEachLevel(&lIndex, [&](void) -> bool {
+            el::Level level = el::LevelHelper::castFromInt(lIndex);
+            closeAndTrunc(logger->typedConfigurations()->fileStream(level), logger->typedConfigurations()->filename(level));
+            return false;
+        });
 
     } // scope for logger lock
 
@@ -291,7 +301,7 @@ void LogRotator::rotate(const std::string& loggerId)
     float timeTakenInSec = static_cast<float>(m_timeTaken / 1000.0f);
     DRVLOG_IF(loggerId != RESIDUE_LOGGER_ID, RV_DEBUG) << "Took " << timeTakenInSec << " s rotate logs for logger [" << loggerId << "] (" << files.size() << " files)";
 #endif
-    m_archiveItems.push_back({loggerId, destinationDir + el::base::consts::kFilePathSeperator + archiveFilename, files});
+    m_archiveItems.push_back({loggerId, rotateTarget.destinationDir + el::base::consts::kFilePathSeperator + rotateTarget.archiveFilename, files});
 }
 
 void LogRotator::archiveAndCompress(const std::string& loggerId, const std::string& archiveFilename, const std::map<std::string, std::string>& files) {
