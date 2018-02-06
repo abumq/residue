@@ -27,6 +27,7 @@
 #include "src/net/session.h"
 #include "src/clients/client.h"
 #include "src/utils/utils.h"
+#include "src/crypto/aes.h"
 
 using namespace residue;
 
@@ -118,6 +119,11 @@ void ConnectionRequestHandler::connect(ConnectionRequest* request, bool isKnownC
     if (isKnownClient && m_registry->clientExists(request->clientId())) {
         // Already connected known client, just respond with key
         Client* client = m_registry->findClient(request->clientId());
+        if (!client->isAlive()) {
+            // reset key
+            RLOG(INFO) << "Client [" << client->id() << "] key reset";
+            client->setKey(AES::generateKey(client->keySize() * 8));
+        }
         // Clone client
         Client clonedClient(request);
         clonedClient.setAcknowledged(false);
