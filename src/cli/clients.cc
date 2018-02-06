@@ -50,7 +50,7 @@ void Clients::execute(std::vector<std::string>&& params, std::ostringstream& res
 
         if (ignoreConfirmation || getConfirmation("This will run client integrity task and clean the expired clients")) {
             registry()->clientIntegrityTask()->kickOff();
-            result << "Finished client integrity task" << std::endl;
+            result << "\nFinished client integrity task" << std::endl;
         }
     }else if (hasParam(params, "remove")) {
         const std::string clientId = getParamValue(params, "--client-id");
