@@ -10,7 +10,8 @@ option (profiling "Turns profiling on for various scenarios" OFF)
 option (enable_extensions "Enables extensions support for the build" OFF)
 option (use_mine "Use mine whereever possible" OFF)
 option (special_edition "Special edition build" OFF)
-option (use_readline_lib "Force using custom read line" ON)
+option (use_readline_lib "Force using custom libreadline" OFF)
+option (use_linenoise_lib "Force using custom linenoise" ON)
 
 set (RESIDUE_MAJOR "1")
 set (RESIDUE_MINOR "3")
@@ -108,6 +109,7 @@ endif()
 
 
 set (READLINE_LIBS "")
+set (LINENOISE_SRC "")
 # Readline
 if (use_readline_lib)
     find_package(Readline REQUIRED)
@@ -120,6 +122,10 @@ if (use_readline_lib)
     else()
         message ("==> USING CUSTOM READLINE (libReadline not found)")
     endif()
+elseif (use_linenoise_lib)
+    add_definitions (-DRESIDUE_USE_LINENOISE_LIB)
+    set (LINENOISE_SRC deps/linenoise/linenoise.c)
+    message ("==> USING LINENOISE")
 else()
     message ("==> USING CUSTOM READLINE (Forced via flag)")
 endif()
@@ -146,6 +152,8 @@ endif()
 set (SOURCE_FILES
 
     ${CRYPTO_LIBS}
+
+    ${LINENOISE_SRC}
 
     src/connect/connection-request.cc
     src/connect/connection-request-handler.cc

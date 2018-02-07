@@ -1,5 +1,9 @@
 # Change Log
 
+## [1.3.1] - 07-02-2018
+### Fixes
+- Remove dependencies on readline and ncurses 
+
 ## [1.3.0] - 06-02-2018
 ### Added
 - New clients CLI option `clean`
