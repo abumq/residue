@@ -55,7 +55,6 @@ You can define following options in CMake (using `-D<option>=ON`)
 | `production` | Compile for production use      | `OFF`   |
 | `profiling`  | Turn on profiling information for making server faster (goes together with `debug`) | `OFF` |
 | `use_mine` | Use mine crypto library (instead of ripe) whereever possible | `OFF` |
-| `use_readline_lib` | Specifies whether to use readline lib or use custom (built-in input taker) | `ON` |
 
 Please consider running unit tests before you move on.
 
