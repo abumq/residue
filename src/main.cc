@@ -144,7 +144,7 @@ void printVersion(bool addSpaces = false)
 #ifdef RESIDUE_SPECIAL_EDITION
     std::cout << "-SE";
 #endif
-#ifdef RESIDUE_DEBUG
+#if RESIDUE_DEBUG
     std::cout << "-debug";
 #endif
 #ifdef RESIDUE_HAS_EXTENSIONS
