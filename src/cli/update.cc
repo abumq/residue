@@ -40,7 +40,7 @@ void Update::execute(std::vector<std::string>&& params, std::ostringstream& resu
         if (registry()->autoUpdater()->hasNewVersion(&newVer)) {
             result << "You are running v" << RESIDUE_VERSION << ", new version is available: " << newVer << std::endl;
         } else {
-            result << "You are running latest version v" << RESIDUE_VERSION << std::endl;
+            result << "You are running latest version v" << RESIDUE_VERSION;
         }
     }
 }

@@ -59,7 +59,11 @@ void AdminRequestHandler::handle(RawRequest&& rawRequest)
 
     switch (request.type()) {
     case AdminRequest::Type::RELOAD_CONFIG:
-        cmd = "reload";
+        cmd = "rconfig";
+        if (!request.loggerId().empty()) {
+            params.push_back("--logger");
+            params.push_back(request.loggerId());
+        }
         break;
     case AdminRequest::Type::RESET:
         cmd = "reset";
@@ -119,9 +123,10 @@ void AdminRequestHandler::handle(RawRequest&& rawRequest)
         RLOG(INFO) << "Running command via admin request: " << fullCmd.str();
         m_commandHandler->handle(std::move(cmd), std::move(params), result, true);
     } else {
-        RLOG(ERROR) << "Unknown admin request";
+        RLOG(ERROR) << "Unknown admin request [" << static_cast<unsigned short>(request.type()) << "]";
         result << "Unknown admin request";
     }
+    result << std::endl;
     respond(result.str());
 }
 

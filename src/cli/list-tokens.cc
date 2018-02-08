@@ -36,7 +36,7 @@ void ListTokens::execute(std::vector<std::string>&& params, std::ostringstream& 
 {
     const std::string clientId = getParamValue(params, "--client-id");
     if (clientId.empty()) {
-        result << "\nNo client ID provided" << std::endl;
+        result << "\nNo client ID provided";
         return;
     }
     for (auto& c : registry()->clients()) {

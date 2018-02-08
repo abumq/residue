@@ -42,7 +42,7 @@ void SessionDetails::execute(std::vector<std::string>&& params, std::ostringstre
         for (auto& session : registry()->activeSessions()) {
             result << (i++) << " > Recv: " << session.first->bytesReceived()
                    << ", Sent: " << session.first->bytesSent()
-                   << ", Active for " << (now - session.second) << " s" << std::endl;
+                   << ", Active for " << (now - session.second) << " s";
         }
     }
 }

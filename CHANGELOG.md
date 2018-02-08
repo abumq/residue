@@ -1,8 +1,12 @@
 # Change Log
 
-## [Unreleased]
+## [1.3.1] - 08-02-2018
 ### Fixes
 - Fix incorrect message for checking client age
+
+### Added
+- Changed `reload` to `rconfig`
+- Added ability to reconfigure logger using `--logger` with `rconfig`
 
 ## [1.3.0] - 06-02-2018
 ### Added

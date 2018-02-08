@@ -105,6 +105,6 @@ void Clients::list(std::ostringstream& result) const
         result << (i++) << " > " << c.second.id()
                   << ", Age: " << (Utils::now() - c.second.dateCreated()) << "s, Status: "
                   << (!c.second.isAlive() ? "DEAD" : "ALIVE " + std::to_string(c.second.age() - (Utils::now() - c.second.dateCreated())) + "s")
-                  << ", Key: " << c.second.key() << std::endl;
+                  << ", Key: " << c.second.key();
     }
 }

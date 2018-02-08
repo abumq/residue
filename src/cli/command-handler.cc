@@ -184,7 +184,7 @@ void CommandHandler::takeInput(bool* exitOnInterrupt)
         }
         std::ostringstream result;
         handle(std::move(cmd), std::move(params), result);
-        std::cout << result.str();
+        std::cout << result.str() << std::endl;
     }
     if (m_running) {
         takeInput(exitOnInterrupt);

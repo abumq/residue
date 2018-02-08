@@ -37,7 +37,7 @@ void ListLoggingFiles::execute(std::vector<std::string>&& params, std::ostringst
 {
     const std::string clientId = getParamValue(params, "--client-id");
     if (clientId.empty()) {
-        result << "No client ID provided" << std::endl;
+        result << "No client ID provided";
         return;
     }
     const std::string loggingLevelsStr = getParamValue(params, "--levels");
@@ -69,7 +69,7 @@ void ListLoggingFiles::execute(std::vector<std::string>&& params, std::ostringst
 
     if (!loggerId.empty()) {
         if (!registry()->configuration()->isKnownLoggerForClient(clientId, loggerId)) {
-            result << "Logger not mapped to client" << std::endl;
+            result << "Logger not mapped to client";
             return;
         }
         listMap.insert(std::make_pair(loggerId, std::set<std::string>()));
@@ -94,7 +94,7 @@ void ListLoggingFiles::execute(std::vector<std::string>&& params, std::ostringst
             }
             el::Level level = el::LevelHelper::convertFromString(levelStr.c_str());
             if (level == el::Level::Unknown) {
-                result << "Unknown level [" << levelStr << "]" << std::endl;
+                result << "Unknown level [" << levelStr << "]";
                 return;
             }
             std::string file = getFile(loggerId, levelStr);
@@ -106,7 +106,7 @@ void ListLoggingFiles::execute(std::vector<std::string>&& params, std::ostringst
         jr.push_back(j);
     }
 
-    result << (jr.dump()) << std::endl;
+    result << (jr.dump());
 
 #ifdef RESIDUE_DEBUG
     RLOG(DEBUG) << "Result: " << result.str();

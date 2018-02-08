@@ -34,5 +34,5 @@ Stats::Stats(Registry* registry) :
 
 void Stats::execute(std::vector<std::string>&&, std::ostringstream& result, bool) const
 {
-    result << "Recv: " << registry()->bytesReceived() << ", Sent: " << registry()->bytesSent() << std::endl;
+    result << "Recv: " << registry()->bytesReceived() << ", Sent: " << registry()->bytesSent();
 }

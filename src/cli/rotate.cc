@@ -37,11 +37,11 @@ void Rotate::execute(std::vector<std::string>&& params, std::ostringstream& resu
 {    
     const std::string loggerId = getParamValue(params, "--logger-id");
     if (loggerId.empty()) {
-        result << "\nNo logger ID provided" << std::endl;
+        result << "\nNo logger ID provided";
         return;
     }
     if (el::Loggers::getLogger(loggerId, false) == nullptr) {
-        result << "Logger [" << loggerId << "] not yet registered" << std::endl;
+        result << "Logger [" << loggerId << "] not yet registered";
         return;
     }
     if (hasParam(params, "--check-only")) {
@@ -76,17 +76,17 @@ void Rotate::execute(std::vector<std::string>&& params, std::ostringstream& resu
                 continue;
             }
             if (rotator->isExecuting()) {
-                result << "Log rotator already running, please try later\n";
+                result << "Log rotator already running, please try later";
                 return;
             }
-            result << "Rotating logs for [" << loggerId << "] using [" << rotator->name() << "]\n";
+            result << "Rotating logs for [" << loggerId << "] using [" << rotator->name() << "]";
             rotator->setLastExecution(Utils::now());
             rotator->rotate(loggerId);
             if (!hasParam(params, "--ignore-archive")) {
-                result << "Archiving logs for [" << loggerId << "]\n";
+                result << "Archiving logs for [" << loggerId << "]";
                 rotator->archiveRotatedItems();
             } else {
-                result << "Ignoring archive rotated logs for [" << loggerId << "]\n";
+                result << "Ignoring archive rotated logs for [" << loggerId << "]";
             }
 
         }
