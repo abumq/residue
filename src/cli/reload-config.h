@@ -37,6 +37,9 @@ public:
     explicit ReloadConfig(Registry* registry);
 
     virtual void execute(std::vector<std::string>&&, std::ostringstream&, bool) const override;
+private:
+    void reloadServerConfig(std::ostringstream& result) const;
+    void reloadLoggerConfig(const std::string& loggerId, std::ostringstream& result) const;
 
 };
 }

@@ -10,8 +10,11 @@ Please note, some of these commands can also be triggered using admin requests.
 ### `quit`
 Quits the server gracefully
 
-### `reload`
+### `rconfig`
 Reloads configurations from same file as initially loaded
+
+##### `--logger <id>`
+Reloads server configuraion and reconfigure logger
 
 ### `reset`
 Resets the server with following things (be careful in doing this as it may affect connected clients)

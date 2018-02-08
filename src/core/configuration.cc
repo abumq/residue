@@ -212,7 +212,7 @@ void Configuration::loadFromInput(std::string&& jsonStr)
     }
 
     m_clientAge = jsonObject.getUInt("client_age", 259200);
-    if (m_clientAge != 0 && m_clientAge <= 120) {
+    if (m_clientAge != 0 && m_clientAge < 120) {
         RLOG(WARNING) << "Invalid value for [client_age]. Setting it to minimum [120]";
         m_clientAge = 120;
     }

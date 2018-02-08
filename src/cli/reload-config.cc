@@ -26,14 +26,29 @@
 using namespace residue;
 
 ReloadConfig::ReloadConfig(Registry* registry) :
-    Command("reload",
-            "Reloads configuration",
-            "reload",
+    Command("rconfig",
+            "Reloads specified logger configuration or server configuration",
+            "rconfig [--server] [--logger <logger_id>]",
             registry)
 {
 }
 
-void ReloadConfig::execute(std::vector<std::string>&&, std::ostringstream& result, bool) const
+void ReloadConfig::execute(std::vector<std::string>&& params, std::ostringstream& result, bool) const
+{
+    if (params.empty()) {
+        reloadServerConfig(result);
+    } else if (hasParam(params, "--logger")) {
+        const std::string loggerId = getParamValue(params, "--logger");
+        if (loggerId.empty()) {
+            result << "Logger ID not provided";
+        } else {
+            reloadLoggerConfig(loggerId, result);
+        }
+    }
+
+}
+
+void ReloadConfig::reloadServerConfig(std::ostringstream& result) const
 {
     Configuration tmpConf(registry()->configuration()->configurationFile());
     if (tmpConf.isValid()) {
@@ -42,4 +57,23 @@ void ReloadConfig::execute(std::vector<std::string>&&, std::ostringstream& resul
     } else {
         result << "FAILED to reload configuration. There are errors in configuration file" << std::endl << tmpConf.errors();
     }
+}
+
+void ReloadConfig::reloadLoggerConfig(const std::string& loggerId, std::ostringstream& result) const
+{
+    el::Logger* logger = el::Loggers::getLogger(loggerId, false);
+    if (logger == nullptr) {
+        result << "Logger [" << loggerId << "] not yet registered";
+    } else {
+        // we need to reload server config as logger config may have updated
+        reloadServerConfig(result);
+        result << "\n";
+        std::string confFile = registry()->configuration()->getConfigurationFile(loggerId);
+        result << "Loading logger configuration...\n";
+        el::Configurations config(confFile);
+        result << "Reconfiguring logger...";
+        el::Loggers::reconfigureLogger(logger, config);
+        result << "Done!";
+    }
+
 }

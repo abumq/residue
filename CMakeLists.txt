@@ -15,7 +15,7 @@ option (use_linenoise_lib "Force using custom linenoise" ON)
 
 set (RESIDUE_MAJOR "1")
 set (RESIDUE_MINOR "3")
-set (RESIDUE_PATCH "0")
+set (RESIDUE_PATCH "1")
 set (RESIDUE_VERSION "${RESIDUE_MAJOR}.${RESIDUE_MINOR}.${RESIDUE_PATCH}")
 set (RESIDUE_NAME "Residue")
 
