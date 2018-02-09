@@ -461,7 +461,7 @@ std::string Ripe::compressString(const std::string& str)
 
     if (ret != Z_STREAM_END) {
         std::ostringstream oss;
-        oss << "Exception during zlib compression: (" << ret << ") " << (zs.msg != nullptr ? zs.msg : "no msg");
+        oss << "Exception during zlib compression: (" << ret << ") " << (zs.msg != NULL ? zs.msg : "no msg");
         throw std::runtime_error(oss.str());
     }
 
@@ -500,7 +500,7 @@ std::string Ripe::decompressString(const std::string& str)
 
     if (ret != Z_STREAM_END) {
         std::ostringstream oss;
-        oss << "Exception during zlib decompression: (" << ret << ") " << (zs.msg != nullptr ? zs.msg : "no msg");
+        oss << "Exception during zlib decompression: (" << ret << ") " << (zs.msg != NULL ? zs.msg : "no msg");
         throw std::runtime_error(oss.str());
     }
 
