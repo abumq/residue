@@ -86,6 +86,9 @@ el::LogBuilder* configureLogging(Configuration* configuration)
 
     // Note: Do not add StrictLogFileSizeCheck flag as we manually have log rotator in-place
 
+    // %ip, %client_id, %vnamelevel
+    el::Helpers::reserveCustomFormatSpecifiers(3);
+
     // We do not want application to die on FATAL log
     el::Loggers::addFlag(el::LoggingFlag::DisableApplicationAbortOnFatalLog);
 
