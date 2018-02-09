@@ -19,8 +19,9 @@
     "compression": true,
     "allow_bulk_log_request": true,
     "max_items_in_bulk": 50,
-    "token_age": 60,
-    "client_age": 120,
+    "token_age": 600,
+    "client_age": 3600,
+    "file_mode": 416,
     "timestamp_validity": 120,
     "requires_timestamp": false,
     "non_acknowledged_client_age": 300,
@@ -57,10 +58,6 @@
             "logger_id": "sample-app",
             "configuration_file": "samples/configurations/sample-app-Logger.conf",
             "rotation_freq": "hourly",
-            "access_codes_blacklist": [
-                "ii3faf",
-                "ii3fa2"
-            ],
             "allow_plain_log_request": true,
             "access_codes": [
                 {
