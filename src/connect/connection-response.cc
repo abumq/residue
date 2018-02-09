@@ -70,7 +70,7 @@ void ConnectionResponse::serialize(std::string& output) const
 #ifdef RESIDUE_SPECIAL_EDITION
         ss << "-SE";
 #endif
-#ifdef RESIDUE_DEBUG
+#if RESIDUE_DEBUG
         ss << "-debug";
 #endif
         serverInfo.insert(std::make_pair("version", ss.str()));
