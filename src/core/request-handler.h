@@ -132,23 +132,13 @@ protected:
                 bool tryServerAESKey = false,
                 bool decompress = false)
     {
-        auto decompressIfNeeded = [&](std::string& plainRequestStr) {
-            if (decompress) {
-                try {
-                    plainRequestStr = ZLib::decompress(Base64::decode(plainRequestStr));
-                } catch (const std::exception& e) {
-                    // Only do verbose log as some libraries may send inflated data
-                    // so we do not want to fill log with this error unless server admin
-                    // chooses to do so with '-v' option
-                    DRVLOG(RV_ERROR) << "Failed to decompress the data: " << e.what();
-                }
-            }
-        };
 #if RESIDUE_DEBUG
         DRVLOG(RV_DEBUG) << "Raw request: " << requestStr;
 #endif
         DecryptedRequest dr = decryptRequest(requestStr, defaultStatus);
-
+#if RESIDUE_DEBUG
+        DRVLOG(RV_TRACE) << "Decryption finished (b64): " << dr.plainRequestStr;
+#endif
         request->m_client = dr.client;
 
         std::string plainRequestStr = dr.plainRequestStr;
@@ -156,7 +146,16 @@ protected:
         request->m_errorText = dr.errorText;
         request->m_ipAddr = std::move(ipAddr);
         request->m_dateReceived = std::move(dateReceived);
-        decompressIfNeeded(plainRequestStr);
+        if (decompress) {
+
+#if RESIDUE_DEBUG
+        DRVLOG(RV_TRACE) << "Decompressing: " << plainRequestStr;
+#endif
+            plainRequestStr = ZLib::decompress(Base64::decode(plainRequestStr));
+#if RESIDUE_DEBUG
+        DRVLOG(RV_TRACE) << "Decompression finished (raw): " << plainRequestStr;
+#endif
+        }
         bool result = request->deserialize(std::move(plainRequestStr));
         bool usedRsaKey = false;
         if (!result && tryServerRSAKey && !m_registry->configuration()->serverRSAKey().privateKey.empty()) {

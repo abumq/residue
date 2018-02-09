@@ -1,5 +1,9 @@
 # Change Log
 
+## [Unreleased]
+### Fixes
+- Fix crash when failed to process zlib operations
+
 ## [1.3.1] - 08-02-2018
 ### Fixes
 - Fix incorrect message for checking client age

@@ -329,13 +329,7 @@ void LogRotator::archiveAndCompress(const std::string& loggerId, const std::stri
         }
     }
 
-    bool compressSuccessful = false;
-
-    try {
-        compressSuccessful = ZLib::compressFile(archiveFilename, tmpTar);
-    } catch (std::exception& e) {
-        RLOG(ERROR) << "Exception while compressing; " << e.what();
-    }
+    bool compressSuccessful = ZLib::compressFile(archiveFilename, tmpTar); // nothrow func
 
     const el::Logger* logger = el::Loggers::getLogger(loggerId, false);
     if (logger != nullptr) {
