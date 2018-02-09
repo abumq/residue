@@ -22,7 +22,7 @@ add_definitions (-DRESIDUE_VERSION_MAJOR="${RESIDUE_MAJOR}")
 add_definitions (-DRESIDUE_VERSION_MINOR="${RESIDUE_MINOR}")
 add_definitions (-DRESIDUE_VERSION_PATCH="${RESIDUE_PATCH}")
 
-add_definitions (-DRIPE_VERSION="4.1.0-static")
+add_definitions (-DRIPE_VERSION="4.1.1-static")
 if (use_mine)
     add_definitions (-DRESIDUE_USE_MINE)
 endif()

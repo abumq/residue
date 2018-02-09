@@ -3,6 +3,7 @@
 ## [Unreleased]
 ### Fixes
 - Fix crash when failed to process zlib operations
+- Upgraded ripe library to 4.1.1
 
 ## [1.3.1] - 08-02-2018
 ### Fixes
