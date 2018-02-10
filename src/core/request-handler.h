@@ -147,13 +147,19 @@ protected:
         request->m_ipAddr = std::move(ipAddr);
         request->m_dateReceived = std::move(dateReceived);
         if (decompress) {
-
 #if RESIDUE_DEBUG
-        DRVLOG(RV_TRACE) << "Decompressing: " << plainRequestStr;
+            DRVLOG(RV_TRACE) << "Decompressing: " << plainRequestStr;
 #endif
-            plainRequestStr = ZLib::decompress(Base64::decode(plainRequestStr));
+            try {
+                plainRequestStr = ZLib::decompress(Base64::decode(plainRequestStr));
+            }  catch (const std::exception& e) {
+                // Only do verbose log as some libraries may send inflated data
+                // so we do not want to fill log with this error unless server admin
+                // chooses to do so with '-v' option
+                DRVLOG(RV_ERROR) << "Failed to decompress the data: " << e.what();
+            }
 #if RESIDUE_DEBUG
-        DRVLOG(RV_TRACE) << "Decompression finished (raw): " << plainRequestStr;
+            DRVLOG(RV_TRACE) << "Decompression finished (raw): " << plainRequestStr;
 #endif
         }
         bool result = request->deserialize(std::move(plainRequestStr));
