@@ -19,13 +19,13 @@
 //  limitations under the License.
 //
 
-#include "src/logging/log.h"
-#include "src/admin/admin-request-handler.h"
-#include "src/admin/admin-request.h"
-#include "src/core/configuration.h"
-#include "src/cli/command-handler.h"
-#include "src/net/session.h"
-#include "src/tasks/log-rotator.h"
+#include "logging/log.h"
+#include "admin/admin-request-handler.h"
+#include "admin/admin-request.h"
+#include "core/configuration.h"
+#include "cli/command-handler.h"
+#include "net/session.h"
+#include "tasks/log-rotator.h"
 
 using namespace residue;
 

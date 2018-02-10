@@ -19,9 +19,9 @@
 //  limitations under the License.
 //
 
-#include "src/extensions/extension.h"
-#include "src/extensions/python.h"
-#include "src/utils/utils.h"
+#include "extensions/extension.h"
+#include "extensions/python.h"
+#include "utils/utils.h"
 
 using namespace residue;
 

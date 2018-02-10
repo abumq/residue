@@ -20,8 +20,8 @@
 //
 
 #include <ctime>
-#include "src/logging/log-request.h"
-#include "src/core/json-object.h"
+#include "logging/log-request.h"
+#include "core/json-object.h"
 
 using namespace residue;
 

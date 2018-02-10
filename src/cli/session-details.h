@@ -22,7 +22,7 @@
 #ifndef SessionDetails_h
 #define SessionDetails_h
 
-#include "src/cli/command.h"
+#include "cli/command.h"
 
 namespace residue {
 

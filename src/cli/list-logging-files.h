@@ -22,7 +22,7 @@
 #ifndef ListLoggingFiles_h
 #define ListLoggingFiles_h
 
-#include "src/cli/command.h"
+#include "cli/command.h"
 
 namespace residue {
 

@@ -20,11 +20,11 @@
 //
 
 #include <vector>
-#include "src/logging/log.h"
-#include "src/tasks/client-integrity-task.h"
-#include "src/core/registry.h"
-#include "src/clients/client.h"
-#include "src/tokenization/token.h"
+#include "logging/log.h"
+#include "tasks/client-integrity-task.h"
+#include "core/registry.h"
+#include "clients/client.h"
+#include "tokenization/token.h"
 
 using namespace residue;
 

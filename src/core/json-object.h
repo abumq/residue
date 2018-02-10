@@ -22,9 +22,9 @@
 #ifndef JsonObject_h
 #define JsonObject_h
 
-#include "deps/json/json.h"
-#include "src/logging/log.h"
-#include "src/non-copyable.h"
+#include "json/json.h"
+#include "logging/log.h"
+#include "non-copyable.h"
 
 namespace residue {
 

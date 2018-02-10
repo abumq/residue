@@ -25,9 +25,9 @@
 #include <cstdio>
 #include <algorithm>
 #include "test.h"
-#include "src/crypto/aes.h"
-#include "src/crypto/zlib.h"
-#include "src/utils/utils.h"
+#include "crypto/aes.h"
+#include "crypto/zlib.h"
+#include "utils/utils.h"
 
 using namespace residue;
 

@@ -20,7 +20,7 @@
 //
 
 #include <chrono>
-#include "src/tokenization/token.h"
+#include "tokenization/token.h"
 
 using namespace residue;
 

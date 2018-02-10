@@ -23,7 +23,7 @@
 #define TokenResponse_hpp
 
 #include <string>
-#include "src/core/response.h"
+#include "core/response.h"
 
 namespace residue {
 

@@ -23,7 +23,7 @@
 #define Tar_h
 
 #include <iostream>
-#include "src/non-copyable.h"
+#include "non-copyable.h"
 
 namespace residue {
 

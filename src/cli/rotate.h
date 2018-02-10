@@ -22,7 +22,7 @@
 #ifndef Rotate_h
 #define Rotate_h
 
-#include "src/cli/command.h"
+#include "cli/command.h"
 
 namespace residue {
 

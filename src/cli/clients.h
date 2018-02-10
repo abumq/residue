@@ -22,7 +22,7 @@
 #ifndef Clients_h
 #define Clients_h
 
-#include "src/cli/command.h"
+#include "cli/command.h"
 
 namespace residue {
 

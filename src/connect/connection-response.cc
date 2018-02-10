@@ -19,9 +19,9 @@
 //  limitations under the License.
 //
 
-#include "src/connect/connection-response.h"
-#include "src/core/configuration.h"
-#include "src/clients/client.h"
+#include "connect/connection-response.h"
+#include "core/configuration.h"
+#include "clients/client.h"
 
 using namespace residue;
 

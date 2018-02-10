@@ -19,8 +19,8 @@
 //  limitations under the License.
 //
 
-#include "src/logging/log.h"
-#include "src/core/json-object.h"
+#include "logging/log.h"
+#include "core/json-object.h"
 
 using namespace residue;
 

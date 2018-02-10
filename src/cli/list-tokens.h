@@ -22,7 +22,7 @@
 #ifndef ListTokens_h
 #define ListTokens_h
 
-#include "src/cli/command.h"
+#include "cli/command.h"
 
 namespace residue {
 

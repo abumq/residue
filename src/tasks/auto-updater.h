@@ -22,8 +22,8 @@
 #ifndef AutoUpdater_h
 #define AutoUpdater_h
 
-#include "src/tasks/task.h"
-#include "src/core/json-object.h"
+#include "tasks/task.h"
+#include "core/json-object.h"
 
 namespace residue {
 

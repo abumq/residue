@@ -110,6 +110,8 @@ include_directories (${CRYPTOPP_INCLUDE_DIRS})
 thread_packages_check()
 
 include_directories (${CMAKE_SOURCE_DIR})
+include_directories (${CMAKE_SOURCE_DIR}/deps)
+include_directories (${CMAKE_SOURCE_DIR}/src)
 
 if (use_mine)
     set (MINE_SRC deps/mine/mine.cc)

@@ -23,8 +23,8 @@
 #define Response_h
 
 #include <string>
-#include "src/non-copyable.h"
-#include "src/core/json-object.h"
+#include "non-copyable.h"
+#include "core/json-object.h"
 
 namespace residue {
 

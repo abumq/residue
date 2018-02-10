@@ -25,8 +25,8 @@
 #include <string>
 #include <unordered_map>
 #include <unordered_set>
-#include "src/tokenization/token.h"
-#include "src/utils/utils.h"
+#include "tokenization/token.h"
+#include "utils/utils.h"
 
 namespace residue {
 

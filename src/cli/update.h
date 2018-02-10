@@ -22,7 +22,7 @@
 #ifndef Update_h
 #define Update_h
 
-#include "src/cli/command.h"
+#include "cli/command.h"
 
 namespace residue {
 

@@ -19,9 +19,9 @@
 //  limitations under the License.
 //
 
-#include "src/logging/log.h"
-#include "src/tokenization/token-request.h"
-#include "src/core/json-object.h"
+#include "logging/log.h"
+#include "tokenization/token-request.h"
+#include "core/json-object.h"
 
 using namespace residue;
 

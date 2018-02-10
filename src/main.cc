@@ -31,35 +31,36 @@
 #include <thread>
 #include <utility>
 #include <boost/asio.hpp>
-#include "deps/ripe/Ripe.h"
+#include "ripe/Ripe.h"
 #ifdef RESIDUE_USE_MINE
-#   include "deps/mine/mine.h"
+#   include "mine/mine.h"
 #endif
-#include "src/extensions/python.h"
-#include "src/logging/log.h"
-#include "src/core/configuration.h"
-#include "src/crypto/base64.h"
-#include "src/core/registry.h"
-#include "src/core/residue-exception.h"
-#include "src/cli/command-handler.h"
-#include "src/logging/user-log-builder.h"
-#include "src/logging/residue-log-dispatcher.h"
-#include "src/logging/log-request-handler.h"
-#include "src/logging/known-logger-configurator.h"
-#include "src/net/server.h"
-#include "src/admin/admin-request-handler.h"
-#include "src/connect/connection-request-handler.h"
-#include "src/tokenization/token-request-handler.h"
-#include "src/tasks/client-integrity-task.h"
-#include "src/tasks/auto-updater.h"
-#include "src/tasks/log-rotator.h"
+#include "crash-handlers.h"
+#include "extensions/python.h"
+#include "logging/log.h"
+#include "core/configuration.h"
+#include "crypto/base64.h"
+#include "core/registry.h"
+#include "core/residue-exception.h"
+#include "cli/command-handler.h"
+#include "logging/user-log-builder.h"
+#include "logging/residue-log-dispatcher.h"
+#include "logging/log-request-handler.h"
+#include "logging/known-logger-configurator.h"
+#include "net/server.h"
+#include "admin/admin-request-handler.h"
+#include "connect/connection-request-handler.h"
+#include "tokenization/token-request-handler.h"
+#include "tasks/client-integrity-task.h"
+#include "tasks/auto-updater.h"
+#include "tasks/log-rotator.h"
 
 using namespace residue;
 using boost::asio::ip::tcp;
 
 INITIALIZE_EASYLOGGINGPP
 
-static bool s_exitOnInterrupt = false;
+extern bool s_exitOnInterrupt;
 
 static const std::map<int, std::string> VERBOSE_SEVERITY_MAP
 {
@@ -155,36 +156,6 @@ void printVersion(bool addSpaces = false)
 #endif
     std::cout << "\n" << (addSpaces ? "  " : "") << "Built on "
               << __DATE__ << ", " << __TIME__ << std::endl;
-}
-
-void interruptHandler(int)
-{
-    if (s_exitOnInterrupt) {
-        el::Helpers::crashAbort(SIGINT);
-    } else {
-        std::cerr << "(To exit, press ^C again or type quit)" << std::endl;
-        s_exitOnInterrupt = true;
-    }
-}
-
-void generalTerminateHandler(int sig, bool showMsg)
-{
-    if (showMsg) {
-        std::cerr << "Application abnormally terminated." << std::endl;
-        std::cerr << "Please report it to us on https://github.com/muflihun/residue/issues" << std::endl;
-    }
-    el::Helpers::logCrashReason(sig, true, el::Level::Fatal, RESIDUE_LOGGER_ID);
-    el::Helpers::crashAbort(sig);
-}
-
-void elppCrashHandler(int sig)
-{
-    generalTerminateHandler(sig, true);
-}
-
-void terminateHandler()
-{
-    generalTerminateHandler(11, false);
 }
 
 int main(int argc, char* argv[])

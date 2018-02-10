@@ -19,12 +19,12 @@
 //  limitations under the License.
 //
 
-#include "src/logging/log.h"
-#include "src/logging/log-request-handler.h"
-#include "src/logging/log-request.h"
-#include "src/logging/user-log-builder.h"
-#include "src/core/configuration.h"
-#include "src/tasks/client-integrity-task.h"
+#include "logging/log.h"
+#include "logging/log-request-handler.h"
+#include "logging/log-request.h"
+#include "logging/user-log-builder.h"
+#include "core/configuration.h"
+#include "tasks/client-integrity-task.h"
 
 using namespace residue;
 

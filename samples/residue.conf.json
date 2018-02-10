@@ -57,7 +57,7 @@
         {
             "logger_id": "sample-app",
             "configuration_file": "samples/configurations/sample-app-Logger.conf",
-            "rotation_freq": "hourly",
+            "rotation_freq": "daily",
             "allow_plain_log_request": true,
             "access_codes": [
                 {

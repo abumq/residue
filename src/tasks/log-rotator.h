@@ -26,8 +26,8 @@
 #include <vector>
 #include <unordered_map>
 #include <unordered_set>
-#include "src/core/configuration.h"
-#include "src/tasks/task.h"
+#include "core/configuration.h"
+#include "tasks/task.h"
 
 namespace residue {
 

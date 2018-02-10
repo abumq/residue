@@ -25,9 +25,9 @@
 #include <string>
 #include <map>
 #include <chrono>
-#include "src/logging/log.h"
-#include "src/static-base.h"
-#include "src/core/types.h"
+#include "logging/log.h"
+#include "static-base.h"
+#include "core/types.h"
 
 namespace residue {
 

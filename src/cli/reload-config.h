@@ -22,7 +22,7 @@
 #ifndef ReloadConfig_h
 #define ReloadConfig_h
 
-#include "src/cli/command.h"
+#include "cli/command.h"
 
 namespace residue {
 

@@ -23,12 +23,12 @@
 #include <vector>
 #include <set>
 #include <thread>
-#include "src/logging/log.h"
-#include "src/tasks/log-rotator.h"
-#include "src/utils/utils.h"
-#include "src/core/registry.h"
-#include "src/crypto/zlib.h"
-#include "src/core/residue-exception.h"
+#include "logging/log.h"
+#include "tasks/log-rotator.h"
+#include "utils/utils.h"
+#include "core/registry.h"
+#include "crypto/zlib.h"
+#include "core/residue-exception.h"
 
 using namespace residue;
 

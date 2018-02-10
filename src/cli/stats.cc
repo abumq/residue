@@ -19,8 +19,8 @@
 //  limitations under the License.
 //
 
-#include "src/cli/stats.h"
-#include "src/core/registry.h"
+#include "cli/stats.h"
+#include "core/registry.h"
 
 using namespace residue;
 

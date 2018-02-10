@@ -26,7 +26,7 @@
 #include <sstream>
 #include <string>
 #include <vector>
-#include "src/logging/log.h"
+#include "logging/log.h"
 
 namespace residue {
 

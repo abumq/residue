@@ -20,24 +20,19 @@
 //
 
 #ifdef RESIDUE_USE_MINE
-#include "deps/mine/mine.h"
+#   include "mine/mine.h"
 #else
-#include "deps/ripe/Ripe.h"
+#   include "ripe/Ripe.h"
 #endif
-#include "src/logging/log.h"
-#include "src/crypto/zlib.h"
+#include "logging/log.h"
+#include "crypto/zlib.h"
 
 using namespace residue;
 
 std::string ZLib::compress(const std::string& data)
 {
 #ifdef RESIDUE_USE_MINE
-    try {
-        return mine::ZLib::compressString(data);
-    } catch (const std::exception& e) {
-        DRVLOG(RV_ERROR) << "Failed to compress zlib " << data << ", e=" << e.what() << std::endl;
-    }
-    return "ERROR ZLIB COMPRESS";
+    return mine::ZLib::compressString(data);
 #else
     return Ripe::compressString(data);
 #endif
@@ -46,12 +41,7 @@ std::string ZLib::compress(const std::string& data)
 std::string ZLib::decompress(const std::string& data)
 {
 #ifdef RESIDUE_USE_MINE
-    try {
-        return mine::ZLib::decompressString(data);
-    } catch (const std::exception& e) {
-        DRVLOG(RV_ERROR) << "Failed to decompress zlib " << data << ", e=" << e.what();
-    }
-    return "ERROR ZLIB DECOMPRESS";
+    return mine::ZLib::decompressString(data);
 #else
     return Ripe::decompressString(data);
 #endif

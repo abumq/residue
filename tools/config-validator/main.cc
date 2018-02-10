@@ -24,7 +24,7 @@
 #include <sstream>
 #include <iostream>
 #include <string>
-#include "src/core/configuration.h"
+#include "core/configuration.h"
 
 using namespace residue;
 

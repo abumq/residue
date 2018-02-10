@@ -21,11 +21,11 @@
 
 #include <thread>
 #include <boost/asio.hpp>
-#include "src/logging/log.h"
-#include "src/net/server.h"
-#include "src/net/session.h"
-#include "src/core/request-handler.h"
-#include "src/core/registry.h"
+#include "logging/log.h"
+#include "net/server.h"
+#include "net/session.h"
+#include "core/request-handler.h"
+#include "core/registry.h"
 
 using namespace residue;
 using boost::asio::ip::tcp;

@@ -19,9 +19,9 @@
 //  limitations under the License.
 //
 
-#include "src/cli/update.h"
-#include "src/core/registry.h"
-#include "src/tasks/auto-updater.h"
+#include "cli/update.h"
+#include "core/registry.h"
+#include "tasks/auto-updater.h"
 
 using namespace residue;
 

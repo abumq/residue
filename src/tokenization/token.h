@@ -23,7 +23,7 @@
 #define Token_h
 
 #include <string>
-#include "src/utils/utils.h"
+#include "utils/utils.h"
 
 namespace residue {
 

@@ -22,7 +22,7 @@
 #ifndef TokenRequestHandler_h
 #define TokenRequestHandler_h
 
-#include "src/core/request-handler.h"
+#include "core/request-handler.h"
 
 namespace residue {
 
