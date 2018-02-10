@@ -1,5 +1,13 @@
 # Change Log
 
+## [1.3.2] - 10-02-2018
+### Fixes
+- Fix crash when failed to process zlib operations
+- Upgraded ripe library to 4.1.1
+
+### Updates
+- User agent for HTTP client changed from `Residue/x.x` to `muflihun/residue/x.x.x`
+
 ## [1.3.1] - 08-02-2018
 ### Fixes
 - Fix incorrect message for checking client age

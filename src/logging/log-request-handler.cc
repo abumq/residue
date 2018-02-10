@@ -39,52 +39,20 @@ LogRequestHandler::LogRequestHandler(Registry* registry,
 LogRequestHandler::~LogRequestHandler()
 {
     m_stopped = true;
-    for (auto& t : m_backgroundWorkers) {
-        t.join();
-    }
+    m_backgroundWorker.join();
 }
 
 void LogRequestHandler::start()
 {
     m_stopped = false;
 
-    //
-    // Important note regarding multiple dispatch threads for developers
-    // who wrongly think multiple threads = faster code = speed = happy client
-    //
-    // There is performance decision that we made, either server can process
-    // log messages fast or respond to the client application fast. If we want to change number
-    // of dispatch threads (i.e, NUM_OF_DISPATCH_THREADS > 1) we need to move
-    // 'rawRequestLock' in processRawRequests() just outside the while loop to prevent
-    // the crash and race conditions amongst dispatch threads.
-    //
-    // Also you should re-add processLimit variable and it's check as per git commit 9b1297
-    // for it will help speed up process. We have removed it because we are going to use single
-    // dispatch thread officially.
-    //
-    // There is not much benefit in increasing number of threads for many reasons, some of them
-    // listed below:
-    //
-    //  1 - Each thread can process as much requests as m_rawRequests contains, no more than that
-    //  2 - When lock is busy via lock_guard 'rawRequestLock', client cannot add more requests because
-    //     of responseLock lock_guard
-    //  3 - There are multiple clients connecting to the server at the same time and adding multiple
-    //     requests, client should be responded as soon as possible. We do not want to hold other
-    //     clients just because we want faster dispatch process.
-    //  4 - There are other tunings that can be done via configuration that can increase the speed
-    //     of the server and we do not need more than one thread for dispatch
-    //
-    static const int NUM_OF_DISPATCH_THREADS = 1;
-    static int idx = 1;
-    for (; idx <= NUM_OF_DISPATCH_THREADS; ++idx) {
-        m_backgroundWorkers.push_back(std::thread([&]() {
-            el::Helpers::setThreadName(std::string("LogDispatcher") + std::to_string(idx));
-            while (!m_stopped) {
-                processRequestQueue();
-                std::this_thread::sleep_for(std::chrono::milliseconds(100));
-            }
-        }));
-    }
+    m_backgroundWorker = std::thread([&]() {
+        el::Helpers::setThreadName("LogDispatcher");
+        while (!m_stopped) {
+            processRequestQueue();
+            std::this_thread::sleep_for(std::chrono::milliseconds(100));
+        }
+    });
 }
 
 void LogRequestHandler::handle(RawRequest&& rawRequest)
@@ -199,10 +167,10 @@ void LogRequestHandler::processRequestQueue()
 #ifdef RESIDUE_PROFILING
     RESIDUE_PROFILE_END(t_process_queue, m_timeTaken);
     float timeTakenInSec = static_cast<float>(m_timeTaken / 1000.0f);
-    RLOG_IF(total > 0, DEBUG) << "Took " << timeTakenInSec << " s to process the queue of "
+    RLOG_IF(total > 0, DEBUG) << "Took " << timeTakenInSec << "s to process the queue of "
                                    << total << " items (" << totalRequests << " requests). Average: "
-                                   << (static_cast<float>(m_timeTaken) / static_cast<float>(total)) << " ms/item ["
-                                   << (static_cast<float>(m_timeTaken) / static_cast<float>(totalRequests)) << " ms/request]";
+                                   << (static_cast<float>(m_timeTaken) / static_cast<float>(total)) << "ms/item ["
+                                   << (static_cast<float>(m_timeTaken) / static_cast<float>(totalRequests)) << "ms/request]";
     DRVLOG_IF(!m_queue.backlogEmpty(), RV_DEBUG) << m_queue.backlogSize() << " items have been added to this queue in the mean time";
 #endif
 

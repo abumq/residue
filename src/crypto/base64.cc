@@ -40,6 +40,9 @@ std::string Base64::decode(const std::string& encoded)
     }
     return "ERROR B64 DECODE";
 #else
+    if (encoded.empty()) {
+        return "ERROR EMPTY B64 DECODE";
+    }
     return Ripe::base64Decode(encoded);
 #endif
 }
@@ -54,6 +57,9 @@ std::string Base64::encode(const std::string& raw)
     }
     return "ERROR B64 DECODE";
 #else
+    if (raw.empty()) {
+        return "ERROR EMPTY B64 ENCODE";
+    }
     return Ripe::base64Encode(raw);
 #endif
 }

@@ -37,8 +37,11 @@ bool Request::deserialize(std::string&& json)
     m_jsonObject = JsonObject(std::move(json));
     m_isValid = m_jsonObject.isValid();
     if (!m_isValid) {
-        RLOG(ERROR) << "Malformed JSON request";
-        DRVLOG(RV_DEBUG) << m_jsonObject.lastError();
+#if RESIDUE_DEBUG
+        DRVLOG(RV_ERROR) << "Malformed JSON request: " << m_jsonObject.lastError();
+#else
+        RVLOG(RV_ERROR) << "Malformed JSON request";
+#endif
     } else {
         m_timestamp = m_jsonObject.get<types::Time>("_t", 0UL);
         m_isValid = validateTimestamp();

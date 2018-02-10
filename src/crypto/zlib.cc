@@ -35,11 +35,16 @@ std::string ZLib::compress(const std::string& data)
     try {
         return mine::ZLib::compressString(data);
     } catch (const std::exception& e) {
-        std::cerr << "Failed to compress zlib " << data << ", e=" << e.what() << std::endl;
+        DRVLOG(RV_ERROR) << "Failed to compress zlib " << data << ", e=" << e.what() << std::endl;
     }
     return "ERROR ZLIB COMPRESS";
 #else
-    return Ripe::compressString(data);
+    try {
+        return Ripe::compressString(data);
+    } catch (const std::exception& e) {
+        DRVLOG(RV_ERROR) << "Failed to compress zlib " << data << ", e=" << e.what();
+    }
+    return "ERROR ZLIB COMPRESS";
 #endif
 }
 
@@ -49,11 +54,19 @@ std::string ZLib::decompress(const std::string& data)
     try {
         return mine::ZLib::decompressString(data);
     } catch (const std::exception& e) {
-        RLOG(ERROR) << "Failed to decompress zlib " << data << ", e=" << e.what();
+        DRVLOG(RV_ERROR) << "Failed to decompress zlib " << data << ", e=" << e.what();
     }
-    return "ERROR ZLIB DECOMRESS";
+    return "ERROR ZLIB DECOMPRESS";
 #else
-    return Ripe::decompressString(data);
+    try {
+        return Ripe::decompressString(data);
+    }  catch (const std::exception& e) {
+        // Only do verbose log as some libraries may send inflated data
+        // so we do not want to fill log with this error unless server admin
+        // chooses to do so with '-v' option
+        DRVLOG(RV_ERROR) << "Failed to decompress zlib " << data << ", e=" << e.what();
+    }
+    return "ERROR ZLIB DECOMPRESS";
 #endif
 }
 
@@ -63,10 +76,15 @@ bool ZLib::compressFile(const std::string& gzoutFilename, const std::string& inp
     try {
         return mine::ZLib::compressFile(gzoutFilename, inputFile);
     } catch (const std::exception& e) {
-        RLOG(ERROR) << "Failed to compress file with zlib " << inputFile << ", e=" << e.what();
+        DRVLOG(RV_ERROR) << "Failed to compress file with zlib " << inputFile << ", e=" << e.what();
     }
     return false;
 #else
-    return Ripe::compressFile(gzoutFilename, inputFile);
+    try {
+        return Ripe::compressFile(gzoutFilename, inputFile);
+    } catch (const std::exception& e) {
+        DRVLOG(RV_ERROR) << "Failed to compress file with zlib " << inputFile << ", e=" << e.what();
+    }
+    return false;
 #endif
 }
