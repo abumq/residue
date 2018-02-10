@@ -67,9 +67,6 @@ if (travis)
     add_definitions (-DRESIDUE_ON_CI)
 endif()
 
-#find_package (EASYLOGGINGPP REQUIRED)
-#include_directories (${EASYLOGGINGPP_INCLUDE_DIR})
-
 find_package (CURL REQUIRED)
 
 if (${CURL_FOUND})
@@ -129,6 +126,7 @@ set (SOURCE_FILES
     ${CRYPTO_LIBS}
 
     deps/linenoise/linenoise.c
+    deps/easyloggingpp/easylogging++.cc
 
     src/connect/connection-request.cc
     src/connect/connection-request-handler.cc
@@ -218,16 +216,11 @@ target_compile_definitions (residue-core PUBLIC
 # Set RPATH to library install path.
 set (CMAKE_INSTALL_RPATH "${CMAKE_INSTALL_PREFIX}/lib")
 
-
-## Override easylogging++ path
-set(EASYLOGGINGPP_INCLUDE_DIR "deps/easyloggingpp/")
-
 ############# CONFIG VALIDATOR TOOL ###############
 
 if (true)
     add_executable (residue-config-validator-bin
         tools/config-validator/main.cc
-        ${EASYLOGGINGPP_INCLUDE_DIR}/easylogging++.cc
     )
 
     target_compile_definitions (residue-config-validator-bin PUBLIC
@@ -249,39 +242,10 @@ if (true)
     #install (TARGETS residue-config-validator-bin DESTINATION bin)
 endif()
 
-
-############# LICENSE_MANAGER TOOL ###############
-
-if (false)
-    add_executable (residue-license-manager-bin
-        tools/license-manager/main.cc
-        ${EASYLOGGINGPP_INCLUDE_DIR}/easylogging++.cc
-    )
-
-    target_compile_definitions (residue-license-manager-bin PUBLIC
-        ELPP_NO_DEFAULT_LOG_FILE
-        ELPP_NO_LOG_TO_FILE
-        ELPP_STL_LOGGING
-        AUTO_INITIALIZE_EASYLOGGINGPP
-        ELPP_DEFAULT_LOGGING_FLAGS=4096
-    )
-
-    target_link_libraries (residue-license-manager-bin
-        residue-core)
-
-    set_target_properties (residue-license-manager-bin PROPERTIES
-        OUTPUT_NAME "residue-license-manager"
-        VERSION ${RESIDUE_VERSION}
-    )
-
-    #install (TARGETS residue-license-manager-bin DESTINATION bin)
-endif()
-
 ############# RESIDUE BINARY ###############
 
 add_executable (residue-bin
     src/main.cc
-    ${EASYLOGGINGPP_INCLUDE_DIR}/easylogging++.cc
 )
 
 target_compile_definitions (residue-bin PUBLIC
@@ -320,7 +284,6 @@ if (test)
     add_executable (residue-unit-tests
         deps/ripe/Ripe.cc
         test/main.cc
-        ${EASYLOGGINGPP_INCLUDE_DIR}/easylogging++.cc
     )
 
     target_compile_definitions (residue-unit-tests PUBLIC
