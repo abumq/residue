@@ -22,7 +22,7 @@
 #ifndef ConnectionRequestHandler_h
 #define ConnectionRequestHandler_h
 
-#include "src/core/request-handler.h"
+#include "core/request-handler.h"
 
 namespace residue {
 class ConnectionRequest;

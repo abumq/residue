@@ -19,8 +19,8 @@
 //  limitations under the License.
 //
 
-#include "src/cli/reset.h"
-#include "src/core/registry.h"
+#include "cli/reset.h"
+#include "core/registry.h"
 
 using namespace residue;
 

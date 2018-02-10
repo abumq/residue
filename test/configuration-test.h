@@ -25,14 +25,14 @@
 #include <cstdio>
 #include <fstream>
 #include <memory>
-#include "deps/ripe/Ripe.h"
+#include "ripe/Ripe.h"
 #include "test.h"
-#include "src/core/residue-exception.h"
-#include "src/core/configuration.h"
-#include "src/core/registry.h"
-#include "src/logging/user-log-builder.h"
-#include "src/logging/log-request-handler.h"
-#include "src/connect/connection-request.h"
+#include "core/residue-exception.h"
+#include "core/configuration.h"
+#include "core/registry.h"
+#include "logging/user-log-builder.h"
+#include "logging/log-request-handler.h"
+#include "connect/connection-request.h"
 
 using namespace residue;
 

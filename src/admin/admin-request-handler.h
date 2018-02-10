@@ -22,7 +22,7 @@
 #ifndef AdminRequestHandler_h
 #define AdminRequestHandler_h
 
-#include "src/core/request-handler.h"
+#include "core/request-handler.h"
 
 namespace residue {
 

@@ -19,7 +19,7 @@
 //  limitations under the License.
 //
 
-#include "src/logging/logging-queue.h"
+#include "logging/logging-queue.h"
 
 using namespace residue;
 

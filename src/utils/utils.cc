@@ -29,12 +29,12 @@
 #include <string>
 #include <random>
 #include <algorithm>
-#include "src/logging/log.h"
-#include "src/core/configuration.h"
-#include "src/core/residue-exception.h"
-#include "src/utils/tar.h"
-#include "src/net/url.h"
-#include "src/utils/utils.h"
+#include "logging/log.h"
+#include "core/configuration.h"
+#include "core/residue-exception.h"
+#include "utils/tar.h"
+#include "net/url.h"
+#include "utils/utils.h"
 
 using namespace residue;
 

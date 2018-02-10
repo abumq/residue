@@ -20,13 +20,13 @@
 //
 
 #include <sstream>
-#include "src/logging/log.h"
-#include "src/tokenization/token-request-handler.h"
-#include "src/tokenization/token-request.h"
-#include "src/core/configuration.h"
-#include "src/net/session.h"
-#include "src/utils/utils.h"
-#include "src/tokenization/token-response.h"
+#include "logging/log.h"
+#include "tokenization/token-request-handler.h"
+#include "tokenization/token-request.h"
+#include "core/configuration.h"
+#include "net/session.h"
+#include "utils/utils.h"
+#include "tokenization/token-response.h"
 
 using namespace residue;
 

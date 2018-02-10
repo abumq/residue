@@ -27,8 +27,8 @@
 #include <set>
 #include <vector>
 #include <unordered_map>
-#include "src/non-copyable.h"
-#include "src/cli/command.h"
+#include "non-copyable.h"
+#include "cli/command.h"
 
 namespace residue {
 

@@ -19,11 +19,11 @@
 //  limitations under the License.
 //
 
-#include "src/logging/log.h"
-#include "src/connect/connection-request.h"
-#include "src/core/json-object.h"
-#include "src/crypto/base64.h"
-#include "src/utils/utils.h"
+#include "logging/log.h"
+#include "connect/connection-request.h"
+#include "core/json-object.h"
+#include "crypto/base64.h"
+#include "utils/utils.h"
 
 using namespace residue;
 

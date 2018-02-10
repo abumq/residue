@@ -19,9 +19,9 @@
 //  limitations under the License.
 //
 
-#include "src/cli/reload-config.h"
-#include "src/core/registry.h"
-#include "src/core/configuration.h"
+#include "cli/reload-config.h"
+#include "core/registry.h"
+#include "core/configuration.h"
 
 using namespace residue;
 

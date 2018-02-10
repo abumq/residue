@@ -22,7 +22,7 @@
 #ifndef ClientIntegrityTask_h
 #define ClientIntegrityTask_h
 
-#include "src/tasks/task.h"
+#include "tasks/task.h"
 
 namespace residue {
 

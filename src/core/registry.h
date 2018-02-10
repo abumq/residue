@@ -26,11 +26,11 @@
 #include <string>
 #include <unordered_map>
 #include <vector>
-#include "src/non-copyable.h"
-#include "src/clients/client.h"
-#include "src/cli/command-handler.h"
-#include "src/net/session.h"
-#include "src/utils/utils.h"
+#include "non-copyable.h"
+#include "clients/client.h"
+#include "cli/command-handler.h"
+#include "net/session.h"
+#include "utils/utils.h"
 
 namespace residue {
 

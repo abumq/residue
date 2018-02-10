@@ -24,8 +24,8 @@
 
 #include <deque>
 #include <mutex>
-#include "src/core/request-handler.h"
-#include "src/logging/log-request.h"
+#include "core/request-handler.h"
+#include "logging/log-request.h"
 
 
 namespace residue {

@@ -19,9 +19,9 @@
 //  limitations under the License.
 //
 
-#include "src/cli/rotate.h"
-#include "src/core/registry.h"
-#include "src/tasks/log-rotator.h"
+#include "cli/rotate.h"
+#include "core/registry.h"
+#include "tasks/log-rotator.h"
 
 using namespace residue;
 

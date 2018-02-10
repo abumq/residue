@@ -21,15 +21,15 @@
 
 #include <iomanip>
 #include <sstream>
-#include "src/logging/log.h"
-#include "src/net/session.h"
-#include "src/core/registry.h"
-#include "src/core/request-handler.h"
-#include "src/core/configuration.h"
-#include "src/core/response.h"
-#include "src/crypto/base64.h"
-#include "src/crypto/aes.h"
-#include "src/crypto/rsa.h"
+#include "logging/log.h"
+#include "net/session.h"
+#include "core/registry.h"
+#include "core/request-handler.h"
+#include "core/configuration.h"
+#include "core/response.h"
+#include "crypto/base64.h"
+#include "crypto/aes.h"
+#include "crypto/rsa.h"
 
 using namespace residue;
 

@@ -19,8 +19,8 @@
 //  limitations under the License.
 //
 
-#include "src/cli/list-tokens.h"
-#include "src/core/registry.h"
+#include "cli/list-tokens.h"
+#include "core/registry.h"
 
 using namespace residue;
 

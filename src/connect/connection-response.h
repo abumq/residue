@@ -23,8 +23,8 @@
 #define ConnectionResponse_h
 
 #include <string>
-#include "src/core/response.h"
-#include "src/connect/connection-request-handler.h"
+#include "core/response.h"
+#include "connect/connection-request-handler.h"
 
 namespace residue {
 

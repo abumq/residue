@@ -22,9 +22,9 @@
 #ifndef LogRequest_h
 #define LogRequest_h
 
-#include "src/logging/log.h"
-#include "src/core/request.h"
-#include "src/core/json-object.h"
+#include "logging/log.h"
+#include "core/request.h"
+#include "core/json-object.h"
 
 namespace residue {
 

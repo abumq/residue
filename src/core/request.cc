@@ -19,9 +19,9 @@
 //  limitations under the License.
 //
 
-#include "src/logging/log.h"
-#include "src/core/request.h"
-#include "src/core/configuration.h"
+#include "logging/log.h"
+#include "core/request.h"
+#include "core/configuration.h"
 
 using namespace residue;
 

@@ -23,7 +23,7 @@
 #define AES_h
 
 #include <string>
-#include "src/static-base.h"
+#include "static-base.h"
 
 namespace residue {
 

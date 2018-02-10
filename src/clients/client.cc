@@ -21,13 +21,13 @@
 
 #include <chrono>
 #include <mutex>
-#include "src/logging/log.h"
-#include "src/core/configuration.h"
-#include "src/clients/client.h"
-#include "src/connect/connection-request.h"
-#include "src/core/registry.h"
-#include "src/crypto/aes.h"
-#include "src/utils/utils.h"
+#include "logging/log.h"
+#include "core/configuration.h"
+#include "clients/client.h"
+#include "connect/connection-request.h"
+#include "core/registry.h"
+#include "crypto/aes.h"
+#include "utils/utils.h"
 
 using namespace residue;
 

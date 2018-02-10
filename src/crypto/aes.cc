@@ -20,13 +20,13 @@
 //
 
 #ifdef RESIDUE_USE_MINE
-#include "deps/mine/mine.h"
+#   include "mine/mine.h"
 #else
-#include "deps/ripe/Ripe.h"
+#   include "ripe/Ripe.h"
 #endif
-#include "src/logging/log.h"
-#include "src/net/session.h"
-#include "src/crypto/aes.h"
+#include "logging/log.h"
+#include "net/session.h"
+#include "crypto/aes.h"
 
 using namespace residue;
 

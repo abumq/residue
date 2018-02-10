@@ -19,10 +19,10 @@
 //  limitations under the License.
 //
 
-#include "src/logging/log.h"
-#include "src/admin/admin-request.h"
-#include "src/core/json-object.h"
-#include "src/utils/utils.h"
+#include "logging/log.h"
+#include "admin/admin-request.h"
+#include "core/json-object.h"
+#include "utils/utils.h"
 
 using namespace residue;
 

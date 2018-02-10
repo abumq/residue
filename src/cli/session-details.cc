@@ -19,9 +19,9 @@
 //  limitations under the License.
 //
 
-#include "src/cli/session-details.h"
-#include "src/core/registry.h"
-#include "src/utils/utils.h"
+#include "cli/session-details.h"
+#include "core/registry.h"
+#include "utils/utils.h"
 
 using namespace residue;
 

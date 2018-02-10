@@ -23,7 +23,7 @@
 #define Server_h
 
 #include <boost/asio.hpp>
-#include "src/non-copyable.h"
+#include "non-copyable.h"
 
 using boost::asio::ip::tcp;
 

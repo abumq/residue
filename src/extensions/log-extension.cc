@@ -19,9 +19,9 @@
 //  limitations under the License.
 //
 
-#include "src/extensions/log-extension.h"
-#include "src/logging/user-log-builder.h"
-#include "src/logging/log-request.h"
+#include "extensions/log-extension.h"
+#include "logging/user-log-builder.h"
+#include "logging/log-request.h"
 
 using namespace residue;
 

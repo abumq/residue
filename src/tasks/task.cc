@@ -21,10 +21,10 @@
 
 #include <thread>
 #include <chrono>
-#include "src/logging/log.h"
-#include "src/tasks/task.h"
-#include "src/logging/custom-logging.h"
-#include "src/utils/utils.h"
+#include "logging/log.h"
+#include "tasks/task.h"
+#include "logging/custom-logging.h"
+#include "utils/utils.h"
 
 using namespace residue;
 

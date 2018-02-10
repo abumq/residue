@@ -23,7 +23,7 @@
 #define TokenRequest_h
 
 #include <string>
-#include "src/core/request.h"
+#include "core/request.h"
 
 namespace residue {
 

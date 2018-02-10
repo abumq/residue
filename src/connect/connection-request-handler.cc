@@ -19,15 +19,15 @@
 //  limitations under the License.
 //
 
-#include "src/logging/log.h"
-#include "src/connect/connection-request-handler.h"
-#include "src/connect/connection-request.h"
-#include "src/connect/connection-response.h"
-#include "src/core/configuration.h"
-#include "src/net/session.h"
-#include "src/clients/client.h"
-#include "src/utils/utils.h"
-#include "src/crypto/aes.h"
+#include "logging/log.h"
+#include "connect/connection-request-handler.h"
+#include "connect/connection-request.h"
+#include "connect/connection-response.h"
+#include "core/configuration.h"
+#include "net/session.h"
+#include "clients/client.h"
+#include "utils/utils.h"
+#include "crypto/aes.h"
 
 using namespace residue;
 

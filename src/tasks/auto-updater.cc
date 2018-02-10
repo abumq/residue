@@ -19,14 +19,14 @@
 //  limitations under the License.
 //
 
-#include "src/logging/log.h"
-#include "src/tasks/auto-updater.h"
-#include "src/core/registry.h"
-#include "src/core/configuration.h"
-#include "src/net/url.h"
-#include "src/utils/utils.h"
-#include "src/net/http-client.h"
-#include "src/core/json-object.h"
+#include "logging/log.h"
+#include "tasks/auto-updater.h"
+#include "core/registry.h"
+#include "core/configuration.h"
+#include "net/url.h"
+#include "utils/utils.h"
+#include "net/http-client.h"
+#include "core/json-object.h"
 
 using namespace residue;
 

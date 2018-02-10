@@ -23,7 +23,7 @@
 #define Session_h
 
 #include <boost/asio.hpp>
-#include "src/core/response.h"
+#include "core/response.h"
 
 using boost::asio::ip::tcp;
 

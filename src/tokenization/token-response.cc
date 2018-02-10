@@ -19,7 +19,7 @@
 //  limitations under the License.
 //
 
-#include "src/tokenization/token-response.h"
+#include "tokenization/token-response.h"
 
 using namespace residue;
 

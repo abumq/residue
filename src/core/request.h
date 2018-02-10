@@ -23,9 +23,9 @@
 #define Request_h
 
 #include <string>
-#include "src/non-copyable.h"
-#include "src/core/json-object.h"
-#include "src/core/types.h"
+#include "non-copyable.h"
+#include "core/json-object.h"
+#include "core/types.h"
 
 namespace residue {
 

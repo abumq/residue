@@ -20,19 +20,19 @@
 //
 
 #include <cstdio>
-#include "deps/linenoise/linenoise.h"
-#include "src/logging/log.h"
-#include "src/cli/command-handler.h"
-#include "src/utils/utils.h"
-#include "src/cli/update.h"
-#include "src/cli/reset.h"
-#include "src/cli/reload-config.h"
-#include "src/cli/session-details.h"
-#include "src/cli/stats.h"
-#include "src/cli/rotate.h"
-#include "src/cli/list-tokens.h"
-#include "src/cli/list-logging-files.h"
-#include "src/cli/clients.h"
+#include "linenoise/linenoise.h"
+#include "logging/log.h"
+#include "cli/command-handler.h"
+#include "utils/utils.h"
+#include "cli/update.h"
+#include "cli/reset.h"
+#include "cli/reload-config.h"
+#include "cli/session-details.h"
+#include "cli/stats.h"
+#include "cli/rotate.h"
+#include "cli/list-tokens.h"
+#include "cli/list-logging-files.h"
+#include "cli/clients.h"
 
 using namespace residue;
 

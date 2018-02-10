@@ -1,5 +1,8 @@
 # Change Log
 
+## [Unreleased]
+### Updates
+
 ## [1.3.2] - 10-02-2018
 ### Fixes
 - Fix crash when failed to process zlib operations

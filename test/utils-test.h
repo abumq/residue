@@ -24,7 +24,7 @@
 
 #include <cstdio>
 #include "test.h"
-#include "src/utils/utils.h"
+#include "utils/utils.h"
 
 using namespace residue;
 

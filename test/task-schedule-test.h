@@ -23,8 +23,8 @@
 #define TASK_SCHEDULE_TEST_H
 
 #include "test.h"
-#include "src/utils/utils.h"
-#include "src/tasks/task.h"
+#include "utils/utils.h"
+#include "tasks/task.h"
 
 using namespace residue;
 

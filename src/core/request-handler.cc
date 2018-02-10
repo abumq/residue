@@ -19,11 +19,11 @@
 //  limitations under the License.
 //
 
-#include "src/logging/log.h"
-#include "src/core/request-handler.h"
-#include "src/core/request.h"
-#include "src/crypto/aes.h"
-#include "src/clients/client.h"
+#include "logging/log.h"
+#include "core/request-handler.h"
+#include "core/request.h"
+#include "crypto/aes.h"
+#include "clients/client.h"
 
 using namespace residue;
 

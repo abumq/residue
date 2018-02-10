@@ -20,14 +20,14 @@
 //
 
 #ifdef RESIDUE_HAS_CURL
-#include <curl/curl.h>
+#   include <curl/curl.h>
 #else
-#include <boost/asio.hpp>
+#   include <boost/asio.hpp>
 #endif
-#include "src/logging/log.h"
-#include "src/net/http-client.h"
-#include "src/net/url.h"
-#include "src/core/residue-exception.h"
+#include "logging/log.h"
+#include "net/http-client.h"
+#include "net/url.h"
+#include "core/residue-exception.h"
 
 using namespace residue;
 

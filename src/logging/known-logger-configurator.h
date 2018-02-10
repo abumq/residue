@@ -22,9 +22,9 @@
 #ifndef KnownLoggerConfigurator_h
 #define KnownLoggerConfigurator_h
 
-#include "src/logging/log.h"
-#include "src/non-copyable.h"
-#include "src/utils/utils.h"
+#include "logging/log.h"
+#include "non-copyable.h"
+#include "utils/utils.h"
 
 namespace residue {
 

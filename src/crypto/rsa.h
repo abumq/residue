@@ -30,7 +30,7 @@
 #include <cryptopp/pem-com.h> // for readPem func
 #endif
 
-#include "src/static-base.h"
+#include "static-base.h"
 
 #ifdef RESIDUE_USE_MINE
 namespace mine {

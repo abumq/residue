@@ -19,11 +19,11 @@
 //  limitations under the License.
 //
 
-#include "src/cli/clients.h"
-#include "src/core/registry.h"
-#include "src/core/configuration.h"
-#include "src/utils/utils.h"
-#include "src/tasks/client-integrity-task.h"
+#include "cli/clients.h"
+#include "core/registry.h"
+#include "core/configuration.h"
+#include "utils/utils.h"
+#include "tasks/client-integrity-task.h"
 
 using namespace residue;
 

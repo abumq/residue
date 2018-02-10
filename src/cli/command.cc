@@ -19,8 +19,8 @@
 //  limitations under the License.
 //
 
-#include "src/cli/command.h"
-#include "src/core/registry.h"
+#include "cli/command.h"
+#include "core/registry.h"
 
 using namespace residue;
 

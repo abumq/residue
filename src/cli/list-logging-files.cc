@@ -19,9 +19,9 @@
 //  limitations under the License.
 //
 
-#include "src/cli/list-logging-files.h"
-#include "src/core/registry.h"
-#include "src/core/configuration.h"
+#include "cli/list-logging-files.h"
+#include "core/registry.h"
+#include "core/configuration.h"
 
 using namespace residue;
 

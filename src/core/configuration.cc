@@ -27,17 +27,17 @@
 #include <iostream>
 #include <sstream>
 #include <algorithm>
-#include "src/logging/log.h"
-#include "src/core/configuration.h"
-#include "src/core/json-object.h"
-#include "src/crypto/aes.h"
-#include "src/crypto/base16.h"
-#include "src/crypto/rsa.h"
-#include "src/utils/utils.h"
-#include "src/net/http-client.h"
-#include "src/core/residue-exception.h"
-#include "src/logging/user-log-builder.h"
-#include "src/logging/log-request.h"
+#include "logging/log.h"
+#include "core/configuration.h"
+#include "core/json-object.h"
+#include "crypto/aes.h"
+#include "crypto/base16.h"
+#include "crypto/rsa.h"
+#include "utils/utils.h"
+#include "net/http-client.h"
+#include "core/residue-exception.h"
+#include "logging/user-log-builder.h"
+#include "logging/log-request.h"
 
 using namespace residue;
 

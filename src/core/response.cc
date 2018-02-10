@@ -19,7 +19,7 @@
 //  limitations under the License.
 //
 
-#include "src/core/response.h"
+#include "core/response.h"
 
 using namespace residue;
 

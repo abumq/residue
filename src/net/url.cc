@@ -22,9 +22,9 @@
 #include <cctype>
 #include <algorithm>
 #include <functional>
-#include "src/logging/log.h"
-#include "src/net/url.h"
-#include "src/utils/utils.h"
+#include "logging/log.h"
+#include "net/url.h"
+#include "utils/utils.h"
 
 using namespace residue;
 

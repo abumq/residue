@@ -28,11 +28,11 @@
 #include <unordered_map>
 #include <unordered_set>
 #include <vector>
-#include "src/non-copyable.h"
-#include "src/clients/client.h"
-#include "src/core/json-object.h"
-#include "src/crypto/rsa.h"
-#include "src/extensions/log-extension.h"
+#include "non-copyable.h"
+#include "clients/client.h"
+#include "core/json-object.h"
+#include "crypto/rsa.h"
+#include "extensions/log-extension.h"
 
 namespace residue {
 

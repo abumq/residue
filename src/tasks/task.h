@@ -25,8 +25,8 @@
 #include <string>
 #include <atomic>
 #include <chrono>
-#include "src/non-copyable.h"
-#include "src/utils/utils.h"
+#include "non-copyable.h"
+#include "utils/utils.h"
 
 namespace residue {
 

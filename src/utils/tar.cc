@@ -24,8 +24,8 @@
 #include <cerrno>
 #include <ctime>
 #include <unistd.h>
-#include "src/logging/log.h"
-#include "src/utils/tar.h"
+#include "logging/log.h"
+#include "utils/tar.h"
 
 using namespace residue;
 

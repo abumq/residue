@@ -22,7 +22,7 @@
 #ifndef LOG_H
 #define LOG_H
 
-#include "deps/easyloggingpp/easylogging++.h"
+#include "easyloggingpp/easylogging++.h"
 
 #define RESIDUE_LOGGER_ID "residue"
 

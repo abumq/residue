@@ -25,9 +25,9 @@
 #include <atomic>
 #include <thread>
 #include <string>
-#include "src/core/request-handler.h"
-#include "src/logging/user-log-builder.h"
-#include "src/logging/logging-queue.h"
+#include "core/request-handler.h"
+#include "logging/user-log-builder.h"
+#include "logging/logging-queue.h"
 
 namespace el {
     class LogBuilder;

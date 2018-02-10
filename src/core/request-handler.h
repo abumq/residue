@@ -23,14 +23,14 @@
 #define RequestHandler_h
 
 #include <string>
-#include "src/non-copyable.h"
-#include "src/core/configuration.h"
-#include "src/core/registry.h"
-#include "src/core/request.h"
-#include "src/crypto/base16.h"
-#include "src/crypto/base64.h"
-#include "src/crypto/rsa.h"
-#include "src/crypto/zlib.h"
+#include "non-copyable.h"
+#include "core/configuration.h"
+#include "core/registry.h"
+#include "core/request.h"
+#include "crypto/base16.h"
+#include "crypto/base64.h"
+#include "crypto/rsa.h"
+#include "crypto/zlib.h"
 
 namespace residue {
 

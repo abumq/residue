@@ -24,7 +24,7 @@
 
 #include <string>
 #include <set>
-#include "src/core/request.h"
+#include "core/request.h"
 
 namespace residue {
 

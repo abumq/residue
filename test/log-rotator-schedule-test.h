@@ -25,8 +25,8 @@
 #include <map>
 #include <memory>
 #include "test.h"
-#include "src/utils/utils.h"
-#include "src/tasks/log-rotator.h"
+#include "utils/utils.h"
+#include "tasks/log-rotator.h"
 
 using namespace residue;
 
