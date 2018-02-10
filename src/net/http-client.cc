@@ -61,9 +61,10 @@ std::string HttpClient::fetchUrlContents(const std::string& url)
         curl_easy_setopt(curl, CURLOPT_URL, url.data());
         curl_easy_setopt(curl, CURLOPT_SSL_VERIFYPEER, 0L);
         curl_easy_setopt(curl, CURLOPT_SSL_VERIFYHOST, 0L);
-        curl_easy_setopt(curl, CURLOPT_USERAGENT, std::string("Residue/" +
-                                                              std::string(RESIDUE_VERSION_MAJOR) +
-                                                              std::string(RESIDUE_VERSION_MINOR)).data());
+        curl_easy_setopt(curl, CURLOPT_USERAGENT, std::string("muflihun/residue/" +
+                                                              std::string(RESIDUE_VERSION_MAJOR) + "." +
+                                                              std::string(RESIDUE_VERSION_MINOR) + "." +
+                                                              std::string(RESIDUE_VERSION_PATCH)).data());
         curl_easy_setopt(curl, CURLOPT_WRITEFUNCTION, writeCallback);
         curl_easy_setopt(curl, CURLOPT_WRITEDATA, &result);
 
