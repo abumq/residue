@@ -1,6 +1,6 @@
 # Change Log
 
-## [Unreleased]
+## [1.3.2] - 10-02-2018
 ### Fixes
 - Fix crash when failed to process zlib operations
 - Upgraded ripe library to 4.1.1
