@@ -54,7 +54,6 @@ include(residue-dev)
 include (FindPackageHandleStandardArgs)
 include (FindCURL)
 
-#require_cpp11()
 check_apple()
 
 list (APPEND CMAKE_CXX_FLAGS " -std=c++11 -O3 -Wall -Wextra -pedantic -pedantic-errors -Wundef -Wno-unused-variable -Wno-deprecated-declarations -Wno-unknown-warning-option -Wno-pessimizing-move ")
@@ -113,20 +112,17 @@ thread_packages_check()
 include_directories (${CMAKE_SOURCE_DIR})
 
 if (use_mine)
-    set (CRYPTO_LIBS
-        deps/ripe/Ripe.cc
-        deps/mine/mine.cc)
+    set (MINE_SRC deps/mine/mine.cc)
 else()
-    set (CRYPTO_LIBS
-        deps/ripe/Ripe.cc)
+    set (MINE_SRC "")
 endif()
 
 set (SOURCE_FILES
 
-    ${CRYPTO_LIBS}
-
+    ${MINE_SRC}
     deps/linenoise/linenoise.c
     deps/easyloggingpp/easylogging++.cc
+    deps/ripe/Ripe.cc
 
     src/connect/connection-request.cc
     src/connect/connection-request-handler.cc
