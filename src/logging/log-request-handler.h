@@ -23,7 +23,6 @@
 #define LogRequestHandler_h
 
 #include <atomic>
-#include <vector>
 #include <thread>
 #include <string>
 #include "src/core/request-handler.h"
@@ -90,7 +89,7 @@ private:
 
     LoggingQueue m_queue;
 
-    std::vector<std::thread> m_backgroundWorkers;
+    std::thread m_backgroundWorker;
 };
 }
 #endif /* LogRequestHandler_h */
