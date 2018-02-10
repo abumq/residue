@@ -117,12 +117,14 @@ else()
     set (MINE_SRC "")
 endif()
 
-set (SOURCE_FILES
-
+set (DEPS_SRC
     ${MINE_SRC}
     deps/linenoise/linenoise.c
     deps/easyloggingpp/easylogging++.cc
     deps/ripe/Ripe.cc
+)
+
+set (SOURCE_FILES
 
     src/connect/connection-request.cc
     src/connect/connection-request-handler.cc
@@ -217,6 +219,7 @@ set (CMAKE_INSTALL_RPATH "${CMAKE_INSTALL_PREFIX}/lib")
 if (true)
     add_executable (residue-config-validator-bin
         tools/config-validator/main.cc
+        ${DEPS_SRC}
     )
 
     target_compile_definitions (residue-config-validator-bin PUBLIC
@@ -242,6 +245,7 @@ endif()
 
 add_executable (residue-bin
     src/main.cc
+    ${DEPS_SRC}
 )
 
 target_compile_definitions (residue-bin PUBLIC
@@ -278,9 +282,8 @@ if (test)
     enable_testing()
 
     add_executable (residue-unit-tests
-        deps/ripe/Ripe.cc
-        deps/easyloggingpp/easylogging++.cc
         test/main.cc
+        ${DEPS_SRC}
     )
 
     target_compile_definitions (residue-unit-tests PUBLIC
