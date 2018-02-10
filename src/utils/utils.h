@@ -104,9 +104,6 @@ public:
 
     // compression
     static bool archiveFiles(const std::string& outputFile, const std::map<std::string, std::string>& files);
-    static bool compressFile(const std::string& gzFilename, const std::string& inputFile);
-    static std::string compressString(const std::string& str);
-    static std::string decompressString(const std::string& str);
 
     // date
     static inline types::Time now()

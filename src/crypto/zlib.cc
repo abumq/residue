@@ -39,12 +39,7 @@ std::string ZLib::compress(const std::string& data)
     }
     return "ERROR ZLIB COMPRESS";
 #else
-    try {
-        return Ripe::compressString(data);
-    } catch (const std::exception& e) {
-        DRVLOG(RV_ERROR) << "Failed to compress zlib " << data << ", e=" << e.what();
-    }
-    return "ERROR ZLIB COMPRESS";
+    return Ripe::compressString(data);
 #endif
 }
 
@@ -58,15 +53,7 @@ std::string ZLib::decompress(const std::string& data)
     }
     return "ERROR ZLIB DECOMPRESS";
 #else
-    try {
-        return Ripe::decompressString(data);
-    }  catch (const std::exception& e) {
-        // Only do verbose log as some libraries may send inflated data
-        // so we do not want to fill log with this error unless server admin
-        // chooses to do so with '-v' option
-        DRVLOG(RV_ERROR) << "Failed to decompress zlib " << data << ", e=" << e.what();
-    }
-    return "ERROR ZLIB DECOMPRESS";
+    return Ripe::decompressString(data);
 #endif
 }
 
