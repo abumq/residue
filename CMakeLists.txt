@@ -279,6 +279,7 @@ if (test)
 
     add_executable (residue-unit-tests
         deps/ripe/Ripe.cc
+        deps/easyloggingpp/easylogging++.cc
         test/main.cc
     )
 
