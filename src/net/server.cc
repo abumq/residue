@@ -20,7 +20,7 @@
 //
 
 #include <thread>
-#include <boost/asio.hpp>
+#include "net/asio.h"
 #include "logging/log.h"
 #include "net/server.h"
 #include "net/session.h"
@@ -28,9 +28,9 @@
 #include "core/registry.h"
 
 using namespace residue;
-using boost::asio::ip::tcp;
+using net::ip::tcp;
 
-Server::Server(boost::asio::io_service& io_service, int port, RequestHandler* requestHandler) :
+Server::Server(net::io_service& io_service, int port, RequestHandler* requestHandler) :
     m_acceptor(io_service, tcp::endpoint(tcp::v4(), port)),
     m_socket(io_service),
     m_requestHandler(requestHandler)
@@ -47,7 +47,7 @@ Server::~Server()
 
 void Server::accept()
 {
-    m_acceptor.async_accept(m_socket, [this](boost::system::error_code ec) {
+    m_acceptor.async_accept(m_socket, [this](residue::error_code ec) {
         if (!ec) {
             std::make_shared<Session>(std::move(m_socket), m_requestHandler)->start();
         }

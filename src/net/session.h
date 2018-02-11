@@ -22,10 +22,10 @@
 #ifndef Session_h
 #define Session_h
 
-#include <boost/asio.hpp>
+#include "net/asio.h"
 #include "core/response.h"
 
-using boost::asio::ip::tcp;
+using net::ip::tcp;
 
 namespace residue {
 class RequestHandler;
@@ -111,7 +111,7 @@ private:
     tcp::socket m_socket;
     RequestHandler* m_requestHandler;
     std::string m_name;
-    boost::asio::streambuf m_streamBuffer;
+    net::streambuf m_streamBuffer;
 
     std::string m_bytesSent;
     std::string m_bytesReceived;

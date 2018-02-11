@@ -22,7 +22,7 @@
 #ifdef RESIDUE_HAS_CURL
 #   include <curl/curl.h>
 #else
-#   include <boost/asio.hpp>
+#   include "net/asio.h"
 #endif
 #include "logging/log.h"
 #include "net/http-client.h"
@@ -92,10 +92,10 @@ std::string HttpClient::fetchUrlContents(const std::string& url)
         throw ResidueException("Only http URLs supported. Use libcurl if you want to get url contents from other protocols");
     }
 
-    using boost::asio::ip::tcp;
+    using net::ip::tcp;
     try {
 
-        boost::asio::io_service io_service;
+        net::io_service io_service;
 
         // Get a list of endpoints corresponding to the server name.
         tcp::resolver resolver(io_service);
@@ -104,9 +104,9 @@ std::string HttpClient::fetchUrlContents(const std::string& url)
 
         // Try each endpoint until we successfully establish a connection.
         tcp::socket socket(io_service);
-        boost::asio::connect(socket, endpoint_iterator);
+        net::connect(socket, endpoint_iterator);
 
-        boost::asio::streambuf request;
+        net::streambuf request;
         std::ostream requestStream(&request);
         requestStream << "GET " << parsedUrl.path() << " HTTP/1.0\r\n";
         requestStream << "Host: " << parsedUrl.host() << "\r\n";
@@ -117,13 +117,13 @@ std::string HttpClient::fetchUrlContents(const std::string& url)
         requestStream << "Connection: close\r\n\r\n";
 
         // Send the request.
-        boost::asio::write(socket, request);
+        net::write(socket, request);
 
         // Read the response status line. The response streambuf will automatically
         // grow to accommodate the entire line. The growth may be limited by passing
         // a maximum size to the streambuf constructor.
-        boost::asio::streambuf response;
-        boost::asio::read_until(socket, response, "\r\n");
+        net::streambuf response;
+        net::read_until(socket, response, "\r\n");
 
         // Check that response is OK.
         std::istream responseStream(&response);
@@ -143,7 +143,7 @@ std::string HttpClient::fetchUrlContents(const std::string& url)
         }
 
         // Read the response headers, which are terminated by a blank line.
-        boost::asio::read_until(socket, response, "\r\n\r\n");
+        net::read_until(socket, response, "\r\n\r\n");
 
         std::stringstream ss;
         // Process the response headers.
@@ -161,12 +161,12 @@ std::string HttpClient::fetchUrlContents(const std::string& url)
         }
 
         // Read until EOF, writing data to output as we go.
-        boost::system::error_code error;
-        while (boost::asio::read(socket, response, boost::asio::transfer_at_least(1), error)) {
+        residue::error_code error;
+        while (net::read(socket, response, net::transfer_at_least(1), error)) {
           ss << &response;
         }
 
-        if (error != boost::asio::error::eof) {
+        if (error != net::error::eof) {
           throw ResidueException(error.message());
         }
         return ss.str();

@@ -1,7 +1,8 @@
 # Change Log
 
-## [Unreleased]
+## [1.4.0]
 ### Updates
+- Based on standalone ASIO instead of boost
 
 ## [1.3.2] - 10-02-2018
 ### Fixes

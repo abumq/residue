@@ -60,8 +60,8 @@ void Session::start()
 void Session::read()
 {
     auto self(shared_from_this());
-    boost::asio::async_read_until(m_socket, m_streamBuffer, Session::PACKET_DELIMITER,
-                                  [&, this, self](boost::system::error_code ec, std::size_t numOfBytes) {
+    net::async_read_until(m_socket, m_streamBuffer, Session::PACKET_DELIMITER,
+                                  [&, this, self](residue::error_code ec, std::size_t numOfBytes) {
 
 #ifdef RESIDUE_PROFILING
         //types::Time m_timeTaken;
@@ -77,7 +77,7 @@ void Session::read()
             Utils::bigAdd(m_bytesReceived, std::to_string(numOfBytes));
             m_requestHandler->registry()->addBytesReceived(numOfBytes);
         } else {
-            DRVLOG_IF(ec != boost::asio::error::eof, RV_DEBUG) << "Error: " << ec.message();
+            DRVLOG_IF(ec != net::error::eof, RV_DEBUG) << "Error: " << ec.message();
             m_requestHandler->registry()->leave(shared_from_this());
         }
     });
@@ -152,8 +152,8 @@ void Session::write(const char* data,
     m_requestHandler->registry()->addBytesSent(length);
     auto write = [&]() {
         DRVLOG(RV_DEBUG) << "Sending " << data;
-        boost::asio::async_write(m_socket, boost::asio::buffer(data, length),
-                                 [&, this, self](boost::system::error_code ec, std::size_t) {
+        net::async_write(m_socket, net::buffer(data, length),
+                                 [&, this, self](residue::error_code ec, std::size_t) {
             if (ec) {
                 DRVLOG(RV_DEBUG) << "Failed to send." << ec.message();
                 m_socket.close();

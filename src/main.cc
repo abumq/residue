@@ -30,7 +30,7 @@
 #include <memory>
 #include <thread>
 #include <utility>
-#include <boost/asio.hpp>
+#include "net/asio.h"
 #include "ripe/Ripe.h"
 #ifdef RESIDUE_USE_MINE
 #   include "mine/mine.h"
@@ -56,7 +56,7 @@
 #include "tasks/log-rotator.h"
 
 using namespace residue;
-using boost::asio::ip::tcp;
+using net::ip::tcp;
 
 INITIALIZE_EASYLOGGINGPP
 
@@ -236,7 +236,7 @@ int main(int argc, char* argv[])
         // admin server
         threads.push_back(std::thread([&]() {
             el::Helpers::setThreadName("AdminHandler");
-            boost::asio::io_service io_service;
+            net::io_service io_service;
             AdminRequestHandler newAdminRequestHandler(&registry, &commandHandler);
             Server svr(io_service, config.adminPort(), &newAdminRequestHandler);
             io_service.run();
@@ -245,7 +245,7 @@ int main(int argc, char* argv[])
         // connect server
         threads.push_back(std::thread([&]() {
             el::Helpers::setThreadName("ConnectionHandler");
-            boost::asio::io_service io_service;
+            net::io_service io_service;
             ConnectionRequestHandler newConnectionRequestHandler(&registry);
             Server svr(io_service, config.connectPort(), &newConnectionRequestHandler);
             io_service.run();
@@ -254,7 +254,7 @@ int main(int argc, char* argv[])
         // log server
         threads.push_back(std::thread([&]() {
             el::Helpers::setThreadName("LogHandler");
-            boost::asio::io_service io_service;
+            net::io_service io_service;
             LogRequestHandler logRequestHandler(&registry, logBuilder);
             logRequestHandler.start(); // Start handling incoming requests
             Server svr(io_service, config.loggingPort(), &logRequestHandler);
@@ -264,7 +264,7 @@ int main(int argc, char* argv[])
         // token server
         threads.push_back(std::thread([&]() {
             el::Helpers::setThreadName("TokenHandler");
-            boost::asio::io_service io_service;
+            net::io_service io_service;
             TokenRequestHandler tokenRequestHandler(&registry);
             Server svr(io_service, config.tokenPort(), &tokenRequestHandler);
             io_service.run();
