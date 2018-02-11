@@ -6,26 +6,24 @@
 Residue can be installed either by building from the source or by downloading the binaries from respective releases.
 
 # Download Binary
-You can download binary from [releases](https://github.com/muflihun/residue/releases) page for your platform. They are standalone binaries but they require some external libraries installed that are mentioned with each release notes.
+You can download binary from [releases](https://github.com/muflihun/residue/releases) page for your platform. They are standalone binaries but they require some external libraries installed that are mentioned with each release notes. Most of these external libraries come with respective operating system distributions.
 
 ## Special Edition
 Linux binaries come in two flavours, standard and special edition. Special edition is exactly same as standard edition except that it's built with older compiler, hence chances of it running on older systems is higher than that of standard edition.
 
-We always recommend users to try standard edition first and if that does not work only then try special edition.
+**We always recommend users to try standard edition first and if that does not work only then try special edition.**
 
 # Building From Source
-This document shows you steps to install residue server on your machine. You can install it for development or for production use.
+You can follow steps below to build and install residue server on your machine.
 
 ## Dependencies
-  * C++11 (or higher)
-  * [Easylogging++](https://github.com/muflihun/easyloggingpp) v9.95.0 (Included)
+  * C++11 compiler (or higher)
   * [Crypto++](https://www.cryptopp.com/) v5.6.5+ [with Pem Pack](https://raw.githubusercontent.com/muflihun/muflihun.github.io/master/downloads/pem_pack.zip)
-  * [CMake Toolchains](https://cmake.org/) v2.8.12
   * [zlib-devel](https://zlib.net/)
   * [libcurl-devel](https://curl.haxx.se/libcurl/)
-  * [Google Testing Framework](https://github.com/google/googletest/blob/master/googletest/docs/Primer.md)
+  * [Google Testing Framework](https://github.com/google/googletest/blob/master/googletest/docs/Primer.md) (optional - for testing)
   
-## Get Code
+## Get The Code
 You can either [download code from master branch](https://github.com/muflihun/residue/archive/master.zip) or clone it using `git`:
 
 ```
@@ -34,7 +32,8 @@ git clone git@github.com:muflihun/residue.git
 
 ## Build
 Residue uses the CMake toolchains to generate makefiles.
-Steps to build Residue:
+
+In a nut shell, you will do:
 
 ```
 mkdir build
@@ -43,24 +42,26 @@ cmake -Dtest=ON ..
 make
 ```
 
-You can define following options in CMake (using `-D<option>=ON`)
+## CMake Options
+You can change following options in CMake (using `-D<option>=ON`)
 
 |    Option    | Description                     | Default |
 | ------------ | ------------------------------- |---------|
-| `test`       | Compile unit tests              | `OFF`   |
-| `debug`      | Turn on debug logging           | `OFF`   |
-| `production` | Compile for production use      | `OFF`   |
-| `profiling`  | Turn on profiling information for making server faster (goes together with `debug`) | `OFF` |
-| `use_mine` | Use mine crypto library (instead of ripe) whereever possible | `OFF` |
+| `test`       | Compile unit tests (require gtest)              | `OFF`   |
+| `debug`      | Turn on extra logging           | `OFF`   |
+| `production` | Compile for production use      | `ON`   |
+| `profiling`  | Turn on profiling information (for development only - must have `debug` option turned on) | `OFF` |
 | `use_boost` | Link against boost library instead of standalone asio (must have boost 1.54-static installed) | `OFF` |
 
+## Run Tests
 Please consider running unit tests before you move on.
 
 ```
 make test
 ```
 
-The compilation process creates executable `residue` in build directory. You can install it in system-wide directory using:
+## Install
+The compilation process creates executable `residue` in the build directory. You can install it in system-wide directory using:
 
 ```
 make install
@@ -72,7 +73,7 @@ If the default path (`/usr/local/bin`) is not where you want things installed (w
 cmake .. -DCMAKE_INSTALL_PREFIX=/usr/bin
 ```
 
-## Install Script
+## Setup
 Make sure you have all the dependencies installed. You can use following script to install it all and then go back to [Build](#build) section (tested on Ubuntu 14.04 (Trusty) 64-bit)
 
 ```
@@ -107,3 +108,17 @@ You will need to run residue as root user. This is because residue needs to chan
 
 If you are just need to test the residue before you run it in production (in production you should always run it as root) you can use `--force-without-root` command-line argument.
 
+# Verbose Options
+You can turn on verbose logging using `--verbose=<level>` or `-v` for level 9
+
+| **Level** | **Name**        | **Description** |
+|-----------|-----------------|-----------------|
+| 1         | INFO            | General information |
+| 2         | NOTICE            | Warnings that must be addressed by residue server admin |
+| 3         | WARNING            | Warnings that can be ignored |
+| 4         | ERROR            | Error information |
+| 5         |             | Not used |
+| 6         | DETAILS            | General information with extra details |
+| 7         | DEBUG            | Debug information that contains a lot of useful information for devs |
+| 8         | TRACE            | Trace function calls |
+| 9         | CRAZY            | A lot of information - very useful for development purposes |
