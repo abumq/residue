@@ -1,6 +1,6 @@
 # Change Log
 
-## [Unreleased]
+## [1.4.0]
 ### Updates
 - Based on standalone ASIO instead of boost
 

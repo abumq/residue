@@ -13,8 +13,8 @@ option (special_edition "Special edition build" OFF)
 option (use_boost "Use boost or standalone networking lib" OFF)
 
 set (RESIDUE_MAJOR "1")
-set (RESIDUE_MINOR "3")
-set (RESIDUE_PATCH "2")
+set (RESIDUE_MINOR "4")
+set (RESIDUE_PATCH "0")
 set (RESIDUE_VERSION "${RESIDUE_MAJOR}.${RESIDUE_MINOR}.${RESIDUE_PATCH}")
 set (RESIDUE_NAME "Residue")
 
