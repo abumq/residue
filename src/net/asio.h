@@ -26,7 +26,7 @@
 #   include <boost/asio.hpp>
 namespace net = boost::asio;
 namespace residue {
-    using error_code = boost::residue::error_code;
+    using error_code = boost::system::error_code;
 }
 #else
 #   include <system_error>
