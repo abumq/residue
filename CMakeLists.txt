@@ -4,12 +4,13 @@ project (Residue)
 
 option (test "Build all tests" OFF)
 option (travis "Travis CI" OFF)
-option (production "Build for production" OFF)
+option (production "Build for production" ON)
 option (debug "Enable debug logging" OFF)
 option (profiling "Turns profiling on for various scenarios" OFF)
 option (enable_extensions "Enables extensions support for the build" OFF)
 option (use_mine "Use mine whereever possible" OFF)
 option (special_edition "Special edition build" OFF)
+option (use_boost "Use boost or standalone networking lib" OFF)
 
 set (RESIDUE_MAJOR "1")
 set (RESIDUE_MINOR "3")
@@ -80,12 +81,21 @@ if (ZLIB_FOUND)
     message ("-- libz: " ${ZLIB_LIBRARIES} " version: " ${ZLIB_VERSION_STRING})
 endif(ZLIB_FOUND)
 
-# Boost
-message ("-- Check for Boost System (static)")
-set (Boost_USE_STATIC_LIBS ON)
-find_package (Boost REQUIRED COMPONENTS system)
-include_directories (${Boost_INCLUDE_DIR})
-message ("-- libboost: " ${Boost_LIBRARIES})
+if (use_boost)
+    message ("==> BASED ON BOOST")
+    add_definitions (-DRESIDUE_BOOST)
+    # Boost
+    message ("-- Check for Boost System (static)")
+    set (Boost_USE_STATIC_LIBS ON)
+    find_package (Boost REQUIRED COMPONENTS system)
+    include_directories (${Boost_INCLUDE_DIR})
+    message ("-- libboost: " ${Boost_LIBRARIES})
+    set(NET_LIBRARIES ${Boost_LIBRARIES})
+else()
+    message ("==> BASED ON STANDALONE ASIO")
+    add_definitions (-DASIO_STANDALONE)
+endif(use_boost)
+
 
 # Python
 
@@ -190,7 +200,7 @@ set (SOURCE_FILES
 )
 
 set (SHARED_REQUIRED_LIBS
-    ${Boost_LIBRARIES}
+    ${NET_LIBRARIES}
     ${CURL_LIBRARIES}
     ${CMAKE_THREAD_LIBS_INIT}
     ${ZLIB_LIBRARIES}

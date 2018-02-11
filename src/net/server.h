@@ -22,10 +22,10 @@
 #ifndef Server_h
 #define Server_h
 
-#include <boost/asio.hpp>
+#include "net/asio.h"
 #include "non-copyable.h"
 
-using boost::asio::ip::tcp;
+using net::ip::tcp;
 
 namespace residue {
 
@@ -38,7 +38,7 @@ class RequestHandler;
 class Server final : NonCopyable
 {
 public:
-    Server(boost::asio::io_service& io_service, int port, RequestHandler* requestHandler);
+    Server(net::io_service& io_service, int port, RequestHandler* requestHandler);
     ~Server();
 private:
     void accept();
