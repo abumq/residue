@@ -41,7 +41,7 @@ void Clients::execute(std::vector<std::string>&& params, std::ostringstream& res
         result << "Clients: " << registry()->clients().size() << std::endl;
     }
     if (hasParam(params, "list")) {
-        list(result);
+        list(result, hasParam(params, "--with-key"));
     } else if (hasParam(params, "clean")) {
         if (registry()->clientIntegrityTask()->isExecuting()) {
             result << "\nAlready running, please try again later" << std::endl;;
@@ -98,7 +98,7 @@ void Clients::execute(std::vector<std::string>&& params, std::ostringstream& res
     }
 }
 
-void Clients::list(std::ostringstream& result) const
+void Clients::list(std::ostringstream& result, bool withKey) const
 {
     int i = 1;
     for (auto& c : registry()->clients()) {
@@ -106,8 +106,10 @@ void Clients::list(std::ostringstream& result) const
                << ", Ack: " << (c.second.acknowledged() ? "YES" : "NO")
                << ", Age: " << (Utils::now() - c.second.dateCreated()) << "s"
                << ", Status: "
-               << (!c.second.isAlive() ? "DEAD" : "ALIVE " + std::to_string(c.second.age() - (Utils::now() - c.second.dateCreated())) + "s")
-               << ", Key: " << c.second.key()
-               << std::endl;
+               << (!c.second.isAlive() ? "DEAD" : "ALIVE " + std::to_string(c.second.age() - (Utils::now() - c.second.dateCreated())) + "s");
+        if (withKey) {
+            result << ", Key: " << c.second.key();
+        }
+        result << std::endl;
     }
 }

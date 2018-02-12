@@ -61,7 +61,7 @@ void AdminRequestHandler::handle(RawRequest&& rawRequest)
     case AdminRequest::Type::RELOAD_CONFIG:
         cmd = "rconfig";
         if (!request.loggerId().empty()) {
-            params.push_back("--logger");
+            params.push_back("--logger-id");
             params.push_back(request.loggerId());
         }
         break;
@@ -83,6 +83,18 @@ void AdminRequestHandler::handle(RawRequest&& rawRequest)
         cmd = "clients";
         params.push_back("remove");
         params.push_back(request.clientId());
+        break;
+    case AdminRequest::Type::LIST_CLIENTS:
+        cmd = "clients";
+        params.push_back("list");
+        break;
+    case AdminRequest::Type::STATS:
+        cmd = "stats";
+        params.push_back("list");
+        if (!request.clientId().empty()) {
+            params.push_back("--client-id");
+            params.push_back(request.clientId());
+        }
         break;
     case AdminRequest::Type::LIST_LOGGING_FILES:
     {

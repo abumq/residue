@@ -28,7 +28,7 @@ using namespace residue;
 ReloadConfig::ReloadConfig(Registry* registry) :
     Command("rconfig",
             "Reloads specified logger configuration or server configuration",
-            "rconfig [--logger <logger_id>]",
+            "rconfig [--logger-id <logger_id>]",
             registry)
 {
 }
@@ -37,8 +37,8 @@ void ReloadConfig::execute(std::vector<std::string>&& params, std::ostringstream
 {
     if (params.empty()) {
         reloadServerConfig(result);
-    } else if (hasParam(params, "--logger")) {
-        const std::string loggerId = getParamValue(params, "--logger");
+    } else if (hasParam(params, "--logger-id")) {
+        const std::string loggerId = getParamValue(params, "--logger-id");
         if (loggerId.empty()) {
             result << "Logger ID not provided";
         } else {
