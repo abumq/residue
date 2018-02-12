@@ -31,7 +31,7 @@
 using namespace residue;
 
 TokenRequestHandler::TokenRequestHandler(Registry* registry) :
-    RequestHandler(registry)
+    RequestHandler("Token", registry)
 {
     DRVLOG(RV_DEBUG) << "TokenRequestHandler " << this << " with registry " << m_registry;
 }

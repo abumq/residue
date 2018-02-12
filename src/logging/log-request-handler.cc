@@ -30,7 +30,7 @@ using namespace residue;
 
 LogRequestHandler::LogRequestHandler(Registry* registry,
                                      el::LogBuilder* userLogBuilder) :
-    RequestHandler(registry),
+    RequestHandler("Logging", registry),
     m_userLogBuilder(static_cast<UserLogBuilder*>(userLogBuilder))
 {
     DRVLOG(RV_DEBUG) << "LogRequestHandler " << this << " with registry " << m_registry;

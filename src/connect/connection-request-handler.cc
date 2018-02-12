@@ -32,7 +32,7 @@
 using namespace residue;
 
 ConnectionRequestHandler::ConnectionRequestHandler(Registry* registry) :
-    RequestHandler(registry)
+    RequestHandler("Connection", registry)
 {
     DRVLOG(RV_DETAILS) << "ConnectionRequestHandler " << this << " with registry " << m_registry;
 }

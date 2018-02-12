@@ -30,7 +30,7 @@
 using namespace residue;
 
 AdminRequestHandler::AdminRequestHandler(Registry* registry, CommandHandler* commandHandler) :
-    RequestHandler(registry),
+    RequestHandler("Admin", registry),
     m_commandHandler(commandHandler)
 {
     DRVLOG(RV_DEBUG) << "AdminRequestHandler " << this << " with registry " << m_registry;

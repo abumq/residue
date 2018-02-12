@@ -27,7 +27,8 @@
 
 using namespace residue;
 
-RequestHandler::RequestHandler(Registry* registry) :
+RequestHandler::RequestHandler(const std::string& name, Registry* registry) :
+    m_name(name),
     m_session(nullptr),
     m_registry(registry)
 {
