@@ -39,10 +39,12 @@ void SessionDetails::execute(std::vector<std::string>&& params, std::ostringstre
     if (hasParam(params, "--stats")) {
         int i = 1;
         auto now = Utils::now();
-        for (auto& session : registry()->activeSessions()) {
-            result << (i++) << " > Recv: " << session.first->bytesReceived()
-                   << ", Sent: " << session.first->bytesSent()
-                   << ", Active for " << (now - session.second) << " s" << std::endl;
+        for (auto& activeSession : registry()->activeSessions()) {
+            result << (i++)  << " "
+                   << "> ID: " << activeSession.session->id()
+                   << ", Recv: " << activeSession.session->bytesReceived()
+                   << ", Sent: " << activeSession.session->bytesSent()
+                   << ", Active for " << (now - activeSession.timeCreated) << " s" << std::endl;
         }
     }
 }

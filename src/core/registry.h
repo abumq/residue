@@ -46,6 +46,11 @@ class Registry final : NonCopyable
 {
 public:
 
+    struct ActiveSession {
+        std::shared_ptr<Session> session;
+        types::Time timeCreated;
+    };
+
     explicit Registry(Configuration* configuration);
 
     bool addClient(const Client& client);
@@ -63,7 +68,7 @@ public:
         return m_clients;
     }
 
-    inline std::unordered_map<std::shared_ptr<Session>, types::Time>& activeSessions()
+    inline std::vector<ActiveSession>& activeSessions()
     {
         return m_activeSessions;
     }
@@ -73,17 +78,9 @@ public:
         return m_clients.find(clientId) != m_clients.end();
     }
 
-    inline void join(std::shared_ptr<Session>&& session)
-    {
-        std::lock_guard<std::recursive_mutex> lock_(m_sessMutex);
-        m_activeSessions.insert(std::make_pair(session, Utils::now()));
-    }
+    void join(std::shared_ptr<Session>&& session);
 
-    inline void leave(std::shared_ptr<Session>&& session)
-    {
-        std::lock_guard<std::recursive_mutex> lock_(m_sessMutex);
-        m_activeSessions.erase(session);
-    }
+    void leave(std::shared_ptr<Session>&& session);
 
     inline const std::string& bytesReceived() const
     {
@@ -147,12 +144,13 @@ private:
     friend class CommandHandler;
 
     Configuration* m_configuration;
+
     std::vector<LogRotator*> m_logRotators;
+    std::vector<ActiveSession> m_activeSessions;
     ClientIntegrityTask* m_clientIntegrityTask;
     AutoUpdater* m_autoUpdater;
 
     std::unordered_map<std::string, Client> m_clients;
-    std::unordered_map<std::shared_ptr<Session>, types::Time> m_activeSessions;
 
     std::recursive_mutex m_mutex;
     std::recursive_mutex m_sessMutex;

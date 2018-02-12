@@ -3,6 +3,10 @@
 ## [Unreleased]
 ### Fixes
 - Output for `sess --stats` fixed for multiple sessions
+- Fix race condition on sessions when resetting
+
+### Updates
+- Session now has unique IDs
 
 ## [1.4.0]
 ### Updates

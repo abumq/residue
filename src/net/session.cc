@@ -38,17 +38,18 @@ const std::size_t Session::PACKET_DELIMITER_SIZE = Session::PACKET_DELIMITER.siz
 
 Session::Session(tcp::socket&& socket,
                  RequestHandler* requestHandler) :
+    m_id(Utils::generateRandomString(16, true)),
     m_socket(std::move(socket)),
     m_requestHandler(requestHandler),
     m_bytesSent("0"),
     m_bytesReceived("0")
 {
-    DRVLOG(RV_DEBUG) << "New session " << this;
+    DRVLOG(RV_DEBUG) << "New session " << m_id;
 }
 
 Session::~Session()
 {
-    DRVLOG(RV_DEBUG) << "End session " << this;
+    DRVLOG(RV_DEBUG) << "End session " << m_id;
 }
 
 void Session::start()

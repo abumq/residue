@@ -69,6 +69,11 @@ public:
     ///
     void write(const std::string& s);
 
+    inline const std::string& id() const
+    {
+        return m_id;
+    }
+
     ///
     /// \brief Returns socket by const reference
     ///
@@ -87,6 +92,14 @@ public:
         return m_bytesSent;
     }
 private:
+    std::string m_id;
+    tcp::socket m_socket;
+    RequestHandler* m_requestHandler;
+    std::string m_name;
+    net::streambuf m_streamBuffer;
+
+    std::string m_bytesSent;
+    std::string m_bytesReceived;
 
     ///
     /// \brief Read incoming data and calls sendToHandler on the packet
@@ -107,14 +120,6 @@ private:
     /// \brief Send the packet bytes to the handler
     ///
     void sendToHandler(std::string&& incomingBytes);
-
-    tcp::socket m_socket;
-    RequestHandler* m_requestHandler;
-    std::string m_name;
-    net::streambuf m_streamBuffer;
-
-    std::string m_bytesSent;
-    std::string m_bytesReceived;
 };
 }
 
