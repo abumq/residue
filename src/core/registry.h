@@ -78,9 +78,9 @@ public:
         return m_clients.find(clientId) != m_clients.end();
     }
 
-    void join(std::shared_ptr<Session>&& session);
+    void join(const std::shared_ptr<Session>& session);
 
-    void leave(std::shared_ptr<Session>&& session);
+    void leave(const std::shared_ptr<Session>& session);
 
     inline const std::string& bytesReceived() const
     {

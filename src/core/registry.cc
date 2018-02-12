@@ -86,13 +86,13 @@ void Registry::removeClient(Client* client)
     }
 }
 
-void Registry::join(std::shared_ptr<Session> &&session)
+void Registry::join(const std::shared_ptr<Session>& session)
 {
     std::lock_guard<std::recursive_mutex> lock_(m_sessMutex);
     m_activeSessions.push_back({session, Utils::now()});
 }
 
-void Registry::leave(std::shared_ptr<Session> &&session)
+void Registry::leave(const std::shared_ptr<Session>& session)
 {
     std::lock_guard<std::recursive_mutex> lock_(m_sessMutex);
     auto pos = std::find_if(m_activeSessions.begin(), m_activeSessions.end(),
