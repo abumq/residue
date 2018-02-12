@@ -33,6 +33,7 @@
 #include "logging/user-log-builder.h"
 #include "logging/log-request-handler.h"
 #include "connect/connection-request.h"
+#include "tasks/client-integrity-task.h"
 
 using namespace residue;
 
@@ -312,6 +313,8 @@ TEST_F(ConfigurationTest, KnownLoggersRequestAllowed)
     // Setup basic request
     UserLogBuilder logBuilder;
     Registry registry(conf.get());
+    ClientIntegrityTask task(&registry, 300);
+    registry.setClientIntegrityTask(&task);
     LogRequestHandler logRequestHandler(&registry, &logBuilder);
     logRequestHandler.start(); // start to handle ~LogRequestHandler
     // We remove token check for this test
