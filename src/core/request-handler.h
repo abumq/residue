@@ -74,7 +74,7 @@ enum class RawRequestType
 class RequestHandler : NonCopyable
 {
 public:
-    explicit RequestHandler(Registry*);
+    RequestHandler(const std::string& name, Registry*);
     virtual ~RequestHandler() = default;
 
     RawRequestType getRequestType(const RawRequest&);
@@ -85,6 +85,11 @@ public:
                                     const Request::StatusCode defaultStatus = Request::StatusCode::BAD_REQUEST,
                                     const std::string& key = "",
                                     bool ignoreClient = false);
+
+    inline const std::string& name() const
+    {
+        return m_name;
+    }
 
     inline Registry* registry() const
     {
@@ -101,6 +106,9 @@ public:
         m_session = session;
     }
 protected:
+    std::string m_name;
+    Session* m_session;
+    Registry* m_registry;
 
     ///
     /// \brief Takes raw requests and turns it in to Request
@@ -207,9 +215,6 @@ protected:
             request->m_statusCode = Request::StatusCode::BAD_REQUEST;
         }
     }
-
-    Session* m_session;
-    Registry* m_registry;
 };
 }
 #endif /* RequestHandler_h */

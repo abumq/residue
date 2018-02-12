@@ -1,5 +1,18 @@
 # Change Log
 
+## [Unreleased]
+### Fixes
+- Output for `sess --stats` fixed for multiple sessions
+- Fix race condition on sessions when resetting
+
+### Updates
+- Session now has unique IDs
+- Merged `sess` and `stats` in to single CLI command
+- Changed `sess --stats` to `stats list`
+- Ability to filter sessions by client IDs
+- New option `--with-key` with `clients list`
+- Changed `--logger` to `logger-id` in `rconfig` for consistency
+
 ## [1.4.0]
 ### Updates
 - Based on standalone ASIO instead of boost

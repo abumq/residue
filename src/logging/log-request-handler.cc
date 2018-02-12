@@ -30,7 +30,7 @@ using namespace residue;
 
 LogRequestHandler::LogRequestHandler(Registry* registry,
                                      el::LogBuilder* userLogBuilder) :
-    RequestHandler(registry),
+    RequestHandler("Log", registry),
     m_userLogBuilder(static_cast<UserLogBuilder*>(userLogBuilder))
 {
     DRVLOG(RV_DEBUG) << "LogRequestHandler " << this << " with registry " << m_registry;
@@ -223,6 +223,10 @@ bool LogRequestHandler::processRequest(LogRequest* request, Client** clientRef, 
 
     request->setClientId(client->id());
     request->setClient(client);
+
+    if (m_session->client() == nullptr) {
+        m_session->setClient(client);
+    }
 
     if (!bypassChecks && client->isKnown()) {
         // take this opportunity to update the user for unknown logger

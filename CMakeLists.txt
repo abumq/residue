@@ -14,7 +14,7 @@ option (use_boost "Use boost or standalone networking lib" OFF)
 
 set (RESIDUE_MAJOR "1")
 set (RESIDUE_MINOR "4")
-set (RESIDUE_PATCH "0")
+set (RESIDUE_PATCH "1")
 set (RESIDUE_VERSION "${RESIDUE_MAJOR}.${RESIDUE_MINOR}.${RESIDUE_PATCH}")
 set (RESIDUE_NAME "Residue")
 
@@ -57,7 +57,7 @@ include (FindCURL)
 
 check_apple()
 
-list (APPEND CMAKE_CXX_FLAGS " -std=c++11 -O3 -Wall -Wextra -pedantic -pedantic-errors -Wundef -Wno-unused-variable -Wno-deprecated-declarations -Wno-unknown-warning-option -Wno-pessimizing-move ")
+list (APPEND CMAKE_CXX_FLAGS " -std=c++11 -O3 -Wall -Wextra -pedantic -pedantic-errors -Wno-undefined-var-template -Wno-undef -Wno-unused-local-typedef -Wno-unused-variable -Wno-deprecated-declarations -Wno-unknown-warning-option -Wno-pessimizing-move ")
 
 if (CMAKE_BUILD_TYPE EQUAL "DEBUG" OR CMAKE_BUILD_TYPE EQUAL "RELWITHDEBINFO")
     message ("==> EXPORTING DEBUG SYMBOLS")
@@ -180,7 +180,6 @@ set (SOURCE_FILES
     src/cli/update.cc
     src/cli/reset.cc
     src/cli/reload-config.cc
-    src/cli/session-details.cc
     src/cli/stats.cc
     src/cli/rotate.cc
     src/cli/list-tokens.cc

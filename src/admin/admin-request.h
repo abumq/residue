@@ -42,7 +42,9 @@ public:
         REMOVE_CLIENT = 3,
         RESET = 4,
         LIST_LOGGING_FILES = 5,
-        FORCE_LOG_ROTATION = 6
+        FORCE_LOG_ROTATION = 6,
+        STATS = 7,
+        LIST_CLIENTS = 8
     };
 
     explicit AdminRequest(const Configuration* conf);

@@ -31,7 +31,7 @@
 using namespace residue;
 
 TokenRequestHandler::TokenRequestHandler(Registry* registry) :
-    RequestHandler(registry)
+    RequestHandler("Token", registry)
 {
     DRVLOG(RV_DEBUG) << "TokenRequestHandler " << this << " with registry " << m_registry;
 }
@@ -108,5 +108,9 @@ void TokenRequestHandler::handle(RawRequest&& rawRequest)
         std::string output;
         response.serialize(output);
         m_session->write(output.c_str(), client->key().c_str());
+    }
+
+    if (m_session->client() == nullptr) {
+        m_session->setClient(client);
     }
 }

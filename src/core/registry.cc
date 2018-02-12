@@ -86,13 +86,34 @@ void Registry::removeClient(Client* client)
     }
 }
 
+void Registry::join(const std::shared_ptr<Session>& session)
+{
+    std::lock_guard<std::recursive_mutex> lock_(m_sessMutex);
+    m_activeSessions.push_back({session, Utils::now()});
+}
+
+void Registry::leave(const std::shared_ptr<Session>& session)
+{
+    std::lock_guard<std::recursive_mutex> lock_(m_sessMutex);
+    auto pos = std::find_if(m_activeSessions.begin(), m_activeSessions.end(),
+                            [&](const ActiveSession& activeSession) {
+        return activeSession.session->id() == session->id();
+    });
+    if (pos != m_activeSessions.end()) {
+        m_activeSessions.erase(pos);
+    }
+}
+
 void Registry::reset()
 {
     std::lock_guard<std::recursive_mutex> lock(m_mutex);
+    std::lock_guard<std::recursive_mutex> lockSess(m_sessMutex);
     RLOG(INFO) << "Reloading configurations...";
     m_configuration->reload();
     RLOG(INFO) << "Resetting clients...";
     m_clients.clear();
     RLOG(INFO) << "Resetting sessions...";
     m_activeSessions.clear();
+    m_bytesReceived = "0";
+    m_bytesSent = "0";
 }

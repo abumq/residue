@@ -27,7 +27,6 @@
 #include "cli/update.h"
 #include "cli/reset.h"
 #include "cli/reload-config.h"
-#include "cli/session-details.h"
 #include "cli/stats.h"
 #include "cli/rotate.h"
 #include "cli/list-tokens.h"
@@ -85,7 +84,6 @@ CommandHandler::CommandHandler(Registry* registry) :
     registerCommand(std::unique_ptr<Command>(new Update(registry)));
     registerCommand(std::unique_ptr<Command>(new Reset(registry)));
     registerCommand(std::unique_ptr<Command>(new ReloadConfig(registry)));
-    registerCommand(std::unique_ptr<Command>(new SessionDetails(registry)));
     registerCommand(std::unique_ptr<Command>(new Stats(registry)));
     registerCommand(std::unique_ptr<Command>(new Rotate(registry)));
     registerCommand(std::unique_ptr<Command>(new ListTokens(registry)));

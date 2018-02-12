@@ -32,7 +32,7 @@
 using namespace residue;
 
 ConnectionRequestHandler::ConnectionRequestHandler(Registry* registry) :
-    RequestHandler(registry)
+    RequestHandler("Connection", registry)
 {
     DRVLOG(RV_DETAILS) << "ConnectionRequestHandler " << this << " with registry " << m_registry;
 }
@@ -186,6 +186,7 @@ void ConnectionRequestHandler::acknowledge(const ConnectionRequest* request) con
         std::string output;
         response.serialize(output);
         m_session->write(output.c_str(), existingClient->key().c_str());
+        m_session->setClient(existingClient);
     }
 }
 
