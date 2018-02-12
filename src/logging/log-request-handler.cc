@@ -66,14 +66,26 @@ void LogRequestHandler::processRequestQueue()
 {
     bool allowPlainRequest = m_registry->configuration()->hasFlag(Configuration::Flag::ALLOW_PLAIN_LOG_REQUEST);
     bool compressionEnabled = m_registry->configuration()->hasFlag(Configuration::Flag::COMPRESSION);
+    bool allowBulkRequests = m_registry->configuration()->hasFlag(Configuration::ALLOW_BULK_LOG_REQUEST);
+    auto maxItemsInBulk = m_registry->configuration()->maxItemsInBulk();
 
 #ifdef RESIDUE_PROFILING
     types::Time m_timeTaken;
     RESIDUE_PROFILE_START(t_process_queue);
     std::size_t totalRequests = 0; // 1 for 1 request so for bulk of 50 this will be 50
 #endif
-    std::size_t total = m_queue.size();
-    // don't use while as queue can get filled up during this time in some cases (even though we have concept of switching the queue)
+
+    // we take snapshot to prevent potential race conditions (even though we have LoggingQueue that is safe)
+    const std::size_t total = m_queue.size();
+
+    const types::Time lastClientIntegrityRun = m_registry->clientIntegrityTask()->lastExecution();
+
+    if (total > 0) {
+        // we pause client integrity task until we clear this queue
+        // so we don't clean a (now) dead client that passed initial validation
+        m_registry->clientIntegrityTask()->pauseScheduledCleanup();
+    }
+
     for (std::size_t i = 0; i < total; ++i) {
 
         if (m_registry->configuration()->dispatchDelay() > 0) {
@@ -97,17 +109,14 @@ void LogRequestHandler::processRequestQueue()
         }
 
         if (request.isBulk()) {
-            if (m_registry->configuration()->hasFlag(Configuration::ALLOW_BULK_LOG_REQUEST)) {
+            if (allowBulkRequests) {
                 // Create bulk request items
                 unsigned int itemCount = 0U;
                 JsonObject::Json j = request.jsonObject().root();
-                types::Time lastClientValidation = Utils::now();
                 Client* currentClient = request.client();
-                std::string lastKnownClientId = request.clientId();
                 DRVLOG(RV_DEBUG) << "Request client: " << currentClient;
-                bool forceClientValidation = true;
                 for (auto it = j.begin(); it != j.end(); ++it) {
-                    if (itemCount == m_registry->configuration()->maxItemsInBulk()) {
+                    if (itemCount == maxItemsInBulk) {
                         RLOG(ERROR) << "Maximum number of bulk requests reached. Ignoring the rest of items in bulk";
                         break;
                     }
@@ -117,26 +126,7 @@ void LogRequestHandler::processRequestQueue()
                     if (requestItem.isValid()) {
                         requestItem.setIpAddr(request.ipAddr());
                         requestItem.setDateReceived(request.dateReceived());
-                        if (!forceClientValidation
-                                && m_registry->clientIntegrityTask() != nullptr
-                                && lastClientValidation <= m_registry->clientIntegrityTask()->lastExecution()) {
-                            forceClientValidation = true;
-                            RLOG(INFO) << "Re-forcing client validation after client integrity task execution";
-                            RLOG(DEBUG) << "[client: " << currentClient << "] => request client_id: [" << request.clientId() << "], last known client ID: [" << lastKnownClientId << "]";
-                            // we invalidate the pointers as the may be pointing to invalid memory now
-                            // so we will force the request to find the client
-                            currentClient = nullptr;
-                            requestItem.setClient(nullptr);
-                            requestItem.setClientId(lastKnownClientId);
-                            lastClientValidation = Utils::now();
-                        }
-                        if (processRequest(&requestItem, &currentClient, forceClientValidation)) {
-                            lastKnownClientId = currentClient != nullptr ? currentClient->id() : "";
-                            forceClientValidation = false;
-                        } else {
-                            // force next client validation if process is unsuccessful
-                            forceClientValidation = true;
-                        }
+                        processRequest(&requestItem);
                         itemCount++;
 #ifdef RESIDUE_PROFILING
                         totalRequests++;
@@ -153,7 +143,7 @@ void LogRequestHandler::processRequestQueue()
             if (request.client() != nullptr) {
                 request.setClientId(request.client()->id());
             }
-            processRequest(&request, nullptr, true);
+            processRequest(&request);
 #ifdef RESIDUE_PROFILING
             totalRequests++;
 #endif
@@ -162,6 +152,16 @@ void LogRequestHandler::processRequestQueue()
 #if RESIDUE_DEBUG
         DRVLOG(RV_CRAZY) << "-----============= [ ✓ ] =============-----";
 #endif
+    }
+
+    if (lastClientIntegrityRun < m_registry->clientIntegrityTask()->lastExecution()) {
+        RVLOG(RV_DEBUG) << "Starting client integrity task after queue is processed.";
+        // trigger client integrity task as it was run while this queue was being processed
+        m_registry->clientIntegrityTask()->performCleanup();
+    }
+
+    if (total > 0) {
+        m_registry->clientIntegrityTask()->resumeScheduledCleanup();
     }
 
 #ifdef RESIDUE_PROFILING
@@ -177,16 +177,9 @@ void LogRequestHandler::processRequestQueue()
     m_queue.switchContext();
 }
 
-bool LogRequestHandler::processRequest(LogRequest* request, Client** clientRef, bool forceCheck)
+bool LogRequestHandler::processRequest(LogRequest* request)
 {
-
-    bool bypassChecks = !forceCheck && clientRef != nullptr && *clientRef != nullptr;
-#if RESIDUE_DEBUG
-    DRVLOG(RV_DEBUG) << "Force check: " << forceCheck << ", clientRef: " << clientRef << ", *clientRef: "
-                     << (clientRef == nullptr ? "N/A" : *clientRef == nullptr ? "null" : (*clientRef)->id())
-                     << ", bypassChecks: " << bypassChecks;
-#endif
-    Client* client = clientRef != nullptr && *clientRef != nullptr ? *clientRef : request->client();
+    Client* client = request->client();
 
     if (client == nullptr) {
         if (m_registry->configuration()->hasFlag(Configuration::Flag::ALLOW_PLAIN_LOG_REQUEST)
@@ -203,10 +196,6 @@ bool LogRequestHandler::processRequest(LogRequest* request, Client** clientRef, 
         }
     }
 
-    if (clientRef != nullptr) {
-        *clientRef = client;
-    }
-
     if (client == nullptr) {
         RVLOG(RV_ERROR) << "Invalid request. No client found [" << request->clientId() << "]";
         if (m_registry->configuration()->hasFlag(Configuration::Flag::ALLOW_PLAIN_LOG_REQUEST)) {
@@ -215,7 +204,7 @@ bool LogRequestHandler::processRequest(LogRequest* request, Client** clientRef, 
         return false;
     }
 
-    if (!bypassChecks && !client->isAlive(request->dateReceived())) {
+    if (!client->isAlive(request->dateReceived())) {
         RLOG(ERROR) << "Invalid request. Client is dead";
         RLOG(DEBUG) << "Req received: " << request->dateReceived() << ", client created: " << client->dateCreated() << ", age: " << client->age() << ", result: " << client->dateCreated() + client->age();
         return false;
@@ -228,7 +217,7 @@ bool LogRequestHandler::processRequest(LogRequest* request, Client** clientRef, 
         m_session->setClient(client);
     }
 
-    if (!bypassChecks && client->isKnown()) {
+    if (client->isKnown()) {
         // take this opportunity to update the user for unknown logger
 
         // unknown loggers cannot be updated to specific user
@@ -243,7 +232,7 @@ bool LogRequestHandler::processRequest(LogRequest* request, Client** clientRef, 
     }
 
     if (request->isValid()) {
-        if (!bypassChecks && !isRequestAllowed(request)) {
+        if (!isRequestAllowed(request)) {
             RLOG(WARNING) << "Ignoring log from unauthorized logger [" << request->loggerId() << "]";
             return false;
         }

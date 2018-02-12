@@ -34,7 +34,7 @@ ClientIntegrityTask::ClientIntegrityTask(Registry* registry,
 {
 }
 
-void ClientIntegrityTask::execute()
+void ClientIntegrityTask::performCleanup()
 {
     auto* list = &(m_registry->clients());
     for (auto clientIter = list->begin(); clientIter != list->end();) {
@@ -49,5 +49,15 @@ void ClientIntegrityTask::execute()
         } else {
             ++clientIter;
         }
+    }
+}
+
+void ClientIntegrityTask::execute()
+{
+    if (!m_performCleanUpOnSchedule) {
+        performCleanup();
+    } else {
+        // This only marks last execution
+        // it's processed in log request handler to prevent any damange
     }
 }
