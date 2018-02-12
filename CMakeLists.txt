@@ -14,7 +14,7 @@ option (use_boost "Use boost or standalone networking lib" OFF)
 
 set (RESIDUE_MAJOR "1")
 set (RESIDUE_MINOR "4")
-set (RESIDUE_PATCH "0")
+set (RESIDUE_PATCH "1")
 set (RESIDUE_VERSION "${RESIDUE_MAJOR}.${RESIDUE_MINOR}.${RESIDUE_PATCH}")
 set (RESIDUE_NAME "Residue")
 
