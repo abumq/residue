@@ -161,21 +161,18 @@ void Session::write(const char* data,
     auto self(shared_from_this());
     Utils::bigAdd(m_bytesSent, std::to_string(length));
     m_requestHandler->registry()->addBytesSent(length);
-    auto write = [&]() {
 
 #if RESIDUE_DEBUG
-        DRVLOG(RV_DEBUG) << "Sending " << data;
+    DRVLOG(RV_DEBUG) << "Sending " << data;
 #endif
-        net::async_write(m_socket, net::buffer(data, length),
-                                 [&, this, self](residue::error_code ec, std::size_t) {
-            if (ec) {
+    net::async_write(m_socket, net::buffer(data, length),
+                     [&, this, self](residue::error_code ec, std::size_t) {
+        if (ec) {
 #if RESIDUE_DEBUG
-                DRVLOG(RV_DEBUG) << "Failed to send." << ec.message();
+            DRVLOG(RV_DEBUG) << "Failed to send." << ec.message();
 #endif
-                m_socket.close();
-            }
-        });
-        read();
-    };
-    write();
+            m_socket.close();
+        }
+    });
+    read();
 }
