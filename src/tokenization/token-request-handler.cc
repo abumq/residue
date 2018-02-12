@@ -77,6 +77,7 @@ void TokenRequestHandler::handle(RawRequest&& rawRequest)
 
         bool isValid = client->isValidToken(request.loggerId(), request.token(), m_registry, request.dateReceived());
         if (!isValid) {
+            DRVLOG(RV_INFO) << "Removing invalid token";
             // Remove invalid token so user can re-set it
             client->removeToken(request.loggerId(), request.token());
         }

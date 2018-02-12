@@ -59,5 +59,6 @@ void ClientIntegrityTask::execute()
     } else {
         // This only marks last execution
         // it's processed in log request handler to prevent any damange
+        RVLOG(RV_DEBUG) << "Paused for scheduled clean up";
     }
 }

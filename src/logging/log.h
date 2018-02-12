@@ -46,7 +46,7 @@
 
 #define RESIDUE_UNUSED(x) (void)x
 
-#ifdef RESIDUE_PROFILING
+#ifdef RESIDUE_PROFILING && !defined(RESIDUE_PRODUCTION)
 #define RESIDUE_PROFILE_START(id) std::chrono::high_resolution_clock::time_point id##1 = std::chrono::high_resolution_clock::now(); RESIDUE_UNUSED(id##1)
 #define RESIDUE_PROFILE_END(id, result) std::chrono::high_resolution_clock::time_point id##2 = std::chrono::high_resolution_clock::now();\
     result = std::chrono::duration_cast<std::chrono::milliseconds>( id##2 - id##1 ).count();

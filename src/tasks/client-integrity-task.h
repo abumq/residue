@@ -39,12 +39,12 @@ public:
     ClientIntegrityTask(Registry* registry, unsigned int interval);
     void performCleanup();
 
-    inline void pauseCleanup()
+    inline void pauseScheduledCleanup()
     {
         m_performCleanUpOnSchedule = true;
     }
 
-    inline void resumeCleanup()
+    inline void resumeScheduledCleanup()
     {
         m_performCleanUpOnSchedule = false;
     }

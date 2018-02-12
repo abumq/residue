@@ -114,7 +114,8 @@ void LogRequestHandler::processRequestQueue()
                 unsigned int itemCount = 0U;
                 JsonObject::Json j = request.jsonObject().root();
                 Client* currentClient = request.client();
-                DRVLOG(RV_DEBUG) << "Request client: " << currentClient;
+                bool forceClientValidation = true;
+                DRVLOG(RV_DEBUG) << "Request client: " << request.client();
                 for (auto it = j.begin(); it != j.end(); ++it) {
                     if (itemCount == maxItemsInBulk) {
                         RLOG(ERROR) << "Maximum number of bulk requests reached. Ignoring the rest of items in bulk";
@@ -126,7 +127,14 @@ void LogRequestHandler::processRequestQueue()
                     if (requestItem.isValid()) {
                         requestItem.setIpAddr(request.ipAddr());
                         requestItem.setDateReceived(request.dateReceived());
-                        processRequest(&requestItem);
+                        requestItem.setClient(request.client());
+
+                        if (processRequest(&requestItem, &currentClient, forceClientValidation)) {
+                            forceClientValidation = false;
+                        } else {
+                            // force next client validation if last process was unsuccessful
+                            forceClientValidation = true;
+                        }
                         itemCount++;
 #ifdef RESIDUE_PROFILING
                         totalRequests++;
@@ -143,7 +151,7 @@ void LogRequestHandler::processRequestQueue()
             if (request.client() != nullptr) {
                 request.setClientId(request.client()->id());
             }
-            processRequest(&request);
+            processRequest(&request, nullptr, true);
 #ifdef RESIDUE_PROFILING
             totalRequests++;
 #endif
@@ -154,13 +162,15 @@ void LogRequestHandler::processRequestQueue()
 #endif
     }
 
-    if (lastClientIntegrityRun < m_registry->clientIntegrityTask()->lastExecution()) {
+    if (lastClientIntegrityRun < m_registry->clientIntegrityTask()->lastExecution() && m_queue.backlogEmpty()) {
         RVLOG(RV_DEBUG) << "Starting client integrity task after queue is processed.";
         // trigger client integrity task as it was run while this queue was being processed
-        m_registry->clientIntegrityTask()->performCleanup();
+        if (!m_registry->clientIntegrityTask()->isExecuting()) {
+            m_registry->clientIntegrityTask()->performCleanup();
+        }
     }
 
-    if (total > 0) {
+    if (total > 0 && m_queue.backlogEmpty()) {
         m_registry->clientIntegrityTask()->resumeScheduledCleanup();
     }
 
@@ -177,11 +187,18 @@ void LogRequestHandler::processRequestQueue()
     m_queue.switchContext();
 }
 
-bool LogRequestHandler::processRequest(LogRequest* request)
+bool LogRequestHandler::processRequest(LogRequest* request, Client** clientRef, bool forceCheck)
 {
-    Client* client = request->client();
+    bool bypassChecks = !forceCheck && clientRef != nullptr && *clientRef != nullptr;
+#if RESIDUE_DEBUG && !defined(RESIDUE_PRODUCTION)
+    DRVLOG(RV_DEBUG) << "Force check: " << forceCheck << ", clientRef: " << clientRef << ", *clientRef: "
+                     << (clientRef == nullptr ? "N/A" : *clientRef == nullptr ? "null" : (*clientRef)->id())
+                     << ", bypassChecks: " << bypassChecks;
+#endif
+    Client* client = clientRef != nullptr && *clientRef != nullptr ? *clientRef : request->client();
 
     if (client == nullptr) {
+        // This bit is only when ALLOW_PLAIN_LOG_REQUEST is true
         if (m_registry->configuration()->hasFlag(Configuration::Flag::ALLOW_PLAIN_LOG_REQUEST)
                 && (
                     // following || is: see if logger is unknown.. this line implies unknown loggers allow plain log requests but whether server allows or not is a different story
@@ -193,18 +210,22 @@ bool LogRequestHandler::processRequest(LogRequest* request)
             client = m_registry->findClient(request->clientId());
         } else if (request->clientId().empty()) {
             RVLOG(RV_ERROR) << "Invalid request. No client ID found";
+            if (m_registry->configuration()->hasFlag(Configuration::Flag::ALLOW_PLAIN_LOG_REQUEST)) {
+                RVLOG(RV_ERROR) << "Please check if logger has ALLOW_PLAIN_LOG_REQUEST option set and it contains client ID if needed.";
+            }
+            return false;
         }
     }
 
     if (client == nullptr) {
         RVLOG(RV_ERROR) << "Invalid request. No client found [" << request->clientId() << "]";
         if (m_registry->configuration()->hasFlag(Configuration::Flag::ALLOW_PLAIN_LOG_REQUEST)) {
-            RVLOG(RV_ERROR) << "Check if logger has ALLOW_PLAIN_LOG_REQUEST option set and it contains client ID if needed.";
+            RVLOG(RV_ERROR) << "Please check if logger has ALLOW_PLAIN_LOG_REQUEST option set and it contains client ID if needed.";
         }
         return false;
     }
 
-    if (!client->isAlive(request->dateReceived())) {
+    if (!bypassChecks && !client->isAlive(request->dateReceived())) {
         RLOG(ERROR) << "Invalid request. Client is dead";
         RLOG(DEBUG) << "Req received: " << request->dateReceived() << ", client created: " << client->dateCreated() << ", age: " << client->age() << ", result: " << client->dateCreated() + client->age();
         return false;
@@ -217,7 +238,7 @@ bool LogRequestHandler::processRequest(LogRequest* request)
         m_session->setClient(client);
     }
 
-    if (client->isKnown()) {
+    if (!bypassChecks && client->isKnown()) {
         // take this opportunity to update the user for unknown logger
 
         // unknown loggers cannot be updated to specific user
@@ -232,7 +253,7 @@ bool LogRequestHandler::processRequest(LogRequest* request)
     }
 
     if (request->isValid()) {
-        if (!isRequestAllowed(request)) {
+        if (!bypassChecks && !isRequestAllowed(request)) {
             RLOG(WARNING) << "Ignoring log from unauthorized logger [" << request->loggerId() << "]";
             return false;
         }

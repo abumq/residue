@@ -92,6 +92,7 @@ void Client::addToken(const std::string& loggerId,
     } else {
         it->second.insert(token);
     }
+    DRVLOG(RV_DEBUG) << "Token added (client [" << m_id << "])";
 }
 
 void Client::removeToken(const std::string& loggerId,
@@ -109,4 +110,5 @@ void Client::removeToken(const std::string& loggerId,
             }
         }
     }
+    DRVLOG(RV_DEBUG) << "Token removed (client [" << m_id << "])";
 }
