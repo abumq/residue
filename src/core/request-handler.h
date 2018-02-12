@@ -144,7 +144,7 @@ protected:
         DRVLOG(RV_DEBUG) << "Raw request: " << requestStr;
 #endif
         DecryptedRequest dr = decryptRequest(requestStr, defaultStatus);
-#if RESIDUE_DEBUG && !defined(RESIDUE_PRODUCTION)
+#ifdef RESIDUE_DEV
         DRVLOG(RV_TRACE) << "Decryption finished (b64): " << dr.plainRequestStr;
 #endif
         request->m_client = dr.client;
@@ -155,7 +155,7 @@ protected:
         request->m_ipAddr = std::move(ipAddr);
         request->m_dateReceived = std::move(dateReceived);
         if (decompress) {
-#if RESIDUE_DEBUG && !defined(RESIDUE_PRODUCTION)
+#ifdef RESIDUE_DEV
             DRVLOG(RV_TRACE) << "Decompressing: " << plainRequestStr;
 #endif
             try {
@@ -166,7 +166,7 @@ protected:
                 // chooses to do so with '-v' option
                 DRVLOG(RV_ERROR) << "Failed to decompress the data: " << e.what();
             }
-#if RESIDUE_DEBUG && !defined(RESIDUE_PRODUCTION)
+#ifdef RESIDUE_DEV
             DRVLOG(RV_TRACE) << "Decompression finished (raw): " << plainRequestStr;
 #endif
         }

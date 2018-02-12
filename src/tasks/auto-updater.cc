@@ -57,7 +57,7 @@ bool AutoUpdater::hasNewVersion(std::string* newVersion)
     RVLOG(RV_INFO) << "Current version detected " << curr << " (" << major << "." << minor << "." << patch << ")";
 
     std::string resultFromApi;
-    RVLOG(RV_DEBUG) << "Calling github API...";
+    RVLOG(RV_DEBUG) << "Making github API call...";
     resultFromApi = HttpClient::fetchUrlContents(LATEST_RELEASE_API_URL);
     RVLOG_IF(resultFromApi.empty(), RV_DEBUG) << "Github API returned no result. Connection issue!";
     DRVLOG(RV_CRAZY) << "Github API result: " << resultFromApi;

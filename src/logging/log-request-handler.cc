@@ -83,7 +83,7 @@ void LogRequestHandler::processRequestQueue()
     if (total > 0) {
         // we pause client integrity task until we clear this queue
         // so we don't clean a (now) dead client that passed initial validation
-#if RESIDUE_DEBUG && !defined(RESIDUE_PRODUCTION)
+#ifdef RESIDUE_DEV
         DRVLOG(RV_DEBUG) << "Pausing schedule for client integrity";
 #endif
         m_registry->clientIntegrityTask()->pauseScheduledCleanup();
@@ -174,7 +174,7 @@ void LogRequestHandler::processRequestQueue()
     }
 
     if (total > 0 && m_queue.backlogEmpty()) {
-#if RESIDUE_DEBUG && !defined(RESIDUE_PRODUCTION)
+#ifdef RESIDUE_DEV
         DRVLOG(RV_DEBUG) << "Resuming schedule for client integrity";
 #endif
         m_registry->clientIntegrityTask()->resumeScheduledCleanup();
@@ -196,7 +196,7 @@ void LogRequestHandler::processRequestQueue()
 bool LogRequestHandler::processRequest(LogRequest* request, Client** clientRef, bool forceCheck)
 {
     bool bypassChecks = !forceCheck && clientRef != nullptr && *clientRef != nullptr;
-#if RESIDUE_DEBUG && !defined(RESIDUE_PRODUCTION)
+#ifdef RESIDUE_DEV
     DRVLOG(RV_DEBUG) << "Force check: " << forceCheck << ", clientRef: " << clientRef << ", *clientRef: "
                      << (clientRef == nullptr ? "N/A" : *clientRef == nullptr ? "null" : (*clientRef)->id())
                      << ", bypassChecks: " << bypassChecks;
