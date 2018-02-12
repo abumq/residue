@@ -29,7 +29,11 @@ if (use_mine)
 endif()
 
 if (profiling)
-    add_definitions (-DRESIDUE_PROFILING)
+    if (production)
+    else()
+        message ("==> PROFILING IS ON")
+        add_definitions (-DRESIDUE_PROFILING)
+    endif()
 endif()
 
 if (debug)

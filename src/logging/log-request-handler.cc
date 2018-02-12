@@ -83,13 +83,15 @@ void LogRequestHandler::processRequestQueue()
     if (total > 0) {
         // we pause client integrity task until we clear this queue
         // so we don't clean a (now) dead client that passed initial validation
+#if RESIDUE_DEBUG && !defined(RESIDUE_PRODUCTION)
+        DRVLOG(RV_DEBUG) << "Pausing schedule for client integrity";
+#endif
         m_registry->clientIntegrityTask()->pauseScheduledCleanup();
     }
 
     for (std::size_t i = 0; i < total; ++i) {
 
         if (m_registry->configuration()->dispatchDelay() > 0) {
-            // We do not want to hold the client for m_backgroundWorkerMutex lock
             std::this_thread::sleep_for(std::chrono::milliseconds(m_registry->configuration()->dispatchDelay()));
         }
 
@@ -171,6 +173,9 @@ void LogRequestHandler::processRequestQueue()
     }
 
     if (total > 0 && m_queue.backlogEmpty()) {
+#if RESIDUE_DEBUG && !defined(RESIDUE_PRODUCTION)
+        DRVLOG(RV_DEBUG) << "Resuming schedule for client integrity";
+#endif
         m_registry->clientIntegrityTask()->resumeScheduledCleanup();
     }
 
