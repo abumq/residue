@@ -4,9 +4,6 @@
 ### Fixes
 - Fixed issue where client integrity tasks could remove dead clients that were pending (in log queue) [issue #73]
 
-### Updates
-- Updated JSON parser version
-
 ## [1.4.1] - 12-02-2018
 ### Fixes
 - Output for `sess --stats` fixed for multiple sessions
