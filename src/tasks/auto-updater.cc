@@ -43,7 +43,7 @@ void AutoUpdater::execute()
 {
     std::string newVer;
     if (hasNewVersion(&newVer)) {
-        RLOG(INFO) << "You are running v" << RESIDUE_VERSION << ", new version is available: " << newVer;
+        RVLOG(RV_NOTICE) << "You are running v" << RESIDUE_VERSION << ", new version is available: " << newVer;
     }
 }
 
