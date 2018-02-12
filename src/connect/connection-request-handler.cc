@@ -122,6 +122,7 @@ void ConnectionRequestHandler::connect(ConnectionRequest* request, bool isKnownC
         if (!client->isAlive()) {
             // reset key
             RLOG(INFO) << "Client [" << client->id() << "] key reset";
+            client->setPreviousKey(client->key());
             client->setKey(AES::generateKey(client->keySize() * 8));
         }
         // Clone client

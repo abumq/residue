@@ -78,6 +78,11 @@ public:
         return m_key;
     }
 
+    inline const std::string& previousKey() const
+    {
+        return m_previousKey;
+    }
+
     inline int keySize() const
     {
         return m_keySize;
@@ -133,6 +138,11 @@ public:
         m_key = key;
     }
 
+    inline void setPreviousKey(const std::string& key)
+    {
+        m_previousKey = key;
+    }
+
     inline std::unordered_map<std::string, std::unordered_set<Token>>& tokens()
     {
         return m_tokens;
@@ -159,6 +169,8 @@ private:
     bool m_isKnown;
 
     std::unordered_map<std::string, std::unordered_set<Token>> m_tokens;
+
+    std::string m_previousKey;
 };
 }
 

@@ -102,7 +102,8 @@ void LogRequestHandler::processRequestQueue()
         RawRequest rawRequest = m_queue.pull();
 
         RequestHandler::handle(std::move(rawRequest), &request, allowPlainRequest ?
-                                   Request::StatusCode::CONTINUE : Request::StatusCode::BAD_REQUEST, false, false, compressionEnabled);
+                                   Request::StatusCode::CONTINUE : Request::StatusCode::BAD_REQUEST,
+                               false, false, compressionEnabled);
 
         if ((!request.isValid() && !request.isBulk())
                 || request.statusCode() != Request::StatusCode::CONTINUE) {
