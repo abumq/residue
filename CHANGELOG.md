@@ -7,6 +7,9 @@
 
 ### Updates
 - Session now has unique IDs
+- Merged `sess` and `stats` in to single CLI command
+- Changed `sess --stats` to `stats list`
+- Ability to filter sessions by client IDs
 
 ## [1.4.0]
 ### Updates

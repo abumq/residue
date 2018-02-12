@@ -180,7 +180,6 @@ set (SOURCE_FILES
     src/cli/update.cc
     src/cli/reset.cc
     src/cli/reload-config.cc
-    src/cli/session-details.cc
     src/cli/stats.cc
     src/cli/rotate.cc
     src/cli/list-tokens.cc

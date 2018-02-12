@@ -28,7 +28,7 @@ using namespace residue;
 ReloadConfig::ReloadConfig(Registry* registry) :
     Command("rconfig",
             "Reloads specified logger configuration or server configuration",
-            "rconfig [--server] [--logger <logger_id>]",
+            "rconfig [--logger <logger_id>]",
             registry)
 {
 }

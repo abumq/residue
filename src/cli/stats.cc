@@ -21,18 +21,55 @@
 
 #include "cli/stats.h"
 #include "core/registry.h"
+#include "clients/client.h"
+#include "utils/utils.h"
 
 using namespace residue;
 
 Stats::Stats(Registry* registry) :
     Command("stats",
-            "Display stats for all the sessions (bytes received and sent)",
-            "stats",
+            "Displays current session details e.g, active sessions etc",
+            "stats [list] [--client-id <client_id>]",
             registry)
 {
 }
 
-void Stats::execute(std::vector<std::string>&&, std::ostringstream& result, bool) const
+void Stats::execute(std::vector<std::string>&& params, std::ostringstream& result, bool) const
 {
-    result << "Recv: " << registry()->bytesReceived() << ", Sent: " << registry()->bytesSent();
+    if (params.empty()) {
+        result << "Recv: " << registry()->bytesReceived() << "b, Sent: "
+               << registry()->bytesSent() << "b"
+               << std::endl;
+        return;
+    }
+
+    if (hasParam(params, "list")) {
+        std::string clientId = getParamValue(params, "--client-id");
+        std::ostringstream tmpR;
+        std::size_t i = 1;
+        auto now = Utils::now();
+        for (auto& activeSession : registry()->activeSessions()) {
+            if (!clientId.empty()) {
+                if (activeSession.session->client() == nullptr
+                        || activeSession.session->client()->id() != clientId) {
+                    continue;
+                }
+            }
+            tmpR << (i++)  << " " << "> ID: " << activeSession.session->id();
+            if (activeSession.session->client() != nullptr) {
+                tmpR << ", Client: " << activeSession.session->client()->id();
+            }
+            tmpR << ", Active for " << (now - activeSession.timeCreated) << "s"
+                   << ", Sent: " << activeSession.session->bytesSent() << "b"
+                   << ", Recv: " << activeSession.session->bytesReceived() << "b";
+            tmpR << std::endl;
+        }
+        result << "Active sessions";
+        if (!clientId.empty()) {
+            result << " by [" << clientId << "]: " << (i - 1) << std::endl;
+        } else {
+            result << ": " << registry()->activeSessions().size() << std::endl;
+        }
+        result << tmpR.str();
+    }
 }

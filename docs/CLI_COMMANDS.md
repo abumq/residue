@@ -26,9 +26,6 @@ Resets the server with following things (be careful in doing this as it may affe
 ### `history`
 Display history of valid commands (default maximum = 5)
 
-### `stats`
-Displays server stats
-
 ### `clients`
 Number of connected clients (dead or alive)
 
@@ -64,11 +61,14 @@ If this option is set the archival task will not run and it will just copy the l
 #### `[--check-only]`
 Only check the schedule for this logger rotation
 
-### `sess`
-Number of active sessions
+### `stats`
+Displays server stats and number of active sessions
 
-##### `--stats`
-Displays stats for active sessions (received, sent and how long session has been active for)
+##### `list`
+Lists for active sessions (received, sent and how long session has been active for and associated clients if registered)
+
+##### `--client-id <client-id>`
+Filters stats for specified client. Some of the clients may not be listed as they're only registered when server receives anything from them.
 
 ### `stats`
 Displays server stats
