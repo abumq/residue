@@ -68,6 +68,11 @@ void Session::read()
 #endif
         if (!ec) {
             RESIDUE_PROFILE_START(t_read);
+#if RESIDUE_DEBUG
+            DRVLOG(RV_TRACE) << "Received: "
+                             << (numOfBytes - Session::PACKET_DELIMITER_SIZE) // ignore package delimiter
+                             << " bytes";
+#endif
             std::istream is(&m_streamBuffer);
             std::string buffer((std::istreambuf_iterator<char>(is)), std::istreambuf_iterator<char>());
             buffer.erase(numOfBytes - Session::PACKET_DELIMITER_SIZE);
@@ -77,7 +82,9 @@ void Session::read()
             Utils::bigAdd(m_bytesReceived, std::to_string(numOfBytes));
             m_requestHandler->registry()->addBytesReceived(numOfBytes);
         } else {
+#if RESIDUE_DEBUG
             DRVLOG_IF(ec != net::error::eof, RV_DEBUG) << "Error: " << ec.message();
+#endif
             m_requestHandler->registry()->leave(shared_from_this());
         }
     });
@@ -85,7 +92,9 @@ void Session::read()
 
 void Session::sendToHandler(std::string&& data)
 {
-    DRVLOG(RV_TRACE) << "Bytes: " << data;
+#if RESIDUE_DEBUG
+    DRVLOG(RV_TRACE) << "Read bytes: " << data << " [size: " << data.size() << "]";
+#endif
     m_requestHandler->setSession(this);
     RawRequest req { std::move(data), m_socket.remote_endpoint().address().to_string(), Utils::now() };
     m_requestHandler->handle(std::move(req));
@@ -94,7 +103,9 @@ void Session::sendToHandler(std::string&& data)
 void Session::close()
 {
     if (m_socket.is_open()) {
+#if RESIDUE_DEBUG
         DRVLOG(RV_DEBUG) << "Closing session...";
+#endif
         m_socket.close();
     }
 }
@@ -151,11 +162,16 @@ void Session::write(const char* data,
     Utils::bigAdd(m_bytesSent, std::to_string(length));
     m_requestHandler->registry()->addBytesSent(length);
     auto write = [&]() {
+
+#if RESIDUE_DEBUG
         DRVLOG(RV_DEBUG) << "Sending " << data;
+#endif
         net::async_write(m_socket, net::buffer(data, length),
                                  [&, this, self](residue::error_code ec, std::size_t) {
             if (ec) {
+#if RESIDUE_DEBUG
                 DRVLOG(RV_DEBUG) << "Failed to send." << ec.message();
+#endif
                 m_socket.close();
             }
         });
