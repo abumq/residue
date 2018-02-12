@@ -1,6 +1,6 @@
 # Change Log
 
-## [Unreleased]
+## [1.4.1] - 12-02-2018
 ### Fixes
 - Output for `sess --stats` fixed for multiple sessions
 - Fix race condition on sessions when resetting
@@ -13,7 +13,7 @@
 - New option `--with-key` with `clients list`
 - Changed `--logger` to `logger-id` in `rconfig` for consistency
 
-## [1.4.0]
+## [1.4.0] - 11-02-2018
 ### Updates
 - Based on standalone ASIO instead of boost
 
