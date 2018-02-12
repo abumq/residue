@@ -40,20 +40,17 @@ Session::Session(tcp::socket&& socket,
                  RequestHandler* requestHandler) :
     m_socket(std::move(socket)),
     m_requestHandler(requestHandler),
+    m_client(nullptr),
     m_bytesSent("0"),
     m_bytesReceived("0")
 {
-    m_id = m_requestHandler->name() + ":" + Utils::generateRandomString(16, true);
-#if RESIDUE_DEBUG
+    m_id = m_requestHandler->name()[0] + Utils::generateRandomString(16, true);
     DRVLOG(RV_DEBUG) << "New session " << m_id;
-#endif
 }
 
 Session::~Session()
 {
-#if RESIDUE_DEBUG
     DRVLOG(RV_DEBUG) << "End session " << m_id;
-#endif
 }
 
 void Session::start()

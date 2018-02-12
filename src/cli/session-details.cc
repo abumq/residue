@@ -21,6 +21,7 @@
 
 #include "cli/session-details.h"
 #include "core/registry.h"
+#include "clients/client.h"
 #include "utils/utils.h"
 
 using namespace residue;
@@ -40,11 +41,14 @@ void SessionDetails::execute(std::vector<std::string>&& params, std::ostringstre
         int i = 1;
         auto now = Utils::now();
         for (auto& activeSession : registry()->activeSessions()) {
-            result << (i++)  << " "
-                   << "> ID: " << activeSession.session->id()
-                   << ", Recv: " << activeSession.session->bytesReceived()
-                   << ", Sent: " << activeSession.session->bytesSent()
-                   << ", Active for " << (now - activeSession.timeCreated) << " s" << std::endl;
+            result << (i++)  << " " << "> ID: " << activeSession.session->id();
+            if (activeSession.session->client() != nullptr) {
+                result << ", Client: " << activeSession.session->client()->id();
+            }
+            result << ", Active for " << (now - activeSession.timeCreated) << "s"
+                   << ", Sent: " << activeSession.session->bytesSent() << "b"
+                   << ", Recv: " << activeSession.session->bytesReceived() << "b";
+            result << std::endl;
         }
     }
 }

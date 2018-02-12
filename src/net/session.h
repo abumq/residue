@@ -30,6 +30,7 @@ using net::ip::tcp;
 namespace residue {
 class RequestHandler;
 class Registry;
+class Client;
 
 ///
 /// \brief Session object with each connection
@@ -74,6 +75,16 @@ public:
         return m_id;
     }
 
+    inline void setClient(Client* client)
+    {
+        m_client = client;
+    }
+
+    inline const Client* client() const
+    {
+        return m_client;
+    }
+
     ///
     /// \brief Returns socket by const reference
     ///
@@ -95,6 +106,7 @@ private:
     std::string m_id;
     tcp::socket m_socket;
     RequestHandler* m_requestHandler;
+    Client* m_client;
     std::string m_name;
     net::streambuf m_streamBuffer;
 

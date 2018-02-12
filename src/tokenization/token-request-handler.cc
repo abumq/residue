@@ -109,4 +109,8 @@ void TokenRequestHandler::handle(RawRequest&& rawRequest)
         response.serialize(output);
         m_session->write(output.c_str(), client->key().c_str());
     }
+
+    if (m_session->client() == nullptr) {
+        m_session->setClient(client);
+    }
 }
