@@ -66,17 +66,30 @@ bool Client::isValidToken(const std::string& loggerId,
     if (!registry->configuration()->hasFlag(Configuration::Flag::REQUIRES_TOKEN) || // ignore tokens
         (registry->configuration()->hasFlag(Configuration::Flag::ALLOW_UNKNOWN_LOGGERS) && !registry->configuration()->isKnownLogger(loggerId)) || // unknown loggers allowed and this logger is actually unknown
         (registry->configuration()->hasFlag(Configuration::Flag::ALLOW_DEFAULT_ACCESS_CODE) && registry->configuration()->accessCodes().find(loggerId) == registry->configuration()->accessCodes().end())) { // loggers without access codes are allowed and this logger actually does not have access codes
+
+#ifdef RESIDUE_DEV
+        DRVLOG(RV_TRACE) << "Token always (client [" << m_id << "])";
+#endif
         return true;
     }
-    //std::lock_guard<std::mutex> lock_(s_mutex);
+    // std::lock_guard<std::mutex> lock_(s_mutex);
     const auto& iter = m_tokens.find(loggerId);
     if (iter == m_tokens.end()) {
+#ifdef RESIDUE_DEV
+        DRVLOG(RV_TRACE) << "Token check: logger not found " << loggerId << " (client [" << m_id << "])";
+#endif
         return false;
     }
     const auto& tokenIter = std::find(iter->second.begin(), iter->second.end(), token);
     if (tokenIter != iter->second.end()) {
+#ifdef RESIDUE_DEV
+        DRVLOG(RV_TRACE) << "Token valid " << token << " (client [" << m_id << "])";
+#endif
         return tokenIter->isValid(compareTo);
     }
+#ifdef RESIDUE_DEV
+    DRVLOG(RV_TRACE) << "Token invalid " << token << " (client [" << m_id << "])";
+#endif
     return false;
 }
 
@@ -92,7 +105,7 @@ void Client::addToken(const std::string& loggerId,
     } else {
         it->second.insert(token);
     }
-    DRVLOG(RV_DEBUG) << "Token added (client [" << m_id << "])";
+    DRVLOG(RV_TRACE) << "Token added (client [" << m_id << "])";
 }
 
 /*

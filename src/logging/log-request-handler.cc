@@ -246,11 +246,11 @@ bool LogRequestHandler::processRequest(LogRequest* request, Client** clientRef, 
 
     request->setClientId(client->id());
     request->setClient(client);
-/*
+
     if (m_session->client() == nullptr) {
         DRVLOG(RV_DEBUG) << "Updating session client";
         m_session->setClient(client);
-    }*/
+    }
 
     if (!bypassChecks && client->isKnown()) {
         // take this opportunity to update the user for unknown logger
@@ -279,23 +279,37 @@ bool LogRequestHandler::processRequest(LogRequest* request, Client** clientRef, 
 
 void LogRequestHandler::dispatch(const LogRequest* request)
 {
+#ifdef RESIDUE_DEV
+    DRVLOG(RV_TRACE) << "Dispatching";
+#endif
     m_userLogBuilder->setRequest(request);
     // %client_id
     el::Helpers::installCustomFormatSpecifier(el::CustomFormatSpecifier("%client_id",  std::bind(&LogRequestHandler::getClientId, this, std::placeholders::_1)));
     // %ip
     el::Helpers::installCustomFormatSpecifier(el::CustomFormatSpecifier("%ip",  std::bind(&LogRequestHandler::getIpAddr, this, std::placeholders::_1)));
 
+#ifdef RESIDUE_DEV
+    DRVLOG(RV_TRACE) << "Writing";
+#endif
     el::base::Writer(request->level(),
                      request->filename().c_str(),
                      request->lineNumber(),
                      request->function().c_str(),
                      el::base::DispatchAction::NormalLog,
                      request->verboseLevel()).construct(el::Loggers::getLogger(request->loggerId())) << request->msg();
+
+#ifdef RESIDUE_DEV
+    DRVLOG(RV_TRACE) << "Write complete";
+#endif
     // Reset
     el::Helpers::uninstallCustomFormatSpecifier("%client_id");
     el::Helpers::uninstallCustomFormatSpecifier("%ip");
 
     m_userLogBuilder->setRequest(nullptr);
+
+#ifdef RESIDUE_DEV
+    DRVLOG(RV_TRACE) << "Dispatch complete";
+#endif
 }
 
 bool LogRequestHandler::isRequestAllowed(const LogRequest* request) const

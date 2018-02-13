@@ -54,7 +54,7 @@ void ClientIntegrityTask::performCleanup()
 
 void ClientIntegrityTask::execute()
 {
-    if (!m_performCleanUpOnSchedule) {
+    if (m_performCleanUpOnSchedule) {
         performCleanup();
     } else {
         // This only marks last execution

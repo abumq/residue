@@ -41,12 +41,16 @@ public:
 
     inline void pauseScheduledCleanup()
     {
-        m_performCleanUpOnSchedule = true;
+        if (m_performCleanUpOnSchedule) {
+            m_performCleanUpOnSchedule = false;
+        }
     }
 
     inline void resumeScheduledCleanup()
     {
-        m_performCleanUpOnSchedule = false;
+        if (!m_performCleanUpOnSchedule) {
+            m_performCleanUpOnSchedule = true;
+        }
     }
 protected:
     virtual void execute() override;
