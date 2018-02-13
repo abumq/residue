@@ -2450,7 +2450,7 @@ void Writer::initializeLogger(const std::string& loggerId, bool lookup, bool nee
   }
   if (m_logger == nullptr) {
     {
-      base::threading::ScopedLock scopedLock(ELPP->lock());
+      //base::threading::ScopedLock scopedLock(ELPP->lock());
       if (!ELPP->registeredLoggers()->has(std::string(base::consts::kDefaultLoggerId))) {
         // Somehow default logger has been unregistered. Not good! Register again
         ELPP->registeredLoggers()->get(std::string(base::consts::kDefaultLoggerId));
@@ -2826,7 +2826,7 @@ void Helpers::logCrashReason(int sig, bool stackTraceIfAvailable, Level level, c
 // Loggers
 
 Logger* Loggers::getLogger(const std::string& identity, bool registerIfNotAvailable) {
-  base::threading::ScopedLock scopedLock(ELPP->lock());
+  //base::threading::ScopedLock scopedLock(ELPP->lock());
   return ELPP->registeredLoggers()->get(identity, registerIfNotAvailable);
 }
 
@@ -2835,12 +2835,12 @@ void Loggers::setDefaultLogBuilder(el::LogBuilderPtr& logBuilderPtr) {
 }
 
 bool Loggers::unregisterLogger(const std::string& identity) {
-  base::threading::ScopedLock scopedLock(ELPP->lock());
+  //base::threading::ScopedLock scopedLock(ELPP->lock());
   return ELPP->registeredLoggers()->remove(identity);
 }
 
 bool Loggers::hasLogger(const std::string& identity) {
-  base::threading::ScopedLock scopedLock(ELPP->lock());
+  //base::threading::ScopedLock scopedLock(ELPP->lock());
   return ELPP->registeredLoggers()->has(identity);
 }
 

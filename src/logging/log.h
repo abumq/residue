@@ -32,7 +32,7 @@
 #   define RESIDUE_DEBUG_LOG 0
 #endif
 
-#ifdef 1
+#if 1
     #define RLOG(LEVEL) CLOG(LEVEL, RESIDUE_LOGGER_ID)
     #define RLOG_IF(condition, LEVEL) CLOG_IF(condition, LEVEL, RESIDUE_LOGGER_ID)
     #define RVLOG(vLevel) CVLOG(vLevel, RESIDUE_LOGGER_ID)
