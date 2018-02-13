@@ -111,7 +111,7 @@ public:
         return std::is_base_of<Request, Other>::value;
     }
 
-    virtual bool validateTimestamp() const override;
+    virtual bool validateTimestamp() const;
 protected:
     JsonObject m_jsonObject;
     bool m_isValid;
