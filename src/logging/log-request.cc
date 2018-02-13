@@ -32,26 +32,29 @@ LogRequest::LogRequest(const Configuration* conf) :
 {
 }
 
-bool LogRequest::deserialize(std::string&& json)
+Request::DeserializedObject LogRequest::deserialize(std::string&& json)
 {
-    if (Request::deserialize(std::move(json))) {
-        m_clientId = m_jsonObject.getString("client_id", "");
+    Request::DeserializedObject deserializedObj = Request::deserialize(std::move(json));
+    if (deserializedObj.isValid) {
+        m_clientId = deserializedObj.jsonObject.getString("client_id", "");
 
-        m_datetime = resolveValue<types::TimeMs>(&m_jsonObject, &LogRequestFieldDateTime);
-        m_token = resolveValue<std::string>(&m_jsonObject, &LogRequestFieldToken);
-        m_loggerId = resolveValue<std::string>(&m_jsonObject, &LogRequestFieldLogger);
-        m_filename = resolveValue<std::string>(&m_jsonObject, &LogRequestFieldFile);
-        m_function = resolveValue<std::string>(&m_jsonObject, &LogRequestFieldFunction);
-        m_applicationName = resolveValue<std::string>(&m_jsonObject, &LogRequestFieldApplicationName);
-        m_threadId = resolveValue<std::string>(&m_jsonObject, &LogRequestFieldThreadId);
-        m_msg = resolveValue<std::string>(&m_jsonObject, &LogRequestFieldMessage);
-        m_lineNumber = static_cast<el::base::type::LineNumber>(resolveValue<el::base::type::LineNumber>(&m_jsonObject, &LogRequestFieldLine));
-        m_level = el::LevelHelper::castFromInt(resolveValue<el::base::type::EnumType>(&m_jsonObject, &LogRequestFieldLevel));
-        m_verboseLevel = resolveValue<el::base::type::VerboseLevel>(&m_jsonObject, &LogRequestFieldVLevel);
+        m_datetime = resolveValue<types::TimeMs>(&deserializedObj.jsonObject, &LogRequestFieldDateTime);
+        m_token = resolveValue<std::string>(&deserializedObj.jsonObject, &LogRequestFieldToken);
+        m_loggerId = resolveValue<std::string>(&deserializedObj.jsonObject, &LogRequestFieldLogger);
+        m_filename = resolveValue<std::string>(&deserializedObj.jsonObject, &LogRequestFieldFile);
+        m_function = resolveValue<std::string>(&deserializedObj.jsonObject, &LogRequestFieldFunction);
+        m_applicationName = resolveValue<std::string>(&deserializedObj.jsonObject, &LogRequestFieldApplicationName);
+        m_threadId = resolveValue<std::string>(&deserializedObj.jsonObject, &LogRequestFieldThreadId);
+        m_msg = resolveValue<std::string>(&deserializedObj.jsonObject, &LogRequestFieldMessage);
+        m_lineNumber = static_cast<el::base::type::LineNumber>(resolveValue<el::base::type::LineNumber>(&deserializedObj.jsonObject, &LogRequestFieldLine));
+        m_level = el::LevelHelper::castFromInt(resolveValue<el::base::type::EnumType>(&deserializedObj.jsonObject, &LogRequestFieldLevel));
+        m_verboseLevel = resolveValue<el::base::type::VerboseLevel>(&deserializedObj.jsonObject, &LogRequestFieldVLevel);
 
-        m_isValid = m_datetime != 0L && !m_loggerId.empty() && !m_msg.empty();
+        deserializedObj.isValid = m_datetime != 0L && !m_loggerId.empty() && !m_msg.empty();
+        m_isValid = deserializedObj.isValid;
+
     }
-    return m_isValid;
+    return deserializedObj;
 }
 
 bool LogRequest::validateTimestamp() const

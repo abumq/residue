@@ -39,9 +39,10 @@ public:
 
     JsonObject();
 
-    JsonObject(const Json& newRoot);
-    JsonObject(Json&& newRoot);
-    JsonObject(std::string&& jsonStr);
+    explicit JsonObject(const Json& newRoot);
+    explicit JsonObject(Json&& newRoot);
+    explicit JsonObject(std::string&& jsonStr);
+    explicit JsonObject(const std::string& jsonStr);
 
     inline bool isValid() const
     {
@@ -58,12 +59,12 @@ public:
         m_lastError = lastError;
     }
 
-    inline const std::string& jsonStr() const
+    inline std::string jsonStr() const
     {
         return m_jsonStr;
     }
 
-    inline Json root(void) const
+    inline const Json& root(void) const
     {
         return m_root;
     }
