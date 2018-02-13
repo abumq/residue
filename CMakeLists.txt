@@ -41,6 +41,8 @@ if (debug)
 
     else()
         add_definitions (-DRESIDUE_DEV)
+        add_definitions (-DELPP_DEBUG_ERRORS)
+        add_definitions (-DELPP_DEBUG_INFO)
     endif()
 endif()
 

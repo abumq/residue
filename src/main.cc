@@ -298,6 +298,7 @@ int main(int argc, char* argv[])
 
         #undef START_LOG_ROTATOR
 
+#ifndef RESIDUE_DEV
         // auto updater
         threads.push_back(std::thread([&]() {
             el::Helpers::setThreadName("AutoUpdater");
@@ -311,6 +312,9 @@ int main(int argc, char* argv[])
             }
             task.start();
         }));
+#else
+        // AUTO UPDATER INACTIVE IN DEV MODE
+#endif
 
         if (registry.configuration()->hasFlag(Configuration::Flag::ACCEPT_INPUT)) {
             signal(SIGINT, interruptHandler); // SIGINT = interrupt
