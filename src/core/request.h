@@ -59,7 +59,8 @@ public:
     }
 
     bool deserialize(std::string&& json);
-    inline const JsonObject& jsonObject() const
+
+    inline JsonObject jsonObject() const
     {
         return m_jsonObject;
     }

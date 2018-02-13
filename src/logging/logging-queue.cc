@@ -48,5 +48,5 @@ RawRequest LoggingQueue::pull()
 {
     RawRequest rawRequest = m_dispatchQueue->back();
     m_dispatchQueue->pop_back();
-    return rawRequest;
+    return std::move(rawRequest);
 }

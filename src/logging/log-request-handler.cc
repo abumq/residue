@@ -124,7 +124,7 @@ void LogRequestHandler::processRequestQueue()
                         RLOG(ERROR) << "Maximum number of bulk requests reached. Ignoring the rest of items in bulk";
                         break;
                     }
-                    std::string requestItemStr(std::move(it->dump()));
+                    std::string requestItemStr(it->dump());
                     LogRequest requestItem(m_registry->configuration());
                     requestItem.deserialize(std::move(requestItemStr));
                     if (requestItem.isValid()) {
