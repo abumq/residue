@@ -2,8 +2,13 @@
 
 ## [Unreleased]
 ### Fixes
-- Fixed issue where client integrity tasks could remove dead clients that were pending (in log queue) [issue #73]
-- Fixed for crash noticed while processing bulk requests
+- Client integrity task can remove pending dead client #73
+- Deadlock detected while dispatching log #76
+- Race condition causing deadlock when creating log file #77
+
+### Updates
+- Upgraded underlying logging library Easylogging++ from 9.95.0 to 9.96.1
+- Moved some of the unnecessary logs from production-debug to dev-debug
 
 ## [1.4.1] - 12-02-2018
 ### Fixes
