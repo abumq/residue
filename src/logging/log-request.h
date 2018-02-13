@@ -143,11 +143,11 @@ public:
 
     inline bool isBulk()
     {
-        return Request::isValid() && !m_jsonObject.jsonStr().empty() && m_jsonObject.jsonStr().at(0) == '[';
+        return m_jsonObject.isArray();
     }
 
-    bool deserialize(std::string&& json);
-    bool validateTimestamp() const override;
+    virtual bool deserialize(std::string&& json) override;
+    virtual bool validateTimestamp() const override;
 
 private:
     template <typename T>
