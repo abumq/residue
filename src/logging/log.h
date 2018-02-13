@@ -32,7 +32,7 @@
 #   define RESIDUE_DEBUG_LOG 0
 #endif
 
-#ifdef RESIDUE_DEBUG
+//#ifdef RESIDUE_DEBUG
     #define RLOG(LEVEL) CLOG(LEVEL, RESIDUE_LOGGER_ID)
     #define RLOG_IF(condition, LEVEL) CLOG_IF(condition, LEVEL, RESIDUE_LOGGER_ID)
     #define RVLOG(vLevel) CVLOG(vLevel, RESIDUE_LOGGER_ID)
@@ -40,7 +40,7 @@
     #define DRLOG(LEVEL) if (RESIDUE_DEBUG_LOG) DCLOG(LEVEL, RESIDUE_LOGGER_ID)
     #define DRVLOG(vLevel) if (RESIDUE_DEBUG_LOG) DCVLOG(vLevel, RESIDUE_LOGGER_ID)
     #define DRVLOG_IF(condition, vLevel) if (RESIDUE_DEBUG_LOG) DCVLOG_IF(condition, vLevel, RESIDUE_LOGGER_ID)
-#else
+/*#else
     #define RLOG(LEVEL) el::base::NullWriter()
     #define RLOG_IF(condition, LEVEL) el::base::NullWriter()
     #define RVLOG(vLevel) el::base::NullWriter()
@@ -48,7 +48,7 @@
     #define DRLOG(LEVEL) el::base::NullWriter()
     #define DRVLOG(vLevel) el::base::NullWriter()
     #define DRVLOG_IF(condition, vLevel) el::base::NullWriter()
-#endif
+#endif*/
 #define RV_CRAZY 9
 #define RV_TRACE 8
 #define RV_DEBUG 7
