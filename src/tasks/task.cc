@@ -43,7 +43,7 @@ Task::Task(const std::string& name,
 void Task::start()
 {
     rescheduleFrom(Utils::now());
-    RVLOG(RV_INFO) << "Scheduled [" << m_name << "] to run every " << m_interval
+    RVLOG(RV_DEBUG) << "Scheduled [" << m_name << "] to run every " << m_interval
                    << "; next execution at ["
                    << formattedNextExecution() << "]";
 
@@ -89,7 +89,7 @@ bool Task::kickOff(bool scheduled)
     if (scheduled) {
         RLOG(INFO) << "Executing task [" << m_name << "]";
     } else {
-        RLOG(RV_INFO) << "Manually starting task [" << m_name << "]";
+        RLOG(INFO) << "Manually executing task [" << m_name << "]";
     }
     execute();
     RLOG(INFO) << "Finished task [" << m_name << "]"<< (scheduled ? "" : " (Manual)");
