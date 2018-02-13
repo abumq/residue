@@ -46,6 +46,7 @@ Session::Session(tcp::socket&& socket,
 {
     m_id = m_requestHandler->name()[0] + Utils::generateRandomString(16, true);
     DRVLOG(RV_DEBUG) << "New session " << m_id;
+    m_requestHandler->setSession(this);
 }
 
 Session::~Session()
@@ -70,7 +71,7 @@ void Session::read()
 #endif
         if (!ec) {
             RESIDUE_PROFILE_START(t_read);
-#ifdef RESIDUE_DEBUG
+#ifdef RESIDUE_DEV
             DRVLOG(RV_TRACE) << "Received: "
                              << (numOfBytes - Session::PACKET_DELIMITER_SIZE) // ignore package delimiter
                              << " bytes";
@@ -81,6 +82,9 @@ void Session::read()
             //RESIDUE_PROFILE_CHECKPOINT(t_read, m_timeTaken, 1);
             sendToHandler(std::move(buffer));
             //RESIDUE_PROFILE_CHECKPOINT(t_read, m_timeTaken, 2);
+#ifdef RESIDUE_DEV
+            DRVLOG(RV_TRACE) << "Adding bytes";
+#endif
             Utils::bigAdd(m_bytesReceived, std::to_string(numOfBytes));
             m_requestHandler->registry()->addBytesReceived(numOfBytes);
         } else {
@@ -97,7 +101,6 @@ void Session::sendToHandler(std::string&& data)
 #ifdef RESIDUE_DEBUG
     DRVLOG(RV_TRACE) << "Read bytes: " << data << " [size: " << data.size() << "]";
 #endif
-    m_requestHandler->setSession(this);
     RawRequest req { std::move(data), m_socket.remote_endpoint().address().to_string(), Utils::now() };
     m_requestHandler->handle(std::move(req));
 }

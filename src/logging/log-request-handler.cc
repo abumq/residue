@@ -112,7 +112,7 @@ void LogRequestHandler::processRequestQueue()
             continue;
         }
 #ifdef RESIDUE_DEV
-        DRVLOG(RV_CRAZY) << "Is bulk? " << std::boolalpha << request.isBulk();
+        DRVLOG(RV_DEBUG) << "Is bulk? " << std::boolalpha << request.isBulk();
 #endif
         if (request.isBulk()) {
             if (allowBulkRequests) {
@@ -120,7 +120,9 @@ void LogRequestHandler::processRequestQueue()
                 unsigned int itemCount = 0U;
                 Client* currentClient = request.client();
                 bool forceClientValidation = true;
+#ifdef RESIDUE_DEV
                 DRVLOG(RV_DEBUG) << "Request client: " << request.client();
+#endif
                 for (const JsonObject::Json& js : request.jsonObject()) {
                     if (itemCount == maxItemsInBulk) {
                         RLOG(ERROR) << "Maximum number of bulk requests reached. Ignoring the rest of items in bulk";
@@ -244,11 +246,11 @@ bool LogRequestHandler::processRequest(LogRequest* request, Client** clientRef, 
 
     request->setClientId(client->id());
     request->setClient(client);
-
+/*
     if (m_session->client() == nullptr) {
         DRVLOG(RV_DEBUG) << "Updating session client";
         m_session->setClient(client);
-    }
+    }*/
 
     if (!bypassChecks && client->isKnown()) {
         // take this opportunity to update the user for unknown logger
