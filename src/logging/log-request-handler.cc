@@ -58,7 +58,6 @@ void LogRequestHandler::start()
 void LogRequestHandler::handle(RawRequest&& rawRequest)
 {
     m_session->writeStatusCode(Response::StatusCode::STATUS_OK);
-    std::lock_guard<std::mutex> lock(*(m_queue.lock()));
     m_queue.push(std::move(rawRequest));
 }
 

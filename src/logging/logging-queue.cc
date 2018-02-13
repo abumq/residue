@@ -33,8 +33,6 @@ void LoggingQueue::switchContext()
 {
     std::lock_guard<std::mutex> lock(m_mutex);
 
-    RESIDUE_UNUSED(lock);
-
 #ifdef RESIDUE_DEBUG
     DRVLOG_IF(!m_queue1.empty() || !m_queue2.empty(), RV_DEBUG)
                     << "Context switched, queue 1: " << m_queue1.size()
