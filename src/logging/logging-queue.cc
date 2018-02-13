@@ -35,7 +35,7 @@ void LoggingQueue::switchContext()
 
     RESIDUE_UNUSED(lock);
 
-#if RESIDUE_DEBUG
+#ifdef RESIDUE_DEBUG
     DRVLOG_IF(!m_queue1.empty() || !m_queue2.empty(), RV_DEBUG)
                     << "Context switched, queue 1: " << m_queue1.size()
                     << " items, queue 2: " << m_queue2.size() << " items";

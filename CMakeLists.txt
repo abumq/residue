@@ -35,15 +35,13 @@ endif()
 
 if (debug)
     message ("==> DEBUGGING IS ON")
-    add_definitions (-DRESIDUE_DEBUG=1)
+    add_definitions (-DRESIDUE_DEBUG)
 
     if (production)
 
     else()
         add_definitions (-DRESIDUE_DEV)
     endif()
-else()
-    add_definitions (-DRESIDUE_DEBUG=0)
 endif()
 
 if (production)

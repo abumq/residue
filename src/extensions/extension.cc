@@ -81,16 +81,16 @@ void Extension::work()
             if (!script.empty()) {
                 std::lock_guard<std::mutex> lock_(s_extensionMutex);
                 (void) lock_;
-#               if RESIDUE_DEBUG
+#ifdef RESIDUE_DEBUG
                     DRVLOG(RV_CRAZY) << "Executing extension " << m_module;
-#               endif
+#endif
                 int result = PyRun_SimpleString(script.c_str());
                 RLOG_IF(result != 0, WARNING) << "Extension ["
                                               << m_module << "] exited with ["
                                               << result << "]";
-#               if RESIDUE_DEBUG
+#ifdef RESIDUE_DEBUG
                     DRVLOG(RV_CRAZY) << "Finished extension " << m_module;
-#               endif
+#endif
             }
         }
         std::this_thread::sleep_for(std::chrono::milliseconds(10));

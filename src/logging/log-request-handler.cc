@@ -95,7 +95,7 @@ void LogRequestHandler::processRequestQueue()
             std::this_thread::sleep_for(std::chrono::milliseconds(m_registry->configuration()->dispatchDelay()));
         }
 
-#if RESIDUE_DEBUG
+#ifdef RESIDUE_DEBUG
         DRVLOG(RV_CRAZY) << "-----============= [ BEGIN ] =============-----";
 #endif
         LogRequest request(m_registry->configuration());
@@ -160,7 +160,7 @@ void LogRequestHandler::processRequestQueue()
 #endif
         }
 
-#if RESIDUE_DEBUG
+#ifdef RESIDUE_DEBUG
         DRVLOG(RV_CRAZY) << "-----============= [ ✓ ] =============-----";
 #endif
     }

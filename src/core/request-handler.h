@@ -140,7 +140,7 @@ protected:
                 bool tryServerAESKey = false,
                 bool decompress = false)
     {
-#if RESIDUE_DEBUG
+#ifdef RESIDUE_DEBUG
         DRVLOG(RV_DEBUG) << "Raw request: " << requestStr;
 #endif
         DecryptedRequest dr = decryptRequest(requestStr, defaultStatus);

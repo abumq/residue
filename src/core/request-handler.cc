@@ -54,7 +54,7 @@ DecryptedRequest RequestHandler::decryptRequest(const std::string& requestStr,
             return { nullptr, requestInput, Request::StatusCode::BAD_REQUEST, "Malformed request. No client ID" };
         }
         std::string clientId = requestInput.substr(0, pos);
-#if RESIDUE_DEBUG
+#ifdef RESIDUE_DEBUG
         DRVLOG(RV_DEBUG) << "Client: " << clientId;
         DRVLOG(RV_CRAZY) << "IV: " << iv;
 #endif
@@ -62,12 +62,12 @@ DecryptedRequest RequestHandler::decryptRequest(const std::string& requestStr,
             return { nullptr, requestInput, Request::StatusCode::BAD_REQUEST, "Client not connected yet" };
         }
         std::string requestBase64 = requestInput.substr(pos + 1);
-#if RESIDUE_DEBUG
+#ifdef RESIDUE_DEBUG
         DRVLOG(RV_CRAZY) << "Data (base64): " << requestBase64;
 #endif
         try {
             requestInput = AES::decrypt(requestBase64, !hasManualKey ? existingClient->key() : key, iv);
-#if RESIDUE_DEBUG
+#ifdef RESIDUE_DEBUG
             DRVLOG(RV_CRAZY) << "Plain request: " << requestInput;
 #endif
 

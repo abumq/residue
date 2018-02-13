@@ -37,7 +37,7 @@ bool Request::deserialize(std::string&& json)
     m_jsonObject = JsonObject(std::move(json));
     m_isValid = m_jsonObject.isValid();
     if (!m_isValid) {
-#if RESIDUE_DEBUG
+#ifdef RESIDUE_DEBUG
         DRVLOG(RV_ERROR) << "Malformed JSON request: " << m_jsonObject.lastError();
 #else
         RVLOG(RV_ERROR) << "Malformed JSON request";

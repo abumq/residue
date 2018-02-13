@@ -26,13 +26,18 @@
 
 #define RESIDUE_LOGGER_ID "residue"
 
+#ifdef RESIDUE_DEBUG
+#   define RESIDUE_DEBUG_LOG 1
+#else
+#   define RESIDUE_DEBUG_LOG 0
+#endif
 #define RLOG(LEVEL) CLOG(LEVEL, RESIDUE_LOGGER_ID)
 #define RLOG_IF(condition, LEVEL) CLOG_IF(condition, LEVEL, RESIDUE_LOGGER_ID)
 #define RVLOG(vLevel) CVLOG(vLevel, RESIDUE_LOGGER_ID)
 #define RVLOG_IF(cond, vLevel) CVLOG_IF(cond, vLevel, RESIDUE_LOGGER_ID)
-#define DRLOG(LEVEL) if (RESIDUE_DEBUG) DCLOG(LEVEL, RESIDUE_LOGGER_ID)
-#define DRVLOG(vLevel) if (RESIDUE_DEBUG) DCVLOG(vLevel, RESIDUE_LOGGER_ID)
-#define DRVLOG_IF(condition, vLevel) if (RESIDUE_DEBUG) DCVLOG_IF(condition, vLevel, RESIDUE_LOGGER_ID)
+#define DRLOG(LEVEL) if (RESIDUE_DEBUG_LOG) DCLOG(LEVEL, RESIDUE_LOGGER_ID)
+#define DRVLOG(vLevel) if (RESIDUE_DEBUG_LOG) DCVLOG(vLevel, RESIDUE_LOGGER_ID)
+#define DRVLOG_IF(condition, vLevel) if (RESIDUE_DEBUG_LOG) DCVLOG_IF(condition, vLevel, RESIDUE_LOGGER_ID)
 
 #define RV_CRAZY 9
 #define RV_TRACE 8
