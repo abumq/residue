@@ -143,11 +143,10 @@ public:
 
     inline bool isBulk()
     {
-        std::string jstr(rawJson());
-        return jstr.find_first_of('[') == 0;
+        return Request::isValid() && !m_jsonObject.jsonStr().empty() && m_jsonObject.jsonStr().at(0) == '[';
     }
 
-    virtual Request::DeserializedObject deserialize(std::string&& json) override;
+    bool deserialize(std::string&& json);
     bool validateTimestamp() const override;
 
 private:

@@ -43,13 +43,7 @@ JsonObject::JsonObject(const Json& newRoot) :
 }
 
 JsonObject::JsonObject(std::string&& jsonStr) :
-    JsonObject(jsonStr)
-{
-
-}
-
-JsonObject::JsonObject(const std::string& jsonStr) :
-    m_jsonStr(jsonStr)
+    m_jsonStr(std::move(jsonStr))
 {
     try {
         m_root = Json::parse(m_jsonStr);

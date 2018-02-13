@@ -55,7 +55,7 @@ public:
         return m_isValid;
     }
 
-    virtual Request::DeserializedObject deserialize(std::string&& json) override;
+    bool deserialize(std::string&& json);
 private:
 
     std::string m_loggerId;

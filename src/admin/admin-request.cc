@@ -32,20 +32,19 @@ AdminRequest::AdminRequest(const Configuration* conf) :
 {
 }
 
-Request::DeserializedObject AdminRequest::deserialize(std::string&& json)
+bool AdminRequest::deserialize(std::string&& json)
 {
-    Request::DeserializedObject deserializedObj = Request::deserialize(std::move(json));
-    if (!deserializedObj.isValid) {
+    if (!Request::deserialize(std::move(json))) {
         RLOG(ERROR) << "Unable to read request";
-        return deserializedObj;
+        return false;
     }
-    m_type = static_cast<AdminRequest::Type>(deserializedObj.jsonObject.getUInt("type", 0));
-    m_clientId = deserializedObj.jsonObject.getString("client_id", "");
-    m_rsaPublicKey = deserializedObj.jsonObject.getString("rsa_public_key", "");
-    m_loggerId = deserializedObj.jsonObject.getString("logger_id", "");
-    m_loggingLevels = deserializedObj.jsonObject.get<std::set<std::string>>("logging_levels", std::set<std::string>());
+    m_type = static_cast<AdminRequest::Type>(m_jsonObject.getUInt("type", 0));
+    m_clientId = m_jsonObject.getString("client_id", "");
+    m_rsaPublicKey = m_jsonObject.getString("rsa_public_key", "");
+    m_loggerId = m_jsonObject.getString("logger_id", "");
+    m_loggingLevels = m_jsonObject.get<std::set<std::string>>("logging_levels", std::set<std::string>());
 
-    deserializedObj.isValid = (m_type == AdminRequest::Type::RELOAD_CONFIG)
+    m_isValid = (m_type == AdminRequest::Type::RELOAD_CONFIG)
             || (m_type == AdminRequest::Type::RESET)
             || (m_type == AdminRequest::Type::ADD_CLIENT && !m_clientId.empty() && !m_rsaPublicKey.empty())
             || (m_type == AdminRequest::Type::REMOVE_CLIENT && !m_clientId.empty())
@@ -53,8 +52,7 @@ Request::DeserializedObject AdminRequest::deserialize(std::string&& json)
             || (m_type == AdminRequest::Type::FORCE_LOG_ROTATION && !m_loggerId.empty())
             || (m_type == AdminRequest::Type::STATS)
             || (m_type == AdminRequest::Type::LIST_CLIENTS);
-    m_isValid = deserializedObj.isValid;
-    return deserializedObj;
+    return m_isValid;
 }
 
 

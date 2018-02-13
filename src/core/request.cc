@@ -32,19 +32,18 @@ Request::Request(const Configuration* conf) :
 {
 }
 
-Request::DeserializedObject Request::deserialize(std::string&& json)
+bool Request::deserialize(std::string&& json)
 {
-    m_rawJson = std::move(json);
-    JsonObject jsonObject(m_rawJson);
-    m_isValid = jsonObject.isValid();
+    m_jsonObject = JsonObject(std::move(json));
+    m_isValid = m_jsonObject.isValid();
     if (!m_isValid) {
 #ifdef RESIDUE_DEBUG
-        DRVLOG(RV_ERROR) << "Malformed JSON request: [" << jsonObject.lastError() << "] JSON:" << m_rawJson;
+        DRVLOG(RV_ERROR) << "Malformed JSON request: " << m_jsonObject.lastError();
 #else
         RVLOG(RV_ERROR) << "Malformed JSON request";
 #endif
     } else {
-        m_timestamp = jsonObject.get<types::Time>("_t", 0UL);
+        m_timestamp = m_jsonObject.get<types::Time>("_t", 0UL);
         m_isValid = validateTimestamp();
 
         RVLOG_IF(!m_isValid, RV_DEBUG) << "Potential replay. Timestamp is "
@@ -52,7 +51,7 @@ Request::DeserializedObject Request::deserialize(std::string&& json)
                                        << (m_dateReceived - m_timestamp) << " seconds old";
     }
 
-    return { m_isValid, jsonObject };
+    return m_isValid;
 }
 
 bool Request::validateTimestamp() const

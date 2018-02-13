@@ -78,10 +78,9 @@ void LogRequestHandler::processRequestQueue()
     // we take snapshot to prevent potential race conditions (even though we have LoggingQueue that is safe)
     const std::size_t total = m_queue.size();
 
-    ClientIntegrityTask* clientIntegrityTask = m_registry->clientIntegrityTask();
-    const types::Time lastClientIntegrityRun = clientIntegrityTask == nullptr ? 0 : clientIntegrityTask->lastExecution();
+    const types::Time lastClientIntegrityRun = m_registry->clientIntegrityTask()->lastExecution();
 
-    if (total > 0 && clientIntegrityTask != nullptr) {
+    if (total > 0) {
         // we pause client integrity task until we clear this queue
         // so we don't clean a (now) dead client that passed initial validation
 #ifdef RESIDUE_DEV
@@ -109,40 +108,25 @@ void LogRequestHandler::processRequestQueue()
         if ((!request.isValid() && !request.isBulk())
                 || request.statusCode() != Request::StatusCode::CONTINUE) {
             RVLOG(RV_ERROR) << "Failed: " << request.errorText();
-            continue;
+            return;
         }
-
-#ifdef RESIDUE_DEV
-        DRVLOG(RV_CRAZY) << "Is bulk? " << std::boolalpha << request.isBulk();
-#endif
 
         if (request.isBulk()) {
             if (allowBulkRequests) {
                 // Create bulk request items
                 unsigned int itemCount = 0U;
-                JsonObject j(request.rawJson());
-                if (!j.isValid()) {
-#ifdef RESIDUE_DEBUG
-                    DRVLOG(RV_DEBUG) << "Invalid bulk ignored: " << request.rawJson();
-#else
-                    RVLOG(RV_DEBUG) << "Invalid bulk ignored."
-#endif
-                    continue;
-                }
-                JsonObject::Json copy = j.root();
+                JsonObject::Json j = request.jsonObject().root();
                 Client* currentClient = request.client();
                 bool forceClientValidation = true;
                 DRVLOG(RV_DEBUG) << "Request client: " << request.client();
-                for (auto it : copy) {
+                for (auto it = j.begin(); it != j.end(); ++it) {
                     if (itemCount == maxItemsInBulk) {
                         RLOG(ERROR) << "Maximum number of bulk requests reached. Ignoring the rest of items in bulk";
                         break;
                     }
-                    std::string requestItemStr(it.dump());
+                    std::string requestItemStr(it->dump());
                     LogRequest requestItem(m_registry->configuration());
-
                     requestItem.deserialize(std::move(requestItemStr));
-
                     if (requestItem.isValid()) {
                         requestItem.setIpAddr(request.ipAddr());
                         requestItem.setDateReceived(request.dateReceived());
@@ -181,7 +165,7 @@ void LogRequestHandler::processRequestQueue()
 #endif
     }
 
-    if (clientIntegrityTask != nullptr && lastClientIntegrityRun < m_registry->clientIntegrityTask()->lastExecution() && m_queue.backlogEmpty()) {
+    if (lastClientIntegrityRun < m_registry->clientIntegrityTask()->lastExecution() && m_queue.backlogEmpty()) {
         RVLOG(RV_DEBUG) << "Starting client integrity task after queue is processed.";
         // trigger client integrity task as it was run while this queue was being processed
         if (!m_registry->clientIntegrityTask()->isExecuting()) {
@@ -189,7 +173,7 @@ void LogRequestHandler::processRequestQueue()
         }
     }
 
-    if (total > 0 && m_queue.backlogEmpty() && clientIntegrityTask != nullptr) {
+    if (total > 0 && m_queue.backlogEmpty()) {
 #ifdef RESIDUE_DEV
         DRVLOG(RV_DEBUG) << "Resuming schedule for client integrity";
 #endif
@@ -237,15 +221,14 @@ bool LogRequestHandler::processRequest(LogRequest* request, Client** clientRef, 
             }
             return false;
         }
+    }
 
-        // if still null there is a problem
-        if (client == nullptr) {
-            RVLOG(RV_ERROR) << "Invalid request. No client found [" << request->clientId() << "]";
-            if (m_registry->configuration()->hasFlag(Configuration::Flag::ALLOW_PLAIN_LOG_REQUEST)) {
-                RVLOG(RV_ERROR) << "Please check if logger has ALLOW_PLAIN_LOG_REQUEST option set and it contains client ID if needed.";
-            }
-            return false;
+    if (client == nullptr) {
+        RVLOG(RV_ERROR) << "Invalid request. No client found [" << request->clientId() << "]";
+        if (m_registry->configuration()->hasFlag(Configuration::Flag::ALLOW_PLAIN_LOG_REQUEST)) {
+            RVLOG(RV_ERROR) << "Please check if logger has ALLOW_PLAIN_LOG_REQUEST option set and it contains client ID if needed.";
         }
+        return false;
     }
 
     if (!bypassChecks && !client->isAlive(request->dateReceived())) {

@@ -79,7 +79,7 @@ public:
         return m_keySize;
     }
 
-    virtual Request::DeserializedObject deserialize(std::string&& json) override;
+    bool deserialize(std::string&& json);
 private:
 
     std::string m_clientId;

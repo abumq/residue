@@ -31,15 +31,13 @@ TokenRequest::TokenRequest(const Configuration* conf) :
 {
 }
 
-Request::DeserializedObject TokenRequest::deserialize(std::string&& json)
+bool TokenRequest::deserialize(std::string&& json)
 {
-    Request::DeserializedObject deserializedObj = Request::deserialize(std::move(json));
-    if (deserializedObj.isValid) {
-        m_loggerId = deserializedObj.jsonObject.getString("logger_id", "");
-        m_accessCode = deserializedObj.jsonObject.getString("access_code", "");
-        m_token = deserializedObj.jsonObject.getString("token", "");
+    if (Request::deserialize(std::move(json))) {
+        m_loggerId = m_jsonObject.getString("logger_id", "");
+        m_accessCode = m_jsonObject.getString("access_code", "");
+        m_token = m_jsonObject.getString("token", "");
     }
-    deserializedObj.isValid = !m_loggerId.empty();
-    m_isValid = deserializedObj.isValid;
-    return deserializedObj;
+    m_isValid = !m_loggerId.empty();
+    return m_isValid;
 }

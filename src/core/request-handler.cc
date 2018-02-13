@@ -65,11 +65,6 @@ DecryptedRequest RequestHandler::decryptRequest(const std::string& requestStr,
 #ifdef RESIDUE_DEBUG
         DRVLOG(RV_CRAZY) << "Data (base64): " << requestBase64;
 #endif
-#ifdef RESIDUE_DEV
-        DRVLOG(RV_CRAZY) << "Ripe command: echo " << iv << ":" << clientId << ":" << requestBase64
-                         << " | ripe -d --aes --key " << (!hasManualKey ? existingClient->key() : key)
-                         << " --base64";
-#endif
         try {
             requestInput = AES::decrypt(requestBase64, !hasManualKey ? existingClient->key() : key, iv);
 #ifdef RESIDUE_DEBUG

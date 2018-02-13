@@ -33,26 +33,24 @@ ConnectionRequest::ConnectionRequest(const Configuration* conf) :
 {
 }
 
-Request::DeserializedObject ConnectionRequest::deserialize(std::string&& json)
+bool ConnectionRequest::deserialize(std::string&& json)
 {
-    Request::DeserializedObject deserializedObj = Request::deserialize(std::move(json));
+    m_isValid = true;
 
-    if (deserializedObj.isValid) {
-        m_clientId = deserializedObj.jsonObject.getString("client_id");
-        m_rsaPublicKey = Base64::decode(deserializedObj.jsonObject.getString("rsa_public_key"));
-        m_type = static_cast<ConnectionRequest::Type>(deserializedObj.jsonObject.getUInt("type", 0));
-        m_keySize = deserializedObj.jsonObject.getUInt("key_size", 0);
+    if (Request::deserialize(std::move(json))) {
+        m_clientId = m_jsonObject.getString("client_id");
+        m_rsaPublicKey = Base64::decode(m_jsonObject.getString("rsa_public_key"));
+        m_type = static_cast<ConnectionRequest::Type>(m_jsonObject.getUInt("type", 0));
+        m_keySize = m_jsonObject.getUInt("key_size", 0);
 
-        if (deserializedObj.jsonObject.hasKey("key_size") && (m_keySize != 128 && m_keySize != 192 && m_keySize != 256)) {
+        if (m_jsonObject.hasKey("key_size") && (m_keySize != 128 && m_keySize != 192 && m_keySize != 256)) {
             RLOG(ERROR) << "Invalid key size [" << m_keySize << "]";
-            deserializedObj.isValid = false;
+            m_isValid = false;
         }
     }
-    bool validConnect = (m_type == ConnectionRequest::Type::CONNECT
-                         && (!m_rsaPublicKey.empty() || !m_clientId.empty()));
+    bool validConnect = (m_type == ConnectionRequest::Type::CONNECT && (!m_rsaPublicKey.empty() || !m_clientId.empty()));
     bool validSubsequentRequests = (m_type == ConnectionRequest::Type::ACKNOWLEDGE
                                     || m_type == ConnectionRequest::Type::TOUCH) && !m_clientId.empty();
-    deserializedObj.isValid &= validConnect || validSubsequentRequests;
-    m_isValid = deserializedObj.isValid;
-    return deserializedObj;
+    m_isValid &= validConnect || validSubsequentRequests;
+    return m_isValid;
 }

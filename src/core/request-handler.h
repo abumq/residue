@@ -170,9 +170,9 @@ protected:
             DRVLOG(RV_TRACE) << "Decompression finished (raw): " << plainRequestStr;
 #endif
         }
-        Request::DeserializedObject result = request->deserialize(std::move(plainRequestStr));
+        bool result = request->deserialize(std::move(plainRequestStr));
         bool usedRsaKey = false;
-        if (!result.isValid && tryServerRSAKey && !m_registry->configuration()->serverRSAKey().privateKey.empty()) {
+        if (!result && tryServerRSAKey && !m_registry->configuration()->serverRSAKey().privateKey.empty()) {
             DRVLOG(RV_INFO) << "Trying with server exchange key...";
             // Try with server RSA key data
             try {
@@ -186,14 +186,14 @@ protected:
                                                         m_registry->configuration()->serverRSASecret());
 #endif
                 result = request->deserialize(std::move(decryptedReq));
-                usedRsaKey = result.isValid;
+                usedRsaKey = result;
             } catch (const std::exception& e) {
                 DRVLOG(RV_ERROR) << e.what();
                 // continue... as it's invalid anyway
             }
         }
 
-        if (!result.isValid && tryServerAESKey && !m_registry->configuration()->serverKey().empty()) {
+        if (!result && tryServerAESKey && !m_registry->configuration()->serverKey().empty()) {
             DRVLOG(RV_INFO) << "Trying with server master key...";
             // Try with server AES key
             try {
@@ -209,7 +209,7 @@ protected:
             }
         }
 
-        if (result.isValid && !usedRsaKey && tryServerRSAKey && request->m_client == nullptr
+        if (result && !usedRsaKey && tryServerRSAKey && request->m_client == nullptr
                 && !m_registry->configuration()->hasFlag(Configuration::ALLOW_PLAIN_CONNECTION)) {
             // This will only happen when we have plain request
             request->m_errorText = "Plain connections not allowed by the server";

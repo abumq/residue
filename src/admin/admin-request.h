@@ -74,7 +74,7 @@ public:
         return m_loggingLevels;
     }
 
-    virtual Request::DeserializedObject deserialize(std::string&& json) override;
+    bool deserialize(std::string&& json);
     virtual bool validateTimestamp() const override;
 private:
 

@@ -50,12 +50,6 @@ public:
         CONTINUE = 0
     };
 
-    struct DeserializedObject
-    {
-        bool isValid;
-        JsonObject jsonObject;
-    };
-
     explicit Request(const Configuration* conf);
     virtual ~Request() = default;
 
@@ -64,11 +58,11 @@ public:
         return m_isValid;
     }
 
-    virtual DeserializedObject deserialize(std::string&& json);
+    bool deserialize(std::string&& json);
 
-    inline const std::string& rawJson() const
+    inline JsonObject jsonObject() const
     {
-        return m_rawJson;
+        return m_jsonObject;
     }
 
     inline Client* client() const
@@ -119,7 +113,7 @@ public:
 
     virtual bool validateTimestamp() const;
 protected:
-    std::string m_rawJson;
+    JsonObject m_jsonObject;
     bool m_isValid;
 
     Client* m_client;
