@@ -57,37 +57,13 @@ protected:
                 std::cout << "Log dispatch data is unexpectedly null" << std::endl;
                 return;
             }
-            std::string logLine(m_data->logMessage()->logger()->logBuilder()->build(m_data->logMessage(),
-                                                                                    m_data->dispatchAction() == el::base::DispatchAction::NormalLog));
-            dispatch(logLine);
-#ifdef RESIDUE_HAS_EXTENSIONS
-            if (data->logMessage()->logger()->id() != RESIDUE_LOGGER_ID) {
-                callExtensions(data, logLine);
-            }
-#endif
-        } catch (const std::exception& e) {
-            std::cerr << "Unexpected exception: " << e.what() << std::endl;
-        }
-    }
+            std::string logLine(data->logMessage()->logger()->logBuilder()->build(data->logMessage(),
+                                                                                    data->dispatchAction() == el::base::DispatchAction::NormalLog));
+            //dispatch(logLine);
 
-private:
-    const el::LogDispatchData* m_data;
-    Configuration* m_configuration;
-
-    void callExtensions(const el::LogDispatchData* data,
-                        const el::base::type::string_t& logLine)
-    {
-        for (auto& logExtension : m_configuration->logExtensions()) {
-            logExtension->call(data, logLine);
-        }
-    }
-
-    void dispatch(const el::base::type::string_t& logLine)
-    {
-        if (m_data->dispatchAction() == el::base::DispatchAction::NormalLog) {
-            el::Logger* logger = m_data->logMessage()->logger();
+            el::Logger* logger = data->logMessage()->logger();
             el::base::TypedConfigurations* conf = logger->typedConfigurations();
-            el::Level level = m_data->logMessage()->level();
+            el::Level level = data->logMessage()->level();
             if (conf->toFile(level)) {
                 const std::string& fn = conf->filename(level);
                 el::base::type::fstream_t* fs = conf->fileStream(level);
@@ -130,9 +106,35 @@ private:
                              << logger->id() << "]";
                 }
             }
+#ifdef RESIDUE_HAS_EXTENSIONS
+            if (data->logMessage()->logger()->id() != RESIDUE_LOGGER_ID) {
+                callExtensions(data, logLine);
+            }
+#endif
+        } catch (const std::exception& e) {
+            std::cerr << "Unexpected exception: " << e.what() << std::endl;
+        }
+    }
+
+private:
+    const el::LogDispatchData* m_data;
+    Configuration* m_configuration;
+
+    void callExtensions(const el::LogDispatchData* data,
+                        const el::base::type::string_t& logLine)
+    {
+        for (auto& logExtension : m_configuration->logExtensions()) {
+            logExtension->call(data, logLine);
+        }
+    }
+/*
+    void dispatch(const el::base::type::string_t& logLine)
+    {
+        if (m_data->dispatchAction() == el::base::DispatchAction::NormalLog) {
+
         }
         // do not use console (standard_output)
-    }
+    }*/
   };
 }
 
