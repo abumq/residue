@@ -84,7 +84,7 @@ void LogRequestHandler::processRequestQueue()
         // we pause client integrity task until we clear this queue
         // so we don't clean a (now) dead client that passed initial validation
 #ifdef RESIDUE_DEV
-        DRVLOG(RV_DEBUG) << "Pausing schedule for client integrity";
+        DRVLOG(RV_DEBUG) << "Pausing schedule for client integrity task";
 #endif
         m_registry->clientIntegrityTask()->pauseScheduledCleanup();
     }
@@ -180,7 +180,7 @@ void LogRequestHandler::processRequestQueue()
 
     if (total > 0 && m_registry->clientIntegrityTask() != nullptr && m_queue.backlogEmpty()) {
 #ifdef RESIDUE_DEV
-        DRVLOG(RV_DEBUG) << "Resuming schedule for client integrity";
+        DRVLOG(RV_DEBUG) << "Resuming schedule for client integrity task";
 #endif
         m_registry->clientIntegrityTask()->resumeScheduledCleanup();
     }

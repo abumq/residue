@@ -2685,7 +2685,7 @@ class Storage : base::NoCopy, public base::threading::ThreadSafe {
     return &m_customFormatSpecifiers;
   }
 
-  threading::Mutex& lockCustomFormatSpecifiers() {
+  base::threading::Mutex& customFormatSpecifiersLock() {
       return m_customFormatSpecifiersLock;
   }
 
@@ -2755,7 +2755,7 @@ class Storage : base::NoCopy, public base::threading::ThreadSafe {
   std::map<std::string, base::type::PerformanceTrackingCallbackPtr> m_performanceTrackingCallbacks;
   std::map<std::string, std::string> m_threadNames;
   std::vector<CustomFormatSpecifier> m_customFormatSpecifiers;
-  threading::Mutex m_customFormatSpecifiersLock;
+  base::threading::Mutex m_customFormatSpecifiersLock;
   Level m_loggingLevel;
 
   friend class el::Helpers;
