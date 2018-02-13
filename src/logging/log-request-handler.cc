@@ -111,7 +111,7 @@ void LogRequestHandler::processRequestQueue()
             continue;
         }
 #ifdef RESIDUE_DEV
-        DRVLOG(RV_DEBUG) << "Is bulk? " << std::boolalpha << request.isBulk();
+        DRVLOG(RV_DEBUG) << "Is bulk? " << request.isBulk();
 #endif
         if (request.isBulk()) {
             if (allowBulkRequests) {
@@ -192,7 +192,6 @@ void LogRequestHandler::processRequestQueue()
                                    << total << " items (" << totalRequests << " requests). Average: "
                                    << (static_cast<float>(m_timeTaken) / static_cast<float>(total)) << "ms/item ["
                                    << (static_cast<float>(m_timeTaken) / static_cast<float>(totalRequests)) << "ms/request]";
-    DRVLOG_IF(!m_queue.backlogEmpty(), RV_DEBUG) << m_queue.backlogSize() << " items have been added to this queue in the mean time";
 #endif
 
     m_queue.switchContext();
