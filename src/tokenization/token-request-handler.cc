@@ -77,9 +77,9 @@ void TokenRequestHandler::handle(RawRequest&& rawRequest)
 
         bool isValid = client->isValidToken(request.loggerId(), request.token(), m_registry, request.dateReceived());
         if (!isValid) {
-            DRVLOG(RV_INFO) << "Removing invalid token";
+            DRVLOG(RV_WARNING) << "Invalid token detected.";
             // Remove invalid token so user can re-set it
-            client->removeToken(request.loggerId(), request.token());
+            //client->removeToken(request.loggerId(), request.token());
         }
         TokenResponse response(isValid);
         std::string output;

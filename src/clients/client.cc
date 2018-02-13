@@ -68,7 +68,7 @@ bool Client::isValidToken(const std::string& loggerId,
         (registry->configuration()->hasFlag(Configuration::Flag::ALLOW_DEFAULT_ACCESS_CODE) && registry->configuration()->accessCodes().find(loggerId) == registry->configuration()->accessCodes().end())) { // loggers without access codes are allowed and this logger actually does not have access codes
         return true;
     }
-    std::lock_guard<std::mutex> lock_(s_mutex);
+    //std::lock_guard<std::mutex> lock_(s_mutex);
     const auto& iter = m_tokens.find(loggerId);
     if (iter == m_tokens.end()) {
         return false;
@@ -95,6 +95,7 @@ void Client::addToken(const std::string& loggerId,
     DRVLOG(RV_DEBUG) << "Token added (client [" << m_id << "])";
 }
 
+/*
 void Client::removeToken(const std::string& loggerId,
                          const std::string& token)
 {
@@ -112,3 +113,4 @@ void Client::removeToken(const std::string& loggerId,
     }
     DRVLOG(RV_DEBUG) << "Token removed (client [" << m_id << "])";
 }
+*/

@@ -151,7 +151,7 @@ public:
     bool isAlive(const types::Time& compareTo = 0L) const;
 
     void addToken(const std::string&, const Token& token);
-    void removeToken(const std::string&, const std::string& token);
+    //void removeToken(const std::string&, const std::string& token);
     bool isValidToken(const std::string&,
                       const std::string&,
                       const Registry*,
