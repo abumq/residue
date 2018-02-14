@@ -57,7 +57,7 @@ void LogRequestHandler::start()
 
 void LogRequestHandler::handle(RawRequest&& rawRequest)
 {
-    m_session->writeStatusCode(Response::StatusCode::STATUS_OK);
+    m_session->writeStandardResponse(Response::StatusCode::STATUS_OK);
     m_queue.push(std::move(rawRequest));
 }
 

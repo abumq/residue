@@ -42,20 +42,19 @@ public:
         CONTINUE = 0
     };
 
+    struct StandardResponse
+    {
+        StatusCode code;
+        std::string response;
+    };
+
+    static const StandardResponse STANDARD_RESPONSES[];
+
     Response() = default;
     virtual ~Response() = default;
 
     void serialize(JsonObject::Json& root,
                    std::string& output) const;
-};
-}
-
-namespace std {
-template<> struct hash<residue::Response::StatusCode> {
-public:
-    std::size_t operator()(const residue::Response::StatusCode& c) const {
-        return hash<unsigned short>{}(c);
-    }
 };
 }
 #endif /* Response_h */

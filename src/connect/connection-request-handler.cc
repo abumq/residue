@@ -225,6 +225,6 @@ void ConnectionRequestHandler::touch(const ConnectionRequest* request) const
         }
     } else {
         RVLOG(RV_ERROR) << "Client is not connected. It may have died or was never connected.";
-        m_session->writeStatusCode(Response::StatusCode::BAD_REQUEST);
+        m_session->writeStandardResponse(Response::StatusCode::BAD_REQUEST);
     }
 }

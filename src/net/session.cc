@@ -36,12 +36,6 @@ using namespace residue;
 const std::string Session::PACKET_DELIMITER = "\r\n\r\n";
 const std::size_t Session::PACKET_DELIMITER_SIZE = Session::PACKET_DELIMITER.size();
 
-const std::unordered_map<Response::StatusCode, std::string> Session::STANDARD_RESPONSES = {
-    { Response::StatusCode::STATUS_OK, "{r:0}" },
-    { Response::StatusCode::CONTINUE, "{r:0}" },
-    { Response::StatusCode::BAD_REQUEST, "{r:1}" },
-};
-
 Session::Session(tcp::socket&& socket,
                  RequestHandler* requestHandler) :
     m_socket(std::move(socket)),
@@ -149,10 +143,10 @@ void Session::write(const char* data,
     }
 }
 
-void Session::writeStatusCode(const Response::StatusCode& r)
+void Session::writeStandardResponse(const Response::StatusCode& r)
 {
-    std::string resp(Session::STANDARD_RESPONSES.at(r) + Session::PACKET_DELIMITER);
-    write(resp.c_str(), resp.length());
+    write(Response::STANDARD_RESPONSES[r].response.c_str(),
+          Response::STANDARD_RESPONSES[r].response.length());
 }
 
 void Session::write(const std::string& s)

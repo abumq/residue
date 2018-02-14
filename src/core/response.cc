@@ -20,8 +20,15 @@
 //
 
 #include "core/response.h"
+#include "net/session.h"
 
 using namespace residue;
+
+const Response::StandardResponse Response::STANDARD_RESPONSES[] = {
+    { Response::StatusCode::STATUS_OK, "{r:0}" + Session::PACKET_DELIMITER },
+    { Response::StatusCode::CONTINUE, "{r:0}" + Session::PACKET_DELIMITER },
+    { Response::StatusCode::BAD_REQUEST, "{r:1}" + Session::PACKET_DELIMITER },
+};
 
 void Response::serialize(JsonObject::Json& root,
                          std::string& output) const
