@@ -109,7 +109,7 @@ You will need to run residue as root user. This is because residue needs to chan
 If you are just need to test the residue before you run it in production (in production you should always run it as root) you can use `--force-without-root` command-line argument.
 
 # Verbose Options
-You can turn on verbose logging using `--verbose=<level>` or `-v` for level 9
+You can turn on verbose logging using `--v=<level>` or `-v` for level 9
 
 | **Level** | **Name**        | **Description** |
 |-----------|-----------------|-----------------|
@@ -122,3 +122,5 @@ You can turn on verbose logging using `--verbose=<level>` or `-v` for level 9
 | 7         | DEBUG            | Debug information that contains a lot of useful information for devs |
 | 8         | TRACE            | Trace function calls |
 | 9         | CRAZY            | A lot of information - very useful for development purposes |
+
+You can also specify verbose logging by modules. Please see [Application Arguments](https://github.com/muflihun/easyloggingpp#application-arguments) section on Easylogging++

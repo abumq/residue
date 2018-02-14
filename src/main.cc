@@ -175,7 +175,7 @@ int main(int argc, char* argv[])
     }
 
     if (argc < 2) {
-        std::cerr << "USAGE: residue <residue_config_file>" << std::endl;
+        std::cerr << "USAGE: residue <residue_config_file> [--run-without-root] [--verbose=<level>]" << std::endl;
         return 1;
     }
 
@@ -189,12 +189,12 @@ int main(int argc, char* argv[])
     } else if (strcmp(argv[1], "--help") == 0) {
         printVersion();
         std::cout << std::endl;
-        std::cout << "Please go to https://github.com/muflihun/residue for help" << std::endl;
+        std::cout << "Please go to https://github.com/muflihun/residue/blob/master/docs/ for help" << std::endl;
         return 0;
     }
 
     if (!el::Helpers::commandLineArgs()->hasParam("--force-without-root") && el::base::utils::OS::getBashOutput("whoami") != "root") {
-        std::cerr << "Please run as 'root'. See https://github.com/muflihun/residue for more details" << std::endl;
+        std::cerr << "Please run as 'root'. See https://github.com/muflihun/residue/blob/master/docs/INSTALL.md#run-as-root for more details" << std::endl;
         return 1;
     }
 
@@ -306,8 +306,8 @@ int main(int argc, char* argv[])
             registry.setAutoUpdater(&task);
             std::string newVer;
             if (task.hasNewVersion(&newVer)) {
-                std::cout << "A newer version " << newVer
-                          << " is available for download. Please visit https://muflihun.github.io/residue/"
+                std::cout << "A newer version " << newVer << " is available for download."
+                          << " Please visit https://github.com/muflihun/residue/releases/tag/" << newVer
                           << std::endl;
             }
             task.start();

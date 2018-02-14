@@ -43,7 +43,9 @@ void AutoUpdater::execute()
 {
     std::string newVer;
     if (hasNewVersion(&newVer)) {
-        RVLOG(RV_NOTICE) << "You are running v" << RESIDUE_VERSION << ", new version is available: " << newVer;
+        RVLOG(RV_NOTICE) << "You are running Residue v" << RESIDUE_VERSION
+                         << ", a newer version is available: " << newVer
+                         << ". Please visit https://github.com/muflihun/residue/releases/tag/" << newVer;
     }
 }
 
