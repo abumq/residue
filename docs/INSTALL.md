@@ -109,7 +109,7 @@ You will need to run residue as root user. This is because residue needs to chan
 If you are just need to test the residue before you run it in production (in production you should always run it as root) you can use `--force-without-root` command-line argument.
 
 # Verbose Options
-You can turn on verbose logging using `--v=<level>` or `-v` for level 9
+You can turn on verbose logging using `--v=<level>`. `-v` is equivalent to `--v=9`
 
 | **Level** | **Name**        | **Description**                                                       |
 |-----------|-----------------|-----------------------------------------------------------------------|
