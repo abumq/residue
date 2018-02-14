@@ -82,14 +82,12 @@ DecryptedRequest RequestHandler::decryptRequest(const std::string& requestStr,
 #endif
             decryptedResult = decryptWithKey(requestBase64, iv, clientId, existingClient->key());
             if (!decryptedResult.successful && !existingClient->backupKey().empty()) {
-#ifdef RESIDUE_DEV
-                DRVLOG(RV_DEBUG) << "Decryption: Trying with backup key";
-#endif
+                RVLOG(RV_DEBUG) << "Decryption: Trying with backup key";
                 decryptedResult = decryptWithKey(requestBase64, iv, clientId, existingClient->backupKey());
             }
         }
         if (!decryptedResult.successful) {
-            RLOG(ERROR) << "Exception thrown during decryption: " << decryptedResult.errorText;
+            RVLOG(RV_ERROR) << "Exception thrown during decryption: " << decryptedResult.errorText;
         } else {
             requestInput = std::move(decryptedResult.result);
         }
