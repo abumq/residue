@@ -5,9 +5,10 @@
 - Client integrity task can remove pending dead client #73
 - Deadlock detected while dispatching log #76
 - Race condition causing deadlock when creating log file #77
+- Long pending requests fail after dead client's key is reset #75
 
 ### Updates
-- Upgraded underlying logging library Easylogging++ from 9.95.0 to 9.96.1
+- Upgraded underlying logging library Easylogging++ from 9.95.0 to 9.96.0
 - Moved some of the unnecessary logs from production-debug to dev-debug
 
 ## [1.4.1] - 12-02-2018

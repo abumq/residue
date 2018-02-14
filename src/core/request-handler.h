@@ -61,6 +61,16 @@ struct DecryptedRequest
 };
 
 ///
+/// \brief This is low level decryption result with various keys
+///
+struct DecryptedResult
+{
+    bool successful;
+    std::string result;
+    std::string errorText;
+};
+
+///
 /// \brief Type of incomming request
 ///
 enum class RawRequestType
@@ -216,6 +226,11 @@ protected:
             request->m_statusCode = Request::StatusCode::BAD_REQUEST;
         }
     }
+
+    DecryptedResult decryptWithKey(const std::string& requestBase64,
+                                   std::string &iv,
+                                   const std::string& clientId,
+                                   const std::string& key) const;
 };
 }
 #endif /* RequestHandler_h */
