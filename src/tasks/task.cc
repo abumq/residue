@@ -43,12 +43,14 @@ Task::Task(const std::string& name,
 void Task::start()
 {
     rescheduleFrom(Utils::now());
-    RVLOG(RV_INFO) << "Scheduled [" << m_name << "] to run every " << m_interval
+    RVLOG(RV_DEBUG) << "Scheduled [" << m_name << "] to run every " << m_interval
                    << "; next execution at ["
                    << formattedNextExecution() << "]";
 
     while (true) {
+#ifdef RESIDUE_DEV
         DRVLOG(RV_DEBUG) << "Scheduled [" << m_name << "] waiting... [" << m_nextWait << "]";
+#endif
         std::this_thread::sleep_for(m_nextWait);
         if (!kickOff(true)) {
             RLOG(WARNING) << "Task [" << m_name << "] already running, started ["
@@ -85,12 +87,12 @@ bool Task::kickOff(bool scheduled)
     m_executing = true;
     m_lastExecution = Utils::now();
     if (scheduled) {
-        RVLOG(RV_INFO) << "Starting task [" << m_name << "]";
+        RLOG(INFO) << "Executing task [" << m_name << "]";
     } else {
-        RVLOG(RV_INFO) << "Manually starting task [" << m_name << "]";
+        RLOG(INFO) << "Manually executing task [" << m_name << "]";
     }
     execute();
-    RVLOG(RV_INFO) << "Finished task [" << m_name << "]"<< (scheduled ? "" : " (Manual)");
+    RLOG(INFO) << "Finished task [" << m_name << "]"<< (scheduled ? "" : " (Manual)");
     m_executing = false;
     return true;
 }

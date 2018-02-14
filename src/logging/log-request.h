@@ -22,8 +22,10 @@
 #ifndef LogRequest_h
 #define LogRequest_h
 
+#include <string>
 #include "logging/log.h"
 #include "core/request.h"
+#include "core/types.h"
 #include "core/json-object.h"
 
 namespace residue {
@@ -31,7 +33,7 @@ namespace residue {
 ///
 /// A simple representation of log request field and default value
 ///
-template<typename TDefaultValue>
+template <typename TDefaultValue>
 struct LogRequestField
 {
     const char* name;
@@ -141,11 +143,11 @@ public:
 
     inline bool isBulk()
     {
-        return Request::isValid() && !m_jsonObject.jsonStr().empty() && m_jsonObject.jsonStr().at(0) == '[';
+        return m_jsonObject.isArray();
     }
 
-    bool deserialize(std::string&& json);
-    bool validateTimestamp() const override;
+    virtual bool deserialize(std::string&& json) override;
+    virtual bool validateTimestamp() const override;
 
 private:
     template <typename T>

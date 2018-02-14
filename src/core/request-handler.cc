@@ -54,7 +54,7 @@ DecryptedRequest RequestHandler::decryptRequest(const std::string& requestStr,
             return { nullptr, requestInput, Request::StatusCode::BAD_REQUEST, "Malformed request. No client ID" };
         }
         std::string clientId = requestInput.substr(0, pos);
-#if RESIDUE_DEBUG
+#ifdef RESIDUE_DEBUG
         DRVLOG(RV_DEBUG) << "Client: " << clientId;
         DRVLOG(RV_CRAZY) << "IV: " << iv;
 #endif
@@ -62,20 +62,60 @@ DecryptedRequest RequestHandler::decryptRequest(const std::string& requestStr,
             return { nullptr, requestInput, Request::StatusCode::BAD_REQUEST, "Client not connected yet" };
         }
         std::string requestBase64 = requestInput.substr(pos + 1);
-#if RESIDUE_DEBUG
+#ifdef RESIDUE_DEBUG
         DRVLOG(RV_CRAZY) << "Data (base64): " << requestBase64;
 #endif
-        try {
-            requestInput = AES::decrypt(requestBase64, !hasManualKey ? existingClient->key() : key, iv);
-#if RESIDUE_DEBUG
-            DRVLOG(RV_CRAZY) << "Plain request: " << requestInput;
-#endif
 
-        } catch (const std::exception& e) {
-            RLOG(ERROR) << "Exception thrown during decryption: " << e.what();
+#ifdef RESIDUE_DEBUG
+        DRVLOG(RV_CRAZY) << "Plain request: " << requestInput;
+#endif
+        DecryptedResult decryptedResult;
+
+        if (hasManualKey) {
+#ifdef RESIDUE_DEV
+            DRVLOG(RV_DEBUG) << "Decryption: Trying with manual key";
+#endif
+            decryptedResult = decryptWithKey(requestBase64, iv, clientId, key);
+        } else {
+#ifdef RESIDUE_DEV
+            DRVLOG(RV_DEBUG) << "Decryption: Trying with current key";
+#endif
+            decryptedResult = decryptWithKey(requestBase64, iv, clientId, existingClient->key());
+            if (!decryptedResult.successful && !existingClient->backupKey().empty()) {
+                RVLOG(RV_DEBUG) << "Decryption: Trying with backup key";
+                decryptedResult = decryptWithKey(requestBase64, iv, clientId, existingClient->backupKey());
+            }
         }
+        if (!decryptedResult.successful) {
+            RVLOG(RV_ERROR) << "Exception thrown during decryption: " << decryptedResult.errorText;
+        } else {
+            requestInput = std::move(decryptedResult.result);
+        }
+
 
         return { existingClient, requestInput, Request::StatusCode::CONTINUE, "" };
     }
     return { nullptr, requestInput, defaultStatus, "" };
+}
+
+DecryptedResult RequestHandler::decryptWithKey(const std::string& requestBase64,
+                                               std::string& iv,
+                                               const std::string& clientId,
+                                               const std::string& key) const
+{
+#ifdef RESIDUE_DEV
+    DRVLOG(RV_CRAZY) << "Ripe command: echo " << iv << ":" << clientId << ":" << requestBase64
+                     << " | ripe -d --aes --key " << key
+                     << " --base64";
+#else
+    RESIDUE_UNUSED(clientId);
+#endif
+    try {
+        std::string dataCopy = requestBase64;
+        std::string result = AES::decrypt(dataCopy, key, iv);
+        return { true, std::move(result), "" };
+    } catch (const std::exception& e) {
+        return { false, "", e.what() };
+    }
+    return { false, "", "No error could be extracted" };
 }

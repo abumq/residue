@@ -61,6 +61,16 @@ struct DecryptedRequest
 };
 
 ///
+/// \brief This is low level decryption result with various keys
+///
+struct DecryptedResult
+{
+    bool successful;
+    std::string result;
+    std::string errorText;
+};
+
+///
 /// \brief Type of incomming request
 ///
 enum class RawRequestType
@@ -140,11 +150,11 @@ protected:
                 bool tryServerAESKey = false,
                 bool decompress = false)
     {
-#if RESIDUE_DEBUG
+#ifdef RESIDUE_DEBUG
         DRVLOG(RV_DEBUG) << "Raw request: " << requestStr;
 #endif
         DecryptedRequest dr = decryptRequest(requestStr, defaultStatus);
-#if RESIDUE_DEBUG
+#ifdef RESIDUE_DEV
         DRVLOG(RV_TRACE) << "Decryption finished (b64): " << dr.plainRequestStr;
 #endif
         request->m_client = dr.client;
@@ -155,7 +165,7 @@ protected:
         request->m_ipAddr = std::move(ipAddr);
         request->m_dateReceived = std::move(dateReceived);
         if (decompress) {
-#if RESIDUE_DEBUG
+#ifdef RESIDUE_DEV
             DRVLOG(RV_TRACE) << "Decompressing: " << plainRequestStr;
 #endif
             try {
@@ -166,7 +176,7 @@ protected:
                 // chooses to do so with '-v' option
                 DRVLOG(RV_ERROR) << "Failed to decompress the data: " << e.what();
             }
-#if RESIDUE_DEBUG
+#ifdef RESIDUE_DEV
             DRVLOG(RV_TRACE) << "Decompression finished (raw): " << plainRequestStr;
 #endif
         }
@@ -209,12 +219,18 @@ protected:
             }
         }
 
-        if (result && !usedRsaKey && tryServerRSAKey && request->m_client == nullptr && !m_registry->configuration()->hasFlag(Configuration::ALLOW_PLAIN_CONNECTION)) {
+        if (result && !usedRsaKey && tryServerRSAKey && request->m_client == nullptr
+                && !m_registry->configuration()->hasFlag(Configuration::ALLOW_PLAIN_CONNECTION)) {
             // This will only happen when we have plain request
             request->m_errorText = "Plain connections not allowed by the server";
             request->m_statusCode = Request::StatusCode::BAD_REQUEST;
         }
     }
+
+    DecryptedResult decryptWithKey(const std::string& requestBase64,
+                                   std::string &iv,
+                                   const std::string& clientId,
+                                   const std::string& key) const;
 };
 }
 #endif /* RequestHandler_h */

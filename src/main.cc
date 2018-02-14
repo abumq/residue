@@ -66,9 +66,9 @@ static const std::map<int, std::string> VERBOSE_SEVERITY_MAP
 {
     { RV_CRAZY,   "vCRAZY"   },
     { RV_TRACE,   "vTRACE"   },
+    { RV_DEBUG_2, "vDEBUG2"  },
     { RV_DEBUG,   "vDEBUG"   },
     { RV_DETAILS, "vDETAILS" },
-    { RV_5,       "5"        },
     { RV_ERROR,   "vERROR"   },
     { RV_WARNING, "vWARNING" },
     { RV_NOTICE,  "vNOTICE"  },
@@ -148,7 +148,7 @@ void printVersion(bool addSpaces = false)
 #ifdef RESIDUE_SPECIAL_EDITION
     std::cout << "-SE";
 #endif
-#if RESIDUE_DEBUG
+#ifdef RESIDUE_DEBUG
     std::cout << "-debug";
 #endif
 #ifdef RESIDUE_HAS_EXTENSIONS
@@ -175,7 +175,7 @@ int main(int argc, char* argv[])
     }
 
     if (argc < 2) {
-        std::cerr << "USAGE: residue <residue_config_file>" << std::endl;
+        std::cerr << "USAGE: residue <residue_config_file> [--run-without-root] [--verbose=<level>]" << std::endl;
         return 1;
     }
 
@@ -189,12 +189,12 @@ int main(int argc, char* argv[])
     } else if (strcmp(argv[1], "--help") == 0) {
         printVersion();
         std::cout << std::endl;
-        std::cout << "Please go to https://github.com/muflihun/residue for help" << std::endl;
+        std::cout << "Please go to https://github.com/muflihun/residue/blob/master/docs/ for help" << std::endl;
         return 0;
     }
 
     if (!el::Helpers::commandLineArgs()->hasParam("--force-without-root") && el::base::utils::OS::getBashOutput("whoami") != "root") {
-        std::cerr << "Please run as 'root'. See https://github.com/muflihun/residue for more details" << std::endl;
+        std::cerr << "Please run as 'root'. See https://github.com/muflihun/residue/blob/master/docs/INSTALL.md#run-as-root for more details" << std::endl;
         return 1;
     }
 
@@ -298,6 +298,7 @@ int main(int argc, char* argv[])
 
         #undef START_LOG_ROTATOR
 
+#ifndef RESIDUE_DEV
         // auto updater
         threads.push_back(std::thread([&]() {
             el::Helpers::setThreadName("AutoUpdater");
@@ -305,12 +306,15 @@ int main(int argc, char* argv[])
             registry.setAutoUpdater(&task);
             std::string newVer;
             if (task.hasNewVersion(&newVer)) {
-                std::cout << "A newer version " << newVer
-                          << " is available for download. Please visit https://muflihun.github.io/residue/"
+                std::cout << "A newer version " << newVer << " is available for download."
+                          << " Please visit https://github.com/muflihun/residue/releases/tag/" << newVer
                           << std::endl;
             }
             task.start();
         }));
+#else
+        // AUTO UPDATER INACTIVE IN DEV MODE
+#endif
 
         if (registry.configuration()->hasFlag(Configuration::Flag::ACCEPT_INPUT)) {
             signal(SIGINT, interruptHandler); // SIGINT = interrupt

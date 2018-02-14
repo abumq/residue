@@ -34,7 +34,7 @@ ClientIntegrityTask::ClientIntegrityTask(Registry* registry,
 {
 }
 
-void ClientIntegrityTask::execute()
+void ClientIntegrityTask::performCleanup()
 {
     auto* list = &(m_registry->clients());
     for (auto clientIter = list->begin(); clientIter != list->end();) {
@@ -47,7 +47,22 @@ void ClientIntegrityTask::execute()
             std::lock_guard<std::recursive_mutex> lock(m_registry->mutex());
             m_registry->clients().erase(clientIter++);
         } else {
+            if (!client->backupKey().empty()) {
+                RVLOG(RV_WARNING) << "Removing backup key for [" << client->id() << "]";
+                client->setBackupKey("");
+            }
             ++clientIter;
         }
+    }
+}
+
+void ClientIntegrityTask::execute()
+{
+    if (m_performCleanUpOnSchedule) {
+        performCleanup();
+    } else {
+        // This only marks last execution
+        // it's processed in log request handler to prevent any damange
+        RVLOG(RV_DEBUG) << "Paused for scheduled clean up";
     }
 }

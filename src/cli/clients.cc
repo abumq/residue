@@ -110,6 +110,9 @@ void Clients::list(std::ostringstream& result, bool withKey) const
         if (withKey) {
             result << ", Key: " << c.second.key();
         }
+        if (!c.second.backupKey().empty()) {
+            result << ", Backup Key: " << c.second.backupKey();
+        }
         result << std::endl;
     }
 }

@@ -58,8 +58,9 @@ public:
         return m_isValid;
     }
 
-    bool deserialize(std::string&& json);
-    inline const JsonObject& jsonObject() const
+    virtual bool deserialize(std::string&& json);
+
+    inline JsonObject jsonObject() const
     {
         return m_jsonObject;
     }

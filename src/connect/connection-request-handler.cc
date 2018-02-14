@@ -71,8 +71,8 @@ void ConnectionRequestHandler::handle(RawRequest&& rawRequest)
     };
 
     if (!request.isValid()) {
-        RVLOG(RV_ERROR) << "Invalid connection request received... (is port correct?)";
-        respondErr("Invalid connection request");
+        RVLOG(RV_ERROR) << "Invalid connection request received";
+        respondErr("Invalid connection request. Are you sending it to correct port?");
         return;
     }
 
@@ -80,7 +80,7 @@ void ConnectionRequestHandler::handle(RawRequest&& rawRequest)
         // Find public key for known client
         const auto& iter = m_registry->configuration()->knownClientsKeys().find(request.clientId());
         if (iter == m_registry->configuration()->knownClientsKeys().end()) {
-            RVLOG(RV_ERROR) << "Client is unknown.";
+            RLOG(ERROR) << "Client is unknown.";
             respondErr("Client is unknown");
             return;
         }
@@ -89,8 +89,8 @@ void ConnectionRequestHandler::handle(RawRequest&& rawRequest)
     } else if (request.type() == ConnectionRequest::Type::CONNECT
                && !knownClient
                && !m_registry->configuration()->hasFlag(Configuration::ALLOW_UNKNOWN_CLIENTS)) {
-        RVLOG(RV_ERROR) << "Client unknown. Not allowed";
-        respondErr("Unknown clients are not allowed");
+        RLOG(ERROR) << "Unknown clients are not allowed";
+        respondErr("Unknown clients are not allowed by this server");
         return;
     }
 
@@ -105,7 +105,7 @@ void ConnectionRequestHandler::handle(RawRequest&& rawRequest)
         touch(&request);
         break;
     default:
-        RVLOG(RV_WARNING) << "Invalid connection request type";
+        RLOG(WARNING) << "Invalid connection request type received";
     }
 }
 
@@ -122,7 +122,10 @@ void ConnectionRequestHandler::connect(ConnectionRequest* request, bool isKnownC
         if (!client->isAlive()) {
             // reset key
             RLOG(INFO) << "Client [" << client->id() << "] key reset";
-            client->setKey(AES::generateKey(client->keySize() * 8));
+            client->setBackupKey(client->key());
+            client->setBackupKeySize(client->keySize());
+            client->setKey(AES::generateKey(request->keySize()));
+            client->setKeySize(request->keySize() / 8);
         }
         // Clone client
         Client clonedClient(request);
@@ -197,10 +200,15 @@ void ConnectionRequestHandler::touch(const ConnectionRequest* request) const
         RVLOG(RV_DETAILS) << "Touching client [" << client->id() << "]";
         if (!client->acknowledged()) {
             RVLOG(RV_ERROR) << "Cannot touch a non-acknowledged client";
-            m_session->writeStatusCode(Response::StatusCode::BAD_REQUEST);
+            ConnectionResponse response(Response::StatusCode::BAD_REQUEST,
+                                        "Cannot touch a non-acknowledged client. Please ACKNOWLEDGE it first");
+            std::string output;
+            response.serialize(output);
+            m_session->write(output.c_str(), client->key().c_str());
         } else if (!client->isAlive()) {
             RVLOG(RV_ERROR) << "Cannot touch a dead client";
-            ConnectionResponse response(Response::StatusCode::BAD_REQUEST, "Cannot touch dead client. Please reset the connection");
+            ConnectionResponse response(Response::StatusCode::BAD_REQUEST,
+                                        "Cannot touch dead client. Please reset the connection");
             std::string output;
             response.serialize(output);
             m_session->write(output.c_str(), client->key().c_str());

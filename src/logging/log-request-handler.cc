@@ -58,7 +58,6 @@ void LogRequestHandler::start()
 void LogRequestHandler::handle(RawRequest&& rawRequest)
 {
     m_session->writeStatusCode(Response::StatusCode::STATUS_OK);
-    std::lock_guard<std::mutex> lock(*(m_queue.lock()));
     m_queue.push(std::move(rawRequest));
 }
 
@@ -66,75 +65,80 @@ void LogRequestHandler::processRequestQueue()
 {
     bool allowPlainRequest = m_registry->configuration()->hasFlag(Configuration::Flag::ALLOW_PLAIN_LOG_REQUEST);
     bool compressionEnabled = m_registry->configuration()->hasFlag(Configuration::Flag::COMPRESSION);
+    bool allowBulkRequests = m_registry->configuration()->hasFlag(Configuration::ALLOW_BULK_LOG_REQUEST);
+    auto maxItemsInBulk = m_registry->configuration()->maxItemsInBulk();
 
 #ifdef RESIDUE_PROFILING
     types::Time m_timeTaken;
     RESIDUE_PROFILE_START(t_process_queue);
     std::size_t totalRequests = 0; // 1 for 1 request so for bulk of 50 this will be 50
 #endif
-    std::size_t total = m_queue.size();
-    // don't use while as queue can get filled up during this time in some cases (even though we have concept of switching the queue)
+
+    // we take snapshot to prevent potential race conditions (even though we have LoggingQueue that is safe)
+    const std::size_t total = m_queue.size();
+
+    const types::Time lastClientIntegrityRun = m_registry->clientIntegrityTask() == nullptr
+            ? 0L : m_registry->clientIntegrityTask()->lastExecution();
+
+    if (total > 0 && m_registry->clientIntegrityTask() != nullptr) {
+        // we pause client integrity task until we clear this queue
+        // so we don't clean a (now) dead client that passed initial validation
+#ifdef RESIDUE_DEV
+        DRVLOG(RV_DEBUG) << "Pausing schedule for client integrity task";
+#endif
+        m_registry->clientIntegrityTask()->pauseScheduledCleanup();
+    }
+
     for (std::size_t i = 0; i < total; ++i) {
 
         if (m_registry->configuration()->dispatchDelay() > 0) {
-            // We do not want to hold the client for m_backgroundWorkerMutex lock
             std::this_thread::sleep_for(std::chrono::milliseconds(m_registry->configuration()->dispatchDelay()));
         }
 
-#if RESIDUE_DEBUG
+#ifdef RESIDUE_DEBUG
         DRVLOG(RV_CRAZY) << "-----============= [ BEGIN ] =============-----";
 #endif
         LogRequest request(m_registry->configuration());
         RawRequest rawRequest = m_queue.pull();
 
         RequestHandler::handle(std::move(rawRequest), &request, allowPlainRequest ?
-                                   Request::StatusCode::CONTINUE : Request::StatusCode::BAD_REQUEST, false, false, compressionEnabled);
+                                   Request::StatusCode::CONTINUE : Request::StatusCode::BAD_REQUEST,
+                               false, false, compressionEnabled);
 
         if ((!request.isValid() && !request.isBulk())
                 || request.statusCode() != Request::StatusCode::CONTINUE) {
             RVLOG(RV_ERROR) << "Failed: " << request.errorText();
-            return;
+            continue;
         }
-
+#ifdef RESIDUE_DEV
+        DRVLOG(RV_DEBUG) << "Is bulk? " << request.isBulk();
+#endif
         if (request.isBulk()) {
-            if (m_registry->configuration()->hasFlag(Configuration::ALLOW_BULK_LOG_REQUEST)) {
+            if (allowBulkRequests) {
                 // Create bulk request items
                 unsigned int itemCount = 0U;
-                JsonObject::Json j = request.jsonObject().root();
-                types::Time lastClientValidation = Utils::now();
                 Client* currentClient = request.client();
-                std::string lastKnownClientId = request.clientId();
-                DRVLOG(RV_DEBUG) << "Request client: " << currentClient;
                 bool forceClientValidation = true;
-                for (auto it = j.begin(); it != j.end(); ++it) {
-                    if (itemCount == m_registry->configuration()->maxItemsInBulk()) {
+#ifdef RESIDUE_DEV
+                DRVLOG(RV_DEBUG) << "Request client: " << request.client();
+#endif
+                for (const JsonObject::Json& js : request.jsonObject()) {
+                    if (itemCount == maxItemsInBulk) {
                         RLOG(ERROR) << "Maximum number of bulk requests reached. Ignoring the rest of items in bulk";
                         break;
                     }
-                    std::string requestItemStr(std::move(it->dump()));
+                    std::string requestItemStr(js.dump());
                     LogRequest requestItem(m_registry->configuration());
                     requestItem.deserialize(std::move(requestItemStr));
                     if (requestItem.isValid()) {
                         requestItem.setIpAddr(request.ipAddr());
                         requestItem.setDateReceived(request.dateReceived());
-                        if (!forceClientValidation
-                                && m_registry->clientIntegrityTask() != nullptr
-                                && lastClientValidation <= m_registry->clientIntegrityTask()->lastExecution()) {
-                            forceClientValidation = true;
-                            RLOG(INFO) << "Re-forcing client validation after client integrity task execution";
-                            RLOG(DEBUG) << "[client: " << currentClient << "] => request client_id: [" << request.clientId() << "], last known client ID: [" << lastKnownClientId << "]";
-                            // we invalidate the pointers as the may be pointing to invalid memory now
-                            // so we will force the request to find the client
-                            currentClient = nullptr;
-                            requestItem.setClient(nullptr);
-                            requestItem.setClientId(lastKnownClientId);
-                            lastClientValidation = Utils::now();
-                        }
+                        requestItem.setClient(request.client());
+
                         if (processRequest(&requestItem, &currentClient, forceClientValidation)) {
-                            lastKnownClientId = currentClient != nullptr ? currentClient->id() : "";
                             forceClientValidation = false;
                         } else {
-                            // force next client validation if process is unsuccessful
+                            // force next client validation if last process was unsuccessful
                             forceClientValidation = true;
                         }
                         itemCount++;
@@ -159,9 +163,26 @@ void LogRequestHandler::processRequestQueue()
 #endif
         }
 
-#if RESIDUE_DEBUG
+#ifdef RESIDUE_DEBUG
         DRVLOG(RV_CRAZY) << "-----============= [ ✓ ] =============-----";
 #endif
+    }
+
+    if (m_registry->clientIntegrityTask() != nullptr &&
+            lastClientIntegrityRun < m_registry->clientIntegrityTask()->lastExecution() &&
+            m_queue.backlogEmpty()) {
+        RVLOG(RV_DEBUG) << "Starting client integrity task after queue is processed.";
+        // trigger client integrity task as it was run while this queue was being processed
+        if (!m_registry->clientIntegrityTask()->isExecuting()) {
+            m_registry->clientIntegrityTask()->performCleanup();
+        }
+    }
+
+    if (total > 0 && m_registry->clientIntegrityTask() != nullptr && m_queue.backlogEmpty()) {
+#ifdef RESIDUE_DEV
+        DRVLOG(RV_DEBUG) << "Resuming schedule for client integrity task";
+#endif
+        m_registry->clientIntegrityTask()->resumeScheduledCleanup();
     }
 
 #ifdef RESIDUE_PROFILING
@@ -171,7 +192,6 @@ void LogRequestHandler::processRequestQueue()
                                    << total << " items (" << totalRequests << " requests). Average: "
                                    << (static_cast<float>(m_timeTaken) / static_cast<float>(total)) << "ms/item ["
                                    << (static_cast<float>(m_timeTaken) / static_cast<float>(totalRequests)) << "ms/request]";
-    DRVLOG_IF(!m_queue.backlogEmpty(), RV_DEBUG) << m_queue.backlogSize() << " items have been added to this queue in the mean time";
 #endif
 
     m_queue.switchContext();
@@ -179,16 +199,16 @@ void LogRequestHandler::processRequestQueue()
 
 bool LogRequestHandler::processRequest(LogRequest* request, Client** clientRef, bool forceCheck)
 {
-
     bool bypassChecks = !forceCheck && clientRef != nullptr && *clientRef != nullptr;
-#if RESIDUE_DEBUG
-    DRVLOG(RV_DEBUG) << "Force check: " << forceCheck << ", clientRef: " << clientRef << ", *clientRef: "
+#ifdef RESIDUE_DEV
+    DRVLOG(RV_DEBUG_2) << "Force check: " << forceCheck << ", clientRef: " << clientRef << ", *clientRef: "
                      << (clientRef == nullptr ? "N/A" : *clientRef == nullptr ? "null" : (*clientRef)->id())
                      << ", bypassChecks: " << bypassChecks;
 #endif
     Client* client = clientRef != nullptr && *clientRef != nullptr ? *clientRef : request->client();
 
     if (client == nullptr) {
+        // This bit is only when ALLOW_PLAIN_LOG_REQUEST is true
         if (m_registry->configuration()->hasFlag(Configuration::Flag::ALLOW_PLAIN_LOG_REQUEST)
                 && (
                     // following || is: see if logger is unknown.. this line implies unknown loggers allow plain log requests but whether server allows or not is a different story
@@ -200,19 +220,20 @@ bool LogRequestHandler::processRequest(LogRequest* request, Client** clientRef, 
             client = m_registry->findClient(request->clientId());
         } else if (request->clientId().empty()) {
             RVLOG(RV_ERROR) << "Invalid request. No client ID found";
+            if (m_registry->configuration()->hasFlag(Configuration::Flag::ALLOW_PLAIN_LOG_REQUEST)) {
+                RVLOG(RV_ERROR) << "Please check if logger has ALLOW_PLAIN_LOG_REQUEST option set and it contains client ID if needed.";
+            }
+            return false;
         }
-    }
 
-    if (clientRef != nullptr) {
-        *clientRef = client;
-    }
-
-    if (client == nullptr) {
-        RVLOG(RV_ERROR) << "Invalid request. No client found [" << request->clientId() << "]";
-        if (m_registry->configuration()->hasFlag(Configuration::Flag::ALLOW_PLAIN_LOG_REQUEST)) {
-            RVLOG(RV_ERROR) << "Check if logger has ALLOW_PLAIN_LOG_REQUEST option set and it contains client ID if needed.";
+        // if still null we cannot continue
+        if (client == nullptr) {
+            RVLOG(RV_ERROR) << "Invalid request. No client found [" << request->clientId() << "]";
+            if (m_registry->configuration()->hasFlag(Configuration::Flag::ALLOW_PLAIN_LOG_REQUEST)) {
+                RVLOG(RV_ERROR) << "Please check if logger has ALLOW_PLAIN_LOG_REQUEST option set and it contains client ID if needed.";
+            }
+            return false;
         }
-        return false;
     }
 
     if (!bypassChecks && !client->isAlive(request->dateReceived())) {
@@ -225,6 +246,7 @@ bool LogRequestHandler::processRequest(LogRequest* request, Client** clientRef, 
     request->setClient(client);
 
     if (m_session->client() == nullptr) {
+        DRVLOG(RV_DEBUG) << "Updating session client";
         m_session->setClient(client);
     }
 
@@ -255,23 +277,37 @@ bool LogRequestHandler::processRequest(LogRequest* request, Client** clientRef, 
 
 void LogRequestHandler::dispatch(const LogRequest* request)
 {
+#ifdef RESIDUE_DEV
+    DRVLOG(RV_TRACE) << "Dispatching";
+#endif
     m_userLogBuilder->setRequest(request);
     // %client_id
     el::Helpers::installCustomFormatSpecifier(el::CustomFormatSpecifier("%client_id",  std::bind(&LogRequestHandler::getClientId, this, std::placeholders::_1)));
     // %ip
     el::Helpers::installCustomFormatSpecifier(el::CustomFormatSpecifier("%ip",  std::bind(&LogRequestHandler::getIpAddr, this, std::placeholders::_1)));
 
+#ifdef RESIDUE_DEV
+    DRVLOG(RV_TRACE) << "Writing";
+#endif
     el::base::Writer(request->level(),
                      request->filename().c_str(),
                      request->lineNumber(),
                      request->function().c_str(),
                      el::base::DispatchAction::NormalLog,
                      request->verboseLevel()).construct(el::Loggers::getLogger(request->loggerId())) << request->msg();
+
+#ifdef RESIDUE_DEV
+    DRVLOG(RV_TRACE) << "Write complete";
+#endif
     // Reset
     el::Helpers::uninstallCustomFormatSpecifier("%client_id");
     el::Helpers::uninstallCustomFormatSpecifier("%ip");
 
     m_userLogBuilder->setRequest(nullptr);
+
+#ifdef RESIDUE_DEV
+    DRVLOG(RV_TRACE) << "Dispatch complete";
+#endif
 }
 
 bool LogRequestHandler::isRequestAllowed(const LogRequest* request) const

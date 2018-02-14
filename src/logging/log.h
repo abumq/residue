@@ -26,19 +26,34 @@
 
 #define RESIDUE_LOGGER_ID "residue"
 
-#define RLOG(LEVEL) CLOG(LEVEL, RESIDUE_LOGGER_ID)
-#define RLOG_IF(condition, LEVEL) CLOG_IF(condition, LEVEL, RESIDUE_LOGGER_ID)
-#define RVLOG(vLevel) CVLOG(vLevel, RESIDUE_LOGGER_ID)
-#define RVLOG_IF(cond, vLevel) CVLOG_IF(cond, vLevel, RESIDUE_LOGGER_ID)
-#define DRLOG(LEVEL) if (RESIDUE_DEBUG) DCLOG(LEVEL, RESIDUE_LOGGER_ID)
-#define DRVLOG(vLevel) if (RESIDUE_DEBUG) DCVLOG(vLevel, RESIDUE_LOGGER_ID)
-#define DRVLOG_IF(condition, vLevel) if (RESIDUE_DEBUG) DCVLOG_IF(condition, vLevel, RESIDUE_LOGGER_ID)
+#ifdef RESIDUE_DEBUG
+#   define RESIDUE_DEBUG_LOG 1
+#else
+#   define RESIDUE_DEBUG_LOG 0
+#endif
 
+#if 1
+    #define RLOG(LEVEL) CLOG(LEVEL, RESIDUE_LOGGER_ID)
+    #define RLOG_IF(condition, LEVEL) CLOG_IF(condition, LEVEL, RESIDUE_LOGGER_ID)
+    #define RVLOG(vLevel) CVLOG(vLevel, RESIDUE_LOGGER_ID)
+    #define RVLOG_IF(cond, vLevel) CVLOG_IF(cond, vLevel, RESIDUE_LOGGER_ID)
+    #define DRLOG(LEVEL) if (RESIDUE_DEBUG_LOG) DCLOG(LEVEL, RESIDUE_LOGGER_ID)
+    #define DRVLOG(vLevel) if (RESIDUE_DEBUG_LOG) DCVLOG(vLevel, RESIDUE_LOGGER_ID)
+    #define DRVLOG_IF(condition, vLevel) if (RESIDUE_DEBUG_LOG) DCVLOG_IF(condition, vLevel, RESIDUE_LOGGER_ID)
+#else
+    #define RLOG(LEVEL) el::base::NullWriter()
+    #define RLOG_IF(condition, LEVEL) el::base::NullWriter()
+    #define RVLOG(vLevel) el::base::NullWriter()
+    #define RVLOG_IF(cond, vLevel) el::base::NullWriter()
+    #define DRLOG(LEVEL) el::base::NullWriter()
+    #define DRVLOG(vLevel) el::base::NullWriter()
+    #define DRVLOG_IF(condition, vLevel) el::base::NullWriter()
+#endif
 #define RV_CRAZY 9
 #define RV_TRACE 8
-#define RV_DEBUG 7
-#define RV_DETAILS 6
-#define RV_5 5
+#define RV_DEBUG_2 7
+#define RV_DEBUG 6
+#define RV_DETAILS 5
 #define RV_WARNING 4
 #define RV_ERROR 3
 #define RV_NOTICE 2

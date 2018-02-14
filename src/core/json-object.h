@@ -22,6 +22,7 @@
 #ifndef JsonObject_h
 #define JsonObject_h
 
+#include <iterator>
 #include "nlohmann-json/json.h"
 #include "logging/log.h"
 #include "non-copyable.h"
@@ -39,9 +40,9 @@ public:
 
     JsonObject();
 
-    JsonObject(const Json& newRoot);
-    JsonObject(Json&& newRoot);
-    JsonObject(std::string&& jsonStr);
+    explicit JsonObject(const Json& newRoot);
+    explicit JsonObject(Json&& newRoot);
+    explicit JsonObject(std::string&& jsonStr);
 
     inline bool isValid() const
     {
@@ -61,6 +62,16 @@ public:
     inline const std::string& jsonStr() const
     {
         return m_jsonStr;
+    }
+
+    Json::const_iterator begin() const
+    {
+        return m_root.begin();
+    }
+
+    Json::const_iterator end() const
+    {
+        return m_root.end();
     }
 
     inline Json root(void) const
@@ -104,6 +115,11 @@ public:
     }
 
     bool hasKeys(const Keys* keys) const;
+
+    inline bool isArray() const
+    {
+        return m_isValid && m_root.is_array();
+    }
 
     template <typename T>
     T get(const std::string& key, const T& defaultValue) const

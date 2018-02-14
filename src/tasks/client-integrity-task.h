@@ -22,6 +22,7 @@
 #ifndef ClientIntegrityTask_h
 #define ClientIntegrityTask_h
 
+#include <atomic>
 #include "tasks/task.h"
 
 namespace residue {
@@ -36,8 +37,25 @@ class ClientIntegrityTask final : public Task
 {
 public:
     ClientIntegrityTask(Registry* registry, unsigned int interval);
+    void performCleanup();
+
+    inline void pauseScheduledCleanup()
+    {
+        if (m_performCleanUpOnSchedule) {
+            m_performCleanUpOnSchedule = false;
+        }
+    }
+
+    inline void resumeScheduledCleanup()
+    {
+        if (!m_performCleanUpOnSchedule) {
+            m_performCleanUpOnSchedule = true;
+        }
+    }
 protected:
     virtual void execute() override;
+private:
+    std::atomic<bool> m_performCleanUpOnSchedule;
 };
 }
 #endif /* ClientIntegrityTask_h */

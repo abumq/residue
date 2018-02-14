@@ -43,7 +43,9 @@ void AutoUpdater::execute()
 {
     std::string newVer;
     if (hasNewVersion(&newVer)) {
-        RVLOG(RV_NOTICE) << "You are running v" << RESIDUE_VERSION << ", new version is available: " << newVer;
+        RVLOG(RV_NOTICE) << "You are running Residue v" << RESIDUE_VERSION
+                         << ", a newer version is available: " << newVer
+                         << ". Please visit https://github.com/muflihun/residue/releases/tag/" << newVer;
     }
 }
 
@@ -57,7 +59,7 @@ bool AutoUpdater::hasNewVersion(std::string* newVersion)
     RVLOG(RV_INFO) << "Current version detected " << curr << " (" << major << "." << minor << "." << patch << ")";
 
     std::string resultFromApi;
-    RVLOG(RV_DEBUG) << "Calling github API...";
+    RVLOG(RV_DEBUG) << "Making github API call...";
     resultFromApi = HttpClient::fetchUrlContents(LATEST_RELEASE_API_URL);
     RVLOG_IF(resultFromApi.empty(), RV_DEBUG) << "Github API returned no result. Connection issue!";
     DRVLOG(RV_CRAZY) << "Github API result: " << resultFromApi;

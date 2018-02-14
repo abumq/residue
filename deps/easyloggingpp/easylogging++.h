@@ -1,20 +1,20 @@
 //
 //  Bismillah ar-Rahmaan ar-Raheem
 //
-//  Easylogging++ v9.95.0
+//  Easylogging++ v9.96.0
 //  Single-header only, cross-platform logging library for C++ applications
 //
-//  Copyright (c) 2017 muflihun.com
+//  Copyright (c) 2012-2018 Muflihun Labs
+//  Copyright (c) 2012-2018 @abumusamq
 //
 //  This library is released under the MIT Licence.
-//  http://labs.muflihun.com/easyloggingpp/licence.php
+//  https://github.com/muflihun/easyloggingpp/blob/master/LICENSE
 //
 //  https://github.com/muflihun/easyloggingpp
 //  https://muflihun.github.io/easyloggingpp
 //  http://muflihun.com
 //
-//  This file is customized for residue
-//
+
 #ifndef EASYLOGGINGPP_H
 #define EASYLOGGINGPP_H
 // Compilers and C++0x/C++11 Evaluation
@@ -95,7 +95,7 @@
 #else
 #  define ELPP_OS_MAC 0
 #endif
-#if (defined(__FreeBSD__))
+#if (defined(__FreeBSD__) || defined(__FreeBSD_kernel__))
 #  define ELPP_OS_FREEBSD 1
 #else
 #  define ELPP_OS_FREEBSD 0
@@ -105,13 +105,18 @@
 #else
 #  define ELPP_OS_SOLARIS 0
 #endif
+#if (defined(_AIX))
+#  define ELPP_OS_AIX 1
+#else
+#  define ELPP_OS_AIX 0
+#endif
 #if (defined(__NetBSD__))
 #  define ELPP_OS_NETBSD 1
 #else
 #  define ELPP_OS_NETBSD 0
 #endif
 // Unix
-#if ((ELPP_OS_LINUX || ELPP_OS_MAC || ELPP_OS_FREEBSD || ELPP_OS_NETBSD || ELPP_OS_SOLARIS) && (!ELPP_OS_WINDOWS))
+#if ((ELPP_OS_LINUX || ELPP_OS_MAC || ELPP_OS_FREEBSD || ELPP_OS_NETBSD || ELPP_OS_SOLARIS || ELPP_OS_AIX) && (!ELPP_OS_WINDOWS))
 #  define ELPP_OS_UNIX 1
 #else
 #  define ELPP_OS_UNIX 0
@@ -1257,6 +1262,7 @@ class DateTime : base::StaticClass {
   /// @brief Gets time difference in milli/micro second depending on timestampUnit
   static unsigned long long getTimeDifference(const struct timeval& endTime, const struct timeval& startTime,
       base::TimestampUnit timestampUnit);
+
 
   static struct ::tm* buildTimeInfo(struct timeval* currTime, struct ::tm* timeInfo);
  private:
@@ -2597,7 +2603,7 @@ class IWorker {
 };
 #endif // ELPP_ASYNC_LOGGING
 /// @brief Easylogging++ management storage
-class Storage : base::NoCopy, public base::threading::ThreadSafe {
+class Storage : base::NoCopy {
  public:
 #if ELPP_ASYNC_LOGGING
   Storage(const LogBuilderPtr& defaultLogBuilder, base::IWorker* asyncDispatchWorker);
@@ -2681,6 +2687,10 @@ class Storage : base::NoCopy, public base::threading::ThreadSafe {
     return &m_customFormatSpecifiers;
   }
 
+  base::threading::Mutex& customFormatSpecifiersLock() {
+    return m_customFormatSpecifiersLock;
+  }
+
   inline void setLoggingLevel(Level level) {
     m_loggingLevel = level;
   }
@@ -2721,11 +2731,12 @@ class Storage : base::NoCopy, public base::threading::ThreadSafe {
   /// @brief Sets thread name for current thread. Requires std::thread
   inline void setThreadName(const std::string& name) {
     if (name.empty()) return;
-    base::threading::ScopedLock scopedLock(lock());
+    base::threading::ScopedLock scopedLock(m_threadNamesLock);
     m_threadNames[base::threading::getCurrentThreadId()] = name;
   }
 
   inline std::string getThreadName(const std::string& threadId) {
+    base::threading::ScopedLock scopedLock(m_threadNamesLock);
     std::map<std::string, std::string>::const_iterator it = m_threadNames.find(threadId);
     if (it == m_threadNames.end()) {
       return threadId;
@@ -2747,6 +2758,8 @@ class Storage : base::NoCopy, public base::threading::ThreadSafe {
   std::map<std::string, base::type::PerformanceTrackingCallbackPtr> m_performanceTrackingCallbacks;
   std::map<std::string, std::string> m_threadNames;
   std::vector<CustomFormatSpecifier> m_customFormatSpecifiers;
+  base::threading::Mutex m_customFormatSpecifiersLock;
+  base::threading::Mutex m_threadNamesLock;
   Level m_loggingLevel;
 
   friend class el::Helpers;
@@ -2789,7 +2802,7 @@ class AsyncDispatchWorker : public base::IWorker, public base::threading::Thread
   void run(void);
 
   void setContinueRunning(bool value) {
-    base::threading::ScopedLock scopedLock(m_continueRunningMutex);
+    base::threading::ScopedLock scopedLock(m_continueRunningLock);
     m_continueRunning = value;
   }
 
@@ -2799,7 +2812,7 @@ class AsyncDispatchWorker : public base::IWorker, public base::threading::Thread
  private:
   std::condition_variable cv;
   bool m_continueRunning;
-  base::threading::Mutex m_continueRunningMutex;
+  base::threading::Mutex m_continueRunningLock;
 };
 #endif  // ELPP_ASYNC_LOGGING
 }  // namespace base
@@ -3326,6 +3339,7 @@ void Logger::log_(Level level, int vlevel, const T& log) {
                    base::DispatchAction::NormalLog, vlevel).construct(this, false) << log;
     } else {
       stream().str(ELPP_LITERAL(""));
+      releaseLock();
     }
   } else {
     base::Writer(level, "FILE", 0, "FUNCTION").construct(this, false) << log;
@@ -3333,23 +3347,23 @@ void Logger::log_(Level level, int vlevel, const T& log) {
 }
 template <typename T, typename... Args>
 inline void Logger::log(Level level, const char* s, const T& value, const Args&... args) {
-  base::threading::ScopedLock scopedLock(lock());
+  acquireLock(); // released in Writer!
   log_(level, 0, s, value, args...);
 }
 template <typename T>
 inline void Logger::log(Level level, const T& log) {
-  base::threading::ScopedLock scopedLock(lock());
+  acquireLock(); // released in Writer!
   log_(level, 0, log);
 }
 #  if ELPP_VERBOSE_LOG
 template <typename T, typename... Args>
 inline void Logger::verbose(int vlevel, const char* s, const T& value, const Args&... args) {
-  base::threading::ScopedLock scopedLock(lock());
+  acquireLock(); // released in Writer!
   log_(el::Level::Verbose, vlevel, s, value, args...);
 }
 template <typename T>
 inline void Logger::verbose(int vlevel, const T& log) {
-  base::threading::ScopedLock scopedLock(lock());
+  acquireLock(); // released in Writer!
   log_(el::Level::Verbose, vlevel, log);
 }
 #  else

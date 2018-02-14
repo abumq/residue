@@ -38,10 +38,9 @@ class LoggingQueue final : NonCopyable
 public:
     LoggingQueue();
 
-    inline std::mutex* lock() { return &m_mutex; }
-
     inline void push(RawRequest&& rawRequest)
     {
+        std::lock_guard<std::mutex> lock(m_mutex);
         m_backlogQueue->push_front(std::move(rawRequest));
     }
 
