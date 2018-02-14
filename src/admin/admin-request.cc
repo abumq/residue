@@ -35,7 +35,7 @@ AdminRequest::AdminRequest(const Configuration* conf) :
 bool AdminRequest::deserialize(std::string&& json)
 {
     if (!Request::deserialize(std::move(json))) {
-        RLOG(ERROR) << "Unable to read request";
+        RLOG(ERROR) << "Unable to deserialize admin request";
         return false;
     }
     m_type = static_cast<AdminRequest::Type>(m_jsonObject.getUInt("type", 0));

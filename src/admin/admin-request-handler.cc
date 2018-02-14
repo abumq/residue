@@ -33,7 +33,9 @@ AdminRequestHandler::AdminRequestHandler(Registry* registry, CommandHandler* com
     RequestHandler("Admin", registry),
     m_commandHandler(commandHandler)
 {
+#ifdef RESIDUE_DEV
     DRVLOG(RV_DEBUG) << "AdminRequestHandler " << this << " with registry " << m_registry;
+#endif
 }
 
 void AdminRequestHandler::handle(RawRequest&& rawRequest)
@@ -132,7 +134,7 @@ void AdminRequestHandler::handle(RawRequest&& rawRequest)
         for (const std::string& p : params) {
             fullCmd << " " << p;
         }
-        RLOG(INFO) << "Running command via admin request: " << fullCmd.str();
+        RVLOG(RV_INFO) << "Running command via admin request: " << fullCmd.str();
         m_commandHandler->handle(std::move(cmd), std::move(params), result, true);
     } else {
         RLOG(ERROR) << "Unknown admin request [" << static_cast<unsigned short>(request.type()) << "]";
