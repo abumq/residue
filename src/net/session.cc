@@ -168,7 +168,7 @@ void Session::write(const char* data,
     m_requestHandler->registry()->addBytesSent(length);
 
 #ifdef RESIDUE_DEBUG
-    DRVLOG(RV_DEBUG) << "Sending " << data;
+    DRVLOG(RV_DEBUG_2) << "Sending " << data;
 #endif
     net::async_write(m_socket, net::buffer(data, length),
                      [&, this, self](residue::error_code ec, std::size_t) {
