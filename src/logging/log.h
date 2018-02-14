@@ -51,9 +51,9 @@
 #endif
 #define RV_CRAZY 9
 #define RV_TRACE 8
-#define RV_DEBUG 7
-#define RV_DETAILS 6
-#define RV_5 5
+#define RV_DEBUG_2 7
+#define RV_DEBUG 6
+#define RV_DETAILS 5
 #define RV_WARNING 4
 #define RV_ERROR 3
 #define RV_NOTICE 2

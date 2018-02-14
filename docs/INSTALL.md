@@ -111,16 +111,16 @@ If you are just need to test the residue before you run it in production (in pro
 # Verbose Options
 You can turn on verbose logging using `--v=<level>` or `-v` for level 9
 
-| **Level** | **Name**        | **Description** |
-|-----------|-----------------|-----------------|
-| 1         | INFO            | General information |
-| 2         | NOTICE            | Warnings that must be addressed by residue server admin |
-| 3         | WARNING            | Warnings that can be ignored |
-| 4         | ERROR            | Error information |
-| 5         |             | Not used |
-| 6         | DETAILS            | General information with extra details |
-| 7         | DEBUG            | Debug information that contains a lot of useful information for devs |
-| 8         | TRACE            | Trace function calls |
-| 9         | CRAZY            | A lot of information - very useful for development purposes |
+| **Level** | **Name**        | **Description**                                                       |
+|-----------|-----------------|-----------------------------------------------------------------------|
+| 1         | INFO            | General information                                                   |
+| 2         | NOTICE          | Warnings that must be addressed by residue server admin               |
+| 3         | WARNING         | Warnings that can be ignored                                          |
+| 4         | ERROR           | Error information                                                     |
+| 5         | DETAILS         | General information with extra details                                |
+| 6         | DEBUG           | Debug information that contains useful information for devs           |
+| 7         | DEBUG 2         | Debug information that contains a lot of useful information for devs  |
+| 8         | TRACE           | Trace function calls                                                  |
+| 9         | CRAZY           | A lot of information - very useful for development purposes           |
 
 You can also specify verbose logging by modules. Please see [Application Arguments](https://github.com/muflihun/easyloggingpp#application-arguments) section on Easylogging++
