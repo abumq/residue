@@ -179,9 +179,6 @@ All the requests are JSON based and each type of connection is sent to specific 
 
 For those of you who are familiar with bash scripting and PHP scripting we have [`netcat` client for demo purposes](/tools/netcat-client/) that will also help you create correct JSON payload
 
-### Demo Server
-You can test your client library with [demo server](/docs/DEMO.md)
-
 ### Conclusion
 Core concept is encapsulating the details and making connection to the server as seamless as possible. Once you understand this you should have no problem in writing client libraries for the developers.
 
