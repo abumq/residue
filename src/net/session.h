@@ -22,6 +22,7 @@
 #ifndef Session_h
 #define Session_h
 
+#include <unordered_map>
 #include "net/asio.h"
 #include "core/response.h"
 
@@ -41,6 +42,7 @@ public:
 
     static const std::string PACKET_DELIMITER;
     static const std::size_t PACKET_DELIMITER_SIZE;
+    static const std::unordered_map<Response::StatusCode, std::string> STANDARD_RESPONSES;
 
     Session(tcp::socket&& socket, RequestHandler* requestHandler);
     ~Session();

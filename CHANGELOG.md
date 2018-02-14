@@ -1,5 +1,9 @@
 # Change Log
 
+## [Unreleased]
+### Updates
+- Performance improvement using standard response
+
 ## [1.4.2] - 14-02-2018
 ### Fixes
 - Client integrity task can remove pending dead client #73

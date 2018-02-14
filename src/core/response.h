@@ -49,4 +49,13 @@ public:
                    std::string& output) const;
 };
 }
+
+namespace std {
+template<> struct hash<residue::Response::StatusCode> {
+public:
+    std::size_t operator()(const residue::Response::StatusCode& c) const {
+        return hash<unsigned short>{}(c);
+    }
+};
+}
 #endif /* Response_h */
