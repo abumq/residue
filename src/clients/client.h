@@ -88,6 +88,11 @@ public:
         return m_keySize;
     }
 
+    inline int backupKeySize() const
+    {
+        return m_backupKeySize;
+    }
+
     inline void setAge(unsigned int age)
     {
         m_age = age;
@@ -133,6 +138,11 @@ public:
         m_keySize = keySize;
     }
 
+    inline void setBackupKeySize(int keySize)
+    {
+        m_backupKeySize = keySize;
+    }
+
     inline void setKey(const std::string& key)
     {
         m_key = key;
@@ -170,9 +180,10 @@ private:
 
     std::unordered_map<std::string, std::unordered_set<Token>> m_tokens;
 
-    // a backup key is previously set key with same key size
+    // a backup key is previously set key with potentially different key size
     // see https://github.com/muflihun/residue/issues/75
     std::string m_backupKey;
+    int m_backupKeySize;
 };
 }
 
