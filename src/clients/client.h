@@ -78,9 +78,9 @@ public:
         return m_key;
     }
 
-    inline const std::string& previousKey() const
+    inline const std::string& backupKey() const
     {
-        return m_previousKey;
+        return m_backupKey;
     }
 
     inline int keySize() const
@@ -138,9 +138,9 @@ public:
         m_key = key;
     }
 
-    inline void setPreviousKey(const std::string& key)
+    inline void setBackupKey(const std::string& key)
     {
-        m_previousKey = key;
+        m_backupKey = key;
     }
 
     inline std::unordered_map<std::string, std::unordered_set<Token>>& tokens()
@@ -170,7 +170,9 @@ private:
 
     std::unordered_map<std::string, std::unordered_set<Token>> m_tokens;
 
-    std::string m_previousKey;
+    // a backup key is previously set key with same key size
+    // see https://github.com/muflihun/residue/issues/75
+    std::string m_backupKey;
 };
 }
 

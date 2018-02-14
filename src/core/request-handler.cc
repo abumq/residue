@@ -77,11 +77,11 @@ DecryptedRequest RequestHandler::decryptRequest(const std::string& requestStr,
 #endif
             decryptedResult = decryptWithKey(requestBase64, iv, clientId, key);
         } else {
-            if (!existingClient->previousKey().empty()) {
+            if (!existingClient->backupKey().empty()) {
 #ifdef RESIDUE_DEV
-                DRVLOG(RV_DEBUG) << "Decryption: Trying with previous key";
+                DRVLOG(RV_DEBUG) << "Decryption: Trying with backup key";
 #endif
-                decryptedResult = decryptWithKey(requestBase64, iv, clientId, existingClient->previousKey());
+                decryptedResult = decryptWithKey(requestBase64, iv, clientId, existingClient->backupKey());
             }
             if (!decryptedResult.successful) {
 #ifdef RESIDUE_DEV

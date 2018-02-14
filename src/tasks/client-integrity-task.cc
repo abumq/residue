@@ -47,6 +47,10 @@ void ClientIntegrityTask::performCleanup()
             std::lock_guard<std::recursive_mutex> lock(m_registry->mutex());
             m_registry->clients().erase(clientIter++);
         } else {
+            if (!client->backupKey().empty()) {
+                RVLOG(RV_WARNING) << "Removing backup key for [" << client->id() << "]";
+                client->setBackupKey("");
+            }
             ++clientIter;
         }
     }

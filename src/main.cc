@@ -66,9 +66,9 @@ static const std::map<int, std::string> VERBOSE_SEVERITY_MAP
 {
     { RV_CRAZY,   "vCRAZY"   },
     { RV_TRACE,   "vTRACE"   },
+    { RV_DEBUG_2, "vDEBUG2"  },
     { RV_DEBUG,   "vDEBUG"   },
     { RV_DETAILS, "vDETAILS" },
-    { RV_5,       "5"        },
     { RV_ERROR,   "vERROR"   },
     { RV_WARNING, "vWARNING" },
     { RV_NOTICE,  "vNOTICE"  },
