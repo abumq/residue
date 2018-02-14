@@ -201,7 +201,7 @@ bool LogRequestHandler::processRequest(LogRequest* request, Client** clientRef, 
 {
     bool bypassChecks = !forceCheck && clientRef != nullptr && *clientRef != nullptr;
 #ifdef RESIDUE_DEV
-    DRVLOG(RV_DEBUG) << "Force check: " << forceCheck << ", clientRef: " << clientRef << ", *clientRef: "
+    DRVLOG(RV_DEBUG_2) << "Force check: " << forceCheck << ", clientRef: " << clientRef << ", *clientRef: "
                      << (clientRef == nullptr ? "N/A" : *clientRef == nullptr ? "null" : (*clientRef)->id())
                      << ", bypassChecks: " << bypassChecks;
 #endif
