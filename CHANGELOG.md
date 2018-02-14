@@ -1,6 +1,6 @@
 # Change Log
 
-## [Unreleased]
+## [1.4.2] - 14-02-2018
 ### Fixes
 - Client integrity task can remove pending dead client #73
 - Deadlock detected while dispatching log #76
