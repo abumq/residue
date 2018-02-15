@@ -22,6 +22,8 @@
 #include "connect/connection-response.h"
 #include "core/configuration.h"
 #include "clients/client.h"
+#include "core/json-document.h"
+#include "core/json-doc.h"
 
 using namespace residue;
 
@@ -57,6 +59,59 @@ ConnectionResponse::ConnectionResponse(Response::StatusCode status, const std::s
 
 void ConnectionResponse::serialize(std::string& output) const
 {
+#ifdef RESIDUE_USE_GASON
+    const std::size_t capacity = 1024;
+    char source[capacity];
+
+    JsonBuilder doc(source, capacity);
+
+    doc.startObject()
+            .addValue("status", m_status)
+            .addValue("ack", m_isAcknowledged ? 1 : 0);
+
+    if (m_isAcknowledged && m_configuration != nullptr) {
+        std::stringstream ss;
+        ss << RESIDUE_VERSION;
+        #ifdef RESIDUE_SPECIAL_EDITION
+        ss << "-SE";
+        #endif
+        #ifdef RESIDUE_DEBUG
+        ss << "-debug";
+        #endif
+
+        doc.addValue("flags", static_cast<std::size_t>(m_configuration->flag()))
+           .addValue("max_bulk_size", static_cast<std::size_t>(m_configuration->maxItemsInBulk()))
+           .startObject("server_info")
+               .addValue("version", ss.str().c_str())
+           .endObject();
+    }
+
+    if (!m_errorText.empty()) {
+        doc.addValue("error_text", m_errorText.c_str());
+    }
+    if (!m_key.empty()) {
+        doc.addValue("key", m_key.c_str());
+    }
+    if (!m_clientId.empty()) {
+        doc.addValue("client_id", m_clientId.c_str());
+    }
+    if (m_tokenPort != 0) {
+        doc.addValue("token_port", m_tokenPort);
+    }
+    if (m_loggingPort != 0) {
+        doc.addValue("logging_port", m_loggingPort);
+    }
+    if (m_clientAge != 0) {
+        doc.addValue("age", static_cast<std::size_t>(m_clientAge));
+        if (m_clientDateCreated != 0) {
+            doc.addValue("date_created", static_cast<std::size_t>(m_clientDateCreated));
+        }
+    }
+
+    doc.endObject();
+
+    output = source;
+#else
     JsonItem root;
     root["status"] = m_status;
     root["ack"] = m_isAcknowledged ? 1 : 0;
@@ -98,4 +153,5 @@ void ConnectionResponse::serialize(std::string& output) const
         }
     }
     Response::serialize(root, output);
+#endif
 }

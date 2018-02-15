@@ -28,6 +28,8 @@
 
 namespace residue {
 
+using JsonBuilder = gason::JSonBuilder;
+
 struct JsonDoc
 {
     using Value = gason::JsonValue;
