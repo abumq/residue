@@ -24,9 +24,13 @@
 
 #include "test.h"
 #include "../deps/gason/gason.h"
+#include "../deps/gason/jsonbuilder.h"
 
 //using namespace residue;
 
+const std::string bigNestedArray = "[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[1, 2]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]";
+
+#if 0
 class JsonDoc {
 public:
 
@@ -242,7 +246,6 @@ TEST(JsonTest, SimpleParse)
     ASSERT_TRUE(t2.isValid()) << t2.error();
     ASSERT_TRUE(t2.isObject());
 
-    const std::string bigNestedArray = "[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[1, 2]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]";
 
     JsonDoc t3("{\"t\":" + bigNestedArray + "}");
     ASSERT_FALSE(t3.isValid());
@@ -277,6 +280,132 @@ TEST(JsonTest, SimpleParse)
     std::stringstream ss;
     obj.dump(ss);
     std::cout << ss.str() << std::endl;
+
+}
+#endif
+
+//todo: default values in get, setting values
+struct JsonDoc
+{
+    using Value = gason::JsonValue;
+    using Status = gason::JsonParseStatus;
+
+    Status status;
+    Value val;
+
+    JsonDoc()
+    {
+        status = gason::JsonParseStatus::JSON_PARSE_ALLOCATION_FAILURE;
+    }
+
+    void parse(const std::string& jstr)
+    {
+        std::unique_ptr<char[]> buf(new char[jstr.size() + 1]);
+        strcpy(buf.get(), jstr.c_str());
+        status = gason::jsonParse(buf.get(), val, alloc);
+    }
+
+    template <typename T>
+    T get(const char* key, const T&) const
+    {
+        return val(key);
+    }
+private:
+    gason::JsonAllocator alloc;
+};
+
+template <>
+bool JsonDoc::get(const char* key, const bool& defaultVal) const
+{
+    JsonDoc::Value v = val(key);
+    if (v.isBoolean()) {
+        return v.toBool();
+    }
+    return defaultVal;
+}
+
+template <>
+std::string JsonDoc::get(const char* key, const std::string& defaultVal) const
+{
+    JsonDoc::Value v = val(key);
+    if (v.isString()) {
+        return v.toString();
+    }
+    return defaultVal;
+}
+
+template <>
+int JsonDoc::get(const char* key, const int& defaultVal) const
+{
+    JsonDoc::Value v = val(key);
+    if (v.isNumber()) {
+        return v.toInt();
+    }
+    return defaultVal;
+}
+
+template <>
+unsigned int JsonDoc::get(const char* key, const unsigned int& defaultVal) const
+{
+    JsonDoc::Value v = val(key);
+    if (v.isNumber()) {
+        return static_cast<unsigned int>(v.toInt());
+    }
+    return defaultVal;
+}
+
+template <>
+float JsonDoc::get(const char* key, const float& defaultVal) const
+{
+    JsonDoc::Value v = val(key);
+    if (v.isNumber()) {
+        return static_cast<float>(v.toNumber());
+    }
+    return defaultVal;
+}
+
+TEST(JsonTest, SimpleParse)
+{
+    gason::JsonAllocator    iallocator;
+    gason::JsonValue        root;
+
+    std::string json = "{\"people\":[{\"name\":\"adam\", \"age\": 960}, {\"name\":\"david\", \"age\": 100}]}";
+
+    JsonDoc j;
+    j.parse(json);
+    ASSERT_EQ(j.status, gason::JSON_PARSE_OK);
+
+    JsonDoc::Value people = j.get("people", JsonDoc::Value());
+
+    std::cout << people.at(0)("name").toString() << std::endl;;
+    std::cout << people.at(1)("name").toString() << std::endl;;
+    std::cout << people.at(0)("age").toInt() << std::endl;;
+    std::cout << people.at(1)("age").toInt() << std::endl;;
+   // std::cout << people.at(1)("name").toInt() << std::endl;; => assert
+/*
+    json = "{\"t\":" + bigNestedArray + "}";
+    source = std::unique_ptr<char[]>(new char[json.size() + 1]);
+    strcpy(source.get(), json.c_str());
+
+    status = gason::jsonParse(source.get(), root, iallocator);
+
+ //   ASSERT_EQ(status, gason::JSON_PARSE_OK);
+*/
+    std::size_t capacity = 200;
+    auto source = std::unique_ptr<char[]>(new char[capacity]);
+    strcpy(source.get(), json.c_str());
+    gason::JSonBuilder doc(source.get(), capacity);
+
+    // this sample JSon at least requires a buffer with 119 bytes.
+    doc.startObject()
+            .startArray("array")
+            .addValue(0)
+            .addValue(1)
+            .addValue(2)
+            .endArray()
+       .endObject();
+
+    std::cout << source.get() << std::endl;
 
 }
 
