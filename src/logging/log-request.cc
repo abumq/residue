@@ -35,6 +35,21 @@ LogRequest::LogRequest(const Configuration* conf) :
 bool LogRequest::deserialize(std::string&& json)
 {
     if (Request::deserialize(std::move(json))) {
+
+#ifdef RESIDUE_USE_GASON
+        m_clientId = m_raw.get<std::string>("client_id", "");
+        m_datetime = m_raw.get<unsigned int>("datetime", 0);
+        m_token = m_raw.get<std::string>("token", "");
+        m_loggerId = m_raw.get<std::string>("logger", "default");
+        m_filename = m_raw.get<std::string>("file", "");
+        m_function = m_raw.get<std::string>("func", "");
+        m_threadId = m_raw.get<std::string>("thread", "");
+        m_msg = m_raw.get<std::string>("msg", "");
+        m_applicationName = m_raw.get<std::string>("app", "");
+        m_level = el::LevelHelper::castFromInt(static_cast<el::base::type::EnumType>(m_raw.get<unsigned int>("level", static_cast<unsigned int>(el::Level::Unknown))));
+        m_verboseLevel = static_cast<el::base::type::VerboseLevel>(m_raw.get<unsigned int>("vlevel", static_cast<unsigned int>(9)));
+        m_lineNumber = static_cast<el::base::type::LineNumber>(m_raw.get<unsigned int>("line", static_cast<unsigned int>(0)));
+#else
         m_clientId = m_jsonDoc.getString("client_id", "");
 
         m_datetime = resolveValue<types::TimeMs>(&m_jsonDoc, &LogRequestFieldDateTime);
@@ -48,8 +63,8 @@ bool LogRequest::deserialize(std::string&& json)
         m_lineNumber = static_cast<el::base::type::LineNumber>(resolveValue<el::base::type::LineNumber>(&m_jsonDoc, &LogRequestFieldLine));
         m_level = el::LevelHelper::castFromInt(resolveValue<el::base::type::EnumType>(&m_jsonDoc, &LogRequestFieldLevel));
         m_verboseLevel = resolveValue<el::base::type::VerboseLevel>(&m_jsonDoc, &LogRequestFieldVLevel);
-
-        m_isValid = m_datetime != 0L && !m_loggerId.empty() && !m_msg.empty();
+#endif
+        m_isValid = m_datetime != 0L && m_level != el::Level::Unknown && !m_loggerId.empty() && !m_msg.empty();
     }
     return m_isValid;
 }
