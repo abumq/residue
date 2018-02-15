@@ -142,6 +142,7 @@ set (DEPS_SRC
     deps/linenoise/linenoise.c
     deps/easyloggingpp/easylogging++.cc
     deps/ripe/Ripe.cc
+    deps/gason/gason.cc
 )
 
 set (SOURCE_FILES
