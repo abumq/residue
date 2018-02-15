@@ -22,7 +22,6 @@
 #ifndef JsonDoc_h
 #define JsonDoc_h
 
-#include <iostream>
 #include <sstream>
 #include "../../deps/gason/gason.h"
 #include "gason/jsonbuilder.h"
@@ -45,6 +44,8 @@ public:
         status = gason::JsonParseStatus::JSON_PARSE_ALLOCATION_FAILURE;
     }
 
+    JsonDoc(const JsonDoc&) = delete;
+
     void parse(const std::string& jstr);
 
     std::string dump() const;
@@ -56,6 +57,16 @@ public:
         return status == gason::JsonParseStatus::JSON_PARSE_OK;
     }
 
+    gason::JsonIterator begin() const
+    {
+        return gason::begin(val);
+    }
+
+    gason::JsonIterator end() const
+    {
+        return gason::end(val);
+    }
+
     std::string errorText() const;
 
     inline bool hasKey(const char* key) const
@@ -63,9 +74,17 @@ public:
         return val(key).getTag() <= 5;
     }
 
-    template <typename T>
-    inline T get(const char* key, const T&) const
+    inline bool isArray() const
     {
+        return val.isArray();
+    }
+
+    template <typename T>
+    inline T get(const char* key, const T& defaultVal) const
+    {
+        if (val.isArray()) {
+            return defaultVal;
+        }
         return val(key);
     }
 private:
@@ -76,6 +95,9 @@ private:
 template <>
 inline bool JsonDoc::get<bool>(const char* key, const bool& defaultVal) const
 {
+    if (val.isArray()) {
+        return defaultVal;
+    }
     JsonDoc::Value v = val(key);
     if (v.isBoolean()) {
         return v.toBool();
@@ -86,6 +108,9 @@ inline bool JsonDoc::get<bool>(const char* key, const bool& defaultVal) const
 template <>
 inline std::string JsonDoc::get<std::string>(const char* key, const std::string& defaultVal) const
 {
+    if (val.isArray()) {
+        return defaultVal;
+    }
     JsonDoc::Value v = val(key);
     if (v.isString()) {
         return v.toString();
@@ -96,6 +121,9 @@ inline std::string JsonDoc::get<std::string>(const char* key, const std::string&
 template <>
 inline int JsonDoc::get<int>(const char* key, const int& defaultVal) const
 {
+    if (val.isArray()) {
+        return defaultVal;
+    }
     JsonDoc::Value v = val(key);
     if (v.isNumber()) {
         return v.toInt();
@@ -106,6 +134,9 @@ inline int JsonDoc::get<int>(const char* key, const int& defaultVal) const
 template <>
 inline unsigned int JsonDoc::get<unsigned int>(const char* key, const unsigned int& defaultVal) const
 {
+    if (val.isArray()) {
+        return defaultVal;
+    }
     JsonDoc::Value v = val(key);
     if (v.isNumber()) {
         return static_cast<unsigned int>(v.toInt());
@@ -116,6 +147,9 @@ inline unsigned int JsonDoc::get<unsigned int>(const char* key, const unsigned i
 template <>
 inline float JsonDoc::get<float>(const char* key, const float& defaultVal) const
 {
+    if (val.isArray()) {
+        return defaultVal;
+    }
     JsonDoc::Value v = val(key);
     if (v.isNumber()) {
         return static_cast<float>(v.toNumber());

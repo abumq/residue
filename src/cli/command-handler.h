@@ -63,7 +63,7 @@ private:
     inline void registerRawCommand(std::string&& name,
                                    CommandHandlerFunction&& action)
     {
-        m_rawCommands.insert(std::make_pair(std::move(name), std::move(action)));
+        m_jsonDocCommands.insert(std::make_pair(std::move(name), std::move(action)));
     }
 
     inline void registerCommand(std::unique_ptr<Command>&& command)
@@ -78,7 +78,7 @@ private:
     bool m_running;
     std::set<std::string> m_history;
     std::set<std::unique_ptr<Command>> m_commands;
-    std::unordered_map<std::string, CommandHandlerFunction> m_rawCommands;
+    std::unordered_map<std::string, CommandHandlerFunction> m_jsonDocCommands;
 };
 }
 

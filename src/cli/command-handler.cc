@@ -68,7 +68,7 @@ CommandHandler::CommandHandler(Registry* registry) :
             }
         } else {
             result << "Commands:" << std::endl;
-            for (const auto& c : m_rawCommands) {
+            for (const auto& c : m_jsonDocCommands) {
                 if (c.first != "help") {
                     std::string s(c.first);
                     result << "    " << Utils::toLower(s) << std::endl;
@@ -110,11 +110,11 @@ void CommandHandler::handle(std::string&& cmd,
             m_history.insert(cmd);
         }
         command->execute(std::move(params), result, ignoreConfirmation);
-    } else if (m_rawCommands.find(cmd) != m_rawCommands.end()) {
+    } else if (m_jsonDocCommands.find(cmd) != m_jsonDocCommands.end()) {
         if (cmd != "history") {
             m_history.insert(cmd);
         }
-        m_rawCommands.at(cmd)(std::move(params), result, ignoreConfirmation);
+        m_jsonDocCommands.at(cmd)(std::move(params), result, ignoreConfirmation);
     }
 }
 

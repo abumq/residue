@@ -11,7 +11,7 @@ option (enable_extensions "Enables extensions support for the build" OFF)
 option (use_mine "Use mine whereever possible" OFF)
 option (special_edition "Special edition build" OFF)
 option (use_boost "Use boost or standalone networking lib" OFF)
-option (use_gason "Use gason where possible" ON)
+option (use_gason "Use gason where possible" OFF)
 
 set (RESIDUE_MAJOR "1")
 set (RESIDUE_MINOR "4")

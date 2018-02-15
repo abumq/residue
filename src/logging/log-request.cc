@@ -21,7 +21,6 @@
 
 #include <ctime>
 #include "logging/log-request.h"
-#include "core/json-document.h"
 
 using namespace residue;
 
@@ -37,18 +36,18 @@ bool LogRequest::deserialize(std::string&& json)
     if (Request::deserialize(std::move(json))) {
 
 #ifdef RESIDUE_USE_GASON
-        m_clientId = m_raw.get<std::string>("client_id", "");
-        m_datetime = m_raw.get<unsigned int>("datetime", 0);
-        m_token = m_raw.get<std::string>("token", "");
-        m_loggerId = m_raw.get<std::string>("logger", "default");
-        m_filename = m_raw.get<std::string>("file", "");
-        m_function = m_raw.get<std::string>("func", "");
-        m_threadId = m_raw.get<std::string>("thread", "");
-        m_msg = m_raw.get<std::string>("msg", "");
-        m_applicationName = m_raw.get<std::string>("app", "");
-        m_level = el::LevelHelper::castFromInt(static_cast<el::base::type::EnumType>(m_raw.get<unsigned int>("level", static_cast<unsigned int>(el::Level::Unknown))));
-        m_verboseLevel = static_cast<el::base::type::VerboseLevel>(m_raw.get<unsigned int>("vlevel", static_cast<unsigned int>(9)));
-        m_lineNumber = static_cast<el::base::type::LineNumber>(m_raw.get<unsigned int>("line", static_cast<unsigned int>(0)));
+        m_clientId = m_jsonDoc.get<std::string>("client_id", "");
+        m_datetime = m_jsonDoc.get<unsigned int>("datetime", 0);
+        m_token = m_jsonDoc.get<std::string>("token", "");
+        m_loggerId = m_jsonDoc.get<std::string>("logger", "default");
+        m_filename = m_jsonDoc.get<std::string>("file", "");
+        m_function = m_jsonDoc.get<std::string>("func", "");
+        m_threadId = m_jsonDoc.get<std::string>("thread", "");
+        m_msg = m_jsonDoc.get<std::string>("msg", "");
+        m_applicationName = m_jsonDoc.get<std::string>("app", "");
+        m_level = el::LevelHelper::castFromInt(static_cast<el::base::type::EnumType>(m_jsonDoc.get<unsigned int>("level", static_cast<unsigned int>(el::Level::Unknown))));
+        m_verboseLevel = static_cast<el::base::type::VerboseLevel>(m_jsonDoc.get<unsigned int>("vlevel", static_cast<unsigned int>(9)));
+        m_lineNumber = static_cast<el::base::type::LineNumber>(m_jsonDoc.get<unsigned int>("line", static_cast<unsigned int>(0)));
 #else
         m_clientId = m_jsonDoc.getString("client_id", "");
 
