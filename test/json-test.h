@@ -109,10 +109,6 @@ public:
                // fprintf(stdout, "%*s", indent + SHIFT_WIDTH, "");
                 unescapeStr(i->key, ss);
                 ss << ": ";
-                if (i->value.getTag() == JSON_STRING) {
-                    std::cout << "v=" << i->value.toString() << std::endl;
-                    std::cout << ((const char*) (9221260978843329236 & JSON_VALUE_PAYLOAD_MASK)) << std::endl;
-                }
                 dump(i->value, ss);
                 //dumpValue(i->value, indent + SHIFT_WIDTH);
                 ss << (i->next ? "," : "");
