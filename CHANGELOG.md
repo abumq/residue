@@ -4,6 +4,9 @@
 ### Updates
 - Performance improvement using standard response
 
+### Fixes
+- Crash detected when writing to session #79
+
 ## [1.4.2] - 14-02-2018
 ### Fixes
 - Client integrity task can remove pending dead client #73

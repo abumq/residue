@@ -168,9 +168,11 @@ void Session::write(const char* data,
                      [&, this, self](residue::error_code ec, std::size_t) {
         if (ec) {
 #ifdef RESIDUE_DEBUG
-            DRVLOG(RV_DEBUG) << "Failed to send." << ec.message();
+            DRVLOG(RV_DEBUG) << "Failed to send. " << ec.message();
 #endif
-            m_socket.close();
+            if (m_socket.is_open()) {
+                m_socket.close();
+            }
         }
     });
     read();
