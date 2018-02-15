@@ -26,7 +26,7 @@
 #include "net/url.h"
 #include "utils/utils.h"
 #include "net/http-client.h"
-#include "core/json-object.h"
+#include "core/json-document.h"
 
 using namespace residue;
 
@@ -66,7 +66,7 @@ bool AutoUpdater::hasNewVersion(std::string* newVersion)
 
     try {
         std::string cleanResult = Utils::trim(resultFromApi);
-        JsonObject j(std::move(cleanResult));
+        JsonDocument j(std::move(cleanResult));
         if (j.hasKey("tag_name")) {
             *newVersion = j.getString("tag_name");
             return curr != *newVersion;

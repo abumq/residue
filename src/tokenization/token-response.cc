@@ -55,7 +55,7 @@ TokenResponse::TokenResponse(bool) :
 
 void TokenResponse::serialize(std::string& output) const
 {
-    JsonObject::Json root;
+    JsonItem root;
     root["status"] = m_status;
     if (!m_errorText.empty()) {
         root["error_text"] = m_errorText;

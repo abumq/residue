@@ -21,7 +21,7 @@
 
 #include "logging/log.h"
 #include "tokenization/token-request.h"
-#include "core/json-object.h"
+#include "core/json-document.h"
 
 using namespace residue;
 
@@ -34,9 +34,9 @@ TokenRequest::TokenRequest(const Configuration* conf) :
 bool TokenRequest::deserialize(std::string&& json)
 {
     if (Request::deserialize(std::move(json))) {
-        m_loggerId = m_jsonObject.getString("logger_id", "");
-        m_accessCode = m_jsonObject.getString("access_code", "");
-        m_token = m_jsonObject.getString("token", "");
+        m_loggerId = m_jsonDoc.getString("logger_id", "");
+        m_accessCode = m_jsonDoc.getString("access_code", "");
+        m_token = m_jsonDoc.getString("token", "");
     }
     m_isValid = !m_loggerId.empty();
     return m_isValid;

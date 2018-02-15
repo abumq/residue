@@ -26,7 +26,7 @@
 #include "logging/log.h"
 #include "core/request.h"
 #include "core/types.h"
-#include "core/json-object.h"
+#include "core/json-document.h"
 
 namespace residue {
 
@@ -143,7 +143,7 @@ public:
 
     inline bool isBulk()
     {
-        return m_jsonObject.isArray();
+        return m_jsonDoc.isArray();
     }
 
     virtual bool deserialize(std::string&& json) override;
@@ -151,7 +151,7 @@ public:
 
 private:
     template <typename T>
-    inline T resolveValue(JsonObject *packet, const LogRequestField<T>* requestType) const
+    inline T resolveValue(JsonDocument *packet, const LogRequestField<T>* requestType) const
     {
         return packet->get<T>(requestType->name, requestType->defaultValue);
     }

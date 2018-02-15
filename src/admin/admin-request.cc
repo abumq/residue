@@ -21,7 +21,7 @@
 
 #include "logging/log.h"
 #include "admin/admin-request.h"
-#include "core/json-object.h"
+#include "core/json-document.h"
 #include "utils/utils.h"
 
 using namespace residue;
@@ -38,11 +38,11 @@ bool AdminRequest::deserialize(std::string&& json)
         RLOG(ERROR) << "Unable to deserialize admin request";
         return false;
     }
-    m_type = static_cast<AdminRequest::Type>(m_jsonObject.getUInt("type", 0));
-    m_clientId = m_jsonObject.getString("client_id", "");
-    m_rsaPublicKey = m_jsonObject.getString("rsa_public_key", "");
-    m_loggerId = m_jsonObject.getString("logger_id", "");
-    m_loggingLevels = m_jsonObject.get<std::set<std::string>>("logging_levels", std::set<std::string>());
+    m_type = static_cast<AdminRequest::Type>(m_jsonDoc.getUInt("type", 0));
+    m_clientId = m_jsonDoc.getString("client_id", "");
+    m_rsaPublicKey = m_jsonDoc.getString("rsa_public_key", "");
+    m_loggerId = m_jsonDoc.getString("logger_id", "");
+    m_loggingLevels = m_jsonDoc.get<std::set<std::string>>("logging_levels", std::set<std::string>());
 
     m_isValid = (m_type == AdminRequest::Type::RELOAD_CONFIG)
             || (m_type == AdminRequest::Type::RESET)

@@ -21,7 +21,7 @@
 
 #include <ctime>
 #include "logging/log-request.h"
-#include "core/json-object.h"
+#include "core/json-document.h"
 
 using namespace residue;
 
@@ -35,19 +35,19 @@ LogRequest::LogRequest(const Configuration* conf) :
 bool LogRequest::deserialize(std::string&& json)
 {
     if (Request::deserialize(std::move(json))) {
-        m_clientId = m_jsonObject.getString("client_id", "");
+        m_clientId = m_jsonDoc.getString("client_id", "");
 
-        m_datetime = resolveValue<types::TimeMs>(&m_jsonObject, &LogRequestFieldDateTime);
-        m_token = resolveValue<std::string>(&m_jsonObject, &LogRequestFieldToken);
-        m_loggerId = resolveValue<std::string>(&m_jsonObject, &LogRequestFieldLogger);
-        m_filename = resolveValue<std::string>(&m_jsonObject, &LogRequestFieldFile);
-        m_function = resolveValue<std::string>(&m_jsonObject, &LogRequestFieldFunction);
-        m_applicationName = resolveValue<std::string>(&m_jsonObject, &LogRequestFieldApplicationName);
-        m_threadId = resolveValue<std::string>(&m_jsonObject, &LogRequestFieldThreadId);
-        m_msg = resolveValue<std::string>(&m_jsonObject, &LogRequestFieldMessage);
-        m_lineNumber = static_cast<el::base::type::LineNumber>(resolveValue<el::base::type::LineNumber>(&m_jsonObject, &LogRequestFieldLine));
-        m_level = el::LevelHelper::castFromInt(resolveValue<el::base::type::EnumType>(&m_jsonObject, &LogRequestFieldLevel));
-        m_verboseLevel = resolveValue<el::base::type::VerboseLevel>(&m_jsonObject, &LogRequestFieldVLevel);
+        m_datetime = resolveValue<types::TimeMs>(&m_jsonDoc, &LogRequestFieldDateTime);
+        m_token = resolveValue<std::string>(&m_jsonDoc, &LogRequestFieldToken);
+        m_loggerId = resolveValue<std::string>(&m_jsonDoc, &LogRequestFieldLogger);
+        m_filename = resolveValue<std::string>(&m_jsonDoc, &LogRequestFieldFile);
+        m_function = resolveValue<std::string>(&m_jsonDoc, &LogRequestFieldFunction);
+        m_applicationName = resolveValue<std::string>(&m_jsonDoc, &LogRequestFieldApplicationName);
+        m_threadId = resolveValue<std::string>(&m_jsonDoc, &LogRequestFieldThreadId);
+        m_msg = resolveValue<std::string>(&m_jsonDoc, &LogRequestFieldMessage);
+        m_lineNumber = static_cast<el::base::type::LineNumber>(resolveValue<el::base::type::LineNumber>(&m_jsonDoc, &LogRequestFieldLine));
+        m_level = el::LevelHelper::castFromInt(resolveValue<el::base::type::EnumType>(&m_jsonDoc, &LogRequestFieldLevel));
+        m_verboseLevel = resolveValue<el::base::type::VerboseLevel>(&m_jsonDoc, &LogRequestFieldVLevel);
 
         m_isValid = m_datetime != 0L && !m_loggerId.empty() && !m_msg.empty();
     }

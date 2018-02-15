@@ -31,7 +31,7 @@ const Response::StandardResponse Response::STANDARD_RESPONSES[] = {
     { Response::StatusCode::BAD_REQUEST, "{r:1}\r\n\r\n" },
 };
 
-void Response::serialize(JsonObject::Json& root,
+void Response::serialize(JsonItem& root,
                          std::string& output) const
 {
     output = root.dump();

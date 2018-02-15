@@ -24,7 +24,7 @@
 
 #include <string>
 #include "non-copyable.h"
-#include "core/json-object.h"
+#include "core/json-document.h"
 
 namespace residue {
 
@@ -53,7 +53,7 @@ public:
     Response() = default;
     virtual ~Response() = default;
 
-    void serialize(JsonObject::Json& root,
+    void serialize(JsonItem& root,
                    std::string& output) const;
 };
 }

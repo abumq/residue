@@ -24,7 +24,7 @@
 
 #include <string>
 #include "non-copyable.h"
-#include "core/json-object.h"
+#include "core/json-document.h"
 #include "core/types.h"
 
 namespace residue {
@@ -60,9 +60,9 @@ public:
 
     virtual bool deserialize(std::string&& json);
 
-    inline JsonObject jsonObject() const
+    inline JsonDocument jsonObject() const
     {
-        return m_jsonObject;
+        return m_jsonDoc;
     }
 
     inline Client* client() const
@@ -113,7 +113,7 @@ public:
 
     virtual bool validateTimestamp() const;
 protected:
-    JsonObject m_jsonObject;
+    JsonDocument m_jsonDoc;
     bool m_isValid;
 
     Client* m_client;

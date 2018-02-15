@@ -82,9 +82,9 @@ void ListLoggingFiles::execute(std::vector<std::string>&& params, std::ostringst
             }
         }
     }
-    JsonObject::Json jr;
+    JsonItem jr;
     for (auto& p : listMap) {
-        JsonObject::Json j;
+        JsonItem j;
         std::string loggerId = p.first;
         j["client_id"] = clientId;
         j["logger_id"] = loggerId;

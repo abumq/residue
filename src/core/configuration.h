@@ -30,7 +30,7 @@
 #include <vector>
 #include "non-copyable.h"
 #include "clients/client.h"
-#include "core/json-object.h"
+#include "core/json-document.h"
 #include "crypto/rsa.h"
 #include "extensions/log-extension.h"
 
@@ -388,10 +388,10 @@ private:
         return m_knownClientsKeys.find(clientId) != m_knownClientsKeys.end();
     }
 
-    void loadKnownLoggers(const JsonObject::Json& json, std::stringstream& errorStream, bool viaUrl);
-    void loadKnownClients(const JsonObject::Json& json, std::stringstream& errorStream, bool viaUrl);
-    void loadLoggersBlacklist(const JsonObject::Json& json, std::stringstream& errorStream);
-    void loadLogExtensions(const JsonObject::Json& json, std::stringstream& errorStream);
+    void loadKnownLoggers(const JsonItem& json, std::stringstream& errorStream, bool viaUrl);
+    void loadKnownClients(const JsonItem& json, std::stringstream& errorStream, bool viaUrl);
+    void loadLoggersBlacklist(const JsonItem& json, std::stringstream& errorStream);
+    void loadLogExtensions(const JsonItem& json, std::stringstream& errorStream);
 };
 }
 #endif /* Configuration_h */

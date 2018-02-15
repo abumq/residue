@@ -27,6 +27,7 @@
 #include "admin-request-test.h"
 #include "task-schedule-test.h"
 #include "log-rotator-schedule-test.h"
+#include "json-test.h"
 
 INITIALIZE_EASYLOGGINGPP
 

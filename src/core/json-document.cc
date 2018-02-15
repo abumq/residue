@@ -1,5 +1,5 @@
 //
-//  json-object.cc
+//  json-document.cc
 //  Residue
 //
 //  Copyright 2017-present Muflihun Labs
@@ -20,33 +20,31 @@
 //
 
 #include "logging/log.h"
-#include "core/json-object.h"
+#include "core/json-document.h"
 
 using namespace residue;
 
-JsonObject::JsonObject()
+JsonDocument::JsonDocument()
     : m_isValid(false)
 {
 
 }
 
-JsonObject::JsonObject(Json&& newRoot) :
-    m_root(std::move(newRoot))
+JsonDocument::JsonDocument(JsonItem&& newRoot)
+    : m_root(std::move(newRoot))
 {
-
 }
 
-JsonObject::JsonObject(const Json& newRoot) :
-    m_root(std::move(newRoot))
+JsonDocument::JsonDocument(const JsonItem& newRoot)
+    : m_root(std::move(newRoot))
 {
-
 }
 
-JsonObject::JsonObject(std::string&& jsonStr) :
+JsonDocument::JsonDocument(std::string&& jsonStr) :
     m_jsonStr(std::move(jsonStr))
 {
     try {
-        m_root = Json::parse(m_jsonStr);
+        m_root = JsonItem::parse(m_jsonStr);
         if (m_root.is_null()) {
             m_isValid = false;
             setLastError("Malformed JSON:\n" + m_jsonStr);
@@ -61,7 +59,7 @@ JsonObject::JsonObject(std::string&& jsonStr) :
     }
 }
 
-bool JsonObject::hasKeys(const JsonObject::Keys* keys) const
+bool JsonDocument::hasKeys(const JsonDocument::Keys* keys) const
 {
     for (const auto& key : *keys) {
         if (!hasKey(key)) {

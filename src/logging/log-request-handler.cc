@@ -122,7 +122,7 @@ void LogRequestHandler::processRequestQueue()
 #ifdef RESIDUE_DEV
                 DRVLOG(RV_DEBUG) << "Request client: " << request.client();
 #endif
-                for (const JsonObject::Json& js : request.jsonObject()) {
+                for (const JsonItem& js : request.jsonObject()) {
                     if (itemCount == maxItemsInBulk) {
                         RLOG(ERROR) << "Maximum number of bulk requests reached. Ignoring the rest of items in bulk";
                         break;

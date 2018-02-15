@@ -169,9 +169,9 @@ set (SOURCE_FILES
     src/core/request.cc
     src/core/request-handler.cc
     src/core/response.cc
-    src/core/json-object.cc
     src/core/configuration.cc
     src/core/registry.cc
+    src/core/json-document.cc
 
     src/crypto/rsa.cc
     src/crypto/aes.cc

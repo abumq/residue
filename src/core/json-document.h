@@ -1,5 +1,5 @@
 //
-//  json-object.h
+//  json-document.h
 //  Residue
 //
 //  Copyright 2017-present Muflihun Labs
@@ -19,31 +19,31 @@
 //  limitations under the License.
 //
 
-#ifndef JsonObject_h
-#define JsonObject_h
+#ifndef JsonDocument_h
+#define JsonDocument_h
 
 #include <iterator>
 #include "nlohmann-json/json.h"
-//#include "gason/gason.h"
 #include "logging/log.h"
 #include "non-copyable.h"
 
 namespace residue {
 
+using JsonItem = nlohmann::json;
+
 ///
-/// \brief Json wrapper to serialize / deserialize json string
+/// \brief Json document with root and helper methods
 ///
-class JsonObject final
+class JsonDocument final
 {
 public:
-    using Json = nlohmann::json;
     using Keys = std::vector<const char*>;
 
-    JsonObject();
+    JsonDocument();
 
-    explicit JsonObject(const Json& newRoot);
-    explicit JsonObject(Json&& newRoot);
-    explicit JsonObject(std::string&& jsonStr);
+    explicit JsonDocument(const JsonItem& newRoot);
+    explicit JsonDocument(JsonItem&& newRoot);
+    explicit JsonDocument(std::string&& jsonStr);
 
     inline bool isValid() const
     {
@@ -65,17 +65,17 @@ public:
         return m_jsonStr;
     }
 
-    Json::const_iterator begin() const
+    JsonItem::const_iterator begin() const
     {
         return m_root.begin();
     }
 
-    Json::const_iterator end() const
+    JsonItem::const_iterator end() const
     {
         return m_root.end();
     }
 
-    inline Json root(void) const
+    inline JsonItem root(void) const
     {
         return m_root;
     }
@@ -137,10 +137,11 @@ public:
     }
 private:
     std::string m_jsonStr;
-    Json m_root;
+    JsonItem m_root;
     bool m_isValid;
     std::string m_lastError;
 };
+
 }
 
-#endif /* JsonObject_h */
+#endif /* JsonDocument_h */

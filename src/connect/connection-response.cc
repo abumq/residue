@@ -57,7 +57,7 @@ ConnectionResponse::ConnectionResponse(Response::StatusCode status, const std::s
 
 void ConnectionResponse::serialize(std::string& output) const
 {
-    JsonObject::Json root;
+    JsonItem root;
     root["status"] = m_status;
     root["ack"] = m_isAcknowledged ? 1 : 0;
     if (m_isAcknowledged && m_configuration != nullptr) {
