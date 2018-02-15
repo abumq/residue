@@ -23,7 +23,8 @@
 #define JsonDoc_h
 
 #include <sstream>
-#include "../../deps/gason/gason.h"
+#include <memory>
+#include "gason/gason.h"
 #include "gason/jsonbuilder.h"
 
 namespace residue {
@@ -82,7 +83,7 @@ public:
     template <typename T>
     inline T get(const char* key, const T& defaultVal) const
     {
-        if (val.isArray()) {
+        if (isArray()) {
             return defaultVal;
         }
         return val(key);
@@ -95,7 +96,7 @@ private:
 template <>
 inline bool JsonDoc::get<bool>(const char* key, const bool& defaultVal) const
 {
-    if (val.isArray()) {
+    if (isArray()) {
         return defaultVal;
     }
     JsonDoc::Value v = val(key);
@@ -108,7 +109,7 @@ inline bool JsonDoc::get<bool>(const char* key, const bool& defaultVal) const
 template <>
 inline std::string JsonDoc::get<std::string>(const char* key, const std::string& defaultVal) const
 {
-    if (val.isArray()) {
+    if (isArray()) {
         return defaultVal;
     }
     JsonDoc::Value v = val(key);
@@ -121,7 +122,7 @@ inline std::string JsonDoc::get<std::string>(const char* key, const std::string&
 template <>
 inline int JsonDoc::get<int>(const char* key, const int& defaultVal) const
 {
-    if (val.isArray()) {
+    if (isArray()) {
         return defaultVal;
     }
     JsonDoc::Value v = val(key);
@@ -134,7 +135,7 @@ inline int JsonDoc::get<int>(const char* key, const int& defaultVal) const
 template <>
 inline unsigned int JsonDoc::get<unsigned int>(const char* key, const unsigned int& defaultVal) const
 {
-    if (val.isArray()) {
+    if (isArray()) {
         return defaultVal;
     }
     JsonDoc::Value v = val(key);
@@ -147,7 +148,7 @@ inline unsigned int JsonDoc::get<unsigned int>(const char* key, const unsigned i
 template <>
 inline float JsonDoc::get<float>(const char* key, const float& defaultVal) const
 {
-    if (val.isArray()) {
+    if (isArray()) {
         return defaultVal;
     }
     JsonDoc::Value v = val(key);
