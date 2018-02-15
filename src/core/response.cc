@@ -25,9 +25,10 @@
 using namespace residue;
 
 const Response::StandardResponse Response::STANDARD_RESPONSES[] = {
-    { Response::StatusCode::STATUS_OK, "{r:0}" + Session::PACKET_DELIMITER },
-    { Response::StatusCode::CONTINUE, "{r:0}" + Session::PACKET_DELIMITER },
-    { Response::StatusCode::BAD_REQUEST, "{r:1}" + Session::PACKET_DELIMITER },
+    // do not use Session::PACKET_DELIMITER - sometimes resolves to nothing. Weird
+    { Response::StatusCode::STATUS_OK, "{r:0}\r\n\r\n" },
+    { Response::StatusCode::CONTINUE, "{r:0}\r\n\r\n" },
+    { Response::StatusCode::BAD_REQUEST, "{r:1}\r\n\r\n" },
 };
 
 void Response::serialize(JsonObject::Json& root,
