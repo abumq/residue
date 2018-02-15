@@ -172,6 +172,7 @@ set (SOURCE_FILES
     src/core/configuration.cc
     src/core/registry.cc
     src/core/json-document.cc
+    src/core/json-doc.cc
 
     src/crypto/rsa.cc
     src/crypto/aes.cc
