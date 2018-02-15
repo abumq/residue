@@ -23,61 +23,11 @@
 
 using namespace residue;
 
-template <>
-bool JsonDoc::get(const char* key, const bool& defaultVal) const
-{
-    JsonDoc::Value v = val(key);
-    if (v.isBoolean()) {
-        return v.toBool();
-    }
-    return defaultVal;
-}
-
-template <>
-std::string JsonDoc::get(const char* key, const std::string& defaultVal) const
-{
-    JsonDoc::Value v = val(key);
-    if (v.isString()) {
-        return v.toString();
-    }
-    return defaultVal;
-}
-
-template <>
-int JsonDoc::get(const char* key, const int& defaultVal) const
-{
-    JsonDoc::Value v = val(key);
-    if (v.isNumber()) {
-        return v.toInt();
-    }
-    return defaultVal;
-}
-
-template <>
-unsigned int JsonDoc::get(const char* key, const unsigned int& defaultVal) const
-{
-    JsonDoc::Value v = val(key);
-    if (v.isNumber()) {
-        return static_cast<unsigned int>(v.toInt());
-    }
-    return defaultVal;
-}
-
-template <>
-float JsonDoc::get(const char* key, const float& defaultVal) const
-{
-    JsonDoc::Value v = val(key);
-    if (v.isNumber()) {
-        return static_cast<float>(v.toNumber());
-    }
-    return defaultVal;
-}
-
 void JsonDoc::parse(const std::string& jstr)
 {
-    std::unique_ptr<char[]> buf(new char[jstr.size() + 1]);
-    strcpy(buf.get(), jstr.c_str());
-    status = gason::jsonParse(buf.get(), val, alloc);
+    src = std::unique_ptr<char[]>(new char[jstr.size() + 1]);
+    strcpy(src.get(), jstr.c_str());
+    status = gason::jsonParse(src.get(), val, alloc);
 }
 
 std::string JsonDoc::dump() const
@@ -166,4 +116,29 @@ void JsonDoc::dumpStr(const char *s, std::stringstream &ss)
         }
     }
     ss << "\"";
+}
+
+std::string JsonDoc::errorText() const
+{
+    switch (status)
+    {
+    case gason::JsonParseStatus::JSON_PARSE_OK:
+        return "";
+    case gason::JsonParseStatus::JSON_PARSE_BAD_NUMBER:
+        return "Bad number";
+    case gason::JsonParseStatus::JSON_PARSE_ALLOCATION_FAILURE:
+        return "Failed to allocate memory";
+    case gason::JsonParseStatus::JSON_PARSE_BAD_STRING:
+        return "Bad string";
+    case gason::JsonParseStatus::JSON_PARSE_MISMATCH_BRACKET:
+        return "Unclosed bracket";
+    case gason::JsonParseStatus::JSON_PARSE_STACK_OVERFLOW:
+        return "Too much nesting";
+    case gason::JsonParseStatus::JSON_PARSE_UNEXPECTED_CHARACTER:
+        return "Unexpected character";
+    case gason::JsonParseStatus::JSON_PARSE_UNQUOTED_KEY:
+        return "Unquoted keys are not allowed";
+    default:
+        return "Unknown error - [hint: single quote keys are not allowed]";
+    }
 }

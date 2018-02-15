@@ -22,16 +22,18 @@
 #ifndef JsonDoc_h
 #define JsonDoc_h
 
+#include <iostream>
 #include <sstream>
-#include "gason/gason.h"
+#include "../../deps/gason/gason.h"
 #include "gason/jsonbuilder.h"
 
 namespace residue {
 
 using JsonBuilder = gason::JSonBuilder;
 
-struct JsonDoc
+class JsonDoc
 {
+public:
     using Value = gason::JsonValue;
     using Status = gason::JsonParseStatus;
 
@@ -49,14 +51,77 @@ struct JsonDoc
     static void dump(Value o, std::stringstream& ss);
     static void dumpStr(const char* s, std::stringstream& ss);
 
+    inline bool isValid() const
+    {
+        return status == gason::JsonParseStatus::JSON_PARSE_OK;
+    }
+
+    std::string errorText() const;
+
+    inline bool hasKey(const char* key) const
+    {
+        return val(key).getTag() <= 5;
+    }
+
     template <typename T>
-    T get(const char* key, const T&) const
+    inline T get(const char* key, const T&) const
     {
         return val(key);
     }
 private:
     gason::JsonAllocator alloc;
+    std::unique_ptr<char[]> src;
 };
+
+template <>
+inline bool JsonDoc::get<bool>(const char* key, const bool& defaultVal) const
+{
+    JsonDoc::Value v = val(key);
+    if (v.isBoolean()) {
+        return v.toBool();
+    }
+    return defaultVal;
+}
+
+template <>
+inline std::string JsonDoc::get<std::string>(const char* key, const std::string& defaultVal) const
+{
+    JsonDoc::Value v = val(key);
+    if (v.isString()) {
+        return v.toString();
+    }
+    return defaultVal;
+}
+
+template <>
+inline int JsonDoc::get<int>(const char* key, const int& defaultVal) const
+{
+    JsonDoc::Value v = val(key);
+    if (v.isNumber()) {
+        return v.toInt();
+    }
+    return defaultVal;
+}
+
+template <>
+inline unsigned int JsonDoc::get<unsigned int>(const char* key, const unsigned int& defaultVal) const
+{
+    JsonDoc::Value v = val(key);
+    if (v.isNumber()) {
+        return static_cast<unsigned int>(v.toInt());
+    }
+    return defaultVal;
+}
+
+template <>
+inline float JsonDoc::get<float>(const char* key, const float& defaultVal) const
+{
+    JsonDoc::Value v = val(key);
+    if (v.isNumber()) {
+        return static_cast<float>(v.toNumber());
+    }
+    return defaultVal;
+}
 }
 
 #endif /* JsonDoc_h */

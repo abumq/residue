@@ -25,6 +25,7 @@
 #include <string>
 #include "non-copyable.h"
 #include "core/json-document.h"
+#include "core/json-doc.h"
 #include "core/types.h"
 
 namespace residue {
@@ -114,6 +115,10 @@ public:
     virtual bool validateTimestamp() const;
 protected:
     JsonDocument m_jsonDoc;
+#ifdef RESIDUE_USE_GASON
+    JsonDoc m_raw;
+#endif
+
     bool m_isValid;
 
     Client* m_client;
