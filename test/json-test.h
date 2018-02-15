@@ -23,55 +23,265 @@
 #define JSON_TEST_H
 
 #include "test.h"
-#include "core/residue-exception.h"
-#include "gason/gason.h"
+#include "../deps/gason/gason.h"
 
-using namespace residue;
+//using namespace residue;
 
-struct Result {
-    int result;
-    JsonValue json;
+class JsonDoc {
+public:
+
+    struct ParseResult
+    {
+        int status;
+        JsonValue json;
+    };
+
+    JsonDoc()
+    {
+        m_root = parse("NULL");
+    }
+
+    explicit JsonDoc(const std::string& json)
+    {
+        m_root = parse(json);
+    }
+
+    explicit JsonDoc(const JsonValue& json)
+    {
+        m_root = { 0, json };
+    }
+
+    static ParseResult parse(const std::string& json)
+    {
+
+        JsonAllocator allocator;
+        JsonValue value;
+        std::unique_ptr<char[]> source(new char[json.size() + 1]);
+        strcpy(source.get(), json.c_str());
+
+        char* end = 0;
+
+        int status = jsonParse(source.get(), &end, &value, allocator);
+
+        return ParseResult { status, value };
+    }
+
+    static void dump(JsonValue o, std::stringstream& ss, int indent = 0)
+    {
+        auto addIndent = [&](int extra = 0) {
+            for (auto i = 0; i < indent + extra; ++i) {
+                ss << " ";
+            }
+        };
+        switch (o.getTag()) {
+        case JSON_NUMBER:
+            ss << o.toNumber();
+            break;
+        case JSON_STRING:
+            std::cout << "tostr: " << o.toString() << std::endl;
+            unescapeStr(o.toString(), ss);
+            break;
+        case JSON_ARRAY:
+            // It is not necessary to use o.toNode() to check if an array or object
+            // is empty before iterating over its members, we do it here to allow
+            // nicer pretty printing.
+            if (!o.toNode()) {
+                ss << "[]";
+                break;
+            }
+            ss << "[";
+            for (auto i : o) {
+                //addIndent(SHIFT_WIDTH);
+
+                dump(i->value, ss);
+                //dumpValue(i->value, indent + SHIFT_WIDTH);
+                ss << (i->next ? "," : "");
+            }
+            ss << "]";
+            break;
+        case JSON_OBJECT:
+            if (!o.toNode()) {
+                ss << "{}";
+                break;
+            }
+            ss << "{";
+            for (auto i : o) {
+               // fprintf(stdout, "%*s", indent + SHIFT_WIDTH, "");
+                unescapeStr(i->key, ss);
+                ss << ": ";
+                if (i->value.getTag() == JSON_STRING) {
+                    std::cout << "v=" << i->value.toString() << std::endl;
+                    std::cout << ((const char*) (9221260978843329236 & JSON_VALUE_PAYLOAD_MASK)) << std::endl;
+                }
+                dump(i->value, ss);
+                //dumpValue(i->value, indent + SHIFT_WIDTH);
+                ss << (i->next ? "," : "");
+            }
+            ss << "}";
+            break;
+        case JSON_TRUE:
+            ss << "true";
+            break;
+        case JSON_FALSE:
+            ss << "false";
+            break;
+        case JSON_NULL:
+            ss << "null";
+            break;
+        }
+    }
+
+    inline bool isValid() const
+    {
+        return m_root.status == JSON_OK;
+    }
+
+    inline std::string error() const
+    {
+        return jsonStrError(m_root.status);
+    }
+
+    inline bool isObject() const
+    {
+        return m_root.json.getTag() == JSON_OBJECT;
+    }
+
+    inline bool isArray() const
+    {
+        return m_root.json.getTag() == JSON_ARRAY;
+    }
+
+    template <typename T = JsonDoc>
+    T get(const std::string& key)
+    {
+        for (auto j : m_root.json) {
+            if (strcmp(j->key, key.c_str()) == 0) {
+                return getValueAs<T>(j->value);
+            }
+        }
+        return T();
+    }
+
+    inline JsonIterator begin() const
+    {
+        return JsonIterator { m_root.json.toNode() };
+    }
+
+    inline JsonIterator end() const
+    {
+        return JsonIterator { nullptr };
+    }
+
+    void dump(std::stringstream& ss, int indent = 0) const
+    {
+        dump(m_root.json, ss, indent);
+    }
+
+private:
+    ParseResult m_root;
+
+    template <typename T>
+    T getValueAs(const JsonValue& j)
+    {
+        return T(j);
+    }
+
+    static void unescapeStr(const char* s, std::stringstream& ss)
+    {
+        ss << "\"";
+        while (*s) {
+            int c = *s++;
+            switch (c) {
+            case '\b':
+                ss << "\\b";
+                break;
+            case '\f':
+                ss << "\\f";
+                break;
+            case '\n':
+                ss << "\\n";
+                break;
+            case '\r':
+                ss << "\\r";
+                break;
+            case '\t':
+                ss << "\\t";
+                break;
+            case '\\':
+                ss << "\\\\";
+                break;
+            case '"':
+                ss << "\\\"";
+                break;
+            default:
+                ss << (char) c;
+            }
+        }
+        ss << "\"";
+    }
 };
 
-Result parse(const std::string& json) {
+template<>
+std::string JsonDoc::getValueAs(const JsonValue& j)
+{
+    std::string r;
+    r = j.toString();
+    return r;
+}
 
-    JsonAllocator allocator;
-    JsonValue value;
-    char* source = new char[json.size() + 1];
-    strcpy(source, json.c_str());
-
-    char* end = 0;
-
-    int result = jsonParse(source, &end, &value, allocator);
-    delete source;
-
-    return { result, value };
+template<>
+double JsonDoc::getValueAs(const JsonValue& j)
+{
+    return j.toNumber();
 }
 
 TEST(JsonTest, SimpleParse)
 {
 
-    Result t = parse("{\"t\":0}"); // ' failed
-    ASSERT_EQ(t.result, JSON_OK) << jsonStrError(t.result);
-    ASSERT_EQ(t.json.getTag(), JSON_OBJECT);
+    JsonDoc t("{\"t\":0}");
+    ASSERT_TRUE(t.isValid()) << t.error();
+    ASSERT_TRUE(t.isObject());
 
-    Result t2 = parse("{\"t\":[[32, 33]]}");
-    ASSERT_EQ(t2.result, JSON_OK) << jsonStrError(t2.result);
-    ASSERT_EQ(t2.json.getTag(), JSON_OBJECT);
-
+    JsonDoc t2("{\"t\":[[32, 33]]}");
+    ASSERT_TRUE(t2.isValid()) << t2.error();
+    ASSERT_TRUE(t2.isObject());
 
     const std::string bigNestedArray = "[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[1, 2]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]";
 
-    Result t3 = parse("{\"t\":" + bigNestedArray + "}");
-    ASSERT_EQ(t3.result, JSON_STACK_OVERFLOW) << jsonStrError(t3.result);
+    JsonDoc t3("{\"t\":" + bigNestedArray + "}");
+    ASSERT_FALSE(t3.isValid());
+    ASSERT_EQ(t3.error(), "stack overflow");
 
 
-    Result t4 = parse("{\"t\":[32, 33]}");
-    ASSERT_EQ(t4.result, JSON_OK) << jsonStrError(t4.result);
-    ASSERT_EQ(t4.json.getTag(), JSON_OBJECT);
-    for (auto i : t4.json) {
-        printf("key: %s", i->key);
+    JsonDoc t4("{\"t\":[32, 33]}");
+    ASSERT_TRUE(t4.isValid());
+    ASSERT_TRUE(t4.isObject());
+    JsonDoc t4_t = t4.get("t");
+    ASSERT_TRUE(t4_t.isValid());
+    ASSERT_TRUE(t4_t.isArray());
+
+
+    JsonDoc obj("{\"people\":[{\"name\":\"adam\", \"age\": 960}, {\"name\":\"david\", \"age\": 100}]}");
+    ASSERT_TRUE(obj.isValid());
+    ASSERT_TRUE(obj.isObject());
+    JsonDoc people = obj.get("people");
+    ASSERT_TRUE(people.isValid());
+    ASSERT_TRUE(people.isArray());
+
+    for (auto person : people) {
+        JsonDoc d(person->value);
+
+        std::cout << d.get<std::string>("name") << std::endl;
+        std::string id = d.get<std::string>("id");
+        std::cout << id << std::endl;
+
+
     }
+
+    std::stringstream ss;
+    obj.dump(ss);
+    std::cout << ss.str() << std::endl;
+
 }
 
 #endif // JSON_TEST_H
