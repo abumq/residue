@@ -35,6 +35,7 @@ Request::Request(const Configuration* conf) :
 bool Request::deserialize(std::string&& json)
 {
 #ifdef RESIDUE_USE_GASON
+
     m_raw.parse(json);
     m_isValid = m_raw.isValid();
     if (!m_isValid) {
@@ -45,12 +46,16 @@ bool Request::deserialize(std::string&& json)
         #endif
         return false;
     }
-    m_timestamp = m_raw.get<types::Time>("_t", 0UL);
+    m_timestamp = m_raw.get<unsigned int>("_t", 0UL);
     m_isValid = validateTimestamp();
 
     RVLOG_IF(!m_isValid, RV_DEBUG) << "Potential replay. Timestamp is "
                                    << m_dateReceived << " - " << m_timestamp << " = "
                                    << (m_dateReceived - m_timestamp) << " seconds old";
+
+    // TODO: Remove this line after full migration
+    m_jsonDoc = JsonDocument(std::move(json));
+
 #else
     m_jsonDoc = JsonDocument(std::move(json));
     m_isValid = m_jsonDoc.isValid();
