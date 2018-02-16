@@ -327,7 +327,7 @@ void Configuration::loadFromInput(std::string&& jsonStr)
         loadKnownClients(jdoc.get<JsonDoc::Value>("known_clients", JsonDoc::Value()), errorStream, false);
     }
 
-    if (jsonDoc.hasKey("known_clients_endpoint")) {
+    if (jdoc.hasKey("known_clients_endpoint")) {
         m_knownClientsEndpoint = jdoc.get<std::string>("known_clients_endpoint", "");
         if (!m_knownClientsEndpoint.empty()) {
             queryEndpoint(m_knownClientsEndpoint, "known_clients", [&](const JsonDoc::Value& json) {
@@ -336,8 +336,23 @@ void Configuration::loadFromInput(std::string&& jsonStr)
         }
     }
 
-    // todo: Remove this after full migration
-    JsonDocument jsonDoc(std::move(jsonStr));
+    JsonDoc::Value jLoggersBlacklist = jdoc.get<JsonDoc::Value>("loggers_blacklist", JsonDoc::Value());
+    if (jLoggersBlacklist.isArray()) {
+        loadLoggersBlacklist(jLoggersBlacklist, errorStream);
+    }
+
+
+#ifndef RESIDUE_HAS_EXTENSIONS
+    JsonDoc::Value jExtensionsVal = jdoc.get<JsonDoc::Value>("extensions", JsonDoc::Value());
+    if (jExtensionsVal.isObject()) {
+        JsonDoc jExtensions(jExtensionsVal);
+        JsonDoc::Value jLogExtensions = jExtensions.get<JsonDoc::Value>("log_extensions", JsonDoc::Value());
+        if (jLogExtensions.isArray()) {
+            loadExtensions<LogExtension>(jLogExtensions, errorStream, &m_logExtensions);
+        }
+    }
+#endif
+
 #else
 
     JsonDocument jsonDoc(std::move(jsonStr));
@@ -573,18 +588,21 @@ void Configuration::loadFromInput(std::string&& jsonStr)
             });
         }
     }
-#endif
-    JsonItem root = jsonDoc.root();
 
-#ifdef RESIDUE_HAS_EXTENSIONS
+    if (jsonDoc.hasKey("loggers_blacklist")) {
+        loadLoggersBlacklist(root["loggers_blacklist"], errorStream);
+    }
+
+    #ifdef RESIDUE_HAS_EXTENSIONS
     if (jsonDoc.hasKey("extensions")) {
         jsonDoc jExtensions(root["extensions"]);
         if (jExtensions.hasKey("log_extensions")) {
             JsonValue jExtensionsRoot = jExtensions.root();
-            loadLogExtensions(jExtensionsRoot["log_extensions"], errorStream);
+            loadExtensions<LogExtension>(jExtensionsRoot["log_extensions"], errorStream, &m_logExtensions);
         }
     }
 
+    #endif
 #endif
 
 #ifndef RESIDUE_HAS_CURL
@@ -592,9 +610,6 @@ void Configuration::loadFromInput(std::string&& jsonStr)
         RLOG(WARNING) << "This residue build does not support HTTPS endpoint urls";
     }
 #endif
-    if (jsonDoc.hasKey("loggers_blacklist")) {
-        loadLoggersBlacklist(root["loggers_blacklist"], errorStream);
-    }
     if (getConfigurationFile("default").empty()) {
         errorStream << "  Configuration file for required logger [default] is not specified" << std::endl;
     }
@@ -820,7 +835,7 @@ void Configuration::loadKnownClients(const JsonDoc::Value& json, std::stringstre
                 if (loggerId.empty()) {
                     continue;
                 }
-                if (!isKnownLogger(logger)) {
+                if (!isKnownLogger(loggerId)) {
                     errorStream << "  Logger [" << loggerId << "] for client [" << clientId << "] is unknown" << std::endl;
                     continue;
                 }
@@ -871,6 +886,29 @@ void Configuration::loadKnownClients(const JsonDoc::Value& json, std::stringstre
         }
     }
 }
+
+void Configuration::loadLoggersBlacklist(const JsonDoc::Value& json, std::stringstream& errorStream)
+{
+    for (const auto& loggerId : json) {
+        JsonDoc j(loggerId);
+        std::string loggerIdStr = j.as<std::string>("");
+        if (loggerIdStr.empty()) {
+            continue;
+        }
+        if (isKnownLogger(loggerIdStr)) {
+            errorStream << "  Cannot blacklist [" << loggerId << "] logger. Remove it from 'known_loggers' first." << std::endl;
+            continue;
+        }
+        if (m_blacklist.size() >= MAX_BLACKLIST_LOGGERS) {
+            errorStream << "  You have added maximum number of blacklisted loggers. Please consider using 'allow_unknown_loggers' instead." << std::endl;
+            continue;
+        }
+        if (std::find(m_blacklist.begin(), m_blacklist.end(), loggerIdStr) == m_blacklist.end()) {
+            m_blacklist.insert(loggerIdStr);
+        }
+    }
+}
+
 #else
 
 void Configuration::loadKnownLoggers(const JsonItem& json, std::stringstream& errorStream, bool viaUrl)
@@ -1124,7 +1162,6 @@ void Configuration::loadKnownClients(const JsonItem& json, std::stringstream& er
         }
     }
 }
-#endif
 
 void Configuration::loadLoggersBlacklist(const JsonItem& json, std::stringstream& errorStream)
 {
@@ -1147,29 +1184,13 @@ void Configuration::loadLoggersBlacklist(const JsonItem& json, std::stringstream
     }
 }
 
-void Configuration::loadLogExtensions(const JsonItem& json, std::stringstream& errorStream)
-{
-    std::vector<std::string> ext;
-
-    for (const auto& moduleName : json) {
-        std::string moduleNameStr = moduleName;
-        if (moduleNameStr.empty()) {
-            continue;
-        }
-        if (std::find(ext.begin(), ext.end(), moduleNameStr) != ext.end()) {
-            errorStream << "Duplicate extension could not be loaded: " << moduleNameStr;
-        } else {
-            ext.push_back(moduleNameStr);
-            m_logExtensions.push_back(std::unique_ptr<LogExtension>(new LogExtension(moduleNameStr)));
-        }
-    }
-}
+#endif
 
 bool Configuration::save(const std::string& outputFile)
 {
     std::lock_guard<std::mutex> lock(m_mutex);
 #ifdef RESIDUE_USE_GASON
-    const std::size_t capacity = 1024;
+    const std::size_t capacity = 1024; // todo: change this
     char source[capacity];
 
     JsonBuilder j(source, capacity);

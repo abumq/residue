@@ -30,10 +30,13 @@
 #include <vector>
 #include "non-copyable.h"
 #include "clients/client.h"
-#include "core/json-document.h"
-#include "core/json-doc.h"
 #include "crypto/rsa.h"
 #include "extensions/log-extension.h"
+#ifdef RESIDUE_USE_GASON
+#include "core/json-doc.h"
+#else
+#include "core/json-document.h"
+#endif
 
 namespace residue {
 
@@ -392,12 +395,51 @@ private:
 #ifdef RESIDUE_USE_GASON
     void loadKnownLoggers(const JsonDoc::Value& json, std::stringstream& errorStream, bool viaUrl);
     void loadKnownClients(const JsonDoc::Value& json, std::stringstream& errorStream, bool viaUrl);
+    void loadLoggersBlacklist(const JsonDoc::Value& json, std::stringstream& errorStream);
+
+    template <typename T, typename ListType = std::vector<std::unique_ptr<T>>>
+    void loadExtensions(const JsonDoc::Value& json, std::stringstream& errorStream, ListType* list)
+    {
+        std::vector<std::string> ext;
+
+        for (const auto& moduleName : json) {
+            JsonDoc j(moduleName);
+            std::string moduleNameStr = j.as<std::string>("");
+            if (moduleNameStr.empty()) {
+                continue;
+            }
+            if (std::find(ext.begin(), ext.end(), moduleNameStr) != ext.end()) {
+                errorStream << "Duplicate extension could not be loaded: " << moduleNameStr;
+            } else {
+                ext.push_back(moduleNameStr);
+                list->push_back(std::unique_ptr<T>(new T(moduleNameStr)));
+            }
+        }
+    }
 #else
     void loadKnownLoggers(const JsonItem& json, std::stringstream& errorStream, bool viaUrl);
     void loadKnownClients(const JsonItem& json, std::stringstream& errorStream, bool viaUrl);
-#endif
     void loadLoggersBlacklist(const JsonItem& json, std::stringstream& errorStream);
-    void loadLogExtensions(const JsonItem& json, std::stringstream& errorStream);
+
+    template <typename T, typename ListType = std::vector<std::unique_ptr<T>>>
+    void loadExtensions(const JsonItem& json, std::stringstream& errorStream, ListType* list)
+    {
+        std::vector<std::string> ext;
+
+        for (const auto& moduleName : json) {
+            std::string moduleNameStr = moduleName;
+            if (moduleNameStr.empty()) {
+                continue;
+            }
+            if (std::find(ext.begin(), ext.end(), moduleNameStr) != ext.end()) {
+                errorStream << "Duplicate extension could not be loaded: " << moduleNameStr;
+            } else {
+                ext.push_back(moduleNameStr);
+                list->push_back(std::unique_ptr<T>(new T(moduleNameStr)));
+            }
+        }
+    }
+#endif
 };
 }
 #endif /* Configuration_h */
