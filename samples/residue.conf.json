@@ -28,8 +28,8 @@
     "client_integrity_task_interval": 300,
     "dispatch_delay": 1,
     "archived_log_directory": "%original/backups/%logger/",
-    "archived_log_filename": "%year.log",
-    "archived_log_compressed_filename": "%year.tar.gz",
+    "archived_log_filename": "%level-%hour-%min-%day-%month-%year.log",
+    "archived_log_compressed_filename": "%hour-%min-%day-%month-%year.tar.gz",
     "known_clients": [
         {
             "client_id": "muflihun00102030",
