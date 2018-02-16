@@ -841,6 +841,14 @@ void Configuration::loadLogExtensions(const JsonItem& json, std::stringstream& e
 bool Configuration::save(const std::string& outputFile)
 {
     std::lock_guard<std::mutex> lock(m_mutex);
+#ifdef RESIDUE_USE_GASON
+    const std::size_t capacity = 1024;
+    char source[capacity];
+
+    JsonBuilder j(source, capacity);
+
+    std::string jDump = source;
+#else
     JsonItem j;
     j["admin_port"] = adminPort();
     j["connect_port"] = connectPort();
@@ -990,6 +998,7 @@ bool Configuration::save(const std::string& outputFile)
         j["known_loggers_endpoint"] = m_knownLoggersEndpoint;
     }
     std::string jDump = j.dump(4);
+#endif
 
     std::fstream file;
     file.open(outputFile, std::ofstream::out);
