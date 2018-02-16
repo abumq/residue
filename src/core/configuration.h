@@ -32,11 +32,8 @@
 #include "clients/client.h"
 #include "crypto/rsa.h"
 #include "extensions/log-extension.h"
-#ifdef RESIDUE_USE_GASON
 #include "core/json-doc.h"
-#else
 #include "core/json-document.h"
-#endif
 
 namespace residue {
 

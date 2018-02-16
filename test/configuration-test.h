@@ -144,7 +144,8 @@ protected:
                               "known_loggers": [
                                   {
                                       "logger_id": "residue",
-                                      "configuration_file": "residue-logger.conf"
+                                      "configuration_file": "residue-logger.conf",
+                                      "allow_plain_log_request": false
                                   },
                                   {
                                       "logger_id": "default",
@@ -159,11 +160,6 @@ protected:
                                       "rotation_freq": "hourly",
                                       "archived_log_filename": "mylogs-%hour-00-%wday-%level.log",
                                       "archived_log_directory": "/tmp/logs-backup/custom-location-for-%logger",
-                                      "access_codes_blacklist": [
-                                          "ii3faf",
-                                          "ii3fa2"
-                                      ],
-                                      "allow_plain_log_request": true,
                                       "access_codes": [
                                           {
                                               "code": "a2dcb",
@@ -176,7 +172,11 @@ protected:
                                           {
                                               "code": "eif82"
                                           }
-                                      ]
+                                      ],
+                                      "access_codes_blacklist": [
+                                          "ii3faf",
+                                          "ii3fa2"
+                                      ],
                                   }
                               ],
                               "extensions": {

@@ -342,7 +342,7 @@ void Configuration::loadFromInput(std::string&& jsonStr)
     }
 
 
-#ifndef RESIDUE_HAS_EXTENSIONS
+#ifdef RESIDUE_HAS_EXTENSIONS
     JsonDoc::Value jExtensionsVal = jdoc.get<JsonDoc::Value>("extensions", JsonDoc::Value());
     if (jExtensionsVal.isObject()) {
         JsonDoc jExtensions(jExtensionsVal);
@@ -1189,7 +1189,7 @@ void Configuration::loadLoggersBlacklist(const JsonItem& json, std::stringstream
 bool Configuration::save(const std::string& outputFile)
 {
     std::lock_guard<std::mutex> lock(m_mutex);
-#ifdef RESIDUE_USE_GASON
+#ifdef RESIDUE_USE_GASON____
     const std::size_t capacity = 1024; // todo: change this
     char source[capacity];
 
@@ -1280,9 +1280,18 @@ bool Configuration::save(const std::string& outputFile)
         JsonItem jKnownLogger;
         jKnownLogger["logger_id"] = loggerId;
         jKnownLogger["configuration_file"] = c.second;
-        if (hasLoggerFlag(loggerId, Configuration::Flag::ALLOW_PLAIN_LOG_REQUEST)) {
-            jKnownLogger["allow_plain_log_request"] = true;
+        if (hasFlag(Configuration::Flag::ALLOW_PLAIN_LOG_REQUEST)) {
+            if (!hasLoggerFlag(loggerId, Configuration::Flag::ALLOW_PLAIN_LOG_REQUEST)) {
+                jKnownLogger["allow_plain_log_request"] = false;
+            }
+        } else {
+            // no global
+            if (hasLoggerFlag(loggerId, Configuration::Flag::ALLOW_PLAIN_LOG_REQUEST)) {
+                // but local
+                jKnownLogger["allow_plain_log_request"] = true;
+            }
         }
+
         std::string frequencyStr;
         if (m_rotationFrequencies.find(loggerId) != m_rotationFrequencies.end()
                 && m_rotationFrequencies.at(loggerId) != Configuration::RotationFrequency::NEVER) {

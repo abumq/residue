@@ -59,7 +59,6 @@
             "configuration_file": "samples/configurations/sample-app-Logger.conf",
             "rotation_freq": "hourly",
             "allow_plain_log_request": true,
-            "access_codes_blacklist": ["abcd"],
             "access_codes": [
                 {
                     "code": "a2dcb",
@@ -72,7 +71,8 @@
                     "code": "a2dc3",
                     "token_age": 0
                 }
-            ]
+            ],
+            "access_codes_blacklist": ["abcd"]
         }
     ],
     "loggers_blacklist": [
