@@ -868,8 +868,8 @@ struct from_json_fn
     template<typename BasicJsonType, typename T>
     void call(const BasicJsonType&, T&, priority_tag<0>) const noexcept
     {
-        static_assert(sizeof(BasicJsonType) == 0,
-                      "could not find from_json() method in T's namespace");
+        //static_assert(sizeof(BasicJsonType) == 0,
+        //              "could not find from_json() method in T's namespace");
     }
 
   public:

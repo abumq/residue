@@ -59,6 +59,7 @@
             "configuration_file": "samples/configurations/sample-app-Logger.conf",
             "rotation_freq": "hourly",
             "allow_plain_log_request": true,
+            "access_codes_blacklist": ["abcd"],
             "access_codes": [
                 {
                     "code": "a2dcb",

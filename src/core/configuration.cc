@@ -102,8 +102,7 @@ void Configuration::loadFromInput(std::string&& jsonStr)
 
     std::stringstream errorStream;
 #ifdef RESIDUE_USE_GASON
-    JsonDoc jdoc;
-    jdoc.parse(jsonStr);
+    JsonDoc jdoc(jsonStr);
     if (!jdoc.isValid()) {
         m_isMalformedJson = true;
         m_isValid = false;
@@ -299,10 +298,9 @@ void Configuration::loadFromInput(std::string&& jsonStr)
             contents = HttpClient::fetchUrlContents(endpoint);
             Utils::trim(contents);
             if (!contents.empty()) {
-                JsonDoc j;
-                j.parse(contents);
+                JsonDoc j(contents);
                 if (j.isValid()) {
-                    if (j.hasKey(keyName)) {
+                    if (j.hasKey(keyName.c_str())) {
                         cb(j.get<JsonDoc::Value>(keyName.c_str(), JsonDoc::Value()));
                     } else {
                         errorStream << endpoint << " does not contain " << keyName << std::endl;
@@ -596,8 +594,7 @@ void Configuration::loadFromInput(std::string&& jsonStr)
 void Configuration::loadKnownLoggers(const JsonDoc::Value& json, std::stringstream& errorStream, bool viaUrl)
 {
     for (const auto& logger : json) {
-        JsonDoc j;
-        j.val = logger;
+        JsonDoc j(logger);
 
         std::string loggerId = j.get<std::string>("logger_id", "");
         if (loggerId.empty()) {
@@ -641,7 +638,7 @@ void Configuration::loadKnownLoggers(const JsonDoc::Value& json, std::stringstre
             m_knownLoggerUserMap.insert(std::make_pair(loggerId, loggerUser));
         }
 
-        if (jsonDoc.getBool("allow_plain_log_request", false)) {
+        if (j.get<bool>("allow_plain_log_request", hasFlag(Configuration::Flag::ALLOW_PLAIN_LOG_REQUEST))) {
             addLoggerFlag(loggerId, Configuration::Flag::ALLOW_PLAIN_LOG_REQUEST);
         }
 
@@ -688,57 +685,61 @@ void Configuration::loadKnownLoggers(const JsonDoc::Value& json, std::stringstre
             m_archivedLogsDirectories.insert(std::make_pair(loggerId, archivedLogDirectory));
         }
 
-        // TODO: fix these
-        // Access codes are used to generate the tokens
-        /*if (jsonDoc.hasKey("access_codes")) {
-            for (const auto& accessCode : logger["access_codes"]) {
-                std::string accessCodeStr = accessCode["code"];
-                if (accessCodeStr.empty() || accessCodeStr == DEFAULT_ACCESS_CODE) {
+        JsonDoc::Value accessCodes = j.get<JsonDoc::Value>("access_codes", JsonDoc::Value());
+        if (accessCodes.isArray()) {
+            for (const auto& accessCode : accessCodes) {
+                JsonDoc jAccessCode(accessCode);
+                std::string code = jAccessCode.get<std::string>("code", "");
+                if (code.empty() || code == DEFAULT_ACCESS_CODE) {
                     continue;
                 }
-                unsigned int age = tokenAge();
-                if (accessCode.count("token_age") > 0) {
-                    age = accessCode["token_age"];
-                    if (m_maxTokenAge > 0 && age > m_maxTokenAge) {
-                        errorStream << "Cannot set token age for logger [" << loggerId << "], access code ["
-                                    << accessCodeStr << "] greater than [max_token_age] which is " << m_maxTokenAge;
-                    } else if (m_maxTokenAge > 0 && age == 0) {
-                        errorStream << "Cannot set token age for logger [" << loggerId << "], access code ["
-                                    << accessCodeStr << "] to 'forever' [max_token_age] is " << m_maxTokenAge;
-                    }
+                unsigned int age = jAccessCode.get<unsigned int>("token_age", tokenAge());
+
+                if (m_maxTokenAge > 0 && age > m_maxTokenAge) {
+                    errorStream << "Cannot set token age for logger [" << loggerId << "], access code ["
+                                << code << "] greater than [max_token_age] which is " << m_maxTokenAge;
+                } else if (m_maxTokenAge > 0 && age == 0) {
+                    errorStream << "Cannot set token age for logger [" << loggerId << "], access code ["
+                                << code << "] to 'forever' [max_token_age] is " << m_maxTokenAge;
                 }
+
                 const auto& it = m_accessCodes.find(loggerId);
                 if (it == m_accessCodes.end()) {
-                    std::unordered_set<AccessCode> singleCodeSet = { AccessCode(accessCodeStr, age) };
+                    std::unordered_set<AccessCode> singleCodeSet = { AccessCode(code, age) };
                     m_accessCodes[loggerId] = singleCodeSet;
                 } else {
-                    it->second.insert(AccessCode(accessCodeStr, age));
+                    it->second.insert(AccessCode(code, age));
                 }
             }
         }
 
-        if (jsonDoc.hasKey("access_codes_blacklist")) {
-            for (const auto& accessCode : logger["access_codes_blacklist"]) {
-                std::string accessCodeStr = accessCode;
-                if (accessCodeStr.empty()) {
+        JsonDoc::Value accessCodesBlacklist = j.get<JsonDoc::Value>("access_codes_blacklist", JsonDoc::Value());
+        if (accessCodesBlacklist.isArray()) {
+            JsonDoc jAccessCode(accessCodesBlacklist);
+
+            for (const auto& accessCode : jAccessCode) {
+                JsonDoc ja(accessCode);
+
+                std::string code = ja.as<std::string>("");
+                if (code.empty() || code == DEFAULT_ACCESS_CODE) {
                     continue;
                 }
-                if (isValidAccessCode(loggerId, accessCodeStr)) {
-                    errorStream << "  Access code [" << accessCodeStr << "] exist in both allowed and blacklist lists" << std::endl;
+
+                if (isValidAccessCode(loggerId, code)) {
+                    errorStream << "  Access code [" << code << "] exists in both allowed and blacklist lists" << std::endl;
                     continue;
                 }
                 const auto& it = m_accessCodesBlacklist.find(loggerId);
                 if (it == m_accessCodesBlacklist.end()) {
-                    std::unordered_set<std::string> singleCodeSet = {accessCodeStr};
+                    std::unordered_set<std::string> singleCodeSet = {code};
                     m_accessCodesBlacklist[loggerId] = singleCodeSet;
                 } else {
-                    if (std::find(it->second.begin(), it->second.end(), accessCodeStr) == it->second.end()) {
-                        it->second.insert(accessCodeStr);
+                    if (std::find(it->second.begin(), it->second.end(), code) == it->second.end()) {
+                        it->second.insert(code);
                     }
                 }
             }
-        }*/
-
+        }
     }
 }
 #else
@@ -789,7 +790,7 @@ void Configuration::loadKnownLoggers(const JsonItem& json, std::stringstream& er
             m_knownLoggerUserMap.insert(std::make_pair(loggerId, loggerUser));
         }
 
-        if (jsonDoc.getBool("allow_plain_log_request", false)) {
+        if (jsonDoc.getBool("allow_plain_log_request", hasFlag(Configuration::Flag::ALLOW_PLAIN_LOG_REQUEST))) {
             addLoggerFlag(loggerId, Configuration::Flag::ALLOW_PLAIN_LOG_REQUEST);
         }
 

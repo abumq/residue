@@ -24,8 +24,8 @@
 
 #include <sstream>
 #include <memory>
-#include "gason/gason.h"
-#include "gason/jsonbuilder.h"
+#include "../../deps/gason/gason.h"
+#include "../../deps/gason/jsonbuilder.h"
 
 namespace residue {
 
@@ -43,6 +43,21 @@ public:
     JsonDoc()
     {
         status = gason::JsonParseStatus::JSON_PARSE_ALLOCATION_FAILURE;
+    }
+
+    explicit JsonDoc(const gason::JsonNode* v)
+    {
+        val = v->value;
+    }
+
+    explicit JsonDoc(const gason::JsonValue& v)
+    {
+        val = v;
+    }
+
+    explicit JsonDoc(const std::string& json)
+    {
+        parse(json);
     }
 
     JsonDoc(const JsonDoc&) = delete;
@@ -88,10 +103,28 @@ public:
         }
         return val(key);
     }
+
+    template <typename T>
+    inline T as(const T&) const
+    {
+        return val;
+    }
 private:
     gason::JsonAllocator alloc;
     std::unique_ptr<char[]> src;
 };
+
+template <>
+inline std::string JsonDoc::as<std::string>(const std::string& defaultVal) const
+{
+    if (isArray()) {
+        return defaultVal;
+    }
+    if (val.isString()) {
+        return val.toString();
+    }
+    return defaultVal;
+}
 
 template <>
 inline bool JsonDoc::get<bool>(const char* key, const bool& defaultVal) const
