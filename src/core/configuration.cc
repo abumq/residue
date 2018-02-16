@@ -74,7 +74,7 @@ void Configuration::loadFromInput(std::string&& jsonStr)
     m_archivedLogsFilenames.clear();
     m_archivedLogCompressedFilename.clear();
     m_rotationFrequencies.clear();
-    m_accessCodesBlacklist.clear();
+    m_accessCodeBlacklist.clear();
     m_accessCodes.clear();
     m_loggerFlags.clear();
     m_blacklist.clear();
@@ -744,9 +744,9 @@ void Configuration::loadKnownLoggers(const JsonDoc::Value& json, std::stringstre
             }
         }
 
-        JsonDoc::Value accessCodesBlacklist = j.get<JsonDoc::Value>("access_codes_blacklist", JsonDoc::Value());
-        if (accessCodesBlacklist.isArray()) {
-            JsonDoc jAccessCode(accessCodesBlacklist);
+        JsonDoc::Value accessCodeBlacklist = j.get<JsonDoc::Value>("access_code_blacklist", JsonDoc::Value());
+        if (accessCodeBlacklist.isArray()) {
+            JsonDoc jAccessCode(accessCodeBlacklist);
 
             for (const auto& accessCode : jAccessCode) {
                 JsonDoc ja(accessCode);
@@ -760,10 +760,10 @@ void Configuration::loadKnownLoggers(const JsonDoc::Value& json, std::stringstre
                     errorStream << "  Access code [" << code << "] exists in both allowed and blacklist lists" << std::endl;
                     continue;
                 }
-                const auto& it = m_accessCodesBlacklist.find(loggerId);
-                if (it == m_accessCodesBlacklist.end()) {
+                const auto& it = m_accessCodeBlacklist.find(loggerId);
+                if (it == m_accessCodeBlacklist.end()) {
                     std::unordered_set<std::string> singleCodeSet = {code};
-                    m_accessCodesBlacklist[loggerId] = singleCodeSet;
+                    m_accessCodeBlacklist[loggerId] = singleCodeSet;
                 } else {
                     if (std::find(it->second.begin(), it->second.end(), code) == it->second.end()) {
                         it->second.insert(code);
@@ -1032,8 +1032,8 @@ void Configuration::loadKnownLoggers(const JsonItem& json, std::stringstream& er
             }
         }
 
-        if (jsonDoc.hasKey("access_codes_blacklist")) {
-            for (const auto& accessCode : logger["access_codes_blacklist"]) {
+        if (jsonDoc.hasKey("access_code_blacklist")) {
+            for (const auto& accessCode : logger["access_code_blacklist"]) {
                 std::string accessCodeStr = accessCode;
                 if (accessCodeStr.empty()) {
                     continue;
@@ -1042,10 +1042,10 @@ void Configuration::loadKnownLoggers(const JsonItem& json, std::stringstream& er
                     errorStream << "  Access code [" << accessCodeStr << "] exist in both allowed and blacklist lists" << std::endl;
                     continue;
                 }
-                const auto& it = m_accessCodesBlacklist.find(loggerId);
-                if (it == m_accessCodesBlacklist.end()) {
+                const auto& it = m_accessCodeBlacklist.find(loggerId);
+                if (it == m_accessCodeBlacklist.end()) {
                     std::unordered_set<std::string> singleCodeSet = {accessCodeStr};
-                    m_accessCodesBlacklist[loggerId] = singleCodeSet;
+                    m_accessCodeBlacklist[loggerId] = singleCodeSet;
                 } else {
                     if (std::find(it->second.begin(), it->second.end(), accessCodeStr) == it->second.end()) {
                         it->second.insert(accessCodeStr);
@@ -1321,8 +1321,8 @@ bool Configuration::save(const std::string& outputFile)
             jKnownLogger["archived_log_filename"] = m_archivedLogsFilenames.at(loggerId).substr(std::string("%logger-").size());
         }
 
-        if (m_accessCodesBlacklist.find(loggerId) != m_accessCodesBlacklist.end() && !m_accessCodesBlacklist.at(loggerId).empty()) {
-            jKnownLogger["access_codes_blacklist"] = m_accessCodesBlacklist.at(loggerId);
+        if (m_accessCodeBlacklist.find(loggerId) != m_accessCodeBlacklist.end() && !m_accessCodeBlacklist.at(loggerId).empty()) {
+            jKnownLogger["access_code_blacklist"] = m_accessCodeBlacklist.at(loggerId);
         }
 
         if (m_archivedLogsCompressedFilenames.find(loggerId) != m_archivedLogsCompressedFilenames.end()) {
@@ -1484,8 +1484,8 @@ bool Configuration::isValidAccessCode(const std::string& loggerId,
     if ((accessCode.empty() || accessCode == DEFAULT_ACCESS_CODE) && hasFlag(Configuration::Flag::ALLOW_DEFAULT_ACCESS_CODE)) {
         return true;
     }
-    const auto& blacklistIter = m_accessCodesBlacklist.find(loggerId);
-    if (blacklistIter != m_accessCodesBlacklist.end()) {
+    const auto& blacklistIter = m_accessCodeBlacklist.find(loggerId);
+    if (blacklistIter != m_accessCodeBlacklist.end()) {
         const std::unordered_set<std::string>* blackListAccessCodes = &(blacklistIter->second);
         if (std::find(blackListAccessCodes->begin(), blackListAccessCodes->end(), accessCode) != blackListAccessCodes->end()) {
             // Current access code used is blacklisted

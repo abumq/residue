@@ -387,7 +387,7 @@ Default: [`token_age`](#token_age)
 
 Maximum: [`max_token_age`](#max_token_age)
 
-#### `known_loggers`::`access_codes_blacklist`
+#### `known_loggers`::`access_code_blacklist`
 [Array] String that define black listed access codes. You may access code to this list if one of the access codes is compromised. (alternatively, you may remove from the original list)
 
 #### `known_loggers`::`allow_plain_log_request`

@@ -246,9 +246,9 @@ public:
         return m_logExtensions;
     }
 
-    inline const std::unordered_map<std::string, std::unordered_set<std::string>>& accessCodesBlacklist() const
+    inline const std::unordered_map<std::string, std::unordered_set<std::string>>& accessCodeBlacklist() const
     {
-        return m_accessCodesBlacklist;
+        return m_accessCodeBlacklist;
     }
 
     inline const std::unordered_map<std::string, std::pair<std::string, std::string>>& knownClientsKeys() const
@@ -342,7 +342,7 @@ private:
 
     std::unordered_map<std::string, std::unordered_set<AccessCode>> m_accessCodes;
     std::unordered_map<std::string, std::pair<std::string, std::string>> m_knownClientsKeys;
-    std::unordered_map<std::string, std::unordered_set<std::string>> m_accessCodesBlacklist;
+    std::unordered_map<std::string, std::unordered_set<std::string>> m_accessCodeBlacklist;
     std::unordered_map<std::string, std::unordered_set<std::string>> m_knownClientsLoggers;
     std::unordered_map<std::string, std::string> m_knownLoggerUserMap;
     std::unordered_map<std::string, std::string> m_unknownLoggerUserMap;

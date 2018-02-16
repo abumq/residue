@@ -28,7 +28,7 @@
 #include "ripe/Ripe.h"
 #include "test.h"
 #include "core/residue-exception.h"
-#include "core/configuration.h"
+#include "../src/core/configuration.h"
 #include "core/registry.h"
 #include "logging/user-log-builder.h"
 #include "logging/log-request-handler.h"
@@ -160,6 +160,10 @@ protected:
                                       "rotation_freq": "hourly",
                                       "archived_log_filename": "mylogs-%hour-00-%wday-%level.log",
                                       "archived_log_directory": "/tmp/logs-backup/custom-location-for-%logger",
+                                      "access_code_blacklist": [
+                                          "ii3faf",
+                                          "ii3fa2"
+                                      ],
                                       "access_codes": [
                                           {
                                               "code": "a2dcb",
@@ -172,10 +176,6 @@ protected:
                                           {
                                               "code": "eif82"
                                           }
-                                      ],
-                                      "access_codes_blacklist": [
-                                          "ii3faf",
-                                          "ii3fa2"
                                       ],
                                   }
                               ],
@@ -237,6 +237,10 @@ TEST_F(ConfigurationTest, CheckValues)
     ASSERT_EQ(conf->keySize("client-for-test"), 128);
     ASSERT_EQ(conf->keySize("client-for-test2"), 256);
     ASSERT_EQ(conf->getConfigurationFile("muflihun"), "muflihun-logger.conf");
+    ASSERT_TRUE(conf->isValidAccessCode("muflihun", "a2dcb"));
+    ASSERT_FALSE(conf->isValidAccessCode("muflihun", "a2dca"));
+    ASSERT_FALSE(conf->isValidAccessCode("residue", "a2dcb"));
+    ASSERT_FALSE(conf->isValidAccessCode("default", "a2dcb"));
 #ifdef RESIDUE_HAS_EXTENSIONS
     ASSERT_EQ(conf->logExtensions().size(), 1);
 #else
