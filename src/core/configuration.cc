@@ -30,6 +30,7 @@
 #include "logging/log.h"
 #include "core/configuration.h"
 #include "core/json-document.h"
+#include "core/json-doc.h"
 #include "crypto/aes.h"
 #include "crypto/base16.h"
 #include "crypto/rsa.h"
@@ -100,6 +101,189 @@ void Configuration::loadFromInput(std::string&& jsonStr)
     m_isValid = true;
 
     std::stringstream errorStream;
+#ifdef RESIDUE_USE_GASON
+    JsonDoc jdoc;
+    jdoc.parse(jsonStr);
+    if (!jdoc.isValid()) {
+        m_isMalformedJson = true;
+        m_isValid = false;
+        m_errors = jdoc.errorText();
+        return;
+    }
+    m_adminPort = jdoc.get<int>("admin_port", 8776);
+    m_connectPort = jdoc.get<int>("connect_port", 8777);
+    m_tokenPort = jdoc.get<int>("token_port", 8778);
+    m_loggingPort = jdoc.get<int>("logging_port", 8779);
+    m_isValid = m_adminPort > 0 && m_connectPort > 0 && m_loggingPort > 0 && m_tokenPort > 0;
+
+
+    if (!m_isValid) {
+        errorStream  << "  Invalid port(s). Please choose all 4 valid ports." << std::endl;
+    }
+
+    if (jdoc.get<bool>("accept_input", true)) {
+        addFlag(Configuration::Flag::ACCEPT_INPUT);
+    }
+    if (jdoc.get<bool>("allow_unknown_loggers", true)) {
+        addFlag(Configuration::Flag::ALLOW_UNKNOWN_LOGGERS);
+    }
+    if (jdoc.get<bool>("allow_plain_connection", true)) {
+        addFlag(Configuration::ALLOW_PLAIN_CONNECTION);
+    }
+    if (jdoc.get<bool>("compression", true)) {
+        addFlag(Configuration::COMPRESSION);
+    }
+    if (jdoc.get<bool>("allow_unknown_clients", true)) {
+        addFlag(Configuration::Flag::ALLOW_UNKNOWN_CLIENTS);
+    }
+    if (jdoc.get<bool>("requires_token", true)) {
+        addFlag(Configuration::Flag::REQUIRES_TOKEN);
+    }
+    if (jdoc.get<bool>("allow_default_access_code", false)) {
+        addFlag(Configuration::Flag::ALLOW_DEFAULT_ACCESS_CODE);
+    }
+    if (jdoc.get<bool>("allow_plain_log_request", false)) {
+        addFlag(Configuration::Flag::ALLOW_PLAIN_LOG_REQUEST);
+    }
+    if (jdoc.get<bool>("allow_bulk_log_request", true)) {
+        addFlag(Configuration::Flag::ALLOW_BULK_LOG_REQUEST);
+    }
+    if (jdoc.get<bool>("immediate_flush", true)) {
+        addFlag(Configuration::Flag::IMMEDIATE_FLUSH);
+    }
+    if (jdoc.get<bool>("requires_timestamp", false)) {
+        addFlag(Configuration::Flag::REQUIRES_TIMESTAMP);
+    }
+
+    m_serverKey = jdoc.get<std::string>("server_key", AES::generateKey(256));
+
+    if (m_serverKey.size() != 64) {
+        errorStream << "  Invalid value for [server_key]. It should be hex-value of 256-bit key. "
+                    << "e.g, 048CB7050312DB329788CE1533C294A1F248F8A1BD6F611D7516803EDE271C65. "
+                    << "Use mine to generate a key: [mine -g --aes 256]" << std::endl;
+    }
+
+    m_serverRSAPrivateKeyFile = jdoc.get<std::string>("server_rsa_private_key", "");
+    std::string rsaPrivateKeySecret = Base16::decode(jdoc.get<std::string>("server_rsa_secret", ""));
+    if (!m_serverRSAPrivateKeyFile.empty()) {
+
+        m_serverRSAPublicKeyFile = jdoc.get<std::string>("server_rsa_public_key", "");
+        if (m_serverRSAPublicKeyFile.empty()) {
+            errorStream << "  Both RSA private and public keys must be provided if provided at all" << std::endl;
+        } else {
+            if (!Utils::fileExists(m_serverRSAPrivateKeyFile.c_str()) || !Utils::fileExists(m_serverRSAPublicKeyFile.c_str())) {
+                errorStream << "  RSA private key or public key does not exist" << std::endl;
+            } else {
+                std::ifstream rsaPrivateKeyStream(m_serverRSAPrivateKeyFile);
+                std::string rsaPrivateKey((std::istreambuf_iterator<char>(rsaPrivateKeyStream)),
+                                    (std::istreambuf_iterator<char>()));
+                rsaPrivateKeyStream.close();
+                std::ifstream rsaPublicKeyStream(m_serverRSAPublicKeyFile);
+                std::string rsaPublicKey((std::istreambuf_iterator<char>(rsaPublicKeyStream)),
+                                    (std::istreambuf_iterator<char>()));
+                rsaPublicKeyStream.close();
+
+
+                if (!RSA::verifyKeyPair(RSA::loadPrivateKey(rsaPrivateKey, rsaPrivateKeySecret), RSA::loadPublicKey(rsaPublicKey), rsaPrivateKeySecret)) {
+                    errorStream << "  Verify server key: Invalid RSA key pair.";
+                } else {
+                    m_serverRSAKey.privateKey = RSA::loadPrivateKey(rsaPrivateKey, rsaPrivateKeySecret);
+                    m_serverRSAKey.publicKey = RSA::loadPublicKey(rsaPublicKey);
+                    m_serverRSASecret = rsaPrivateKeySecret;
+                }
+            }
+        }
+    } else if (!hasFlag(Configuration::ALLOW_PLAIN_CONNECTION)) {
+        errorStream << "  Server does not allow plain connections. Please provide RSA key pair" << std::endl;
+    }
+
+    m_archivedLogDirectory = jdoc.get<std::string>("archived_log_directory", "");
+    if (m_archivedLogDirectory.empty()) {
+        errorStream << "  Please choose valid default archived_log_directory" << std::endl;
+    }
+
+    m_archivedLogFilename = jdoc.get<std::string>("archived_log_filename", "");
+    if (m_archivedLogFilename.empty()) {
+        errorStream << "  Please choose valid default archived_log_filename" << std::endl;
+    }
+
+    m_archivedLogCompressedFilename = jdoc.get<std::string>("archived_log_compressed_filename", "");
+    if (m_archivedLogCompressedFilename.empty() || m_archivedLogCompressedFilename == m_archivedLogFilename
+            || m_archivedLogCompressedFilename.find("/") != std::string::npos
+            || m_archivedLogCompressedFilename.find("\\") != std::string::npos) {
+        errorStream << "  Please choose valid default archived_log_compressed_filename" << std::endl;
+    }
+
+    m_clientAge = jdoc.get<unsigned int>("client_age", 259200);
+    if (m_clientAge != 0 && m_clientAge < 120) {
+        RLOG(WARNING) << "Invalid value for [client_age]. Setting it to minimum [120]";
+        m_clientAge = 120;
+    }
+    m_defaultKeySize = jdoc.get<unsigned int>("default_key_size", 256);
+    if (m_defaultKeySize != 128 && m_defaultKeySize != 192 && m_defaultKeySize != 256) {
+        errorStream << "  Invalid default key size. Please choose 128, 192 or 256-bit" << std::endl;
+    }
+
+    auto hasFileMode = [&](unsigned int mode) {
+        return m_fileMode != 0 && (m_fileMode & mode) != 0;
+    };
+
+    m_fileMode = jdoc.get<unsigned int>("file_mode", static_cast<unsigned int>(S_IRUSR | S_IWUSR | S_IRGRP));
+    if (hasFileMode(static_cast<unsigned int>(S_IWOTH)) || hasFileMode(static_cast<unsigned int>(S_IXOTH))) {
+        errorStream << "  File mode too open [" << m_fileMode << "]. You should at least not allow others to write to the file." << std::endl;
+    } else if (!hasFileMode(static_cast<unsigned int>(S_IRUSR)) && !hasFileMode(static_cast<unsigned int>(S_IRGRP))) {
+        errorStream << "  File mode invalid [" << m_fileMode << "]. Either user or group should be able to read the log files" << std::endl;
+    }
+    m_nonAcknowledgedClientAge = jdoc.get<unsigned int>("non_acknowledged_client_age", 300);
+    if (m_nonAcknowledgedClientAge < 120) {
+        RLOG(WARNING) << "Invalid value for [non_acknowledged_client_age]. Setting it to default [120]";
+        m_nonAcknowledgedClientAge = 120;
+    }
+    m_timestampValidity = jdoc.get<unsigned int>("timestamp_validity", 120);
+    if (m_timestampValidity < 30) {
+        RLOG(WARNING) << "Invalid value for [timestamp_validity]. Setting it to minimum [30]";
+        m_timestampValidity = 30;
+    }
+    m_maxTokenAge = jdoc.get<unsigned int>("max_token_age", 0);
+    if (m_maxTokenAge != 0 && m_maxTokenAge < 15) {
+        RLOG(WARNING) << "Invalid value for [max_token_age]. Setting it to minimum [15]";
+        m_maxTokenAge = 15;
+    }
+    bool hasTokenAgeLimit = m_maxTokenAge > 0;
+
+    m_tokenAge = jdoc.get<unsigned int>("token_age", std::min(3600U, m_maxTokenAge));
+    if (m_tokenAge == 0 && hasTokenAgeLimit) {
+        errorStream << "Cannot set token age [token_age] to 'forever' as [max_token_age] is " << m_maxTokenAge;
+    } else if (m_tokenAge > m_maxTokenAge && hasTokenAgeLimit) {
+        errorStream << "Cannot set token age [token_age] greater than [max_token_age] which is " << m_maxTokenAge;
+    } else if (m_tokenAge != 0 && m_tokenAge < 15) {
+        RLOG(WARNING) << "Invalid value for [token_age]. Setting it to minimum [15]";
+        m_tokenAge = 15;
+    }
+
+    unsigned int defaultClientIntegrityTaskInterval = std::max(300U, std::min(m_clientAge, m_nonAcknowledgedClientAge));
+    m_clientIntegrityTaskInterval = jdoc.get<unsigned int>("client_integrity_task_interval", defaultClientIntegrityTaskInterval);
+    if (m_clientIntegrityTaskInterval == 0 || m_clientIntegrityTaskInterval < std::min(m_clientAge, m_nonAcknowledgedClientAge)) {
+        RLOG(WARNING) << "Invalid value for [client_integrity_task_interval (" << m_clientIntegrityTaskInterval << ")]. "
+                      << "Choose anything greater than or equal to " << std::min(m_clientAge, m_nonAcknowledgedClientAge) << " but not zero. Setting it to lower ["
+                      << std::min(m_clientAge, m_nonAcknowledgedClientAge) << "]";
+        m_clientIntegrityTaskInterval = defaultClientIntegrityTaskInterval;
+    }
+    m_dispatchDelay = jdoc.get<unsigned int>("dispatch_delay", 1);
+    if (m_dispatchDelay > 500) {
+        RLOG(WARNING) << "Invalid value for [dispatch_delay]. Setting it to default [1ms]";
+        m_dispatchDelay = 1;
+    }
+    m_maxItemsInBulk = jdoc.get<unsigned int>("max_items_in_bulk", 5);
+    if (m_maxItemsInBulk <= 1 || m_maxItemsInBulk >= 100) {
+        errorStream << "  Invalid value for [max_items_in_bulk]. Please choose between 2-100" << std::endl;
+    }
+
+
+    // todo: Remove this after full migration
+    JsonDocument jsonDoc(std::move(jsonStr));
+#else
+
     JsonDocument jsonDoc(std::move(jsonStr));
     if (!jsonDoc.isValid()) {
         m_isMalformedJson = true;
@@ -110,8 +294,8 @@ void Configuration::loadFromInput(std::string&& jsonStr)
 
     m_adminPort = jsonDoc.getUInt("admin_port", 8776);
     m_connectPort = jsonDoc.getUInt("connect_port", 8777);
-    m_loggingPort = jsonDoc.getUInt("logging_port", 8778);
-    m_tokenPort = jsonDoc.getUInt("token_port", 8779);
+    m_tokenPort = jsonDoc.getUInt("token_port", 8778);
+    m_loggingPort = jsonDoc.getUInt("logging_port", 8779);
     m_isValid = m_adminPort > 0 && m_connectPort > 0 && m_loggingPort > 0 && m_tokenPort > 0;
 
     if (!m_isValid) {
@@ -275,6 +459,7 @@ void Configuration::loadFromInput(std::string&& jsonStr)
     if (m_maxItemsInBulk <= 1 || m_maxItemsInBulk >= 100) {
         errorStream << "  Invalid value for [max_items_in_bulk]. Please choose between 2-100" << std::endl;
     }
+#endif
     JsonItem root = jsonDoc.root();
 
     // We load known loggers before known clients because
