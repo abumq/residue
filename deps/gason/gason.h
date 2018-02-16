@@ -106,7 +106,8 @@ struct JsonValue {
         if ( !checkType(isBoolean(), ok) )
             return false;
 
-        return getPayload() == JSON_TRUE;
+        // residue: fix: getPayload() -> getTag()
+        return getTag() == JSON_TRUE;
     }
     char*       toString(bool* ok = nullptr) const {
         if ( !checkType(isString(), ok) )
