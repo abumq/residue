@@ -157,6 +157,19 @@ inline float JsonDoc::get<float>(const char* key, const float& defaultVal) const
     }
     return defaultVal;
 }
+
+template <>
+inline unsigned long JsonDoc::get<unsigned long>(const char* key, const unsigned long& defaultVal) const
+{
+    if (isArray()) {
+        return defaultVal;
+    }
+    JsonDoc::Value v = val(key);
+    if (v.isNumber()) {
+        return static_cast<unsigned long>(v.toNumber());
+    }
+    return defaultVal;
+}
 }
 
 #endif /* JsonDoc_h */

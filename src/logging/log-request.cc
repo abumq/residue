@@ -37,7 +37,7 @@ bool LogRequest::deserialize(std::string&& json)
 
 #ifdef RESIDUE_USE_GASON
         m_clientId = m_jsonDoc.get<std::string>("client_id", "");
-        m_datetime = m_jsonDoc.get<unsigned int>("datetime", 0);
+        m_datetime = m_jsonDoc.get<unsigned long>("datetime", 0UL);
         m_token = m_jsonDoc.get<std::string>("token", "");
         m_loggerId = m_jsonDoc.get<std::string>("logger", "default");
         m_filename = m_jsonDoc.get<std::string>("file", "");
