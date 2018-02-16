@@ -151,7 +151,8 @@ void Session::writeStandardResponse(const Response::StatusCode& r)
 
 void Session::write(const std::string& s)
 {
-    write((s + Session::PACKET_DELIMITER).c_str(), s.size() + Session::PACKET_DELIMITER_SIZE);
+    write((s + Session::PACKET_DELIMITER).c_str(),
+          s.size() + Session::PACKET_DELIMITER_SIZE);
 }
 
 void Session::write(const char* data,
@@ -170,9 +171,10 @@ void Session::write(const char* data,
 #ifdef RESIDUE_DEBUG
             DRVLOG(RV_DEBUG) << "Failed to send. " << ec.message();
 #endif
-            if (m_socket.is_open()) {
-                m_socket.close();
-            }
+
+            // auto destroy socket if needed
+            // do not close here
+            // https://github.com/muflihun/residue/issues/79
         }
     });
     read();
