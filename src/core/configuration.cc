@@ -323,6 +323,19 @@ void Configuration::loadFromInput(std::string&& jsonStr)
         }
     }
 
+    if (jdoc.hasKey("known_clients")) {
+        loadKnownClients(jdoc.get<JsonDoc::Value>("known_clients", JsonDoc::Value()), errorStream, false);
+    }
+
+    if (jsonDoc.hasKey("known_clients_endpoint")) {
+        m_knownClientsEndpoint = jdoc.get<std::string>("known_clients_endpoint", "");
+        if (!m_knownClientsEndpoint.empty()) {
+            queryEndpoint(m_knownClientsEndpoint, "known_clients", [&](const JsonDoc::Value& json) {
+                loadKnownClients(json, errorStream, true);
+            });
+        }
+    }
+
     // todo: Remove this after full migration
     JsonDocument jsonDoc(std::move(jsonStr));
 #else
@@ -334,6 +347,7 @@ void Configuration::loadFromInput(std::string&& jsonStr)
         m_errors = jsonDoc.lastError();
         return;
     }
+    JsonItem root = jsonDoc.root();
 
     m_adminPort = jsonDoc.getUInt("admin_port", 8776);
     m_connectPort = jsonDoc.getUInt("connect_port", 8777);
@@ -546,6 +560,19 @@ void Configuration::loadFromInput(std::string&& jsonStr)
             });
         }
     }
+
+    if (jsonDoc.hasKey("known_clients")) {
+        loadKnownClients(root["known_clients"], errorStream, false);
+    }
+
+    if (jsonDoc.hasKey("known_clients_endpoint")) {
+        m_knownClientsEndpoint = jsonDoc.getString("known_clients_endpoint");
+        if (!m_knownClientsEndpoint.empty()) {
+            queryEndpoint(m_knownClientsEndpoint, "known_clients", [&](const JsonItem& json) {
+                loadKnownClients(json, errorStream, true);
+            });
+        }
+    }
 #endif
     JsonItem root = jsonDoc.root();
 
@@ -557,20 +584,9 @@ void Configuration::loadFromInput(std::string&& jsonStr)
             loadLogExtensions(jExtensionsRoot["log_extensions"], errorStream);
         }
     }
+
 #endif
 
-    if (jsonDoc.hasKey("known_clients")) {
-        loadKnownClients(root["known_clients"], errorStream, false);
-    }
-
-    if (jsonDoc.hasKey("known_clients_endpoint")) {
-        m_knownLoggersEndpoint = jsonDoc.getString("known_clients_endpoint");
-        if (!m_knownLoggersEndpoint.empty()) {
-            queryEndpoint(m_knownLoggersEndpoint, "known_clients", [&](const JsonItem& json) {
-                loadKnownLoggers(json, errorStream, true);
-            });
-        }
-    }
 #ifndef RESIDUE_HAS_CURL
     if (!m_knownClientsEndpoint.empty() || !m_knownLoggersEndpoint.empty()) {
         RLOG(WARNING) << "This residue build does not support HTTPS endpoint urls";
@@ -742,6 +758,119 @@ void Configuration::loadKnownLoggers(const JsonDoc::Value& json, std::stringstre
         }
     }
 }
+
+void Configuration::loadKnownClients(const JsonDoc::Value& json, std::stringstream& errorStream, bool viaUrl)
+{
+    for (const auto& knownClientPair : json) {
+        JsonDoc j(knownClientPair);
+        std::string clientId = j.get<std::string>("client_id", "");
+        if (clientId.empty()) {
+            errorStream << "  Client ID not provided in known_clients" << std::endl;
+            continue;
+        }
+        if (!Utils::isAlphaNumeric(clientId, "-_@#")) {
+            errorStream << "  Invalid character in client ID, should be alpha-numeric (can also include these characters excluding square brackets: [_@-#])" << std::endl;
+            continue;
+        }
+        std::string publicKey = j.get<std::string>("public_key", "");
+        if (publicKey.empty()) {
+            errorStream << "  RSA public key not provided in known_clients for [" << clientId << "]" << std::endl;
+            continue;
+        }
+        if (m_knownClientsKeys.find(clientId) != m_knownClientsKeys.end()) {
+            errorStream << "  Duplicate client ID in known_clients [" << clientId << "]" << std::endl;
+            continue;
+        }
+        if (!Utils::fileExists(publicKey.c_str())) {
+            errorStream << "  Public key [" << publicKey << "] for client [" << clientId << "] does not exist" << std::endl;
+            continue;
+        }
+
+        std::ifstream fs(publicKey, std::ios::in);
+        if (!fs.is_open()) {
+            errorStream << "Public key file not readable";
+            continue;
+        }
+        std::string publicKeyContents = std::string(std::istreambuf_iterator<char>(fs),
+                                                    std::istreambuf_iterator<char>());
+
+        m_knownClientsKeys.insert(std::make_pair(clientId, std::make_pair(publicKey, publicKeyContents)));
+
+        if (viaUrl) {
+            m_remoteKnownClients.insert(clientId);
+        }
+
+        unsigned int keySize = j.get<unsigned int>("key_size", 0);
+
+        if (keySize == 128 || keySize == 192 || keySize == 256) {
+            m_keySizes.insert(std::make_pair(clientId, keySize));
+        } else {
+            if (keySize != 0) {
+                errorStream << "  Invalid key size [" << keySize << "] for client [" << clientId << "]. Please choose 128, 192 or 256-bit" << std::endl;
+            }
+        }
+
+        JsonDoc::Value loggers = j.get<JsonDoc::Value>("loggers", JsonDoc::Value());
+
+        if (loggers.isArray()) {
+            std::unordered_set<std::string> loggerIds;
+            for (const auto& loggerNode : loggers) {
+                JsonDoc jLoggers(loggerNode);
+                std::string loggerId = jLoggers.as<std::string>("");
+                if (loggerId.empty()) {
+                    continue;
+                }
+                if (!isKnownLogger(logger)) {
+                    errorStream << "  Logger [" << loggerId << "] for client [" << clientId << "] is unknown" << std::endl;
+                    continue;
+                }
+                loggerIds.insert(loggerId);
+            }
+            m_knownClientsLoggers.insert(std::make_pair(clientId, loggerIds));
+
+            std::string defaultLogger = j.get<std::string>("default_logger", "");
+            if (!defaultLogger.empty()) {
+                if (loggerIds.find(defaultLogger) != loggerIds.end()) {
+                    m_knownClientDefaultLogger.insert(std::make_pair(clientId, defaultLogger));
+                } else {
+                    errorStream << "  Default logger ["  << defaultLogger << "] for client [" << clientId << "] is not part of [loggers] array";
+                }
+            }
+
+            std::string loggerUser = j.get<std::string>("user", "");
+            if (!loggerUser.empty()) {
+                struct passwd* userpwd = getpwnam(loggerUser.data());
+                if (userpwd == nullptr) {
+                    errorStream << "  User corresponding to client [" << clientId << "] does not exist [" << loggerUser << "]" << std::endl;
+                    endpwent();
+                    continue;
+                }
+                endpwent();
+                for (std::string loggerId : loggerIds) {
+                    if (m_knownLoggerUserMap.find(loggerId) == m_knownLoggerUserMap.end()) {
+                        m_knownLoggerUserMap.insert(std::make_pair(loggerId, loggerUser));
+
+                        // folowing is only for saving purposes
+                        m_knownClientUserMap.insert(std::make_pair(clientId, loggerUser));
+                    } else {
+                        // for same user ignore, for different user this is a config warning
+                        std::string existingAssignedUser = m_knownLoggerUserMap.at(loggerId);
+                        if (existingAssignedUser != loggerUser) {
+                            RLOG(WARNING) << "  User for logger [" << loggerId << "] has explicit user [" << existingAssignedUser << "]";
+                        }
+                    }
+                }
+            }
+
+        } else {
+            // no loggers array
+            std::string defaultLogger = j.get<std::string>("default_logger", "");
+            if (!defaultLogger.empty()) {
+                errorStream << "  Default logger ["  << defaultLogger << "] for client [" << clientId << "] is not part of [loggers] array. Please see https://github.com/muflihun/residue/blob/master/docs/CONFIGURATION.md#known_clientsloggers";
+            }
+        }
+    }
+}
 #else
 
 void Configuration::loadKnownLoggers(const JsonItem& json, std::stringstream& errorStream, bool viaUrl)
@@ -888,7 +1017,6 @@ void Configuration::loadKnownLoggers(const JsonItem& json, std::stringstream& er
         }
     }
 }
-#endif
 
 void Configuration::loadKnownClients(const JsonItem& json, std::stringstream& errorStream, bool viaUrl)
 {
@@ -996,6 +1124,7 @@ void Configuration::loadKnownClients(const JsonItem& json, std::stringstream& er
         }
     }
 }
+#endif
 
 void Configuration::loadLoggersBlacklist(const JsonItem& json, std::stringstream& errorStream)
 {

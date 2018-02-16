@@ -391,10 +391,11 @@ private:
 
 #ifdef RESIDUE_USE_GASON
     void loadKnownLoggers(const JsonDoc::Value& json, std::stringstream& errorStream, bool viaUrl);
+    void loadKnownClients(const JsonDoc::Value& json, std::stringstream& errorStream, bool viaUrl);
 #else
     void loadKnownLoggers(const JsonItem& json, std::stringstream& errorStream, bool viaUrl);
-#endif
     void loadKnownClients(const JsonItem& json, std::stringstream& errorStream, bool viaUrl);
+#endif
     void loadLoggersBlacklist(const JsonItem& json, std::stringstream& errorStream);
     void loadLogExtensions(const JsonItem& json, std::stringstream& errorStream);
 };
