@@ -31,6 +31,7 @@
 #include "non-copyable.h"
 #include "clients/client.h"
 #include "core/json-document.h"
+#include "core/json-doc.h"
 #include "crypto/rsa.h"
 #include "extensions/log-extension.h"
 
@@ -388,7 +389,11 @@ private:
         return m_knownClientsKeys.find(clientId) != m_knownClientsKeys.end();
     }
 
+#ifdef RESIDUE_USE_GASON
+    void loadKnownLoggers(const JsonDoc::Value& json, std::stringstream& errorStream, bool viaUrl);
+#else
     void loadKnownLoggers(const JsonItem& json, std::stringstream& errorStream, bool viaUrl);
+#endif
     void loadKnownClients(const JsonItem& json, std::stringstream& errorStream, bool viaUrl);
     void loadLoggersBlacklist(const JsonItem& json, std::stringstream& errorStream);
     void loadLogExtensions(const JsonItem& json, std::stringstream& errorStream);

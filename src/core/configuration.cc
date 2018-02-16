@@ -280,6 +280,51 @@ void Configuration::loadFromInput(std::string&& jsonStr)
     }
 
 
+    // We load known loggers before known clients because
+    // known clients may have "loggers" array
+    // that will be cross-checked with loggers list
+
+    if (jdoc.hasKey("known_loggers")) {
+        loadKnownLoggers(jdoc.get<JsonDoc::Value>("known_loggers", JsonDoc::Value()), errorStream, false);
+    }
+
+    auto queryEndpoint = [&](const std::string& endpoint,
+            const std::string& keyName,
+            const std::function<void(const JsonDoc::Value&)>& cb) {
+
+        RVLOG(RV_INFO) << "Querying [" << endpoint << "]...";
+        std::string contents;
+
+        try {
+            contents = HttpClient::fetchUrlContents(endpoint);
+            Utils::trim(contents);
+            if (!contents.empty()) {
+                JsonDoc j;
+                j.parse(contents);
+                if (j.isValid()) {
+                    if (j.hasKey(keyName)) {
+                        cb(j.get<JsonDoc::Value>(keyName.c_str(), JsonDoc::Value()));
+                    } else {
+                        errorStream << endpoint << " does not contain " << keyName << std::endl;
+                    }
+                } else {
+                    errorStream << "  Invalid JSON at " << endpoint << ", JSON: " << contents << std::endl;
+                }
+            }
+        } catch (ResidueException& e) {
+            errorStream << "  URL error: " << e.what() << std::endl;
+        }
+    };
+
+    if (jdoc.hasKey("known_loggers_endpoint")) {
+        m_knownLoggersEndpoint = jdoc.get<std::string>("known_loggers_endpoint", "");
+        if (!m_knownLoggersEndpoint.empty()) {
+            queryEndpoint(m_knownLoggersEndpoint, "known_loggers", [&](const JsonDoc::Value& json) {
+                loadKnownLoggers(json, errorStream, true);
+            });
+        }
+    }
+
     // todo: Remove this after full migration
     JsonDocument jsonDoc(std::move(jsonStr));
 #else
@@ -459,8 +504,6 @@ void Configuration::loadFromInput(std::string&& jsonStr)
     if (m_maxItemsInBulk <= 1 || m_maxItemsInBulk >= 100) {
         errorStream << "  Invalid value for [max_items_in_bulk]. Please choose between 2-100" << std::endl;
     }
-#endif
-    JsonItem root = jsonDoc.root();
 
     // We load known loggers before known clients because
     // known clients may have "loggers" array
@@ -505,6 +548,8 @@ void Configuration::loadFromInput(std::string&& jsonStr)
             });
         }
     }
+#endif
+    JsonItem root = jsonDoc.root();
 
 #ifdef RESIDUE_HAS_EXTENSIONS
     if (jsonDoc.hasKey("extensions")) {
@@ -546,12 +591,15 @@ void Configuration::loadFromInput(std::string&& jsonStr)
     m_isValid = m_errors.empty();
 }
 
+#ifdef RESIDUE_USE_GASON
 
-void Configuration::loadKnownLoggers(const JsonItem& json, std::stringstream& errorStream, bool viaUrl)
+void Configuration::loadKnownLoggers(const JsonDoc::Value& json, std::stringstream& errorStream, bool viaUrl)
 {
     for (const auto& logger : json) {
-        JsonDocument loggerjsonDoc(logger);
-        std::string loggerId = loggerjsonDoc.getString("logger_id");
+        JsonDoc j;
+        j.val = logger;
+
+        std::string loggerId = j.get<std::string>("logger_id", "");
         if (loggerId.empty()) {
             errorStream << "  Logger ID not provided in known_loggers" << std::endl;
             continue;
@@ -560,7 +608,7 @@ void Configuration::loadKnownLoggers(const JsonItem& json, std::stringstream& er
             errorStream << "  Duplicate logger in known_loggers [" << loggerId << "]" << std::endl;
             continue;
         }
-        std::string easyloggingConfigFile = loggerjsonDoc.getString("configuration_file");
+        std::string easyloggingConfigFile = j.get<std::string>("configuration_file", "");
         if (!easyloggingConfigFile.empty()) {
             if (!Utils::fileExists(easyloggingConfigFile.c_str())) {
                 errorStream << "  File [" << easyloggingConfigFile << "] does not exist" << std::endl;
@@ -581,7 +629,7 @@ void Configuration::loadKnownLoggers(const JsonItem& json, std::stringstream& er
             continue;
         }
 
-        std::string loggerUser = loggerjsonDoc.getString("user");
+        std::string loggerUser = j.get<std::string>("user", "");
         if (!loggerUser.empty()) {
             struct passwd* userpwd = getpwnam(loggerUser.data());
             if (userpwd == nullptr) {
@@ -593,11 +641,11 @@ void Configuration::loadKnownLoggers(const JsonItem& json, std::stringstream& er
             m_knownLoggerUserMap.insert(std::make_pair(loggerId, loggerUser));
         }
 
-        if (loggerjsonDoc.getBool("allow_plain_log_request", false)) {
+        if (jsonDoc.getBool("allow_plain_log_request", false)) {
             addLoggerFlag(loggerId, Configuration::Flag::ALLOW_PLAIN_LOG_REQUEST);
         }
 
-        std::string rotationFreq = loggerjsonDoc.getString("rotation_freq");
+        std::string rotationFreq = j.get<std::string>("rotation_freq", "");
         Utils::toUpper(rotationFreq);
         if (!rotationFreq.empty() && rotationFreq != "NEVER") {
             RotationFrequency frequency = RotationFrequency::NEVER;
@@ -621,12 +669,12 @@ void Configuration::loadKnownLoggers(const JsonItem& json, std::stringstream& er
             m_rotationFrequencies.insert(std::make_pair(loggerId, frequency));
         }
 
-        std::string archivedLogFilename = loggerjsonDoc.getString("archived_log_filename");
+        std::string archivedLogFilename = j.get<std::string>("archived_log_filename", "");
         if (!archivedLogFilename.empty()) {
             m_archivedLogsFilenames.insert(std::make_pair(loggerId, "%logger-" + archivedLogFilename));
         }
 
-        std::string archivedLogCompressedFilename = loggerjsonDoc.getString("archived_log_compressed_filename");
+        std::string archivedLogCompressedFilename = j.get<std::string>("archived_log_compressed_filename", "");
         if (!archivedLogCompressedFilename.empty()) {
             if (archivedLogCompressedFilename.find("/") != std::string::npos || archivedLogCompressedFilename.find("\\") != std::string::npos) {
                 errorStream << "  archived_log_compressed_filename contains illegal character (path character). It should be pure filename format." << std::endl;
@@ -635,13 +683,14 @@ void Configuration::loadKnownLoggers(const JsonItem& json, std::stringstream& er
             }
         }
 
-        std::string archivedLogDirectory = loggerjsonDoc.getString("archived_log_directory");
+        std::string archivedLogDirectory = j.get<std::string>("archived_log_directory", "");
         if (!archivedLogDirectory.empty()) {
             m_archivedLogsDirectories.insert(std::make_pair(loggerId, archivedLogDirectory));
         }
 
+        // TODO: fix these
         // Access codes are used to generate the tokens
-        if (loggerjsonDoc.hasKey("access_codes")) {
+        /*if (jsonDoc.hasKey("access_codes")) {
             for (const auto& accessCode : logger["access_codes"]) {
                 std::string accessCodeStr = accessCode["code"];
                 if (accessCodeStr.empty() || accessCodeStr == DEFAULT_ACCESS_CODE) {
@@ -668,7 +717,154 @@ void Configuration::loadKnownLoggers(const JsonItem& json, std::stringstream& er
             }
         }
 
-        if (loggerjsonDoc.hasKey("access_codes_blacklist")) {
+        if (jsonDoc.hasKey("access_codes_blacklist")) {
+            for (const auto& accessCode : logger["access_codes_blacklist"]) {
+                std::string accessCodeStr = accessCode;
+                if (accessCodeStr.empty()) {
+                    continue;
+                }
+                if (isValidAccessCode(loggerId, accessCodeStr)) {
+                    errorStream << "  Access code [" << accessCodeStr << "] exist in both allowed and blacklist lists" << std::endl;
+                    continue;
+                }
+                const auto& it = m_accessCodesBlacklist.find(loggerId);
+                if (it == m_accessCodesBlacklist.end()) {
+                    std::unordered_set<std::string> singleCodeSet = {accessCodeStr};
+                    m_accessCodesBlacklist[loggerId] = singleCodeSet;
+                } else {
+                    if (std::find(it->second.begin(), it->second.end(), accessCodeStr) == it->second.end()) {
+                        it->second.insert(accessCodeStr);
+                    }
+                }
+            }
+        }*/
+
+    }
+}
+#else
+
+void Configuration::loadKnownLoggers(const JsonItem& json, std::stringstream& errorStream, bool viaUrl)
+{
+    for (const auto& logger : json) {
+        JsonDocument jsonDoc(logger);
+        std::string loggerId = jsonDoc.getString("logger_id");
+        if (loggerId.empty()) {
+            errorStream << "  Logger ID not provided in known_loggers" << std::endl;
+            continue;
+        }
+        if (m_configurations.find(loggerId) != m_configurations.end()) {
+            errorStream << "  Duplicate logger in known_loggers [" << loggerId << "]" << std::endl;
+            continue;
+        }
+        std::string easyloggingConfigFile = jsonDoc.getString("configuration_file");
+        if (!easyloggingConfigFile.empty()) {
+            if (!Utils::fileExists(easyloggingConfigFile.c_str())) {
+                errorStream << "  File [" << easyloggingConfigFile << "] does not exist" << std::endl;
+                continue;
+            }
+            // validate configuration file
+            if (!validateConfigFile(easyloggingConfigFile)) {
+                errorStream << "  Easylogging++ configuration file [ "
+                            << easyloggingConfigFile << "] contains configurations." << std::endl;
+                continue;
+            }
+            m_configurations.insert(std::make_pair(loggerId, easyloggingConfigFile));
+            if (viaUrl) {
+                m_remoteKnownLoggers.insert(loggerId);
+            }
+        } else {
+            errorStream << "  Please specify Easylogging++ configuration for known logger [" << loggerId << "]" << std::endl;
+            continue;
+        }
+
+        std::string loggerUser = jsonDoc.getString("user");
+        if (!loggerUser.empty()) {
+            struct passwd* userpwd = getpwnam(loggerUser.data());
+            if (userpwd == nullptr) {
+                errorStream << "  User corresponding to logger [" << loggerId << "] does not exist [" << loggerUser << "]" << std::endl;
+                endpwent();
+                continue;
+            }
+            endpwent();
+            m_knownLoggerUserMap.insert(std::make_pair(loggerId, loggerUser));
+        }
+
+        if (jsonDoc.getBool("allow_plain_log_request", false)) {
+            addLoggerFlag(loggerId, Configuration::Flag::ALLOW_PLAIN_LOG_REQUEST);
+        }
+
+        std::string rotationFreq = jsonDoc.getString("rotation_freq");
+        Utils::toUpper(rotationFreq);
+        if (!rotationFreq.empty() && rotationFreq != "NEVER") {
+            RotationFrequency frequency = RotationFrequency::NEVER;
+            if (rotationFreq == "HOURLY") {
+                frequency = RotationFrequency::HOURLY;
+            } else if (rotationFreq == "DAILY") {
+                frequency = RotationFrequency::DAILY;
+            } else if (rotationFreq == "SIX_HOURS") {
+                frequency = RotationFrequency::SIX_HOURS;
+            } else if (rotationFreq == "TWELVE_HOURS") {
+                frequency = RotationFrequency::TWELVE_HOURS;
+            } else if (rotationFreq == "WEEKLY") {
+                frequency = RotationFrequency::WEEKLY;
+            } else if (rotationFreq == "MONTHLY") {
+                frequency = RotationFrequency::MONTHLY;
+            } else if (rotationFreq == "YEARLY") {
+                frequency = RotationFrequency::YEARLY;
+            } else {
+                errorStream << "  Invalid rotation frequency [" << rotationFreq << "]" << std::endl;
+            }
+            m_rotationFrequencies.insert(std::make_pair(loggerId, frequency));
+        }
+
+        std::string archivedLogFilename = jsonDoc.getString("archived_log_filename");
+        if (!archivedLogFilename.empty()) {
+            m_archivedLogsFilenames.insert(std::make_pair(loggerId, "%logger-" + archivedLogFilename));
+        }
+
+        std::string archivedLogCompressedFilename = jsonDoc.getString("archived_log_compressed_filename");
+        if (!archivedLogCompressedFilename.empty()) {
+            if (archivedLogCompressedFilename.find("/") != std::string::npos || archivedLogCompressedFilename.find("\\") != std::string::npos) {
+                errorStream << "  archived_log_compressed_filename contains illegal character (path character). It should be pure filename format." << std::endl;
+            } else {
+                m_archivedLogsCompressedFilenames.insert(std::make_pair(loggerId, archivedLogCompressedFilename));
+            }
+        }
+
+        std::string archivedLogDirectory = jsonDoc.getString("archived_log_directory");
+        if (!archivedLogDirectory.empty()) {
+            m_archivedLogsDirectories.insert(std::make_pair(loggerId, archivedLogDirectory));
+        }
+
+        // Access codes are used to generate the tokens
+        if (jsonDoc.hasKey("access_codes")) {
+            for (const auto& accessCode : logger["access_codes"]) {
+                std::string accessCodeStr = accessCode["code"];
+                if (accessCodeStr.empty() || accessCodeStr == DEFAULT_ACCESS_CODE) {
+                    continue;
+                }
+                unsigned int age = tokenAge();
+                if (accessCode.count("token_age") > 0) {
+                    age = accessCode["token_age"];
+                    if (m_maxTokenAge > 0 && age > m_maxTokenAge) {
+                        errorStream << "Cannot set token age for logger [" << loggerId << "], access code ["
+                                    << accessCodeStr << "] greater than [max_token_age] which is " << m_maxTokenAge;
+                    } else if (m_maxTokenAge > 0 && age == 0) {
+                        errorStream << "Cannot set token age for logger [" << loggerId << "], access code ["
+                                    << accessCodeStr << "] to 'forever' [max_token_age] is " << m_maxTokenAge;
+                    }
+                }
+                const auto& it = m_accessCodes.find(loggerId);
+                if (it == m_accessCodes.end()) {
+                    std::unordered_set<AccessCode> singleCodeSet = { AccessCode(accessCodeStr, age) };
+                    m_accessCodes[loggerId] = singleCodeSet;
+                } else {
+                    it->second.insert(AccessCode(accessCodeStr, age));
+                }
+            }
+        }
+
+        if (jsonDoc.hasKey("access_codes_blacklist")) {
             for (const auto& accessCode : logger["access_codes_blacklist"]) {
                 std::string accessCodeStr = accessCode;
                 if (accessCodeStr.empty()) {
@@ -691,6 +887,7 @@ void Configuration::loadKnownLoggers(const JsonItem& json, std::stringstream& er
         }
     }
 }
+#endif
 
 void Configuration::loadKnownClients(const JsonItem& json, std::stringstream& errorStream, bool viaUrl)
 {
