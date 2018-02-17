@@ -173,6 +173,12 @@ public:
     }
 
     /** writes a value by @code "name" : number @endcode. */
+    JSonBuilder&    addValue(const char *name, unsigned int number) {
+        addPossibleComma() << "\"" << name << "\":" << static_cast<int>(number);
+        return *this;
+    }
+
+    /** writes a value by @code "name" : number @endcode. */
     JSonBuilder&    addValue(const char *name, size_t number) {
         addPossibleComma() << "\"" << name << "\":" << (int) number;
         return *this;

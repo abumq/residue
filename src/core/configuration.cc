@@ -1189,12 +1189,49 @@ void Configuration::loadLoggersBlacklist(const JsonItem& json, std::stringstream
 bool Configuration::save(const std::string& outputFile)
 {
     std::lock_guard<std::mutex> lock(m_mutex);
-#ifdef RESIDUE_USE_GASON____
+#ifdef RESIDUE_USE_GASON
     const std::size_t capacity = 1024; // todo: change this
     char source[capacity];
 
     JsonBuilder j(source, capacity);
 
+    j.startObject();
+    j.addValue("admin_port", adminPort());
+    j.addValue("connect_port", connectPort());
+    j.addValue("token_port", tokenPort());
+    j.addValue("logging_port", loggingPort());
+    j.addValue("server_key", serverKey().c_str());
+    j.addValue("server_rsa_private_key", m_serverRSAPrivateKeyFile.c_str());
+    j.addValue("server_rsa_public_key", m_serverRSAPublicKeyFile.c_str());
+    if (!serverRSASecret().empty()) {
+        j.addValue("server_rsa_secret", serverRSASecret().c_str());
+    }
+    j.addValue("default_key_size", defaultKeySize());
+    j.addValue("file_mode", fileMode());
+    j.addValue("accept_input", hasFlag(Configuration::Flag::ACCEPT_INPUT));
+    j.addValue("allow_default_access_code", hasFlag(Configuration::Flag::ALLOW_DEFAULT_ACCESS_CODE));
+    j.addValue("allow_plain_connection", hasFlag(Configuration::Flag::ALLOW_PLAIN_CONNECTION));
+    j.addValue("allow_unknown_loggers", hasFlag(Configuration::Flag::ALLOW_UNKNOWN_LOGGERS));
+    j.addValue("allow_unknown_clients", hasFlag(Configuration::Flag::ALLOW_UNKNOWN_CLIENTS));
+    j.addValue("requires_token", hasFlag(Configuration::Flag::REQUIRES_TOKEN));
+    j.addValue("allow_plain_log_request", hasFlag(Configuration::Flag::ALLOW_PLAIN_LOG_REQUEST));
+    j.addValue("immediate_flush", hasFlag(Configuration::Flag::IMMEDIATE_FLUSH));
+    j.addValue("requires_timestamp", hasFlag(Configuration::Flag::REQUIRES_TIMESTAMP));
+    j.addValue("compression", hasFlag(Configuration::Flag::COMPRESSION));
+    j.addValue("allow_bulk_log_request", hasFlag(Configuration::Flag::ALLOW_BULK_LOG_REQUEST));
+    j.addValue("max_items_in_bulk", maxItemsInBulk());
+    j.addValue("token_age", tokenAge());
+    j.addValue("max_token_age", maxTokenAge());
+    j.addValue("timestamp_validity", timestampValidity());
+    j.addValue("client_age", clientAge());
+    j.addValue("non_acknowledged_client_age", nonAcknowledgedClientAge());
+    j.addValue("client_integrity_task_interval", clientIntegrityTaskInterval());
+    j.addValue("dispatch_delay", dispatchDelay());
+    j.addValue("archived_log_directory", m_archivedLogDirectory.c_str());
+    j.addValue("archived_log_filename", m_archivedLogFilename.c_str());
+    j.addValue("archived_log_compressed_filename", m_archivedLogCompressedFilename.c_str());
+
+    j.endObject();
     std::string jDump = source;
 #else
     JsonItem j;
