@@ -40,7 +40,8 @@
         },
         {
             "client_id": "muflihun00102031",
-            "public_key": "samples/keys/encrypted-pubkey.pem"
+            "public_key": "samples/keys/encrypted-pubkey.pem",
+            "loggers": ["residue"]
         }
     ],
     "known_loggers": [

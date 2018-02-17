@@ -46,7 +46,6 @@ Session::Session(tcp::socket&& socket,
 {
     m_id = m_requestHandler->name()[0] + Utils::generateRandomString(16, true);
     DRVLOG(RV_DEBUG) << "New session " << m_id;
-    m_requestHandler->setSession(this);
 }
 
 Session::~Session()
@@ -101,6 +100,7 @@ void Session::sendToHandler(std::string&& data)
 #ifdef RESIDUE_DEBUG
     DRVLOG(RV_TRACE) << "Read bytes: " << data << " [size: " << data.size() << "]";
 #endif
+    m_requestHandler->setSession(this);
     RawRequest req { std::move(data), m_socket.remote_endpoint().address().to_string(), Utils::now() };
     m_requestHandler->handle(std::move(req));
 }
