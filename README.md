@@ -50,7 +50,7 @@ Residue binaries can be run directly on the following platforms.
  * Amazon Linux AMI 2017.03 or higher
  * Fedora 24 or higher (64-bit)
  * Fedora 19 or higher (64-bit)
- * CentOS 7 or higher (64-bit) ([SE Only](https://github.com/muflihun/residue/blob/master/docs/INSTALL.md#special-edition))
+ * CentOS 7 or higher (64-bit)
  
 Other distributions that _should_ work (but have not yet been tested)
  * Oracle Linux
