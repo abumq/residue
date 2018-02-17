@@ -15,7 +15,7 @@ option (use_gason "Use gason where possible" ON)
 
 set (RESIDUE_MAJOR "1")
 set (RESIDUE_MINOR "4")
-set (RESIDUE_PATCH "3-dev")
+set (RESIDUE_PATCH "3")
 set (RESIDUE_VERSION "${RESIDUE_MAJOR}.${RESIDUE_MINOR}.${RESIDUE_PATCH}")
 set (RESIDUE_NAME "Residue")
 
