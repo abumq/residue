@@ -50,6 +50,7 @@ Session::Session(tcp::socket&& socket,
 
 Session::~Session()
 {
+    m_requestHandler->setSession(nullptr);
     DRVLOG(RV_DEBUG) << "End session " << m_id;
 }
 

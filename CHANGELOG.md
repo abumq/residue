@@ -7,6 +7,7 @@
 
 ### Fixes
 - Crash detected when writing to session #79
+- Fixed undefined behaviour with destroyed sessions 
 
 ## [1.4.2] - 14-02-2018
 ### Fixes

@@ -50,14 +50,16 @@ void LogRequestHandler::start()
         el::Helpers::setThreadName("LogDispatcher");
         while (!m_stopped) {
             processRequestQueue();
-            std::this_thread::sleep_for(std::chrono::milliseconds(100));
+            std::this_thread::sleep_for(std::chrono::milliseconds(4000));
         }
     });
 }
 
 void LogRequestHandler::handle(RawRequest&& rawRequest)
 {
-    m_session->writeStandardResponse(Response::StatusCode::STATUS_OK);
+    if (m_session != nullptr) {
+        m_session->writeStandardResponse(Response::StatusCode::STATUS_OK);
+    }
     m_queue.push(std::move(rawRequest));
 }
 
@@ -253,7 +255,7 @@ bool LogRequestHandler::processRequest(LogRequest* request, Client** clientRef, 
     request->setClientId(client->id());
     request->setClient(client);
 
-    if (m_session->client() == nullptr) {
+    if (m_session != nullptr && m_session->client() == nullptr) {
         DRVLOG(RV_DEBUG) << "Updating session client";
         m_session->setClient(client);
     }
