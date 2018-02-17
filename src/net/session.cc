@@ -82,11 +82,13 @@ void Session::read()
             //RESIDUE_PROFILE_CHECKPOINT(t_read, m_timeTaken, 1);
             sendToHandler(std::move(buffer));
             //RESIDUE_PROFILE_CHECKPOINT(t_read, m_timeTaken, 2);
+            if (m_requestHandler->registry()->configuration()->hasFlag(Configuration::ACCEPT_INPUT)) {
 #ifdef RESIDUE_DEV
-            DRVLOG(RV_TRACE) << "Adding bytes";
+                DRVLOG(RV_TRACE) << "Adding bytes";
 #endif
-            Utils::bigAdd(m_bytesReceived, std::to_string(numOfBytes));
-            m_requestHandler->registry()->addBytesReceived(numOfBytes);
+                Utils::bigAdd(m_bytesReceived, std::to_string(numOfBytes));
+                m_requestHandler->registry()->addBytesReceived(numOfBytes);
+            }
         } else {
 #ifdef RESIDUE_DEBUG
             DRVLOG_IF(ec != net::error::eof, RV_DEBUG) << "Error: " << ec.message();
@@ -160,8 +162,10 @@ void Session::write(const char* data,
                     std::size_t length)
 {
  //   auto self(shared_from_this());
-    Utils::bigAdd(m_bytesSent, std::to_string(length));
-    m_requestHandler->registry()->addBytesSent(length);
+    if (m_requestHandler->registry()->configuration()->hasFlag(Configuration::ACCEPT_INPUT)) {
+        Utils::bigAdd(m_bytesSent, std::to_string(length));
+        m_requestHandler->registry()->addBytesSent(length);
+    }
 
 #ifdef RESIDUE_DEBUG
     DRVLOG(RV_DEBUG_2) << "Sending " << data;
