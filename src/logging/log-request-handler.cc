@@ -50,7 +50,7 @@ void LogRequestHandler::start()
         el::Helpers::setThreadName("LogDispatcher");
         while (!m_stopped) {
             processRequestQueue();
-            std::this_thread::sleep_for(std::chrono::milliseconds(4000));
+            std::this_thread::sleep_for(std::chrono::milliseconds(100));
         }
     });
 }
