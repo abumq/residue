@@ -57,9 +57,7 @@ void LogRequestHandler::start()
 
 void LogRequestHandler::handle(RawRequest&& rawRequest)
 {
-    if (m_session != nullptr) {
-        m_session->writeStandardResponse(Response::StatusCode::STATUS_OK);
-    }
+    rawRequest.session->writeStandardResponse(Response::StatusCode::STATUS_OK);
     m_queue.push(std::move(rawRequest));
 }
 
@@ -103,6 +101,7 @@ void LogRequestHandler::processRequestQueue()
         LogRequest request(m_registry->configuration());
         RawRequest rawRequest = m_queue.pull();
 
+        std::shared_ptr<Session> session = rawRequest.session;
         RequestHandler::handle(std::move(rawRequest), &request, allowPlainRequest ?
                                    Request::StatusCode::CONTINUE : Request::StatusCode::BAD_REQUEST,
                                false, false, compressionEnabled);
@@ -145,7 +144,7 @@ void LogRequestHandler::processRequestQueue()
                         requestItem.setDateReceived(request.dateReceived());
                         requestItem.setClient(request.client());
 
-                        if (processRequest(&requestItem, &currentClient, forceClientValidation)) {
+                        if (processRequest(&requestItem, &currentClient, forceClientValidation, session.get())) {
                             forceClientValidation = false;
                         } else {
                             // force next client validation if last process was unsuccessful
@@ -167,7 +166,7 @@ void LogRequestHandler::processRequestQueue()
             if (request.client() != nullptr) {
                 request.setClientId(request.client()->id());
             }
-            processRequest(&request, nullptr, true);
+            processRequest(&request, nullptr, true, session.get());
 #ifdef RESIDUE_PROFILING
             totalRequests++;
 #endif
@@ -207,7 +206,7 @@ void LogRequestHandler::processRequestQueue()
     m_queue.switchContext();
 }
 
-bool LogRequestHandler::processRequest(LogRequest* request, Client** clientRef, bool forceCheck)
+bool LogRequestHandler::processRequest(LogRequest* request, Client** clientRef, bool forceCheck, Session *session)
 {
     bool bypassChecks = !forceCheck && clientRef != nullptr && *clientRef != nullptr;
 #ifdef RESIDUE_DEV
@@ -255,9 +254,9 @@ bool LogRequestHandler::processRequest(LogRequest* request, Client** clientRef, 
     request->setClientId(client->id());
     request->setClient(client);
 
-    if (m_session != nullptr && m_session->client() == nullptr) {
+    if (session != nullptr && session->client() == nullptr) {
         DRVLOG(RV_DEBUG) << "Updating session client";
-        m_session->setClient(client);
+        session->setClient(client);
     }
 
     if (!bypassChecks && client->isKnown()) {

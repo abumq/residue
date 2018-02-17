@@ -22,6 +22,7 @@
 #ifndef RequestHandler_h
 #define RequestHandler_h
 
+#include <memory>
 #include <string>
 #include "non-copyable.h"
 #include "core/configuration.h"
@@ -47,6 +48,7 @@ struct RawRequest
     std::string data;
     std::string ip;
     types::Time dateReceived;
+    std::shared_ptr<Session> session;
 };
 
 ///
@@ -110,14 +112,8 @@ public:
     {
         return m_registry->configuration();
     }
-
-    inline void setSession(Session* session)
-    {
-        m_session = session;
-    }
 protected:
     std::string m_name;
-    Session* m_session;
     Registry* m_registry;
 
     ///

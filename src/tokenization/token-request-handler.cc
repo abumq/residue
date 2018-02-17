@@ -39,10 +39,11 @@ TokenRequestHandler::TokenRequestHandler(Registry* registry) :
 void TokenRequestHandler::handle(RawRequest&& rawRequest)
 {
     TokenRequest request(m_registry->configuration());
+    std::shared_ptr<Session> session = rawRequest.session;
     RequestHandler::handle(std::move(rawRequest), &request);
 
     if (request.statusCode() != Request::StatusCode::CONTINUE) {
-        m_session->write(request.errorText());
+        session->write(request.errorText());
         return;
     }
 
@@ -53,9 +54,9 @@ void TokenRequestHandler::handle(RawRequest&& rawRequest)
         std::string output;
         response.serialize(output);
         if (client != nullptr) {
-            m_session->write(output.c_str(), client->key().c_str());
+            session->write(output.c_str(), client->key().c_str());
         } else {
-            m_session->write(output);
+            session->write(output);
         }
         return;
     }
@@ -68,7 +69,7 @@ void TokenRequestHandler::handle(RawRequest&& rawRequest)
         TokenResponse response(Response::StatusCode::BAD_REQUEST, "Client is dead");
         std::string output;
         response.serialize(output);
-        m_session->write(output.c_str(), client->key().c_str());
+        session->write(output.c_str(), client->key().c_str());
         return;
     }
 
@@ -84,7 +85,7 @@ void TokenRequestHandler::handle(RawRequest&& rawRequest)
         TokenResponse response(isValid);
         std::string output;
         response.serialize(output);
-        m_session->write(output.c_str(), client->key().c_str());
+        session->write(output.c_str(), client->key().c_str());
     } else {
         // New token for logger
         if (!m_registry->configuration()->isValidAccessCode(request.loggerId(), request.accessCode())) {
@@ -93,9 +94,9 @@ void TokenRequestHandler::handle(RawRequest&& rawRequest)
             std::string output;
             response.serialize(output);
             if (client != nullptr) {
-                m_session->write(output.c_str(), client->key().c_str());
+                session->write(output.c_str(), client->key().c_str());
             } else {
-                m_session->write(output);
+                session->write(output);
             }
             return;
         }
@@ -108,10 +109,10 @@ void TokenRequestHandler::handle(RawRequest&& rawRequest)
         TokenResponse response(newTokenData, lifeTime, request.loggerId());
         std::string output;
         response.serialize(output);
-        m_session->write(output.c_str(), client->key().c_str());
+        session->write(output.c_str(), client->key().c_str());
     }
 
-    if (m_session->client() == nullptr) {
-        m_session->setClient(client);
+    if (session->client() == nullptr) {
+        session->setClient(client);
     }
 }

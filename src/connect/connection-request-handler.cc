@@ -40,6 +40,7 @@ ConnectionRequestHandler::ConnectionRequestHandler(Registry* registry) :
 void ConnectionRequestHandler::handle(RawRequest&& rawRequest)
 {
     ConnectionRequest request(m_registry->configuration());
+    std::shared_ptr<Session> session = rawRequest.session;
     RequestHandler::handle(std::move(rawRequest), &request, Request::StatusCode::CONTINUE, true);
 
     if (request.keySize() != 128 && request.keySize() != 192 && request.keySize() != 256) {
@@ -52,7 +53,7 @@ void ConnectionRequestHandler::handle(RawRequest&& rawRequest)
                                     request.errorText());
         std::string output;
         response.serialize(output);
-        m_session->write(output);
+        session->write(output);
         return;
     }
 
@@ -67,7 +68,7 @@ void ConnectionRequestHandler::handle(RawRequest&& rawRequest)
         ConnectionResponse response(Response::StatusCode::BAD_REQUEST, msg);
         std::string output;
         response.serialize(output);
-        m_session->write(output);
+        session->write(output);
     };
 
     if (!request.isValid()) {
@@ -96,20 +97,20 @@ void ConnectionRequestHandler::handle(RawRequest&& rawRequest)
 
     switch (request.type()) {
     case ConnectionRequest::Type::CONNECT:
-        connect(&request, knownClient);
+        connect(&request, session, knownClient);
         break;
     case ConnectionRequest::Type::ACKNOWLEDGE:
-        acknowledge(&request);
+        acknowledge(&request, session);
         break;
     case ConnectionRequest::Type::TOUCH:
-        touch(&request);
+        touch(&request, session);
         break;
     default:
         RLOG(WARNING) << "Invalid connection request type received";
     }
 }
 
-void ConnectionRequestHandler::connect(ConnectionRequest* request, bool isKnownClient) const
+void ConnectionRequestHandler::connect(ConnectionRequest* request, const std::shared_ptr<Session>& session, bool isKnownClient) const
 {
     int attempts = 0;
     while (!isKnownClient && m_registry->clientExists(request->clientId()) && attempts++ < 100) {
@@ -137,7 +138,7 @@ void ConnectionRequestHandler::connect(ConnectionRequest* request, bool isKnownC
         ConnectionResponse response(&clonedClient);
         std::string output;
         response.serialize(output);
-        m_session->write(output.c_str(), output.size(), client->rsaPublicKey().c_str());
+        session->write(output.c_str(), output.size(), client->rsaPublicKey().c_str());
     } else {
         Client client(request);
         client.setIsKnown(isKnownClient);
@@ -150,30 +151,30 @@ void ConnectionRequestHandler::connect(ConnectionRequest* request, bool isKnownC
             response.m_clientAge = 0;
             std::string output;
             response.serialize(output);
-            m_session->write(output.c_str(), output.size(), client.rsaPublicKey().c_str());
+            session->write(output.c_str(), output.size(), client.rsaPublicKey().c_str());
         } else {
             ConnectionResponse response(Response::StatusCode::BAD_REQUEST, "Failed! Potentially duplicate client ID, please ACKNOWLEDGE.");
             std::string output;
             response.serialize(output);
-            m_session->write(output.c_str(), output.size(), client.rsaPublicKey().c_str());
+            session->write(output.c_str(), output.size(), client.rsaPublicKey().c_str());
         }
     }
 }
 
-void ConnectionRequestHandler::acknowledge(const ConnectionRequest* request) const
+void ConnectionRequestHandler::acknowledge(const ConnectionRequest* request, const std::shared_ptr<Session>& session) const
 {
     Client* existingClient = m_registry->findClient(request->clientId());
     if (existingClient == nullptr) {
         ConnectionResponse response(Response::StatusCode::BAD_REQUEST, "Client with this ID does not exists. Please send CONNECT request first.");
         std::string output;
         response.serialize(output);
-        m_session->write(output);
+        session->write(output);
         return;
     } else if (!existingClient->isKnown() && existingClient->acknowledged()) {
         ConnectionResponse response(Response::StatusCode::BAD_REQUEST, "Cannot re-acknowledge unknown clients. Please TOUCH to refresh it.");
         std::string output;
         response.serialize(output);
-        m_session->write(output.c_str(), output.size(), existingClient->rsaPublicKey().c_str());
+        session->write(output.c_str(), output.size(), existingClient->rsaPublicKey().c_str());
         return;
     }
     RVLOG(RV_DETAILS) << "Acknowledging client [" << existingClient->id() << "]";
@@ -187,12 +188,12 @@ void ConnectionRequestHandler::acknowledge(const ConnectionRequest* request) con
         response.setLoggingPort(m_registry->configuration()->loggingPort());
         std::string output;
         response.serialize(output);
-        m_session->write(output.c_str(), existingClient->key().c_str());
-        m_session->setClient(existingClient);
+        session->write(output.c_str(), existingClient->key().c_str());
+        session->setClient(existingClient);
     }
 }
 
-void ConnectionRequestHandler::touch(const ConnectionRequest* request) const
+void ConnectionRequestHandler::touch(const ConnectionRequest* request, const std::shared_ptr<Session>& session) const
 {
     Client* client = m_registry->findClient(request->clientId());
     if (client != nullptr) {
@@ -203,14 +204,14 @@ void ConnectionRequestHandler::touch(const ConnectionRequest* request) const
                                         "Cannot touch a non-acknowledged client. Please ACKNOWLEDGE it first");
             std::string output;
             response.serialize(output);
-            m_session->write(output.c_str(), client->key().c_str());
+            session->write(output.c_str(), client->key().c_str());
         } else if (!client->isAlive()) {
             RVLOG(RV_ERROR) << "Cannot touch a dead client";
             ConnectionResponse response(Response::StatusCode::BAD_REQUEST,
                                         "Cannot touch dead client. Please reset the connection");
             std::string output;
             response.serialize(output);
-            m_session->write(output.c_str(), client->key().c_str());
+            session->write(output.c_str(), client->key().c_str());
         } else {
             client->setAge(m_registry->configuration()->clientAge());
             client->resetDateCreated();
@@ -220,10 +221,10 @@ void ConnectionRequestHandler::touch(const ConnectionRequest* request) const
             response.setLoggingPort(m_registry->configuration()->loggingPort());
             std::string output;
             response.serialize(output);
-            m_session->write(output.c_str(), client->key().c_str());
+            session->write(output.c_str(), client->key().c_str());
         }
     } else {
         RVLOG(RV_ERROR) << "Client is not connected. It may have died or was never connected.";
-        m_session->writeStandardResponse(Response::StatusCode::BAD_REQUEST);
+        session->writeStandardResponse(Response::StatusCode::BAD_REQUEST);
     }
 }

@@ -79,7 +79,10 @@ private:
     /// in separate thread/s (m_backgroundWorkers)
     ///
     void processRequestQueue();
-    bool processRequest(LogRequest*, Client** clientRef, bool forceCheck);
+    bool processRequest(LogRequest*,
+                        Client** clientRef,
+                        bool forceCheck,
+                        Session* session);
 
     bool isValidToken(const LogRequest*) const;
 
