@@ -35,44 +35,24 @@ TEST(JsonTest, SimpleParse)
 
     JsonDoc j;
     j.parse(json);
-    ASSERT_EQ(j.status, gason::JSON_PARSE_OK);
+    ASSERT_TRUE(j.isValid());
 
     JsonDoc::Value people = j.get("people", JsonDoc::Value());
 
-    std::cout << people.at(0)("name").toString() << std::endl;;
-    std::cout << people.at(1)("name").toString() << std::endl;;
-    std::cout << people.at(0)("age").toInt() << std::endl;;
-    std::cout << people.at(1)("age").toInt() << std::endl;;
-   // std::cout << people.at(1)("name").toInt() << std::endl;; => assert
-/*
+    JsonDoc adam(people.at(0));
+    ASSERT_STRCASEEQ("adam", adam.get<std::string>("name", "").c_str());
+    ASSERT_EQ(960, adam.get<int>("age", 0));
+
+    JsonDoc david(people.at(1));
+    ASSERT_STRCASEEQ("david", david.get<std::string>("name", "").c_str());
+    ASSERT_EQ(100, david.get<int>("age", 0));
+
     json = "{\"t\":" + bigNestedArray + "}";
-    source = std::unique_ptr<char[]>(new char[json.size() + 1]);
-    strcpy(source.get(), json.c_str());
 
-    status = gason::jsonParse(source.get(), root, iallocator);
+    JsonDoc j2(json);
+    ASSERT_FALSE(j2.isValid());
 
- //   ASSERT_EQ(status, gason::JSON_PARSE_OK);
-*/
-    std::size_t capacity = 200;
-    auto source = std::unique_ptr<char[]>(new char[capacity]);
-    strcpy(source.get(), json.c_str());
-    gason::JSonBuilder doc(source.get(), capacity);
-
-    // this sample JSon at least requires a buffer with 119 bytes.
-    doc.startObject()
-            .startArray("array")
-            .addValue(0)
-            .addValue(1)
-            .addValue(2)
-            .endArray()
-       .endObject();
-
-    std::cout << source.get() << std::endl;
-
-    JsonDoc d;
-    d.parse(source.get());
-
-    std::cout << d.dump() << std::endl;
+    ASSERT_STRCASEEQ("null", j2.dump().c_str());
 
 }
 
