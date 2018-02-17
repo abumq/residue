@@ -22,8 +22,6 @@
 #include "connect/connection-response.h"
 #include "core/configuration.h"
 #include "clients/client.h"
-#include "core/json-document.h"
-#include "core/json-doc.h"
 
 using namespace residue;
 
@@ -64,6 +62,7 @@ void ConnectionResponse::serialize(std::string& output) const
     char source[capacity];
 
     JsonBuilder doc(source, capacity);
+    DRVLOG(RV_DEBUG_2) << "Starting JSON serialization with [" << capacity << "] bytes";
 
     doc.startObject()
             .addValue("status", m_status)

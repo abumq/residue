@@ -27,9 +27,9 @@
 #include "utils/utils.h"
 #include "net/http-client.h"
 #ifdef RESIDUE_USE_GASON
-#include "core/json-doc.h"
+#   include "core/json-doc.h"
 #else
-#include "core/json-document.h"
+#   include "core/json-document.h"
 #endif
 
 using namespace residue;

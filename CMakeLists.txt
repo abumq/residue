@@ -31,6 +31,7 @@ if (use_mine)
 endif(use_mine)
 
 if (use_gason)
+    message ("==> USING GASON")
     add_definitions (-DRESIDUE_USE_GASON)
 endif(use_gason)
 
@@ -143,12 +144,20 @@ else()
     set (MINE_SRC "")
 endif()
 
+if (use_gason)
+    set (GASON_SRC deps/gason/gason.cc)
+    set (JSON_SRC src/core/json-doc.cc)
+else()
+    set (GASON_SRC "")
+    set (JSON_SRC src/core/json-document.cc)
+endif()
+
 set (DEPS_SRC
     ${MINE_SRC}
     deps/linenoise/linenoise.c
     deps/easyloggingpp/easylogging++.cc
     deps/ripe/Ripe.cc
-    deps/gason/gason.cc
+    ${GASON_SRC}
 )
 
 set (SOURCE_FILES
@@ -177,8 +186,8 @@ set (SOURCE_FILES
     src/core/response.cc
     src/core/configuration.cc
     src/core/registry.cc
-    src/core/json-document.cc
-    src/core/json-doc.cc
+
+    ${JSON_SRC}
 
     src/crypto/rsa.cc
     src/crypto/aes.cc

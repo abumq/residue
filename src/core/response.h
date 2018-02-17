@@ -24,7 +24,11 @@
 
 #include <string>
 #include "non-copyable.h"
-#include "core/json-document.h"
+#ifdef RESIDUE_USE_GASON
+#   include "core/json-doc.h"
+#else
+#   include "core/json-document.h"
+#endif
 
 namespace residue {
 
@@ -53,8 +57,10 @@ public:
     Response() = default;
     virtual ~Response() = default;
 
+#ifndef RESIDUE_USE_GASON
     void serialize(JsonItem& root,
                    std::string& output) const;
+#endif
 };
 }
 #endif /* Response_h */

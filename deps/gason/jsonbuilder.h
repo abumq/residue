@@ -166,6 +166,11 @@ public:
         return *this;
     }
 
+    /** writes a value by @code "name" : "value" @endcode. */
+    JSonBuilder&    addValue(const char* name, const std::string& value) {
+        return addValue(name, value.c_str());
+    }
+
     /** writes a value by @code "name" : number @endcode. */
     JSonBuilder&    addValue(const char *name, int number) {
         addPossibleComma() << "\"" << name << "\":" << number;
@@ -174,8 +179,7 @@ public:
 
     /** writes a value by @code "name" : number @endcode. */
     JSonBuilder&    addValue(const char *name, unsigned int number) {
-        addPossibleComma() << "\"" << name << "\":" << static_cast<int>(number);
-        return *this;
+        return addValue(name, static_cast<int>(number));
     }
 
     /** writes a value by @code "name" : number @endcode. */
@@ -207,6 +211,12 @@ public:
     JSonBuilder&    addValue(const char* value) {
         addPossibleComma()  << "\"" << value << "\"";
         return *this;
+    }
+
+    // for unnamed elements
+    /** writes an unnamed value by @code "value" @endcode. */
+    JSonBuilder&    addValue(const std::string& value) {
+        return addValue(value.c_str());
     }
 
     /** writes a unnamed value by @code number @endcode. */

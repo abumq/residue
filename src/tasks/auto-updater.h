@@ -23,7 +23,6 @@
 #define AutoUpdater_h
 
 #include "tasks/task.h"
-#include "core/json-document.h"
 
 namespace residue {
 

@@ -27,6 +27,10 @@
 #include "logging/log.h"
 #include "non-copyable.h"
 
+#ifdef RESIDUE_USE_GASON
+#   error "use_gason is ON please include core/json-doc.h instead"
+#endif
+
 namespace residue {
 
 using JsonItem = nlohmann::json;

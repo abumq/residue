@@ -21,7 +21,6 @@
 
 #include "logging/log.h"
 #include "admin/admin-request.h"
-#include "core/json-document.h"
 #include "utils/utils.h"
 
 using namespace residue;

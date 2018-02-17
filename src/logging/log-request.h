@@ -26,7 +26,6 @@
 #include "logging/log.h"
 #include "core/request.h"
 #include "core/types.h"
-#include "core/json-document.h"
 
 namespace residue {
 
