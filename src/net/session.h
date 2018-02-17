@@ -61,9 +61,9 @@ public:
     void write(const char* data, std::size_t, const char* publicEncryptionKey);
 
     ///
-    /// \brief Write status code to client without any contents
+    /// \brief Write standard response based on response code
     ///
-    void writeStatusCode(const Response::StatusCode& r);
+    void writeStandardResponse(const Response::StatusCode& r);
 
     ///
     /// \brief Writes plain (formats with <length>:<content>)

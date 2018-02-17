@@ -37,9 +37,9 @@ public:
     explicit ConnectionRequestHandler(Registry*);
     virtual void handle(RawRequest&&);
 private:
-    void connect(ConnectionRequest*, bool isKnownClient) const;
-    void acknowledge(const ConnectionRequest*) const;
-    void touch(const ConnectionRequest*) const;
+    void connect(ConnectionRequest*, const std::shared_ptr<Session>&, bool isKnownClient) const;
+    void acknowledge(const ConnectionRequest*, const std::shared_ptr<Session>&) const;
+    void touch(const ConnectionRequest*, const std::shared_ptr<Session>&) const;
 };
 }
 

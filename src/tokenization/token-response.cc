@@ -20,6 +20,7 @@
 //
 
 #include "tokenization/token-response.h"
+#include "logging/log.h"
 
 using namespace residue;
 
@@ -55,7 +56,30 @@ TokenResponse::TokenResponse(bool) :
 
 void TokenResponse::serialize(std::string& output) const
 {
-    JsonObject::Json root;
+#ifdef RESIDUE_USE_GASON
+    const std::size_t capacity = 128;
+    char source[capacity];
+
+    JsonBuilder doc(source, capacity);
+    DRVLOG(RV_DEBUG_2) << "Starting JSON serialization with [" << capacity << "] bytes";
+    doc.startObject();
+    doc.addValue("status", m_status);
+    if (!m_errorText.empty()) {
+        doc.addValue("error_text", m_errorText);
+    }
+    if (m_life >= 0) {
+        doc.addValue("life", m_life);
+    }
+    if (!m_token.empty()) {
+        doc.addValue("token", m_token);
+    }
+    if (!m_loggerId.empty()) {
+        doc.addValue("loggerId", m_loggerId);
+    }
+    doc.endObject();
+    output = source;
+#else
+    JsonItem root;
     root["status"] = m_status;
     if (!m_errorText.empty()) {
         root["error_text"] = m_errorText;
@@ -70,4 +94,5 @@ void TokenResponse::serialize(std::string& output) const
         root["loggerId"] = m_loggerId;
     }
     Response::serialize(root, output);
+#endif
 }

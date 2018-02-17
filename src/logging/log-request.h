@@ -26,7 +26,6 @@
 #include "logging/log.h"
 #include "core/request.h"
 #include "core/types.h"
-#include "core/json-object.h"
 
 namespace residue {
 
@@ -143,18 +142,20 @@ public:
 
     inline bool isBulk()
     {
-        return m_jsonObject.isArray();
+        return m_jsonDoc.isArray();
     }
 
     virtual bool deserialize(std::string&& json) override;
     virtual bool validateTimestamp() const override;
 
 private:
+#ifndef RESIDUE_USE_GASON
     template <typename T>
-    inline T resolveValue(JsonObject *packet, const LogRequestField<T>* requestType) const
+    inline T resolveValue(JsonDocument *packet, const LogRequestField<T>* requestType) const
     {
         return packet->get<T>(requestType->name, requestType->defaultValue);
     }
+#endif
 
     std::string m_clientId;
     std::string m_token;

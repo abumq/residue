@@ -72,7 +72,7 @@ bool Client::isValidToken(const std::string& loggerId,
 #endif
         return true;
     }
-    // std::lock_guard<std::mutex> lock_(s_mutex);
+    std::lock_guard<std::mutex> lock_(s_mutex);
     const auto& iter = m_tokens.find(loggerId);
     if (iter == m_tokens.end()) {
 #ifdef RESIDUE_DEV
@@ -108,7 +108,7 @@ void Client::addToken(const std::string& loggerId,
     DRVLOG(RV_TRACE) << "Token added (client [" << m_id << "])";
 }
 
-/*
+
 void Client::removeToken(const std::string& loggerId,
                          const std::string& token)
 {
@@ -126,4 +126,4 @@ void Client::removeToken(const std::string& loggerId,
     }
     DRVLOG(RV_DEBUG) << "Token removed (client [" << m_id << "])";
 }
-*/
+

@@ -42,17 +42,18 @@ void AdminRequestHandler::handle(RawRequest&& rawRequest)
 {
     AdminRequest request(m_registry->configuration());
 
+    std::shared_ptr<Session> session = rawRequest.session;
     RequestHandler::handle(std::move(rawRequest), &request, Request::StatusCode::BAD_REQUEST, false, true);
 
     if (request.statusCode() != Request::StatusCode::CONTINUE) {
         RLOG(ERROR) << "Unable to continue with this request! " << request.errorText();
-        respond("Unable to continue with this request!");
+        respond("Unable to continue with this request!", session);
         return;
     }
 
     if (!request.isValid()) {
         RLOG(ERROR) << "Invalid admin request";
-        respond("Invalid admin request");
+        respond("Invalid admin request", session);
         return;
     }
     std::string cmd;
@@ -141,10 +142,10 @@ void AdminRequestHandler::handle(RawRequest&& rawRequest)
         result << "Unknown admin request";
     }
     result << std::endl;
-    respond(result.str());
+    respond(result.str(), session);
 }
 
-void AdminRequestHandler::respond(const std::string& response) const
+void AdminRequestHandler::respond(const std::string& response, const std::shared_ptr<Session>& session) const
 {
-    m_session->write(response.c_str(), configuration()->serverKey().c_str());
+    session->write(response.c_str(), configuration()->serverKey().c_str());
 }

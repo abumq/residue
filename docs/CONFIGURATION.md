@@ -60,8 +60,8 @@ See [Ripe](https://github.com/muflihun/ripe#readme) for more details.
 ### `server_rsa_secret`
 [String] If private key is encrypted, this is the secret (passphrase) to decrypt it. **THIS SHOULD BE HEX ENCODED**.
 
-### `accept_input`
-[Boolean] Whether server accepts input from user or not. See [CLI_COMMANDS.md](/docs/CLI_COMMANDS.md) for possible input commands.
+### `enable_cli`
+[Boolean] Whether CLI is enabled on server or not. See [CLI_COMMANDS.md](/docs/CLI_COMMANDS.md) for possible input commands.
 
 Default: `true`
 
@@ -387,7 +387,7 @@ Default: [`token_age`](#token_age)
 
 Maximum: [`max_token_age`](#max_token_age)
 
-#### `known_loggers`::`access_codes_blacklist`
+#### `known_loggers`::`access_code_blacklist`
 [Array] String that define black listed access codes. You may access code to this list if one of the access codes is compromised. (alternatively, you may remove from the original list)
 
 #### `known_loggers`::`allow_plain_log_request`

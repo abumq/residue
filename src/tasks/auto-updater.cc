@@ -26,7 +26,11 @@
 #include "net/url.h"
 #include "utils/utils.h"
 #include "net/http-client.h"
-#include "core/json-object.h"
+#ifdef RESIDUE_USE_GASON
+#   include "core/json-doc.h"
+#else
+#   include "core/json-document.h"
+#endif
 
 using namespace residue;
 
@@ -66,13 +70,24 @@ bool AutoUpdater::hasNewVersion(std::string* newVersion)
 
     try {
         std::string cleanResult = Utils::trim(resultFromApi);
-        JsonObject j(std::move(cleanResult));
+#ifdef RESIDUE_USE_GASON
+        JsonDoc j;
+        j.parse(cleanResult);
+        if (j.hasKey("tag_name")) {
+            *newVersion = j.get<std::string>("tag_name", "");
+            return curr != *newVersion;
+        } else {
+            RLOG(ERROR) << "Invalid JSON returned from github API (expected 'tag_name')\n" << resultFromApi;
+        }
+#else
+        JsonDocument j(std::move(cleanResult));
         if (j.hasKey("tag_name")) {
             *newVersion = j.getString("tag_name");
             return curr != *newVersion;
         } else {
             RLOG(ERROR) << "Invalid JSON returned from github API (expected 'tag_name')\n" << resultFromApi;
         }
+#endif
     } catch (const std::exception& e) {
         RLOG(ERROR) << "Failed to parse JSON:\n" << e.what() << "\n" << resultFromApi;
     }

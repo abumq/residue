@@ -1,5 +1,15 @@
 # Change Log
 
+## [1.4.3] - 17-02-2018
+### Updates
+- Performance improvement using standard response
+- Changed `access_codes_blacklist` to `access_code_blacklist`
+- Changed `ACCEPT_INPUT` renamed to `ENABLE_CLI`
+
+### Fixes
+- Crash detected when writing to session #79
+- Fixed undefined behaviour with destroyed sessions 
+
 ## [1.4.2] - 14-02-2018
 ### Fixes
 - Client integrity task can remove pending dead client #73

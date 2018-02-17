@@ -19,6 +19,7 @@
 //  limitations under the License.
 //
 
+#include "easyloggingpp/easylogging++.h"
 #include "test.h"
 #include "configuration-test.h"
 #include "utils-test.h"
@@ -27,6 +28,7 @@
 #include "admin-request-test.h"
 #include "task-schedule-test.h"
 #include "log-rotator-schedule-test.h"
+#include "json-test.h"
 
 INITIALIZE_EASYLOGGINGPP
 

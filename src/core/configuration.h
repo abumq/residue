@@ -30,9 +30,13 @@
 #include <vector>
 #include "non-copyable.h"
 #include "clients/client.h"
-#include "core/json-object.h"
 #include "crypto/rsa.h"
 #include "extensions/log-extension.h"
+#ifdef RESIDUE_USE_GASON
+#   include "core/json-doc.h"
+#else
+#   include "core/json-document.h"
+#endif
 
 namespace residue {
 
@@ -69,7 +73,7 @@ public:
         ALLOW_UNKNOWN_CLIENTS = 64,
         ALLOW_PLAIN_CONNECTION = 128,
         COMPRESSION = 256,
-        ACCEPT_INPUT = 512,
+        ENABLE_CLI = 512,
         REQUIRES_TIMESTAMP = 1024,
     };
 
@@ -245,9 +249,9 @@ public:
         return m_logExtensions;
     }
 
-    inline const std::unordered_map<std::string, std::unordered_set<std::string>>& accessCodesBlacklist() const
+    inline const std::unordered_map<std::string, std::unordered_set<std::string>>& accessCodeBlacklist() const
     {
-        return m_accessCodesBlacklist;
+        return m_accessCodeBlacklist;
     }
 
     inline const std::unordered_map<std::string, std::pair<std::string, std::string>>& knownClientsKeys() const
@@ -341,7 +345,7 @@ private:
 
     std::unordered_map<std::string, std::unordered_set<AccessCode>> m_accessCodes;
     std::unordered_map<std::string, std::pair<std::string, std::string>> m_knownClientsKeys;
-    std::unordered_map<std::string, std::unordered_set<std::string>> m_accessCodesBlacklist;
+    std::unordered_map<std::string, std::unordered_set<std::string>> m_accessCodeBlacklist;
     std::unordered_map<std::string, std::unordered_set<std::string>> m_knownClientsLoggers;
     std::unordered_map<std::string, std::string> m_knownLoggerUserMap;
     std::unordered_map<std::string, std::string> m_unknownLoggerUserMap;
@@ -388,10 +392,54 @@ private:
         return m_knownClientsKeys.find(clientId) != m_knownClientsKeys.end();
     }
 
-    void loadKnownLoggers(const JsonObject::Json& json, std::stringstream& errorStream, bool viaUrl);
-    void loadKnownClients(const JsonObject::Json& json, std::stringstream& errorStream, bool viaUrl);
-    void loadLoggersBlacklist(const JsonObject::Json& json, std::stringstream& errorStream);
-    void loadLogExtensions(const JsonObject::Json& json, std::stringstream& errorStream);
+#ifdef RESIDUE_USE_GASON
+    void loadKnownLoggers(const JsonDoc::Value& json, std::stringstream& errorStream, bool viaUrl);
+    void loadKnownClients(const JsonDoc::Value& json, std::stringstream& errorStream, bool viaUrl);
+    void loadLoggersBlacklist(const JsonDoc::Value& json, std::stringstream& errorStream);
+
+    template <typename T, typename ListType = std::vector<std::unique_ptr<T>>>
+    void loadExtensions(const JsonDoc::Value& json, std::stringstream& errorStream, ListType* list)
+    {
+        std::vector<std::string> ext;
+
+        for (const auto& moduleName : json) {
+            JsonDoc j(moduleName);
+            std::string moduleNameStr = j.as<std::string>("");
+            if (moduleNameStr.empty()) {
+                continue;
+            }
+            if (std::find(ext.begin(), ext.end(), moduleNameStr) != ext.end()) {
+                errorStream << "Duplicate extension could not be loaded: " << moduleNameStr;
+            } else {
+                ext.push_back(moduleNameStr);
+                list->push_back(std::unique_ptr<T>(new T(moduleNameStr)));
+            }
+        }
+    }
+#else
+    void loadKnownLoggers(const JsonItem& json, std::stringstream& errorStream, bool viaUrl);
+    void loadKnownClients(const JsonItem& json, std::stringstream& errorStream, bool viaUrl);
+    void loadLoggersBlacklist(const JsonItem& json, std::stringstream& errorStream);
+
+    template <typename T, typename ListType = std::vector<std::unique_ptr<T>>>
+    void loadExtensions(const JsonItem& json, std::stringstream& errorStream, ListType* list)
+    {
+        std::vector<std::string> ext;
+
+        for (const auto& moduleName : json) {
+            std::string moduleNameStr = moduleName;
+            if (moduleNameStr.empty()) {
+                continue;
+            }
+            if (std::find(ext.begin(), ext.end(), moduleNameStr) != ext.end()) {
+                errorStream << "Duplicate extension could not be loaded: " << moduleNameStr;
+            } else {
+                ext.push_back(moduleNameStr);
+                list->push_back(std::unique_ptr<T>(new T(moduleNameStr)));
+            }
+        }
+    }
+#endif
 };
 }
 #endif /* Configuration_h */

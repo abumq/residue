@@ -24,7 +24,11 @@
 
 #include <string>
 #include "non-copyable.h"
-#include "core/json-object.h"
+#ifdef RESIDUE_USE_GASON
+#   include "core/json-doc.h"
+#else
+#   include "core/json-document.h"
+#endif
 #include "core/types.h"
 
 namespace residue {
@@ -60,10 +64,17 @@ public:
 
     virtual bool deserialize(std::string&& json);
 
-    inline JsonObject jsonObject() const
+#ifdef RESIDUE_USE_GASON
+    inline const JsonDoc& jsonObject() const
     {
-        return m_jsonObject;
+        return m_jsonDoc;
     }
+#else
+    inline JsonDocument jsonObject() const
+    {
+        return m_jsonDoc;
+    }
+#endif
 
     inline Client* client() const
     {
@@ -113,7 +124,12 @@ public:
 
     virtual bool validateTimestamp() const;
 protected:
-    JsonObject m_jsonObject;
+#ifdef RESIDUE_USE_GASON
+    JsonDoc m_jsonDoc;
+#else
+    JsonDocument m_jsonDoc;
+#endif
+
     bool m_isValid;
 
     Client* m_client;

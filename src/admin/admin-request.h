@@ -77,7 +77,6 @@ public:
     virtual bool deserialize(std::string&& json) override;
     virtual bool validateTimestamp() const override;
 private:
-
     std::string m_clientId;
     std::string m_rsaPublicKey;
     std::string m_loggerId;

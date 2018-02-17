@@ -113,7 +113,7 @@ protected:
                               "allow_default_access_code": true,
                               "allow_unknown_loggers": true,
                               "allow_unknown_clients": false,
-                              "accept_input": false,
+                              "enable_cli": false,
                               "requires_token": true,
                               "allow_plain_log_request": true,
                               "immediate_flush": true,
@@ -144,7 +144,8 @@ protected:
                               "known_loggers": [
                                   {
                                       "logger_id": "residue",
-                                      "configuration_file": "residue-logger.conf"
+                                      "configuration_file": "residue-logger.conf",
+                                      "allow_plain_log_request": false
                                   },
                                   {
                                       "logger_id": "default",
@@ -159,11 +160,10 @@ protected:
                                       "rotation_freq": "hourly",
                                       "archived_log_filename": "mylogs-%hour-00-%wday-%level.log",
                                       "archived_log_directory": "/tmp/logs-backup/custom-location-for-%logger",
-                                      "access_codes_blacklist": [
+                                      "access_code_blacklist": [
                                           "ii3faf",
                                           "ii3fa2"
                                       ],
-                                      "allow_plain_log_request": true,
                                       "access_codes": [
                                           {
                                               "code": "a2dcb",
@@ -221,7 +221,7 @@ TEST_F(ConfigurationTest, CheckValues)
     ASSERT_EQ(conf->maxTokenAge(), 60);
     ASSERT_EQ(conf->nonAcknowledgedClientAge(), 3600);
     ASSERT_EQ(conf->clientIntegrityTaskInterval(), 500);
-    ASSERT_FALSE(conf->hasFlag(Configuration::Flag::ACCEPT_INPUT));
+    ASSERT_FALSE(conf->hasFlag(Configuration::Flag::ENABLE_CLI));
     ASSERT_TRUE(conf->hasFlag(Configuration::Flag::ALLOW_UNKNOWN_LOGGERS));
     ASSERT_FALSE(conf->hasFlag(Configuration::Flag::ALLOW_UNKNOWN_CLIENTS));
     ASSERT_TRUE(conf->hasFlag(Configuration::Flag::ALLOW_DEFAULT_ACCESS_CODE));
@@ -237,6 +237,10 @@ TEST_F(ConfigurationTest, CheckValues)
     ASSERT_EQ(conf->keySize("client-for-test"), 128);
     ASSERT_EQ(conf->keySize("client-for-test2"), 256);
     ASSERT_EQ(conf->getConfigurationFile("muflihun"), "muflihun-logger.conf");
+    ASSERT_TRUE(conf->isValidAccessCode("muflihun", "a2dcb"));
+    ASSERT_FALSE(conf->isValidAccessCode("muflihun", "a2dca"));
+    ASSERT_FALSE(conf->isValidAccessCode("residue", "a2dcb"));
+    ASSERT_FALSE(conf->isValidAccessCode("default", "a2dcb"));
 #ifdef RESIDUE_HAS_EXTENSIONS
     ASSERT_EQ(conf->logExtensions().size(), 1);
 #else
@@ -278,7 +282,7 @@ TEST_F(ConfigurationTest, Save)
     ASSERT_EQ(conf2->knownClientsKeys().size(), conf->knownClientsKeys().size());
     ASSERT_EQ(conf2->nonAcknowledgedClientAge(), conf->nonAcknowledgedClientAge());
     ASSERT_EQ(conf2->clientIntegrityTaskInterval(), conf->clientIntegrityTaskInterval());
-    ASSERT_EQ(conf2->hasFlag(Configuration::Flag::ACCEPT_INPUT), conf->hasFlag(Configuration::Flag::ACCEPT_INPUT));
+    ASSERT_EQ(conf2->hasFlag(Configuration::Flag::ENABLE_CLI), conf->hasFlag(Configuration::Flag::ENABLE_CLI));
     ASSERT_EQ(conf2->hasFlag(Configuration::Flag::ALLOW_UNKNOWN_LOGGERS), conf->hasFlag(Configuration::Flag::ALLOW_UNKNOWN_LOGGERS));
     ASSERT_EQ(conf2->hasFlag(Configuration::Flag::ALLOW_UNKNOWN_CLIENTS), conf->hasFlag(Configuration::Flag::ALLOW_UNKNOWN_CLIENTS));
     ASSERT_EQ(conf2->hasFlag(Configuration::Flag::ALLOW_DEFAULT_ACCESS_CODE), conf->hasFlag(Configuration::Flag::ALLOW_DEFAULT_ACCESS_CODE));

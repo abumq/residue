@@ -39,7 +39,7 @@ public:
 private:
     CommandHandler* m_commandHandler;
 
-    void respond(const std::string&) const;
+    void respond(const std::string&, const std::shared_ptr<Session>& session) const;
 };
 }
 

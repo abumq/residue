@@ -46,7 +46,8 @@ class Registry final : NonCopyable
 {
 public:
 
-    struct ActiveSession {
+    struct ActiveSession
+    {
         std::shared_ptr<Session> session;
         types::Time timeCreated;
     };

@@ -32,14 +32,14 @@ You can choose to integrate similar solutions like [`rsyslog`](https://github.co
 Some of the notable features are listed below
 
  * Lightweight: Residue is very light on CPU and RAM. On start-up it will only take approx 2mb of RAM and while running it will keep the memory as clean as possible using as low CPU as possible.
- * Asyncronous: Residue has been built with speed in mind right from the beginning. It runs on 10 threads on idle and an extra threads for scheduled task.
- * _Context switching_ is a concept designed as part of asyncronous processing where a *backlog* is different from *processing queue*. Once all the items from _processing queue_ are processed, the queues are swapped. This swapping is what we call *context switching*.
+ * Asyncronous: Residue has been built with speed in mind right from the beginning. It implements various techniques to speed up the process.
  * _Log rotation_ has been built in to the server that runs as scheduled task, allowing you to create backups and compress them without effecting the logging process. Every logger can be set up to have it's own rotation frequency from `hourly` to `yearly` depending on your needs.
  * _Bulk requests_ is another concept that makes logging requests process much faster and make them highly compressible to reduce traffic on the network.
  * Encryption: All the incoming and outgoing data is automatically encrypted. Residue also has several layers and techniques to secure the requests and to prevent unauthorised application from logging without compromising the speed.
  * Compression: Residue server and official client libraries provide ability to compress the network packets which makes a big difference in amount of data transferred over the wire.
  * Speed is not compromised in any way and there is a lot of testing being done every day to ensure that logging server meets the speed requirements.
  * Reliability: We are actively working on making the server much more reliable from restarting from the crash to handling bad traffic.
+ * Tools: Residue comes with various tools for devops.
  * There are many more features available for this new application. Please feel free to download your copy of residue server and give it a try.
  
 # Supported Platforms
@@ -50,7 +50,7 @@ Residue binaries can be run directly on the following platforms.
  * Amazon Linux AMI 2017.03 or higher
  * Fedora 24 or higher (64-bit)
  * Fedora 19 or higher (64-bit)
- * CentOS 7 or higher (64-bit) ([SE Only](https://github.com/muflihun/residue/blob/master/docs/INSTALL.md#special-edition))
+ * CentOS 7 or higher (64-bit)
  
 Other distributions that _should_ work (but have not yet been tested)
  * Oracle Linux

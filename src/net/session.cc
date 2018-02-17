@@ -46,7 +46,6 @@ Session::Session(tcp::socket&& socket,
 {
     m_id = m_requestHandler->name()[0] + Utils::generateRandomString(16, true);
     DRVLOG(RV_DEBUG) << "New session " << m_id;
-    m_requestHandler->setSession(this);
 }
 
 Session::~Session()
@@ -82,11 +81,13 @@ void Session::read()
             //RESIDUE_PROFILE_CHECKPOINT(t_read, m_timeTaken, 1);
             sendToHandler(std::move(buffer));
             //RESIDUE_PROFILE_CHECKPOINT(t_read, m_timeTaken, 2);
+            if (m_requestHandler->registry()->configuration()->hasFlag(Configuration::ENABLE_CLI)) {
 #ifdef RESIDUE_DEV
-            DRVLOG(RV_TRACE) << "Adding bytes";
+                DRVLOG(RV_TRACE) << "Adding bytes";
 #endif
-            Utils::bigAdd(m_bytesReceived, std::to_string(numOfBytes));
-            m_requestHandler->registry()->addBytesReceived(numOfBytes);
+                Utils::bigAdd(m_bytesReceived, std::to_string(numOfBytes));
+                m_requestHandler->registry()->addBytesReceived(numOfBytes);
+            }
         } else {
 #ifdef RESIDUE_DEBUG
             DRVLOG_IF(ec != net::error::eof, RV_DEBUG) << "Error: " << ec.message();
@@ -101,7 +102,12 @@ void Session::sendToHandler(std::string&& data)
 #ifdef RESIDUE_DEBUG
     DRVLOG(RV_TRACE) << "Read bytes: " << data << " [size: " << data.size() << "]";
 #endif
-    RawRequest req { std::move(data), m_socket.remote_endpoint().address().to_string(), Utils::now() };
+    RawRequest req {
+        std::move(data),
+        m_socket.remote_endpoint().address().to_string(),
+        Utils::now(),
+        shared_from_this()
+    };
     m_requestHandler->handle(std::move(req));
 }
 
@@ -143,40 +149,40 @@ void Session::write(const char* data,
     }
 }
 
-void Session::writeStatusCode(const Response::StatusCode& r)
+void Session::writeStandardResponse(const Response::StatusCode& r)
 {
-    std::stringstream ss;
-    if (r == Response::StatusCode::STATUS_OK || r == Response::StatusCode::CONTINUE) {
-        ss << "{r:" << 0 << "}";
-    } else {
-        ss << "{r:" << 1 << ",c:" << static_cast<unsigned short>(r) << "}";
-    }
-    ss << Session::PACKET_DELIMITER;
-    write(ss.str().c_str(), ss.str().length());
+    write(Response::STANDARD_RESPONSES[r].response.c_str(),
+          Response::STANDARD_RESPONSES[r].response.length());
 }
 
 void Session::write(const std::string& s)
 {
-    write((s + Session::PACKET_DELIMITER).c_str(), s.size() + Session::PACKET_DELIMITER_SIZE);
+    write((s + Session::PACKET_DELIMITER).c_str(),
+          s.size() + Session::PACKET_DELIMITER_SIZE);
 }
 
 void Session::write(const char* data,
                     std::size_t length)
 {
-    auto self(shared_from_this());
-    Utils::bigAdd(m_bytesSent, std::to_string(length));
-    m_requestHandler->registry()->addBytesSent(length);
+ //   auto self(shared_from_this());
+    if (m_requestHandler->registry()->configuration()->hasFlag(Configuration::ENABLE_CLI)) {
+        Utils::bigAdd(m_bytesSent, std::to_string(length));
+        m_requestHandler->registry()->addBytesSent(length);
+    }
 
 #ifdef RESIDUE_DEBUG
     DRVLOG(RV_DEBUG_2) << "Sending " << data;
 #endif
     net::async_write(m_socket, net::buffer(data, length),
-                     [&, this, self](residue::error_code ec, std::size_t) {
+                     [&, this/*, self*/](residue::error_code ec, std::size_t) {
         if (ec) {
 #ifdef RESIDUE_DEBUG
-            DRVLOG(RV_DEBUG) << "Failed to send." << ec.message();
+            DRVLOG(RV_DEBUG) << "Failed to send. " << ec.message();
 #endif
-            m_socket.close();
+
+            // auto destroy socket if needed
+            // do not close here
+            // https://github.com/muflihun/residue/issues/79
         }
     });
     read();

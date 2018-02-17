@@ -82,9 +82,42 @@ void ListLoggingFiles::execute(std::vector<std::string>&& params, std::ostringst
             }
         }
     }
-    JsonObject::Json jr;
+#ifdef RESIDUE_USE_GASON
+    const std::size_t capacity = 2048;
+    char source[capacity];
+    JsonBuilder j(source, capacity);
+    DRVLOG(RV_DEBUG_2) << "Starting JSON serialization with [" << capacity << "] bytes";
+    j.startArray();
     for (auto& p : listMap) {
-        JsonObject::Json j;
+        j.startObject();
+        std::string loggerId = p.first;
+        j.addValue("client_id", clientId);
+        j.addValue("logger_id", loggerId);
+        j.startArray("files");
+        for (std::string levelStr : loggingLevels) {
+            if (levelStr.empty()) {
+                continue;
+            }
+            el::Level level = el::LevelHelper::convertFromString(levelStr.c_str());
+            if (level == el::Level::Unknown) {
+                result << "Unknown level [" << levelStr << "]";
+                return;
+            }
+            std::string file = getFile(loggerId, levelStr);
+            if (!file.empty()) {
+                j.addValue(file);
+            }
+        }
+        j.endArray(); // files
+        j.endObject();
+    }
+    j.endArray();
+    std::string dump = source;
+    result << (dump);
+#else
+    JsonItem jr;
+    for (auto& p : listMap) {
+        JsonItem j;
         std::string loggerId = p.first;
         j["client_id"] = clientId;
         j["logger_id"] = loggerId;
@@ -107,6 +140,7 @@ void ListLoggingFiles::execute(std::vector<std::string>&& params, std::ostringst
     }
 
     result << (jr.dump());
+#endif
 
 #ifdef RESIDUE_DEBUG
     RLOG(DEBUG) << "Result: " << result.str();
