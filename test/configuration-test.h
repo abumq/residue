@@ -176,7 +176,7 @@ protected:
                                           {
                                               "code": "eif82"
                                           }
-                                      ],
+                                      ]
                                   }
                               ],
                               "extensions": {

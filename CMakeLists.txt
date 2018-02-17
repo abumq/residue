@@ -11,7 +11,7 @@ option (enable_extensions "Enables extensions support for the build" OFF)
 option (use_mine "Use mine whereever possible" OFF)
 option (special_edition "Special edition build" OFF)
 option (use_boost "Use boost or standalone networking lib" OFF)
-option (use_gason "Use gason where possible" OFF)
+option (use_gason "Use gason where possible" ON)
 
 set (RESIDUE_MAJOR "1")
 set (RESIDUE_MINOR "4")
@@ -71,7 +71,7 @@ include (FindCURL)
 
 check_apple()
 
-list (APPEND CMAKE_CXX_FLAGS " -std=c++11 -O0 -Wall -Wextra -pedantic -pedantic-errors -Wno-undefined-var-template -Wno-undef -Wno-unused-local-typedef -Wno-unused-variable -Wno-deprecated-declarations -Wno-unknown-warning-option -Wno-pessimizing-move ")
+list (APPEND CMAKE_CXX_FLAGS " -std=c++11 -O3 -Wall -Wextra -pedantic -pedantic-errors -Wno-undefined-var-template -Wno-undef -Wno-unused-local-typedef -Wno-unused-variable -Wno-deprecated-declarations -Wno-unknown-warning-option -Wno-pessimizing-move ")
 
 if (CMAKE_BUILD_TYPE EQUAL "DEBUG" OR CMAKE_BUILD_TYPE EQUAL "RELWITHDEBINFO")
     message ("==> EXPORTING DEBUG SYMBOLS")
