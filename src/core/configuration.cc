@@ -123,8 +123,8 @@ void Configuration::loadFromInput(std::string&& jsonStr)
         errorStream  << "  Invalid port(s). Please choose all 4 valid ports." << std::endl;
     }
 
-    if (jdoc.get<bool>("accept_input", true)) {
-        addFlag(Configuration::Flag::ACCEPT_INPUT);
+    if (jdoc.get<bool>("enable_cli", true)) {
+        addFlag(Configuration::Flag::ENABLE_CLI);
     }
     if (jdoc.get<bool>("allow_unknown_loggers", true)) {
         addFlag(Configuration::Flag::ALLOW_UNKNOWN_LOGGERS);
@@ -377,8 +377,8 @@ void Configuration::loadFromInput(std::string&& jsonStr)
         errorStream  << "  Invalid port(s). Please choose all 4 valid ports." << std::endl;
     }
 
-    if (jsonDoc.getBool("accept_input", true)) {
-        addFlag(Configuration::Flag::ACCEPT_INPUT);
+    if (jsonDoc.getBool("enable_cli", true)) {
+        addFlag(Configuration::Flag::ENABLE_CLI);
     }
     if (jsonDoc.getBool("allow_unknown_loggers", true)) {
         addFlag(Configuration::Flag::ALLOW_UNKNOWN_LOGGERS);
@@ -1212,7 +1212,7 @@ bool Configuration::save(const std::string& outputFile)
     }
     j.addValue("default_key_size", defaultKeySize());
     j.addValue("file_mode", fileMode());
-    j.addValue("accept_input", hasFlag(Configuration::Flag::ACCEPT_INPUT));
+    j.addValue("enable_cli", hasFlag(Configuration::Flag::ENABLE_CLI));
     j.addValue("allow_default_access_code", hasFlag(Configuration::Flag::ALLOW_DEFAULT_ACCESS_CODE));
     j.addValue("allow_plain_connection", hasFlag(Configuration::Flag::ALLOW_PLAIN_CONNECTION));
     j.addValue("allow_unknown_loggers", hasFlag(Configuration::Flag::ALLOW_UNKNOWN_LOGGERS));
@@ -1395,7 +1395,7 @@ bool Configuration::save(const std::string& outputFile)
     }
     j["default_key_size"] = defaultKeySize();
     j["file_mode"] = fileMode();
-    j["accept_input"] = hasFlag(Configuration::Flag::ACCEPT_INPUT);
+    j["enable_cli"] = hasFlag(Configuration::Flag::ENABLE_CLI);
     j["allow_default_access_code"] = hasFlag(Configuration::Flag::ALLOW_DEFAULT_ACCESS_CODE);
     j["allow_plain_connection"] = hasFlag(Configuration::Flag::ALLOW_PLAIN_CONNECTION);
     j["allow_unknown_loggers"] = hasFlag(Configuration::Flag::ALLOW_UNKNOWN_LOGGERS);

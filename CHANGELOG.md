@@ -4,6 +4,7 @@
 ### Updates
 - Performance improvement using standard response
 - Changed `access_codes_blacklist` to `access_code_blacklist`
+- `ACCEPT_INPUT` renamed to `ENABLE_CLI`
 
 ### Fixes
 - Crash detected when writing to session #79

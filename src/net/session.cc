@@ -82,7 +82,7 @@ void Session::read()
             //RESIDUE_PROFILE_CHECKPOINT(t_read, m_timeTaken, 1);
             sendToHandler(std::move(buffer));
             //RESIDUE_PROFILE_CHECKPOINT(t_read, m_timeTaken, 2);
-            if (m_requestHandler->registry()->configuration()->hasFlag(Configuration::ACCEPT_INPUT)) {
+            if (m_requestHandler->registry()->configuration()->hasFlag(Configuration::ENABLE_CLI)) {
 #ifdef RESIDUE_DEV
                 DRVLOG(RV_TRACE) << "Adding bytes";
 #endif
@@ -162,7 +162,7 @@ void Session::write(const char* data,
                     std::size_t length)
 {
  //   auto self(shared_from_this());
-    if (m_requestHandler->registry()->configuration()->hasFlag(Configuration::ACCEPT_INPUT)) {
+    if (m_requestHandler->registry()->configuration()->hasFlag(Configuration::ENABLE_CLI)) {
         Utils::bigAdd(m_bytesSent, std::to_string(length));
         m_requestHandler->registry()->addBytesSent(length);
     }

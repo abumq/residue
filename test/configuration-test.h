@@ -113,7 +113,7 @@ protected:
                               "allow_default_access_code": true,
                               "allow_unknown_loggers": true,
                               "allow_unknown_clients": false,
-                              "accept_input": false,
+                              "enable_cli": false,
                               "requires_token": true,
                               "allow_plain_log_request": true,
                               "immediate_flush": true,
@@ -221,7 +221,7 @@ TEST_F(ConfigurationTest, CheckValues)
     ASSERT_EQ(conf->maxTokenAge(), 60);
     ASSERT_EQ(conf->nonAcknowledgedClientAge(), 3600);
     ASSERT_EQ(conf->clientIntegrityTaskInterval(), 500);
-    ASSERT_FALSE(conf->hasFlag(Configuration::Flag::ACCEPT_INPUT));
+    ASSERT_FALSE(conf->hasFlag(Configuration::Flag::ENABLE_CLI));
     ASSERT_TRUE(conf->hasFlag(Configuration::Flag::ALLOW_UNKNOWN_LOGGERS));
     ASSERT_FALSE(conf->hasFlag(Configuration::Flag::ALLOW_UNKNOWN_CLIENTS));
     ASSERT_TRUE(conf->hasFlag(Configuration::Flag::ALLOW_DEFAULT_ACCESS_CODE));
@@ -282,7 +282,7 @@ TEST_F(ConfigurationTest, Save)
     ASSERT_EQ(conf2->knownClientsKeys().size(), conf->knownClientsKeys().size());
     ASSERT_EQ(conf2->nonAcknowledgedClientAge(), conf->nonAcknowledgedClientAge());
     ASSERT_EQ(conf2->clientIntegrityTaskInterval(), conf->clientIntegrityTaskInterval());
-    ASSERT_EQ(conf2->hasFlag(Configuration::Flag::ACCEPT_INPUT), conf->hasFlag(Configuration::Flag::ACCEPT_INPUT));
+    ASSERT_EQ(conf2->hasFlag(Configuration::Flag::ENABLE_CLI), conf->hasFlag(Configuration::Flag::ENABLE_CLI));
     ASSERT_EQ(conf2->hasFlag(Configuration::Flag::ALLOW_UNKNOWN_LOGGERS), conf->hasFlag(Configuration::Flag::ALLOW_UNKNOWN_LOGGERS));
     ASSERT_EQ(conf2->hasFlag(Configuration::Flag::ALLOW_UNKNOWN_CLIENTS), conf->hasFlag(Configuration::Flag::ALLOW_UNKNOWN_CLIENTS));
     ASSERT_EQ(conf2->hasFlag(Configuration::Flag::ALLOW_DEFAULT_ACCESS_CODE), conf->hasFlag(Configuration::Flag::ALLOW_DEFAULT_ACCESS_CODE));

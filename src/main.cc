@@ -316,7 +316,7 @@ int main(int argc, char* argv[])
         // AUTO UPDATER INACTIVE IN DEV MODE
 #endif
 
-        if (registry.configuration()->hasFlag(Configuration::Flag::ACCEPT_INPUT)) {
+        if (registry.configuration()->hasFlag(Configuration::Flag::ENABLE_CLI)) {
             signal(SIGINT, interruptHandler); // SIGINT = interrupt
             commandHandler.start(&s_exitOnInterrupt);
 

@@ -60,8 +60,8 @@ See [Ripe](https://github.com/muflihun/ripe#readme) for more details.
 ### `server_rsa_secret`
 [String] If private key is encrypted, this is the secret (passphrase) to decrypt it. **THIS SHOULD BE HEX ENCODED**.
 
-### `accept_input`
-[Boolean] Whether server accepts input from user or not. See [CLI_COMMANDS.md](/docs/CLI_COMMANDS.md) for possible input commands.
+### `enable_cli`
+[Boolean] Whether CLI is enabled on server or not. See [CLI_COMMANDS.md](/docs/CLI_COMMANDS.md) for possible input commands.
 
 Default: `true`
 

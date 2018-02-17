@@ -73,7 +73,7 @@ public:
         ALLOW_UNKNOWN_CLIENTS = 64,
         ALLOW_PLAIN_CONNECTION = 128,
         COMPRESSION = 256,
-        ACCEPT_INPUT = 512,
+        ENABLE_CLI = 512,
         REQUIRES_TIMESTAMP = 1024,
     };
 
