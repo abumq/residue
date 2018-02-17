@@ -28,7 +28,7 @@
 #include "ripe/Ripe.h"
 #include "test.h"
 #include "core/residue-exception.h"
-#include "../src/core/configuration.h"
+#include "core/configuration.h"
 #include "core/registry.h"
 #include "logging/user-log-builder.h"
 #include "logging/log-request-handler.h"

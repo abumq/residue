@@ -24,8 +24,8 @@
 
 #include <sstream>
 #include <memory>
-#include "../../deps/gason/gason.h"
-#include "../../deps/gason/jsonbuilder.h"
+#include "gason/gason.h"
+#include "gason/jsonbuilder.h"
 
 namespace residue {
 
