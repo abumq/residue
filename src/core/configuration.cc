@@ -1205,8 +1205,12 @@ bool Configuration::save(const std::string& outputFile)
     j.addValue("token_port", tokenPort());
     j.addValue("logging_port", loggingPort());
     j.addValue("server_key", serverKey());
-    j.addValue("server_rsa_private_key", m_serverRSAPrivateKeyFile);
-    j.addValue("server_rsa_public_key", m_serverRSAPublicKeyFile);
+    if (!m_serverRSAPrivateKeyFile.empty()) {
+        j.addValue("server_rsa_private_key", m_serverRSAPrivateKeyFile);
+    }
+    if (!m_serverRSAPublicKeyFile.empty()) {
+        j.addValue("server_rsa_public_key", m_serverRSAPublicKeyFile);
+    }
     if (!serverRSASecret().empty()) {
         j.addValue("server_rsa_secret", serverRSASecret());
     }
