@@ -19,6 +19,7 @@
 //  limitations under the License.
 //
 
+#include <cmath>
 #include <iterator>
 #include <vector>
 #include <set>
