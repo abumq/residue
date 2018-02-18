@@ -5,7 +5,7 @@
 # Client Development
 This document gives you detailed guidelines on how to write a new client library.
 
-We highly recommend you understand how the server and client interact and what's the role of a developer in the whole process. You can understand all this by looking at [DATA_FLOW](/docs/DATA_FLOW.md) diagram and reading [PROTOCOL](/docs/PROTOCOL.md) specifications.
+We highly recommend you understand how the server and client interact and what's the role of a developer in the whole process. You can understand all this by looking at [DATA_FLOW.md](/docs/DATA_FLOW.md) diagram and reading [CONNECTIVITY.md](/docs/CONNECTIVITY.md) specifications.
 
 ## Official Libraries
 Residue comes with following official client libraries. You can look at their source code for references and guidelines.
@@ -13,6 +13,7 @@ Residue comes with following official client libraries. You can look at their so
  * [C++ (C++11 or higher)](https://github.com/muflihun/residue-cpp)
  * [Node.js](https://github.com/muflihun/residue-node)
  * [Java (Incl. Android, API level 26 or higher)](https://github.com/muflihun/residue-java)
+ * [PHP](https://github.com/muflihun/residue-php)
  
 ## What is Client Library?
 Server is useless without a client. In _residue_'s world, client is what sends log request payload to the server. Client library is an abstract layer between end-developer and the server (residue). 
@@ -145,7 +146,7 @@ This function will notify user if there was failure in estabilishing the connect
  * If host is unavailable or not connected to the network
  * If residue denied the connection e.g, invalid access code or invalid public key
  
-Once connected, the connection response is most important thing, it contains what has been mentioned in [`PROTOCOL`](/docs/PROTOCOL.md#connection-establishment) specification. You will need it throughout.
+Once connected, the connection response is most important thing, it contains what has been mentioned in [`CONNECTIVITY`](/docs/CONNECTIVITY.md#connection-establishment) specification. You will need it throughout.
  
 See `Residue.connect` in [Java](https://github.com/muflihun/residue-java/blob/master/src/com/muflihun/residue/Residue.java) library for example
 
@@ -175,7 +176,7 @@ See also
  * `sendLogRequest` in [Node.js](https://github.com/muflihun/residue-node/blob/master/src/residue.js) library does not have multi-threading so it's dispatched as is (but it does check for all the above items)
 
 ### JSON Payload
-All the requests are JSON based and each type of connection is sent to specific port as specified in [`PROTOCOL`](/docs/PROTOCOL.md) specification
+All the requests are JSON based and each type of connection is sent to specific port as specified in [`CONNECTIVITY.md`](/docs/CONNECTIVITY.md) specification
 
 For those of you who are familiar with bash scripting and PHP scripting we have [`netcat` client for demo purposes](/tools/netcat-client/) that will also help you create correct JSON payload
 
