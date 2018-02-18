@@ -83,4 +83,4 @@ We're also actively working on client libraries for residue in other languages. 
 Please see [LICENSE](/LICENSE) for licensing information.
 
   [banner]: https://raw.githubusercontent.com/muflihun/residue/master/docs/Residue.png
-  [overview]: https://raw.githubusercontent.com/muflihun/residue/master/docs/residue-overview.png
+  [overview]: https://raw.githubusercontent.com/muflihun/residue/master/docs/residue-overview.png?
