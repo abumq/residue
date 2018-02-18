@@ -12,6 +12,8 @@
 # Overview 
 Residue is an effort to standardize application logging by implementing simple logging API, making it easily configurable, build-in configurable log rotators, simple way to format your log messages according to need of your application and most of all language-independent.
 
+![overview]
+
 # Details
 Logging is an essential part of any application. But not all the applications can store these logs on the same device where they're running. For this reason, the logs must be transferred to a remote system.
 
@@ -81,3 +83,4 @@ We're also actively working on client libraries for residue in other languages. 
 Please see [LICENSE](/LICENSE) for licensing information.
 
   [banner]: https://raw.githubusercontent.com/muflihun/residue/master/docs/Residue.png
+  [overview]: https://raw.githubusercontent.com/muflihun/residue/master/docs/residue-overview.png
