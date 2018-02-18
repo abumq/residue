@@ -12,6 +12,7 @@ option (use_mine "Use mine whereever possible" OFF)
 option (special_edition "Special edition build" OFF)
 option (use_boost "Use boost or standalone networking lib" OFF)
 option (use_gason "Use gason where possible" ON)
+option (old_toolchain "Is old toolchain" OFF)
 
 set (RESIDUE_MAJOR "1")
 set (RESIDUE_MINOR "4")
@@ -25,6 +26,11 @@ add_definitions (-DRESIDUE_VERSION_MINOR="${RESIDUE_MINOR}")
 add_definitions (-DRESIDUE_VERSION_PATCH="${RESIDUE_PATCH}")
 
 add_definitions (-DRIPE_VERSION="4.1.1-static")
+
+if (old_toolchain)
+    message ("==> USING OLD TOOLCHAIN");
+    add_definitions (-D_GLIBCXX_USE_NANOSLEEP)
+endif(old_toolchain)
 
 if (use_mine)
     add_definitions (-DRESIDUE_USE_MINE)

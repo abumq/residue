@@ -16,6 +16,7 @@ matrix:
     compiler: gcc
     env:
       - COMPILER=g++-4.6
+      - OLD_TOOLCHAIN=ON
     addons:
       apt:
         sources: ['ubuntu-toolchain-r-test']
@@ -31,6 +32,7 @@ matrix:
     compiler: gcc
     env:
       - COMPILER=g++-4.7
+      - OLD_TOOLCHAIN=ON
     addons:
       apt:
         sources: ['ubuntu-toolchain-r-test']
@@ -171,7 +173,7 @@ install:
  - cd build
  - export TZ=Australia/Canberra
  - date
- - cmake -Dtest=ON -Dtravis=ON -Denable_extensions=OFF -Duse_boost=OFF ..
+ - cmake -Dtest=ON -Dtravis=ON -Denable_extensions=OFF -Duse_boost=OFF -Dold_toolchain=$OLD_TOOLCHAIN ..
  - sudo make
  - ls -l
  - ldd ./residue
