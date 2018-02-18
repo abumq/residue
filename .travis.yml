@@ -5,6 +5,8 @@ matrix:
   include:
   - os: linux
     compiler: clang
+    env:
+      - OLD_TOOLCHAIN=OFF
     before_install:
     - sudo add-apt-repository ppa:kubuntu-ppa/backports -y
     - sudo apt-get -qq update
@@ -48,6 +50,7 @@ matrix:
     compiler: gcc
     env:
       - COMPILER=g++-4.8
+      - OLD_TOOLCHAIN=OFF
     addons:
       apt:
         sources: ['ubuntu-toolchain-r-test']
@@ -63,6 +66,7 @@ matrix:
     compiler: gcc
     env:
       - COMPILER=g++-4.9
+      - OLD_TOOLCHAIN=OFF
     addons:
       apt:
         sources: ['ubuntu-toolchain-r-test']
@@ -78,6 +82,7 @@ matrix:
     compiler: gcc
     env:
       - COMPILER=g++-5
+      - OLD_TOOLCHAIN=OFF
     addons:
       apt:
         sources: ['ubuntu-toolchain-r-test']
@@ -93,6 +98,7 @@ matrix:
     compiler: gcc
     env:
       - COMPILER=g++-6
+      - OLD_TOOLCHAIN=OFF
     addons:
       apt:
         sources: ['ubuntu-toolchain-r-test']
@@ -108,6 +114,7 @@ matrix:
     compiler: gcc
     env:
       - COMPILER=g++-7
+      - OLD_TOOLCHAIN=OFF
     addons:
       apt:
         sources: ['ubuntu-toolchain-r-test']
@@ -119,12 +126,10 @@ matrix:
     - sudo apt-get install -y libgtest-dev ## libboost-system-dev
     - sudo apt-get install --only-upgrade cmake
     
-#  - os: osx
-#    compiler: clang
-#    osx_image: xcode8
-#     - sudo port install boost
-#     - g++ -v
-#     - cmake -v
+  - os: osx
+    compiler: clang
+    osx_image: xcode8
+     - sudo port install cmake
     
 install:
  - cmake --version 
