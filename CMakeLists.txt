@@ -28,7 +28,7 @@ add_definitions (-DRESIDUE_VERSION_PATCH="${RESIDUE_PATCH}")
 add_definitions (-DRIPE_VERSION="4.1.1-static")
 
 if (old_toolchain)
-    message ("==> USING OLD TOOLCHAIN");
+    message ("==> USING OLD TOOLCHAIN")
     add_definitions (-D_GLIBCXX_USE_NANOSLEEP)
 endif(old_toolchain)
 
