@@ -355,9 +355,9 @@ Verbose level names are:
 | ---------------- | ----------- |
 | 9 | `vCRAZY` |
 | 8 | `vTRACE` |
-| 7 | `vDEBUG` |
-| 6 | `vDETAILS` |
-| 5 | `5` |
+| 7 | `vDEBUG2` |
+| 6 | `vDEBUG` |
+| 5 | `vDETAILS` |
 | 4 | `vERROR` |
 | 3 | `vWARNING` |
 | 2 | `vNOTICE` |

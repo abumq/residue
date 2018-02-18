@@ -1,5 +1,9 @@
 # Change Log
 
+## [Unreleased]
+### Fixes
+- Fix output help from `--verbose` to `--v`
+
 ## [1.4.3] - 17-02-2018
 ### Updates
 - Performance improvement using standard response
