@@ -140,20 +140,12 @@ else()
     set (MINE_SRC "")
 endif()
 
-if (use_gason)
-    set (GASON_SRC deps/gason/gason.cc)
-    set (JSON_SRC src/core/json-doc.cc)
-else()
-    set (GASON_SRC "")
-    set (JSON_SRC src/core/json-document.cc)
-endif()
-
 set (DEPS_SRC
     ${MINE_SRC}
     deps/linenoise/linenoise.c
     deps/easyloggingpp/easylogging++.cc
     deps/ripe/Ripe.cc
-    ${GASON_SRC}
+    deps/gason/gason.cc
 )
 
 set (SOURCE_FILES
@@ -182,8 +174,7 @@ set (SOURCE_FILES
     src/core/response.cc
     src/core/configuration.cc
     src/core/registry.cc
-
-    ${JSON_SRC}
+    src/core/json-doc.cc
 
     src/crypto/rsa.cc
     src/crypto/aes.cc
