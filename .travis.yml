@@ -1,5 +1,4 @@
 language: cpp
-sudo: false
 matrix:
   include:
   - os: linux
@@ -18,6 +17,7 @@ matrix:
     env:
       - COMPILER=g++-4.6
       - OLD_TOOLCHAIN=ON
+      - CXX_OX=ON
     addons:
       apt:
         sources: ['ubuntu-toolchain-r-test']
@@ -142,8 +142,8 @@ install:
  - cmake -DBUILD_SHARED_LIBS=ON .
  - make
  - ls -l
- - cp -a include/gtest /usr/include
- - cp -a libgtest_main.* libgtest.* /usr/lib/
+ - sudo cp -a include/gtest /usr/include
+ - sudo cp -a libgtest_main.* libgtest.* /usr/lib/
  - cd ..
 
 ## Python
@@ -178,7 +178,7 @@ install:
  - cd build
  - export TZ=Australia/Canberra
  - date
- - cmake -Dtest=ON -Dtravis=ON -Denable_extensions=OFF -Duse_boost=OFF -Dold_toolchain=$OLD_TOOLCHAIN ..
+ - cmake -Dtest=ON -Dtravis=ON -Denable_extensions=OFF -Duse_boost=OFF -Dold_toolchain=$OLD_TOOLCHAIN -Dcxx_ox=$CXX_OX ..
  - make
  - ls -l
  - ldd ./residue
