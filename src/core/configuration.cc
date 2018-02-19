@@ -39,6 +39,7 @@
 #include "logging/log-request.h"
 #ifdef RESIDUE_USE_GASON
 #   include "core/json-doc.h"
+#   include "core/json-builder.h"
 #else
 #   include "core/json-document.h"
 #endif

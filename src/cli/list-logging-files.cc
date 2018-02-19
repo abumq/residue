@@ -22,6 +22,7 @@
 #include "cli/list-logging-files.h"
 #include "core/registry.h"
 #include "core/configuration.h"
+#include "core/json-builder.h"
 
 using namespace residue;
 

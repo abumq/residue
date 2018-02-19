@@ -15,24 +15,6 @@ matrix:
     dist: trusty
     compiler: gcc
     env:
-      - COMPILER=g++-4.6
-      - OLD_TOOLCHAIN=ON
-      - CXX_OX=ON
-    addons:
-      apt:
-        sources: ['ubuntu-toolchain-r-test']
-        packages: [g++-4.6, valgrind]
-    before_install:
-    - CXX=$COMPILER
-    - sudo add-apt-repository ppa:kubuntu-ppa/backports -y
-    - sudo apt-get -qq update
-    - sudo apt-get install -y libgtest-dev ## libboost-system-dev
-    - sudo apt-get install --only-upgrade cmake
-
-  - os: linux
-    dist: trusty
-    compiler: gcc
-    env:
       - COMPILER=g++-4.7
       - OLD_TOOLCHAIN=ON
     addons:

@@ -21,6 +21,7 @@
 
 #include "connect/connection-response.h"
 #include "core/configuration.h"
+#include "core/json-builder.h"
 #include "clients/client.h"
 
 using namespace residue;
