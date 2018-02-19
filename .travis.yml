@@ -1,9 +1,9 @@
 language: cpp
-dist: trusty
-sudo: required
+sudo: false
 matrix:
   include:
   - os: linux
+    dist: trusty
     compiler: clang
     before_install:
     - sudo add-apt-repository ppa:kubuntu-ppa/backports -y
@@ -13,6 +13,7 @@ matrix:
     - g++ -v
 
   - os: linux
+    dist: trusty
     compiler: gcc
     env:
       - COMPILER=g++-4.6
@@ -29,6 +30,7 @@ matrix:
     - sudo apt-get install --only-upgrade cmake
 
   - os: linux
+    dist: trusty
     compiler: gcc
     env:
       - COMPILER=g++-4.7
@@ -45,6 +47,7 @@ matrix:
     - sudo apt-get install --only-upgrade cmake
 
   - os: linux
+    dist: trusty
     compiler: gcc
     env:
       - COMPILER=g++-4.8
@@ -60,6 +63,7 @@ matrix:
     - sudo apt-get install --only-upgrade cmake
     
   - os: linux
+    dist: trusty
     compiler: gcc
     env:
       - COMPILER=g++-4.9
@@ -75,6 +79,7 @@ matrix:
     - sudo apt-get install --only-upgrade cmake
 
   - os: linux
+    dist: trusty
     compiler: gcc
     env:
       - COMPILER=g++-5
@@ -90,6 +95,7 @@ matrix:
     - sudo apt-get install --only-upgrade cmake
     
   - os: linux
+    dist: trusty
     compiler: gcc
     env:
       - COMPILER=g++-6
@@ -105,6 +111,7 @@ matrix:
     - sudo apt-get install --only-upgrade cmake
     
   - os: linux
+    dist: trusty
     compiler: gcc
     env:
       - COMPILER=g++-7
@@ -135,8 +142,8 @@ install:
  - cmake -DBUILD_SHARED_LIBS=ON .
  - make
  - ls -l
- - sudo cp -a include/gtest /usr/include
- - sudo cp -a libgtest_main.* libgtest.* /usr/lib/
+ - cp -a include/gtest /usr/include
+ - cp -a libgtest_main.* libgtest.* /usr/lib/
  - cd ..
 
 ## Python
@@ -145,7 +152,7 @@ install:
 # - cd Python-2.7.14
 # - ./configure
 # - make
-# - sudo make install
+# - make install
 
 ## Easylogging++
  - wget https://github.com/muflihun/easyloggingpp/archive/develop.zip
@@ -153,7 +160,7 @@ install:
  - cd easyloggingpp-develop
  - cmake .
  - make
- - sudo make install
+ - make install
 
 ## Crypto++ (We dont need this for residue, we need it for ripe and mine)
  - wget https://raw.githubusercontent.com/muflihun/muflihun.github.io/master/downloads/cryptocpp.tar.gz
@@ -163,7 +170,7 @@ install:
  - unzip pem_pack.zip
  - cmake .
  - make
- - sudo make install
+ - make install
 
 ## Build
  - cd "${TRAVIS_BUILD_DIR}"
@@ -172,7 +179,7 @@ install:
  - export TZ=Australia/Canberra
  - date
  - cmake -Dtest=ON -Dtravis=ON -Denable_extensions=OFF -Duse_boost=OFF -Dold_toolchain=$OLD_TOOLCHAIN ..
- - sudo make
+ - make
  - ls -l
  - ldd ./residue
 
