@@ -32,11 +32,7 @@
 #include "clients/client.h"
 #include "crypto/rsa.h"
 #include "extensions/log-extension.h"
-#ifdef RESIDUE_USE_GASON
-#   include "core/json-doc.h"
-#else
-#   include "core/json-document.h"
-#endif
+#include "core/json-doc.h"
 
 namespace residue {
 
@@ -392,7 +388,6 @@ private:
         return m_knownClientsKeys.find(clientId) != m_knownClientsKeys.end();
     }
 
-#ifdef RESIDUE_USE_GASON
     void loadKnownLoggers(const JsonDoc::Value& json, std::stringstream& errorStream, bool viaUrl);
     void loadKnownClients(const JsonDoc::Value& json, std::stringstream& errorStream, bool viaUrl);
     void loadLoggersBlacklist(const JsonDoc::Value& json, std::stringstream& errorStream);
@@ -416,30 +411,6 @@ private:
             }
         }
     }
-#else
-    void loadKnownLoggers(const JsonItem& json, std::stringstream& errorStream, bool viaUrl);
-    void loadKnownClients(const JsonItem& json, std::stringstream& errorStream, bool viaUrl);
-    void loadLoggersBlacklist(const JsonItem& json, std::stringstream& errorStream);
-
-    template <typename T, typename ListType = std::vector<std::unique_ptr<T>>>
-    void loadExtensions(const JsonItem& json, std::stringstream& errorStream, ListType* list)
-    {
-        std::vector<std::string> ext;
-
-        for (const auto& moduleName : json) {
-            std::string moduleNameStr = moduleName;
-            if (moduleNameStr.empty()) {
-                continue;
-            }
-            if (std::find(ext.begin(), ext.end(), moduleNameStr) != ext.end()) {
-                errorStream << "Duplicate extension could not be loaded: " << moduleNameStr;
-            } else {
-                ext.push_back(moduleNameStr);
-                list->push_back(std::unique_ptr<T>(new T(moduleNameStr)));
-            }
-        }
-    }
-#endif
 };
 }
 #endif /* Configuration_h */

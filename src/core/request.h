@@ -24,11 +24,7 @@
 
 #include <string>
 #include "non-copyable.h"
-#ifdef RESIDUE_USE_GASON
-#   include "core/json-doc.h"
-#else
-#   include "core/json-document.h"
-#endif
+#include "core/json-doc.h"
 #include "core/types.h"
 
 namespace residue {
@@ -39,10 +35,6 @@ class Configuration;
 
 ///
 /// \brief Base request class
-/// \see AdminRequest
-/// \see ConnectionRequest
-/// \see TokenRequest
-/// \see LogRequest
 ///
 class Request : NonCopyable
 {
@@ -64,17 +56,10 @@ public:
 
     virtual bool deserialize(std::string&& json);
 
-#ifdef RESIDUE_USE_GASON
     inline const JsonDoc& jsonObject() const
     {
         return m_jsonDoc;
     }
-#else
-    inline JsonDocument jsonObject() const
-    {
-        return m_jsonDoc;
-    }
-#endif
 
     inline Client* client() const
     {
@@ -124,12 +109,7 @@ public:
 
     virtual bool validateTimestamp() const;
 protected:
-#ifdef RESIDUE_USE_GASON
     JsonDoc m_jsonDoc;
-#else
-    JsonDocument m_jsonDoc;
-#endif
-
     bool m_isValid;
 
     Client* m_client;

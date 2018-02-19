@@ -68,11 +68,11 @@ void LogRequestHandler::processRequestQueue()
     bool allowBulkRequests = m_registry->configuration()->hasFlag(Configuration::ALLOW_BULK_LOG_REQUEST);
     auto maxItemsInBulk = m_registry->configuration()->maxItemsInBulk();
 
-#ifdef RESIDUE_PROFILING
+ #ifdef RESIDUE_PROFILING
     types::Time m_timeTaken;
     RESIDUE_PROFILE_START(t_process_queue);
     std::size_t totalRequests = 0; // 1 for 1 request so for bulk of 50 this will be 50
-#endif
+ #endif
 
     // we take snapshot to prevent potential race conditions (even though we have LoggingQueue that is safe)
     const std::size_t total = m_queue.size();
@@ -120,23 +120,17 @@ void LogRequestHandler::processRequestQueue()
                 unsigned int itemCount = 0U;
                 Client* currentClient = request.client();
                 bool forceClientValidation = true;
-#ifdef RESIDUE_DEV
+ #ifdef RESIDUE_DEV
                 DRVLOG(RV_DEBUG) << "Request client: " << request.client();
-#endif
-#ifdef RESIDUE_USE_GASON
+ #endif
                 JsonDoc d;
-#endif
                 for (const auto& js : request.jsonObject()) {
                     if (itemCount == maxItemsInBulk) {
                         RLOG(ERROR) << "Maximum number of bulk requests reached. Ignoring the rest of items in bulk";
                         break;
                     }
-#ifdef RESIDUE_USE_GASON
                     d.val = js->value;
                     std::string requestItemStr(d.dump());
-#else
-                    std::string requestItemStr(js.dump());
-#endif
                     LogRequest requestItem(m_registry->configuration());
                     requestItem.deserialize(std::move(requestItemStr));
                     if (requestItem.isValid()) {
@@ -151,9 +145,9 @@ void LogRequestHandler::processRequestQueue()
                             forceClientValidation = true;
                         }
                         itemCount++;
-#ifdef RESIDUE_PROFILING
+ #ifdef RESIDUE_PROFILING
                         totalRequests++;
-#endif
+ #endif
                     } else {
                         RLOG(ERROR) << "Invalid request in bulk.";
                     }
@@ -194,14 +188,14 @@ void LogRequestHandler::processRequestQueue()
         m_registry->clientIntegrityTask()->resumeScheduledCleanup();
     }
 
-#ifdef RESIDUE_PROFILING
+ #ifdef RESIDUE_PROFILING
     RESIDUE_PROFILE_END(t_process_queue, m_timeTaken);
     float timeTakenInSec = static_cast<float>(m_timeTaken / 1000.0f);
     RLOG_IF(total > 0, DEBUG) << "Took " << timeTakenInSec << "s to process the queue of "
                                    << total << " items (" << totalRequests << " requests). Average: "
                                    << (static_cast<float>(m_timeTaken) / static_cast<float>(total)) << "ms/item ["
                                    << (static_cast<float>(m_timeTaken) / static_cast<float>(totalRequests)) << "ms/request]";
-#endif
+ #endif
 
     m_queue.switchContext();
 }
@@ -209,11 +203,11 @@ void LogRequestHandler::processRequestQueue()
 bool LogRequestHandler::processRequest(LogRequest* request, Client** clientRef, bool forceCheck, Session *session)
 {
     bool bypassChecks = !forceCheck && clientRef != nullptr && *clientRef != nullptr;
-#ifdef RESIDUE_DEV
+ #ifdef RESIDUE_DEV
     DRVLOG(RV_DEBUG_2) << "Force check: " << forceCheck << ", clientRef: " << clientRef << ", *clientRef: "
                      << (clientRef == nullptr ? "N/A" : *clientRef == nullptr ? "null" : (*clientRef)->id())
                      << ", bypassChecks: " << bypassChecks;
-#endif
+ #endif
     Client* client = clientRef != nullptr && *clientRef != nullptr ? *clientRef : request->client();
 
     if (client == nullptr) {
@@ -286,18 +280,18 @@ bool LogRequestHandler::processRequest(LogRequest* request, Client** clientRef, 
 
 void LogRequestHandler::dispatch(const LogRequest* request)
 {
-#ifdef RESIDUE_DEV
+ #ifdef RESIDUE_DEV
     DRVLOG(RV_TRACE) << "Dispatching";
-#endif
+ #endif
     m_userLogBuilder->setRequest(request);
     // %client_id
     el::Helpers::installCustomFormatSpecifier(el::CustomFormatSpecifier("%client_id",  std::bind(&LogRequestHandler::getClientId, this, std::placeholders::_1)));
     // %ip
     el::Helpers::installCustomFormatSpecifier(el::CustomFormatSpecifier("%ip",  std::bind(&LogRequestHandler::getIpAddr, this, std::placeholders::_1)));
 
-#ifdef RESIDUE_DEV
+ #ifdef RESIDUE_DEV
     DRVLOG(RV_TRACE) << "Writing";
-#endif
+ #endif
     el::base::Writer(request->level(),
                      request->filename().c_str(),
                      request->lineNumber(),
@@ -305,18 +299,18 @@ void LogRequestHandler::dispatch(const LogRequest* request)
                      el::base::DispatchAction::NormalLog,
                      request->verboseLevel()).construct(el::Loggers::getLogger(request->loggerId())) << request->msg();
 
-#ifdef RESIDUE_DEV
+ #ifdef RESIDUE_DEV
     DRVLOG(RV_TRACE) << "Write complete";
-#endif
+ #endif
     // Reset
     el::Helpers::uninstallCustomFormatSpecifier("%client_id");
     el::Helpers::uninstallCustomFormatSpecifier("%ip");
 
     m_userLogBuilder->setRequest(nullptr);
 
-#ifdef RESIDUE_DEV
+ #ifdef RESIDUE_DEV
     DRVLOG(RV_TRACE) << "Dispatch complete";
-#endif
+ #endif
 }
 
 bool LogRequestHandler::isRequestAllowed(const LogRequest* request) const

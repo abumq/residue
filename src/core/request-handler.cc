@@ -102,13 +102,13 @@ DecryptedResult RequestHandler::decryptWithKey(const std::string& requestBase64,
                                                const std::string& clientId,
                                                const std::string& key) const
 {
-#ifdef RESIDUE_DEV
+ #ifdef RESIDUE_DEV
     DRVLOG(RV_CRAZY) << "Ripe command: echo " << iv << ":" << clientId << ":" << requestBase64
                      << " | ripe -d --aes --key " << key
                      << " --base64";
-#else
+ #else
     RESIDUE_UNUSED(clientId);
-#endif
+ #endif // RESIDUE_DEV
     try {
         std::string dataCopy = requestBase64;
         std::string result = AES::decrypt(dataCopy, key, iv);

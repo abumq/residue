@@ -57,9 +57,7 @@ ConnectionResponse::ConnectionResponse(Response::StatusCode status, const std::s
 }
 
 void ConnectionResponse::serialize(std::string& output) const
-{
-#ifdef RESIDUE_USE_GASON
-    const std::size_t capacity = 1024;
+{const std::size_t capacity = 1024;
     char source[capacity];
 
     JsonBuilder doc(source, capacity);
@@ -72,12 +70,12 @@ void ConnectionResponse::serialize(std::string& output) const
     if (m_isAcknowledged && m_configuration != nullptr) {
         std::stringstream ss;
         ss << RESIDUE_VERSION;
-        #ifdef RESIDUE_SPECIAL_EDITION
+#ifdef RESIDUE_SPECIAL_EDITION
         ss << "-SE";
-        #endif
-        #ifdef RESIDUE_DEBUG
+#endif
+#ifdef RESIDUE_DEBUG
         ss << "-debug";
-        #endif
+#endif
 
         doc.addValue("flags", static_cast<std::size_t>(m_configuration->flag()))
            .addValue("max_bulk_size", static_cast<std::size_t>(m_configuration->maxItemsInBulk()))
@@ -111,47 +109,4 @@ void ConnectionResponse::serialize(std::string& output) const
     doc.endObject();
 
     output = source;
-#else
-    JsonItem root;
-    root["status"] = m_status;
-    root["ack"] = m_isAcknowledged ? 1 : 0;
-    if (m_isAcknowledged && m_configuration != nullptr) {
-        root["flags"] = m_configuration->flag();
-        root["max_bulk_size"] = m_configuration->maxItemsInBulk();
-
-        std::map<std::string, std::string> serverInfo;
-        std::stringstream ss;
-        ss << RESIDUE_VERSION;
-#ifdef RESIDUE_SPECIAL_EDITION
-        ss << "-SE";
-#endif
-#ifdef RESIDUE_DEBUG
-        ss << "-debug";
-#endif
-        serverInfo.insert(std::make_pair("version", ss.str()));
-        root["server_info"] = serverInfo;
-    }
-    if (!m_errorText.empty()) {
-        root["error_text"] = m_errorText;
-    }
-    if (!m_key.empty()) {
-        root["key"] = m_key;
-    }
-    if (!m_clientId.empty()) {
-        root["client_id"] = m_clientId;
-    }
-    if (m_tokenPort != 0) {
-        root["token_port"] = m_tokenPort;
-    }
-    if (m_loggingPort != 0) {
-        root["logging_port"] = m_loggingPort;
-    }
-    if (m_clientAge != 0) {
-        root["age"] = m_clientAge;
-        if (m_clientDateCreated != 0) {
-            root["date_created"] = m_clientDateCreated;
-        }
-    }
-    Response::serialize(root, output);
-#endif
 }

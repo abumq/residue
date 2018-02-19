@@ -182,15 +182,15 @@ protected:
             DRVLOG(RV_INFO) << "Trying with server exchange key...";
             // Try with server RSA key data
             try {
-#ifdef RESIDUE_USE_MINE
+ #ifdef RESIDUE_USE_MINE
                 std::string requestStrNormal = Base16::encode(Base64::decode(requestStr));
                 std::string decryptedReq = RSA::decrypt(requestStrNormal,
                                                         m_registry->configuration()->serverRSAKey().privateKey);
-#else
+ #else
                 std::string decryptedReq = RSA::decrypt(requestStr,
                                                         m_registry->configuration()->serverRSAKey().privateKey,
                                                         m_registry->configuration()->serverRSASecret());
-#endif
+ #endif // RESIDUE_USE_MINE
                 result = request->deserialize(std::move(decryptedReq));
                 usedRsaKey = result;
             } catch (const std::exception& e) {

@@ -37,17 +37,10 @@ bool ConnectionRequest::deserialize(std::string&& json)
     m_isValid = true;
 
     if (Request::deserialize(std::move(json))) {
-#ifdef RESIDUE_USE_GASON
         m_clientId = m_jsonDoc.get<std::string>("client_id", "");
         m_rsaPublicKey = Base64::decode(m_jsonDoc.get<std::string>("rsa_public_key", ""));
         m_type = static_cast<ConnectionRequest::Type>(m_jsonDoc.get<unsigned int>("type", 0));
         unsigned int keySize = m_jsonDoc.get<unsigned int>("key_size", 0);
-#else
-        m_clientId = m_jsonDoc.getString("client_id");
-        m_rsaPublicKey = Base64::decode(m_jsonDoc.getString("rsa_public_key"));
-        m_type = static_cast<ConnectionRequest::Type>(m_jsonDoc.getUInt("type", 0));
-        unsigned int keySize = m_jsonDoc.getUInt("key_size", 0);
-#endif
 
         if (keySize == 0 || keySize == 128 || keySize == 192 || keySize == 256) {
             m_keySize = keySize;

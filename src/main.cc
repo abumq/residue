@@ -280,7 +280,7 @@ int main(int argc, char* argv[])
 
         // log rotator tasks
 
-        #define START_LOG_ROTATOR(THREAD_NAME, NAME)\
+#define START_LOG_ROTATOR(THREAD_NAME, NAME)\
         threads.push_back(std::thread([&]() {\
             el::Helpers::setThreadName(THREAD_NAME);\
             NAME rotator(&registry);\
@@ -296,7 +296,7 @@ int main(int argc, char* argv[])
         START_LOG_ROTATOR("MonthlyLogRotator", MonthlyLogRotator);
         START_LOG_ROTATOR("YearlyLogRotator", YearlyLogRotator);
 
-        #undef START_LOG_ROTATOR
+#undef START_LOG_ROTATOR
 
 #ifndef RESIDUE_DEV
         // auto updater

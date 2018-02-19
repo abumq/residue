@@ -26,7 +26,6 @@ using namespace residue;
 
 LogRequest::LogRequest(const Configuration* conf) :
     Request(conf),
-    m_msg(LogRequestFieldMessage.defaultValue),
     m_isValid(true)
 {
 }
@@ -35,7 +34,6 @@ bool LogRequest::deserialize(std::string&& json)
 {
     if (Request::deserialize(std::move(json))) {
 
-#ifdef RESIDUE_USE_GASON
         m_clientId = m_jsonDoc.get<std::string>("client_id", "");
         m_datetime = m_jsonDoc.get<unsigned long>("datetime", 0UL);
         m_token = m_jsonDoc.get<std::string>("token", "");
@@ -48,21 +46,7 @@ bool LogRequest::deserialize(std::string&& json)
         m_level = el::LevelHelper::castFromInt(static_cast<el::base::type::EnumType>(m_jsonDoc.get<unsigned int>("level", static_cast<unsigned int>(el::Level::Unknown))));
         m_verboseLevel = static_cast<el::base::type::VerboseLevel>(m_jsonDoc.get<unsigned int>("vlevel", static_cast<unsigned int>(9)));
         m_lineNumber = static_cast<el::base::type::LineNumber>(m_jsonDoc.get<unsigned int>("line", static_cast<unsigned int>(0)));
-#else
-        m_clientId = m_jsonDoc.getString("client_id", "");
 
-        m_datetime = resolveValue<types::TimeMs>(&m_jsonDoc, &LogRequestFieldDateTime);
-        m_token = resolveValue<std::string>(&m_jsonDoc, &LogRequestFieldToken);
-        m_loggerId = resolveValue<std::string>(&m_jsonDoc, &LogRequestFieldLogger);
-        m_filename = resolveValue<std::string>(&m_jsonDoc, &LogRequestFieldFile);
-        m_function = resolveValue<std::string>(&m_jsonDoc, &LogRequestFieldFunction);
-        m_applicationName = resolveValue<std::string>(&m_jsonDoc, &LogRequestFieldApplicationName);
-        m_threadId = resolveValue<std::string>(&m_jsonDoc, &LogRequestFieldThreadId);
-        m_msg = resolveValue<std::string>(&m_jsonDoc, &LogRequestFieldMessage);
-        m_lineNumber = static_cast<el::base::type::LineNumber>(resolveValue<el::base::type::LineNumber>(&m_jsonDoc, &LogRequestFieldLine));
-        m_level = el::LevelHelper::castFromInt(resolveValue<el::base::type::EnumType>(&m_jsonDoc, &LogRequestFieldLevel));
-        m_verboseLevel = resolveValue<el::base::type::VerboseLevel>(&m_jsonDoc, &LogRequestFieldVLevel);
-#endif
         m_isValid = m_datetime != 0L && m_level != el::Level::Unknown && !m_loggerId.empty() && !m_msg.empty();
     }
     return m_isValid;

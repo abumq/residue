@@ -33,9 +33,9 @@ AdminRequestHandler::AdminRequestHandler(Registry* registry, CommandHandler* com
     RequestHandler("Admin", registry),
     m_commandHandler(commandHandler)
 {
-#ifdef RESIDUE_DEV
+ #ifdef RESIDUE_DEV
     DRVLOG(RV_DEBUG) << "AdminRequestHandler " << this << " with registry " << m_registry;
-#endif
+ #endif
 }
 
 void AdminRequestHandler::handle(RawRequest&& rawRequest)

@@ -87,9 +87,9 @@ bool Client::isValidToken(const std::string& loggerId,
 #endif
         return tokenIter->isValid(compareTo);
     }
-#ifdef RESIDUE_DEV
+ #ifdef RESIDUE_DEV
     DRVLOG(RV_TRACE) << "Token invalid " << token << " (client [" << m_id << "])";
-#endif
+ #endif
     return false;
 }
 
