@@ -3,7 +3,6 @@ cmake_minimum_required (VERSION 2.8.12)
 project (Residue)
 
 option (test "Build all tests" OFF)
-option (travis "Travis CI" OFF)
 option (production "Build for production" ON)
 option (debug "Enable debug logging" OFF)
 option (profiling "Turns profiling on for various scenarios" OFF)
@@ -77,10 +76,6 @@ list (APPEND CMAKE_CXX_FLAGS " -std=${cxx_standard} -O${optimization_level} -Wal
 
 if (CMAKE_BUILD_TYPE EQUAL "DEBUG" OR CMAKE_BUILD_TYPE EQUAL "RELWITHDEBINFO")
     message ("==> EXPORTING DEBUG SYMBOLS")
-endif()
-
-if (travis)
-    add_definitions (-DRESIDUE_ON_CI)
 endif()
 
 find_package (CURL REQUIRED)
