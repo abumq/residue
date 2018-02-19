@@ -160,7 +160,7 @@ install:
  - cd easyloggingpp-develop
  - cmake .
  - make
- - make install
+ - sudo make install
 
 ## Crypto++ (We dont need this for residue, we need it for ripe and mine)
  - wget https://raw.githubusercontent.com/muflihun/muflihun.github.io/master/downloads/cryptocpp.tar.gz
@@ -170,7 +170,7 @@ install:
  - unzip pem_pack.zip
  - cmake .
  - make
- - make install
+ - sudo make install
 
 ## Build
  - cd "${TRAVIS_BUILD_DIR}"
