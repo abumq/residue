@@ -145,9 +145,6 @@ el::LogBuilder* configureLogging(Configuration* configuration)
 void printVersion(bool addSpaces = false)
 {
     std::cout <<  (addSpaces ? "  " : "") << "Residue v" << RESIDUE_VERSION;
-#ifdef RESIDUE_SPECIAL_EDITION
-    std::cout << "-SE";
-#endif
 #ifdef RESIDUE_DEBUG
     std::cout << "-debug";
 #endif

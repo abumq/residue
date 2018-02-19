@@ -57,7 +57,8 @@ ConnectionResponse::ConnectionResponse(Response::StatusCode status, const std::s
 }
 
 void ConnectionResponse::serialize(std::string& output) const
-{const std::size_t capacity = 1024;
+{
+    const std::size_t capacity = 1024;
     char source[capacity];
 
     JsonBuilder doc(source, capacity);
@@ -70,9 +71,6 @@ void ConnectionResponse::serialize(std::string& output) const
     if (m_isAcknowledged && m_configuration != nullptr) {
         std::stringstream ss;
         ss << RESIDUE_VERSION;
-#ifdef RESIDUE_SPECIAL_EDITION
-        ss << "-SE";
-#endif
 #ifdef RESIDUE_DEBUG
         ss << "-debug";
 #endif
