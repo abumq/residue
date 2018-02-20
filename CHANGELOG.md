@@ -1,6 +1,6 @@
 # Change Log
 
-## [Unreleased]
+## [1.4.4] - 20-02-2018
 ### Fixes
 - Fix output help from `--verbose` to `--v`
 - Bulk items do not have correct translations for unsigned long #88
