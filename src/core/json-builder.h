@@ -1,5 +1,5 @@
 //
-//  token-request.cc
+//  json-builder.h
 //  Residue
 //
 //  Copyright 2017-present Muflihun Labs
@@ -19,24 +19,15 @@
 //  limitations under the License.
 //
 
-#include "logging/log.h"
-#include "tokenization/token-request.h"
+#ifndef JsonBuilder_h
+#define JsonBuilder_h
 
-using namespace residue;
+#include "gason/jsonbuilder.h"
 
-TokenRequest::TokenRequest(const Configuration* conf) :
-    Request(conf),
-    m_isValid(true)
-{
+namespace residue {
+
+using JsonBuilder = gason::JSonBuilder;
+
 }
 
-bool TokenRequest::deserialize(std::string&& json)
-{
-    if (Request::deserialize(std::move(json))) {
-        m_loggerId = m_jsonDoc.get<std::string>("logger_id", "");
-        m_accessCode = m_jsonDoc.get<std::string>("access_code", "");
-        m_token = m_jsonDoc.get<std::string>("token", "");
-    }
-    m_isValid = !m_loggerId.empty();
-    return m_isValid;
-}
+#endif /* JsonBuilder_h */

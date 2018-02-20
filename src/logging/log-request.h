@@ -30,31 +30,6 @@
 namespace residue {
 
 ///
-/// A simple representation of log request field and default value
-///
-template <typename TDefaultValue>
-struct LogRequestField
-{
-    const char* name;
-    TDefaultValue defaultValue;
-};
-
-static const LogRequestField<std::string> LogRequestFieldToken = { "token", "" };
-static const LogRequestField<types::TimeMs> LogRequestFieldDateTime = { "datetime", 0UL };
-static const LogRequestField<el::base::type::string_t> LogRequestFieldMessage = { "msg", ELPP_LITERAL("") };
-static const LogRequestField<std::string> LogRequestFieldLogger = { "logger", "default" };
-static const LogRequestField<std::string> LogRequestFieldApplicationName = { "app", "" };
-static const LogRequestField<std::string> LogRequestFieldFunction = { "func", "" };
-static const LogRequestField<std::string> LogRequestFieldFile = { "file", "" };
-static const LogRequestField<std::string> LogRequestFieldThreadId = { "thread", "" };
-static const LogRequestField<el::base::type::LineNumber> LogRequestFieldLine = { "line",
-    static_cast<el::base::type::LineNumber>(0) };
-static const LogRequestField<el::base::type::VerboseLevel> LogRequestFieldVLevel = { "vlevel",
-    static_cast<el::base::type::VerboseLevel>(9) };
-static const LogRequestField<el::base::type::EnumType> LogRequestFieldLevel = { "level",
-    static_cast<el::base::type::EnumType>(el::Level::Unknown) };
-
-///
 /// \brief Request to write log
 ///
 class LogRequest final : public Request
@@ -149,18 +124,11 @@ public:
     virtual bool validateTimestamp() const override;
 
 private:
-#ifndef RESIDUE_USE_GASON
-    template <typename T>
-    inline T resolveValue(JsonDocument *packet, const LogRequestField<T>* requestType) const
-    {
-        return packet->get<T>(requestType->name, requestType->defaultValue);
-    }
-#endif
 
     std::string m_clientId;
     std::string m_token;
     types::TimeMs m_datetime;
-    el::base::type::string_t m_msg;
+    std::string m_msg;
     std::string m_loggerId;
     std::string m_filename;
     std::string m_function;

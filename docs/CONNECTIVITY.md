@@ -2,8 +2,8 @@
    ﷽
 </p>
 
-# Protocol
-This document explains the residue protocol.
+# CONNECTIVITY
+This document explains the different stages of client-server connectivity.
 
 ## Delimiter
 All the requests and responses are delimited by 4-bytes `<CR><LF><CR><LF>`, i.e, `\r\n\r\n`

@@ -3,19 +3,17 @@ cmake_minimum_required (VERSION 2.8.12)
 project (Residue)
 
 option (test "Build all tests" OFF)
-option (travis "Travis CI" OFF)
 option (production "Build for production" ON)
 option (debug "Enable debug logging" OFF)
 option (profiling "Turns profiling on for various scenarios" OFF)
 option (enable_extensions "Enables extensions support for the build" OFF)
 option (use_mine "Use mine whereever possible" OFF)
-option (special_edition "Special edition build" OFF)
 option (use_boost "Use boost or standalone networking lib" OFF)
-option (use_gason "Use gason where possible" ON)
+option (old_toolchain "Is old toolchain" OFF)
 
 set (RESIDUE_MAJOR "1")
 set (RESIDUE_MINOR "4")
-set (RESIDUE_PATCH "3")
+set (RESIDUE_PATCH "4")
 set (RESIDUE_VERSION "${RESIDUE_MAJOR}.${RESIDUE_MINOR}.${RESIDUE_PATCH}")
 set (RESIDUE_NAME "Residue")
 
@@ -26,14 +24,14 @@ add_definitions (-DRESIDUE_VERSION_PATCH="${RESIDUE_PATCH}")
 
 add_definitions (-DRIPE_VERSION="4.1.1-static")
 
+if (old_toolchain)
+    message ("==> USING OLD TOOLCHAIN")
+    add_definitions (-D_GLIBCXX_USE_NANOSLEEP)
+endif(old_toolchain)
+
 if (use_mine)
     add_definitions (-DRESIDUE_USE_MINE)
 endif(use_mine)
-
-if (use_gason)
-    message ("==> USING GASON")
-    add_definitions (-DRESIDUE_USE_GASON)
-endif(use_gason)
 
 if (profiling)
     message ("==> PROFILING IS ON")
@@ -59,11 +57,6 @@ if (production)
     add_definitions (-DRESIDUE_PRODUCTION)
 endif(production)
 
-if (special_edition)
-    message ("==> SPECIAL EDITION BUILD")
-    add_definitions (-DRESIDUE_SPECIAL_EDITION)
-endif(special_edition)
-
 set (CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "${CMAKE_SOURCE_DIR}/cmake")
 include(residue-dev)
 
@@ -72,14 +65,17 @@ include (FindCURL)
 
 check_apple()
 
-list (APPEND CMAKE_CXX_FLAGS " -std=c++11 -O3 -Wall -Wextra -pedantic -pedantic-errors -Wno-undefined-var-template -Wno-undef -Wno-unused-local-typedef -Wno-unused-variable -Wno-deprecated-declarations -Wno-unknown-warning-option -Wno-pessimizing-move ")
+set (cxx_standard c++11)
+set (optimization_level 0)
+
+if (production)
+    set (optimization_level 3)
+endif (production)
+
+list (APPEND CMAKE_CXX_FLAGS " -std=${cxx_standard} -O${optimization_level} -Wall -Wextra -pedantic -pedantic-errors -Wno-undefined-var-template -Wno-undef -Wno-unused-local-typedef -Wno-unused-variable -Wno-deprecated-declarations -Wno-unknown-warning-option -Wno-pessimizing-move ")
 
 if (CMAKE_BUILD_TYPE EQUAL "DEBUG" OR CMAKE_BUILD_TYPE EQUAL "RELWITHDEBINFO")
     message ("==> EXPORTING DEBUG SYMBOLS")
-endif()
-
-if (travis)
-    add_definitions (-DRESIDUE_ON_CI)
 endif()
 
 find_package (CURL REQUIRED)
@@ -144,20 +140,12 @@ else()
     set (MINE_SRC "")
 endif()
 
-if (use_gason)
-    set (GASON_SRC deps/gason/gason.cc)
-    set (JSON_SRC src/core/json-doc.cc)
-else()
-    set (GASON_SRC "")
-    set (JSON_SRC src/core/json-document.cc)
-endif()
-
 set (DEPS_SRC
     ${MINE_SRC}
     deps/linenoise/linenoise.c
     deps/easyloggingpp/easylogging++.cc
     deps/ripe/Ripe.cc
-    ${GASON_SRC}
+    deps/gason/gason.cc
 )
 
 set (SOURCE_FILES
@@ -186,8 +174,7 @@ set (SOURCE_FILES
     src/core/response.cc
     src/core/configuration.cc
     src/core/registry.cc
-
-    ${JSON_SRC}
+    src/core/json-doc.cc
 
     src/crypto/rsa.cc
     src/crypto/aes.cc

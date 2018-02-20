@@ -30,25 +30,26 @@
 #   define RESIDUE_DEBUG_LOG 1
 #else
 #   define RESIDUE_DEBUG_LOG 0
-#endif
+#endif // RESIDUE_DEBUG
 
 #if 1
-    #define RLOG(LEVEL) CLOG(LEVEL, RESIDUE_LOGGER_ID)
-    #define RLOG_IF(condition, LEVEL) CLOG_IF(condition, LEVEL, RESIDUE_LOGGER_ID)
-    #define RVLOG(vLevel) CVLOG(vLevel, RESIDUE_LOGGER_ID)
-    #define RVLOG_IF(cond, vLevel) CVLOG_IF(cond, vLevel, RESIDUE_LOGGER_ID)
-    #define DRLOG(LEVEL) if (RESIDUE_DEBUG_LOG) DCLOG(LEVEL, RESIDUE_LOGGER_ID)
-    #define DRVLOG(vLevel) if (RESIDUE_DEBUG_LOG) DCVLOG(vLevel, RESIDUE_LOGGER_ID)
-    #define DRVLOG_IF(condition, vLevel) if (RESIDUE_DEBUG_LOG) DCVLOG_IF(condition, vLevel, RESIDUE_LOGGER_ID)
+#   define RLOG(LEVEL) CLOG(LEVEL, RESIDUE_LOGGER_ID)
+#   define RLOG_IF(condition, LEVEL) CLOG_IF(condition, LEVEL, RESIDUE_LOGGER_ID)
+#   define RVLOG(vLevel) CVLOG(vLevel, RESIDUE_LOGGER_ID)
+#   define RVLOG_IF(cond, vLevel) CVLOG_IF(cond, vLevel, RESIDUE_LOGGER_ID)
+#   define DRLOG(LEVEL) if (RESIDUE_DEBUG_LOG) DCLOG(LEVEL, RESIDUE_LOGGER_ID)
+#   define DRVLOG(vLevel) if (RESIDUE_DEBUG_LOG) DCVLOG(vLevel, RESIDUE_LOGGER_ID)
+#   define DRVLOG_IF(condition, vLevel) if (RESIDUE_DEBUG_LOG) DCVLOG_IF(condition, vLevel, RESIDUE_LOGGER_ID)
 #else
-    #define RLOG(LEVEL) el::base::NullWriter()
-    #define RLOG_IF(condition, LEVEL) el::base::NullWriter()
-    #define RVLOG(vLevel) el::base::NullWriter()
-    #define RVLOG_IF(cond, vLevel) el::base::NullWriter()
-    #define DRLOG(LEVEL) el::base::NullWriter()
-    #define DRVLOG(vLevel) el::base::NullWriter()
-    #define DRVLOG_IF(condition, vLevel) el::base::NullWriter()
+#   define RLOG(LEVEL) el::base::NullWriter()
+#   define RLOG_IF(condition, LEVEL) el::base::NullWriter()
+#   define RVLOG(vLevel) el::base::NullWriter()
+#   define RVLOG_IF(cond, vLevel) el::base::NullWriter()
+#   define DRLOG(LEVEL) el::base::NullWriter()
+#   define DRVLOG(vLevel) el::base::NullWriter()
+#   define DRVLOG_IF(condition, vLevel) el::base::NullWriter()
 #endif
+
 #define RV_CRAZY 9
 #define RV_TRACE 8
 #define RV_DEBUG_2 7
@@ -62,16 +63,16 @@
 #define RESIDUE_UNUSED(x) (void)x
 
 #ifdef RESIDUE_PROFILING
-#define RESIDUE_PROFILE_START(id) std::chrono::high_resolution_clock::time_point id##1 = std::chrono::high_resolution_clock::now(); RESIDUE_UNUSED(id##1)
-#define RESIDUE_PROFILE_END(id, result) std::chrono::high_resolution_clock::time_point id##2 = std::chrono::high_resolution_clock::now();\
-    result = std::chrono::duration_cast<std::chrono::milliseconds>( id##2 - id##1 ).count();
-#define RESIDUE_PROFILE_CHECKPOINT(id, result, idx) std::chrono::high_resolution_clock::time_point id##3##idx = std::chrono::high_resolution_clock::now();\
-    result = std::chrono::duration_cast<std::chrono::milliseconds>( id##3##idx - id##1 ).count();\
-    std::cout << idx << " checkpoint at " << result << " ms\n";
+#   define RESIDUE_PROFILE_START(id) std::chrono::high_resolution_clock::time_point id##1 = std::chrono::high_resolution_clock::now(); RESIDUE_UNUSED(id##1)
+#   define RESIDUE_PROFILE_END(id, result) std::chrono::high_resolution_clock::time_point id##2 = std::chrono::high_resolution_clock::now();\
+       result = std::chrono::duration_cast<std::chrono::milliseconds>( id##2 - id##1 ).count();
+#   define RESIDUE_PROFILE_CHECKPOINT(id, result, idx) std::chrono::high_resolution_clock::time_point id##3##idx = std::chrono::high_resolution_clock::now();\
+       result = std::chrono::duration_cast<std::chrono::milliseconds>( id##3##idx - id##1 ).count();\
+       std::cout << idx << " checkpoint at " << result << " ms\n";
 #else
-#define RESIDUE_PROFILE_START(id)
-#define RESIDUE_PROFILE_END(id, result)
-#define RESIDUE_PROFILE_CHECKPOINT(id, result, idx)
-#endif
+#   define RESIDUE_PROFILE_START(id)
+#   define RESIDUE_PROFILE_END(id, result)
+#   define RESIDUE_PROFILE_CHECKPOINT(id, result, idx)
+#endif // RESIDUE_PROFILING
 
 #endif // LOG_H

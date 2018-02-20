@@ -22,6 +22,7 @@
 #include "cli/list-logging-files.h"
 #include "core/registry.h"
 #include "core/configuration.h"
+#include "core/json-builder.h"
 
 using namespace residue;
 
@@ -82,7 +83,6 @@ void ListLoggingFiles::execute(std::vector<std::string>&& params, std::ostringst
             }
         }
     }
-#ifdef RESIDUE_USE_GASON
     const std::size_t capacity = 2048;
     char source[capacity];
     JsonBuilder j(source, capacity);
@@ -114,37 +114,10 @@ void ListLoggingFiles::execute(std::vector<std::string>&& params, std::ostringst
     j.endArray();
     std::string dump = source;
     result << (dump);
-#else
-    JsonItem jr;
-    for (auto& p : listMap) {
-        JsonItem j;
-        std::string loggerId = p.first;
-        j["client_id"] = clientId;
-        j["logger_id"] = loggerId;
-        for (std::string levelStr : loggingLevels) {
-            if (levelStr.empty()) {
-                continue;
-            }
-            el::Level level = el::LevelHelper::convertFromString(levelStr.c_str());
-            if (level == el::Level::Unknown) {
-                result << "Unknown level [" << levelStr << "]";
-                return;
-            }
-            std::string file = getFile(loggerId, levelStr);
-            if (!file.empty()) {
-                p.second.insert(file);
-            }
-        }
-        j["files"] = p.second;
-        jr.push_back(j);
-    }
 
-    result << (jr.dump());
-#endif
-
-#ifdef RESIDUE_DEBUG
+ #ifdef RESIDUE_DEBUG
     RLOG(DEBUG) << "Result: " << result.str();
-#endif
+ #endif
 }
 
 std::string ListLoggingFiles::getFile(const std::string& loggerId, const std::string& levelStr) const {

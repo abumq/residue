@@ -31,6 +31,11 @@ Residue is fully configurable and supports high-level security, compression and 
 You can choose to integrate similar solutions like [`rsyslog`](https://github.com/rsyslog/rsyslog) however residue has a lot of other built-in features that other solutions may lack, like built-in log rotation, bulk message forwarding etc. See [Features](#features) section for details. 
 
 # Features
+This above diagram in [Overview](#overview) section only shows a very high-level picture of what residue server does. There are details around each area for example:
+
+ * `Send Log` is sent in JSON format, residue takes care of formatting it
+ * `Scheduled Backups` can be configured so that residue can act as auto-log-rotator, for example you can [set the format](/docs/CONFIGURATION.md#archived_log_compressed_filename) in a way that logs get rotated weekly and each day in that week has it's own backup.
+ 
 Some of the notable features are listed below
 
  * Lightweight: Residue is very light on CPU and RAM. On start-up it will only take approx 2mb of RAM and while running it will keep the memory as clean as possible using as low CPU as possible.

@@ -25,11 +25,8 @@
 #include <sstream>
 #include <memory>
 #include "gason/gason.h"
-#include "gason/jsonbuilder.h"
 
 namespace residue {
-
-using JsonBuilder = gason::JSonBuilder;
 
 class JsonDoc
 {

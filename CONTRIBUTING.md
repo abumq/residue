@@ -10,7 +10,7 @@ Residue server is actively being developed. We use C++ as our base language for 
 Server is currently tested on following OS:
 
  * Linux (Ubuntu 64-bit, Fedora 64-bit)
- * macOS (El Capitan, Sierra)
+ * macOS (El Capitan, Sierra and High Sierra)
  
 It may be compilable on other operating systems but we have not tested it yet. Please feel free to compile it on other operating systems using various compilers, make PR requests and let us know if it compiles just fine. We will add it to this list. Our aimed operating systems are any major OS that can be turned in to a server, e.g, Android, Raspberry PI, Windows.
 

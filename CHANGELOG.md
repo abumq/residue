@@ -1,5 +1,10 @@
 # Change Log
 
+## [1.4.4] - 20-02-2018
+### Fixes
+- Fix output help from `--verbose` to `--v`
+- Bulk items do not have correct translations for unsigned long #88
+
 ## [1.4.3] - 17-02-2018
 ### Updates
 - Performance improvement using standard response

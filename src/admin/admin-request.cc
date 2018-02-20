@@ -38,24 +38,16 @@ bool AdminRequest::deserialize(std::string&& json)
         return false;
     }
 
-#ifdef RESIDUE_USE_GASON
-        m_type = static_cast<AdminRequest::Type>(m_jsonDoc.get<unsigned int>("type", 0));
-        m_clientId = m_jsonDoc.get<std::string>("client_id", "");
-        m_rsaPublicKey = m_jsonDoc.get<std::string>("rsa_public_key", "");
-        m_loggerId = m_jsonDoc.get<std::string>("logger_id", "");
-        JsonDoc::Value levels = m_jsonDoc.get<JsonDoc::Value>("logging_levels", JsonDoc::Value());
-        if (levels.isArray()) {
-            for (auto level : levels) {
-                m_loggingLevels.insert(level->value.toString());
-            }
+    m_type = static_cast<AdminRequest::Type>(m_jsonDoc.get<unsigned int>("type", 0));
+    m_clientId = m_jsonDoc.get<std::string>("client_id", "");
+    m_rsaPublicKey = m_jsonDoc.get<std::string>("rsa_public_key", "");
+    m_loggerId = m_jsonDoc.get<std::string>("logger_id", "");
+    JsonDoc::Value levels = m_jsonDoc.get<JsonDoc::Value>("logging_levels", JsonDoc::Value());
+    if (levels.isArray()) {
+        for (auto level : levels) {
+            m_loggingLevels.insert(level->value.toString());
         }
-#else
-        m_type = static_cast<AdminRequest::Type>(m_jsonDoc.getUInt("type", 0));
-        m_clientId = m_jsonDoc.getString("client_id", "");
-        m_rsaPublicKey = m_jsonDoc.getString("rsa_public_key", "");
-        m_loggerId = m_jsonDoc.getString("logger_id", "");
-        m_loggingLevels = m_jsonDoc.get<std::set<std::string>>("logging_levels", std::set<std::string>());
-#endif
+    }
 
     m_isValid = (m_type == AdminRequest::Type::RELOAD_CONFIG)
             || (m_type == AdminRequest::Type::RESET)

@@ -145,9 +145,6 @@ el::LogBuilder* configureLogging(Configuration* configuration)
 void printVersion(bool addSpaces = false)
 {
     std::cout <<  (addSpaces ? "  " : "") << "Residue v" << RESIDUE_VERSION;
-#ifdef RESIDUE_SPECIAL_EDITION
-    std::cout << "-SE";
-#endif
 #ifdef RESIDUE_DEBUG
     std::cout << "-debug";
 #endif
@@ -175,7 +172,7 @@ int main(int argc, char* argv[])
     }
 
     if (argc < 2) {
-        std::cerr << "USAGE: residue <residue_config_file> [--run-without-root] [--verbose=<level>]" << std::endl;
+        std::cerr << "USAGE: residue <residue_config_file> [--run-without-root] [--v=<verbose-level>]" << std::endl;
         return 1;
     }
 
@@ -280,7 +277,7 @@ int main(int argc, char* argv[])
 
         // log rotator tasks
 
-        #define START_LOG_ROTATOR(THREAD_NAME, NAME)\
+#define START_LOG_ROTATOR(THREAD_NAME, NAME)\
         threads.push_back(std::thread([&]() {\
             el::Helpers::setThreadName(THREAD_NAME);\
             NAME rotator(&registry);\
@@ -296,7 +293,7 @@ int main(int argc, char* argv[])
         START_LOG_ROTATOR("MonthlyLogRotator", MonthlyLogRotator);
         START_LOG_ROTATOR("YearlyLogRotator", YearlyLogRotator);
 
-        #undef START_LOG_ROTATOR
+#undef START_LOG_ROTATOR
 
 #ifndef RESIDUE_DEV
         // auto updater

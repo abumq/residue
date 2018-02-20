@@ -21,9 +21,6 @@
 
 #include "core/response.h"
 #include "net/session.h"
-#ifndef RESIDUE_USE_GASON
-#   include "core/json-document.h"
-#endif
 
 using namespace residue;
 
@@ -34,10 +31,3 @@ const Response::StandardResponse Response::STANDARD_RESPONSES[] = {
     { Response::StatusCode::BAD_REQUEST, "{r:1}\r\n\r\n" },
 };
 
-#ifndef RESIDUE_USE_GASON
-void Response::serialize(JsonItem& root,
-                         std::string& output) const
-{
-    output = root.dump();
-}
-#endif
