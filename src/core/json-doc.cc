@@ -41,7 +41,7 @@ void JsonDoc::dump(JsonDoc::Value o, std::stringstream& ss)
 {
     switch (o.getTag()) {
     case gason::JSON_NUMBER:
-        ss << o.toNumber();
+        ss << static_cast<long>(o.toNumber());
         break;
     case gason::JSON_STRING:
         dumpStr(o.toString(), ss);
