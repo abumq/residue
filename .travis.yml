@@ -150,8 +150,8 @@ install:
  - cd cryptopp-CRYPTOPP_5_6_5
  - wget https://raw.githubusercontent.com/muflihun/muflihun.github.io/master/downloads/pem_pack.zip
  - unzip pem_pack.zip
- - cmake -j4 .
- - make
+ - cmake .
+ - make -j4
  - sudo make install
 
 ## Build
@@ -160,8 +160,8 @@ install:
  - cd build
  - export TZ=Australia/Canberra
  - date
- - cmake -j4 -Dproduction=OFF -Denable_extensions=OFF -Duse_boost=OFF -Dold_toolchain=$OLD_TOOLCHAIN ..
- - make
+ - cmake -Dproduction=OFF -Denable_extensions=OFF -Duse_boost=OFF -Dold_toolchain=$OLD_TOOLCHAIN ..
+ - make -j4
  - ls -l
  - ldd ./residue
 
