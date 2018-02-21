@@ -27,13 +27,13 @@ void JsonDoc::parse(const std::string& jstr)
 {
     src = std::unique_ptr<char[]>(new char[jstr.size() + 1]);
     strcpy(src.get(), jstr.c_str());
-    status = gason::jsonParse(src.get(), val, alloc);
+    m_status = gason::jsonParse(src.get(), m_val, alloc);
 }
 
 std::string JsonDoc::dump(int indent) const
 {
     std::stringstream ss;
-    dump(val, ss, indent);
+    dump(m_val, ss, indent);
     return ss.str();
 }
 
@@ -127,7 +127,7 @@ void JsonDoc::dumpStr(const char *s, std::stringstream &ss)
 
 std::string JsonDoc::errorText() const
 {
-    switch (status)
+    switch (m_status)
     {
     case gason::JsonParseStatus::JSON_PARSE_OK:
         return "";

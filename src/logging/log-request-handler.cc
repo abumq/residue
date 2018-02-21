@@ -129,7 +129,7 @@ void LogRequestHandler::processRequestQueue()
                         RLOG(ERROR) << "Maximum number of bulk requests reached. Ignoring the rest of items in bulk";
                         break;
                     }
-                    d.val = js->value;
+                    d.set(js);
                     std::string requestItemStr(d.dump());
                     LogRequest requestItem(m_registry->configuration());
                     requestItem.deserialize(std::move(requestItemStr));
