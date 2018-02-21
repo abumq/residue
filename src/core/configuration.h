@@ -317,7 +317,7 @@ public:
 
 private:
     friend class Clients;
-
+    JsonDoc m_jsonDoc;
     std::string m_configurationFile;
 
     int m_adminPort;

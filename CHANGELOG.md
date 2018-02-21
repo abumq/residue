@@ -1,5 +1,9 @@
 # Change Log
 
+## [Unreleased]
+### Updates
+- Configuration saving is not pretty-printed
+
 ## [1.4.4] - 20-02-2018
 ### Fixes
 - Fix output help from `--verbose` to `--v`

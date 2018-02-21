@@ -2,7 +2,6 @@ cmake_minimum_required (VERSION 2.8.12)
 
 project (Residue)
 
-option (test "Build all tests" OFF)
 option (production "Build for production" ON)
 option (debug "Enable debug logging" OFF)
 option (profiling "Turns profiling on for various scenarios" OFF)
@@ -13,7 +12,7 @@ option (old_toolchain "Is old toolchain" OFF)
 
 set (RESIDUE_MAJOR "1")
 set (RESIDUE_MINOR "4")
-set (RESIDUE_PATCH "4")
+set (RESIDUE_PATCH "5-dev")
 set (RESIDUE_VERSION "${RESIDUE_MAJOR}.${RESIDUE_MINOR}.${RESIDUE_PATCH}")
 set (RESIDUE_NAME "Residue")
 
@@ -38,6 +37,8 @@ if (profiling)
     add_definitions (-DRESIDUE_PROFILING)
 endif(profiling)
 
+set (test "OFF")
+
 if (debug)
     message ("==> DEBUGGING IS ON")
     add_definitions (-DRESIDUE_DEBUG)
@@ -50,6 +51,7 @@ if (debug)
         add_definitions (-DELPP_DEBUG_ERRORS)
         add_definitions (-DELPP_DEBUG_INFO)
         set (CMAKE_BUILD_TYPE "DEBUG")
+        set (test "ON")
     endif(production)
 endif(debug)
 

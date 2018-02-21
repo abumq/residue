@@ -102,17 +102,17 @@ void Configuration::loadFromInput(std::string&& jsonStr)
 
     std::stringstream errorStream;
 
-    JsonDoc jdoc(jsonStr);
-    if (!jdoc.isValid()) {
+    m_jsonDoc.parse(jsonStr);
+    if (!m_jsonDoc.isValid()) {
         m_isMalformedJson = true;
         m_isValid = false;
-        m_errors = jdoc.errorText();
+        m_errors = m_jsonDoc.errorText();
         return;
     }
-    m_adminPort = jdoc.get<int>("admin_port", 8776);
-    m_connectPort = jdoc.get<int>("connect_port", 8777);
-    m_tokenPort = jdoc.get<int>("token_port", 8778);
-    m_loggingPort = jdoc.get<int>("logging_port", 8779);
+    m_adminPort = m_jsonDoc.get<int>("admin_port", 8776);
+    m_connectPort = m_jsonDoc.get<int>("connect_port", 8777);
+    m_tokenPort = m_jsonDoc.get<int>("token_port", 8778);
+    m_loggingPort = m_jsonDoc.get<int>("logging_port", 8779);
     m_isValid = m_adminPort > 0 && m_connectPort > 0 && m_loggingPort > 0 && m_tokenPort > 0;
 
 
@@ -120,41 +120,41 @@ void Configuration::loadFromInput(std::string&& jsonStr)
         errorStream  << "  Invalid port(s). Please choose all 4 valid ports." << std::endl;
     }
 
-    if (jdoc.get<bool>("enable_cli", true)) {
+    if (m_jsonDoc.get<bool>("enable_cli", true)) {
         addFlag(Configuration::Flag::ENABLE_CLI);
     }
-    if (jdoc.get<bool>("allow_unknown_loggers", true)) {
+    if (m_jsonDoc.get<bool>("allow_unknown_loggers", true)) {
         addFlag(Configuration::Flag::ALLOW_UNKNOWN_LOGGERS);
     }
-    if (jdoc.get<bool>("allow_plain_connection", true)) {
+    if (m_jsonDoc.get<bool>("allow_plain_connection", true)) {
         addFlag(Configuration::ALLOW_PLAIN_CONNECTION);
     }
-    if (jdoc.get<bool>("compression", true)) {
+    if (m_jsonDoc.get<bool>("compression", true)) {
         addFlag(Configuration::COMPRESSION);
     }
-    if (jdoc.get<bool>("allow_unknown_clients", true)) {
+    if (m_jsonDoc.get<bool>("allow_unknown_clients", true)) {
         addFlag(Configuration::Flag::ALLOW_UNKNOWN_CLIENTS);
     }
-    if (jdoc.get<bool>("requires_token", true)) {
+    if (m_jsonDoc.get<bool>("requires_token", true)) {
         addFlag(Configuration::Flag::REQUIRES_TOKEN);
     }
-    if (jdoc.get<bool>("allow_default_access_code", false)) {
+    if (m_jsonDoc.get<bool>("allow_default_access_code", false)) {
         addFlag(Configuration::Flag::ALLOW_DEFAULT_ACCESS_CODE);
     }
-    if (jdoc.get<bool>("allow_plain_log_request", false)) {
+    if (m_jsonDoc.get<bool>("allow_plain_log_request", false)) {
         addFlag(Configuration::Flag::ALLOW_PLAIN_LOG_REQUEST);
     }
-    if (jdoc.get<bool>("allow_bulk_log_request", true)) {
+    if (m_jsonDoc.get<bool>("allow_bulk_log_request", true)) {
         addFlag(Configuration::Flag::ALLOW_BULK_LOG_REQUEST);
     }
-    if (jdoc.get<bool>("immediate_flush", true)) {
+    if (m_jsonDoc.get<bool>("immediate_flush", true)) {
         addFlag(Configuration::Flag::IMMEDIATE_FLUSH);
     }
-    if (jdoc.get<bool>("requires_timestamp", false)) {
+    if (m_jsonDoc.get<bool>("requires_timestamp", false)) {
         addFlag(Configuration::Flag::REQUIRES_TIMESTAMP);
     }
 
-    m_serverKey = jdoc.get<std::string>("server_key", AES::generateKey(256));
+    m_serverKey = m_jsonDoc.get<std::string>("server_key", AES::generateKey(256));
 
     if (m_serverKey.size() != 64) {
         errorStream << "  Invalid value for [server_key]. It should be hex-value of 256-bit key. "
@@ -162,11 +162,11 @@ void Configuration::loadFromInput(std::string&& jsonStr)
                     << "Use mine to generate a key: [mine -g --aes 256]" << std::endl;
     }
 
-    m_serverRSAPrivateKeyFile = jdoc.get<std::string>("server_rsa_private_key", "");
-    std::string rsaPrivateKeySecret = Base16::decode(jdoc.get<std::string>("server_rsa_secret", ""));
+    m_serverRSAPrivateKeyFile = m_jsonDoc.get<std::string>("server_rsa_private_key", "");
+    std::string rsaPrivateKeySecret = Base16::decode(m_jsonDoc.get<std::string>("server_rsa_secret", ""));
     if (!m_serverRSAPrivateKeyFile.empty()) {
 
-        m_serverRSAPublicKeyFile = jdoc.get<std::string>("server_rsa_public_key", "");
+        m_serverRSAPublicKeyFile = m_jsonDoc.get<std::string>("server_rsa_public_key", "");
         if (m_serverRSAPublicKeyFile.empty()) {
             errorStream << "  Both RSA private and public keys must be provided if provided at all" << std::endl;
         } else {
@@ -196,29 +196,29 @@ void Configuration::loadFromInput(std::string&& jsonStr)
         errorStream << "  Server does not allow plain connections. Please provide RSA key pair" << std::endl;
     }
 
-    m_archivedLogDirectory = jdoc.get<std::string>("archived_log_directory", "");
+    m_archivedLogDirectory = m_jsonDoc.get<std::string>("archived_log_directory", "");
     if (m_archivedLogDirectory.empty()) {
         errorStream << "  Please choose valid default archived_log_directory" << std::endl;
     }
 
-    m_archivedLogFilename = jdoc.get<std::string>("archived_log_filename", "");
+    m_archivedLogFilename = m_jsonDoc.get<std::string>("archived_log_filename", "");
     if (m_archivedLogFilename.empty()) {
         errorStream << "  Please choose valid default archived_log_filename" << std::endl;
     }
 
-    m_archivedLogCompressedFilename = jdoc.get<std::string>("archived_log_compressed_filename", "");
+    m_archivedLogCompressedFilename = m_jsonDoc.get<std::string>("archived_log_compressed_filename", "");
     if (m_archivedLogCompressedFilename.empty() || m_archivedLogCompressedFilename == m_archivedLogFilename
             || m_archivedLogCompressedFilename.find("/") != std::string::npos
             || m_archivedLogCompressedFilename.find("\\") != std::string::npos) {
         errorStream << "  Please choose valid default archived_log_compressed_filename" << std::endl;
     }
 
-    m_clientAge = jdoc.get<unsigned int>("client_age", 259200);
+    m_clientAge = m_jsonDoc.get<unsigned int>("client_age", 259200);
     if (m_clientAge != 0 && m_clientAge < 120) {
         RLOG(WARNING) << "Invalid value for [client_age]. Setting it to minimum [120]";
         m_clientAge = 120;
     }
-    m_defaultKeySize = jdoc.get<unsigned int>("default_key_size", 256);
+    m_defaultKeySize = m_jsonDoc.get<unsigned int>("default_key_size", 256);
     if (m_defaultKeySize != 128 && m_defaultKeySize != 192 && m_defaultKeySize != 256) {
         errorStream << "  Invalid default key size. Please choose 128, 192 or 256-bit" << std::endl;
     }
@@ -227,30 +227,30 @@ void Configuration::loadFromInput(std::string&& jsonStr)
         return m_fileMode != 0 && (m_fileMode & mode) != 0;
     };
 
-    m_fileMode = jdoc.get<unsigned int>("file_mode", static_cast<unsigned int>(S_IRUSR | S_IWUSR | S_IRGRP));
+    m_fileMode = m_jsonDoc.get<unsigned int>("file_mode", static_cast<unsigned int>(S_IRUSR | S_IWUSR | S_IRGRP));
     if (hasFileMode(static_cast<unsigned int>(S_IWOTH)) || hasFileMode(static_cast<unsigned int>(S_IXOTH))) {
         errorStream << "  File mode too open [" << m_fileMode << "]. You should at least not allow others to write to the file." << std::endl;
     } else if (!hasFileMode(static_cast<unsigned int>(S_IRUSR)) && !hasFileMode(static_cast<unsigned int>(S_IRGRP))) {
         errorStream << "  File mode invalid [" << m_fileMode << "]. Either user or group should be able to read the log files" << std::endl;
     }
-    m_nonAcknowledgedClientAge = jdoc.get<unsigned int>("non_acknowledged_client_age", 300);
+    m_nonAcknowledgedClientAge = m_jsonDoc.get<unsigned int>("non_acknowledged_client_age", 300);
     if (m_nonAcknowledgedClientAge < 120) {
         RLOG(WARNING) << "Invalid value for [non_acknowledged_client_age]. Setting it to default [120]";
         m_nonAcknowledgedClientAge = 120;
     }
-    m_timestampValidity = jdoc.get<unsigned int>("timestamp_validity", 120);
+    m_timestampValidity = m_jsonDoc.get<unsigned int>("timestamp_validity", 120);
     if (m_timestampValidity < 30) {
         RLOG(WARNING) << "Invalid value for [timestamp_validity]. Setting it to minimum [30]";
         m_timestampValidity = 30;
     }
-    m_maxTokenAge = jdoc.get<unsigned int>("max_token_age", 0);
+    m_maxTokenAge = m_jsonDoc.get<unsigned int>("max_token_age", 0);
     if (m_maxTokenAge != 0 && m_maxTokenAge < 15) {
         RLOG(WARNING) << "Invalid value for [max_token_age]. Setting it to minimum [15]";
         m_maxTokenAge = 15;
     }
     bool hasTokenAgeLimit = m_maxTokenAge > 0;
 
-    m_tokenAge = jdoc.get<unsigned int>("token_age", std::min(3600U, m_maxTokenAge));
+    m_tokenAge = m_jsonDoc.get<unsigned int>("token_age", std::min(3600U, m_maxTokenAge));
     if (m_tokenAge == 0 && hasTokenAgeLimit) {
         errorStream << "Cannot set token age [token_age] to 'forever' as [max_token_age] is " << m_maxTokenAge;
     } else if (m_tokenAge > m_maxTokenAge && hasTokenAgeLimit) {
@@ -261,19 +261,19 @@ void Configuration::loadFromInput(std::string&& jsonStr)
     }
 
     unsigned int defaultClientIntegrityTaskInterval = std::max(300U, std::min(m_clientAge, m_nonAcknowledgedClientAge));
-    m_clientIntegrityTaskInterval = jdoc.get<unsigned int>("client_integrity_task_interval", defaultClientIntegrityTaskInterval);
+    m_clientIntegrityTaskInterval = m_jsonDoc.get<unsigned int>("client_integrity_task_interval", defaultClientIntegrityTaskInterval);
     if (m_clientIntegrityTaskInterval == 0 || m_clientIntegrityTaskInterval < std::min(m_clientAge, m_nonAcknowledgedClientAge)) {
         RLOG(WARNING) << "Invalid value for [client_integrity_task_interval (" << m_clientIntegrityTaskInterval << ")]. "
                       << "Choose anything greater than or equal to " << std::min(m_clientAge, m_nonAcknowledgedClientAge) << " but not zero. Setting it to lower ["
                       << std::min(m_clientAge, m_nonAcknowledgedClientAge) << "]";
         m_clientIntegrityTaskInterval = defaultClientIntegrityTaskInterval;
     }
-    m_dispatchDelay = jdoc.get<unsigned int>("dispatch_delay", 1);
+    m_dispatchDelay = m_jsonDoc.get<unsigned int>("dispatch_delay", 1);
     if (m_dispatchDelay > 500) {
         RLOG(WARNING) << "Invalid value for [dispatch_delay]. Setting it to default [1ms]";
         m_dispatchDelay = 1;
     }
-    m_maxItemsInBulk = jdoc.get<unsigned int>("max_items_in_bulk", 5);
+    m_maxItemsInBulk = m_jsonDoc.get<unsigned int>("max_items_in_bulk", 5);
     if (m_maxItemsInBulk <= 1 || m_maxItemsInBulk >= 100) {
         errorStream << "  Invalid value for [max_items_in_bulk]. Please choose between 2-100" << std::endl;
     }
@@ -283,8 +283,8 @@ void Configuration::loadFromInput(std::string&& jsonStr)
     // known clients may have "loggers" array
     // that will be cross-checked with loggers list
 
-    if (jdoc.hasKey("known_loggers")) {
-        loadKnownLoggers(jdoc.get<JsonDoc::Value>("known_loggers", JsonDoc::Value()), errorStream, false);
+    if (m_jsonDoc.hasKey("known_loggers")) {
+        loadKnownLoggers(m_jsonDoc.get<JsonDoc::Value>("known_loggers", JsonDoc::Value()), errorStream, false);
     }
 
     auto queryEndpoint = [&](const std::string& endpoint,
@@ -314,8 +314,8 @@ void Configuration::loadFromInput(std::string&& jsonStr)
         }
     };
 
-    if (jdoc.hasKey("known_loggers_endpoint")) {
-        m_knownLoggersEndpoint = jdoc.get<std::string>("known_loggers_endpoint", "");
+    if (m_jsonDoc.hasKey("known_loggers_endpoint")) {
+        m_knownLoggersEndpoint = m_jsonDoc.get<std::string>("known_loggers_endpoint", "");
         if (!m_knownLoggersEndpoint.empty()) {
             queryEndpoint(m_knownLoggersEndpoint, "known_loggers", [&](const JsonDoc::Value& json) {
                 loadKnownLoggers(json, errorStream, true);
@@ -323,12 +323,12 @@ void Configuration::loadFromInput(std::string&& jsonStr)
         }
     }
 
-    if (jdoc.hasKey("known_clients")) {
-        loadKnownClients(jdoc.get<JsonDoc::Value>("known_clients", JsonDoc::Value()), errorStream, false);
+    if (m_jsonDoc.hasKey("known_clients")) {
+        loadKnownClients(m_jsonDoc.get<JsonDoc::Value>("known_clients", JsonDoc::Value()), errorStream, false);
     }
 
-    if (jdoc.hasKey("known_clients_endpoint")) {
-        m_knownClientsEndpoint = jdoc.get<std::string>("known_clients_endpoint", "");
+    if (m_jsonDoc.hasKey("known_clients_endpoint")) {
+        m_knownClientsEndpoint = m_jsonDoc.get<std::string>("known_clients_endpoint", "");
         if (!m_knownClientsEndpoint.empty()) {
             queryEndpoint(m_knownClientsEndpoint, "known_clients", [&](const JsonDoc::Value& json) {
                 loadKnownClients(json, errorStream, true);
@@ -336,14 +336,14 @@ void Configuration::loadFromInput(std::string&& jsonStr)
         }
     }
 
-    JsonDoc::Value jLoggersBlacklist = jdoc.get<JsonDoc::Value>("loggers_blacklist", JsonDoc::Value());
+    JsonDoc::Value jLoggersBlacklist = m_jsonDoc.get<JsonDoc::Value>("loggers_blacklist", JsonDoc::Value());
     if (jLoggersBlacklist.isArray()) {
         loadLoggersBlacklist(jLoggersBlacklist, errorStream);
     }
 
 
  #ifdef RESIDUE_HAS_EXTENSIONS
-    JsonDoc::Value jExtensionsVal = jdoc.get<JsonDoc::Value>("extensions", JsonDoc::Value());
+    JsonDoc::Value jExtensionsVal = m_jsonDoc.get<JsonDoc::Value>("extensions", JsonDoc::Value());
     if (jExtensionsVal.isObject()) {
         JsonDoc jExtensions(jExtensionsVal);
         JsonDoc::Value jLogExtensions = jExtensions.get<JsonDoc::Value>("log_extensions", JsonDoc::Value());
@@ -658,207 +658,13 @@ void Configuration::loadLoggersBlacklist(const JsonDoc::Value& json, std::string
 
 bool Configuration::save(const std::string& outputFile)
 {
-    std::lock_guard<std::mutex> lock(m_mutex);
-    const std::size_t capacity = 4096;
-    char source[capacity];
-
-    JsonBuilder j(source, capacity);
-    DRVLOG(RV_DEBUG_2) << "Starting JSON serialization with [" << capacity << "] bytes";
-
-    j.startObject();
-    j.addValue("admin_port", adminPort());
-    j.addValue("connect_port", connectPort());
-    j.addValue("token_port", tokenPort());
-    j.addValue("logging_port", loggingPort());
-    j.addValue("server_key", serverKey());
-    if (!m_serverRSAPrivateKeyFile.empty()) {
-        j.addValue("server_rsa_private_key", m_serverRSAPrivateKeyFile);
-    }
-    if (!m_serverRSAPublicKeyFile.empty()) {
-        j.addValue("server_rsa_public_key", m_serverRSAPublicKeyFile);
-    }
-    if (!serverRSASecret().empty()) {
-        j.addValue("server_rsa_secret", serverRSASecret());
-    }
-    j.addValue("default_key_size", defaultKeySize());
-    j.addValue("file_mode", fileMode());
-    j.addValue("enable_cli", hasFlag(Configuration::Flag::ENABLE_CLI));
-    j.addValue("allow_default_access_code", hasFlag(Configuration::Flag::ALLOW_DEFAULT_ACCESS_CODE));
-    j.addValue("allow_plain_connection", hasFlag(Configuration::Flag::ALLOW_PLAIN_CONNECTION));
-    j.addValue("allow_unknown_loggers", hasFlag(Configuration::Flag::ALLOW_UNKNOWN_LOGGERS));
-    j.addValue("allow_unknown_clients", hasFlag(Configuration::Flag::ALLOW_UNKNOWN_CLIENTS));
-    j.addValue("requires_token", hasFlag(Configuration::Flag::REQUIRES_TOKEN));
-    j.addValue("allow_plain_log_request", hasFlag(Configuration::Flag::ALLOW_PLAIN_LOG_REQUEST));
-    j.addValue("immediate_flush", hasFlag(Configuration::Flag::IMMEDIATE_FLUSH));
-    j.addValue("requires_timestamp", hasFlag(Configuration::Flag::REQUIRES_TIMESTAMP));
-    j.addValue("compression", hasFlag(Configuration::Flag::COMPRESSION));
-    j.addValue("allow_bulk_log_request", hasFlag(Configuration::Flag::ALLOW_BULK_LOG_REQUEST));
-    j.addValue("max_items_in_bulk", maxItemsInBulk());
-    j.addValue("token_age", tokenAge());
-    j.addValue("max_token_age", maxTokenAge());
-    j.addValue("timestamp_validity", timestampValidity());
-    j.addValue("client_age", clientAge());
-    j.addValue("non_acknowledged_client_age", nonAcknowledgedClientAge());
-    j.addValue("client_integrity_task_interval", clientIntegrityTaskInterval());
-    j.addValue("dispatch_delay", dispatchDelay());
-    j.addValue("archived_log_directory", m_archivedLogDirectory);
-    j.addValue("archived_log_filename", m_archivedLogFilename);
-    j.addValue("archived_log_compressed_filename", m_archivedLogCompressedFilename);
-
-    if (!m_logExtensions.empty()) {
-        j.startObject("extensions");
-        j.startArray("log_extensions");
-        for (auto& e : m_logExtensions) {
-            j.addValue(e->module());
-        }
-
-        j.endArray();
-        j.endObject();
-    }
-
-    j.startArray("loggers_blacklist");
-    for (auto& e : m_blacklist) {
-        j.addValue(e);
-    }
-    j.endArray(); // loggers_blacklist
-
-    j.startArray("known_clients");
-    for (auto c : m_knownClientsKeys) {
-        if (m_remoteKnownClients.find(c.first) != m_remoteKnownClients.end()) {
-            // do not save known clients fetched by URL
-            continue;
-        }
-        j.startObject();
-
-        j.addValue("client_id", c.first);
-        j.addValue("public_key", c.second.first); // .first = filename | .second = file contents
-        if (m_keySizes.find(c.first) != m_keySizes.end()) {
-            j.addValue("key_size", m_keySizes.at(c.first));
-        }
-        if (m_knownClientsLoggers.find(c.first) != m_knownClientsLoggers.end()) {
-            const auto& list = m_knownClientsLoggers.at(c.first);
-            if (!list.empty()) {
-                j.startArray("loggers");
-                for (const auto& loggerId : list) {
-                    j.addValue(loggerId);
-                }
-                j.endArray();
-            }
-        }
-
-        if (m_knownClientUserMap.find(c.first) != m_knownClientUserMap.end()) {
-            j.addValue("user", m_knownClientUserMap.at(c.first));
-        }
-        if (m_knownClientDefaultLogger.find(c.first) != m_knownClientDefaultLogger.end()) {
-            j.addValue("default_logger", m_knownClientDefaultLogger.at(c.first));
-        }
-        j.endObject();
-    }
-    j.endArray(); // known_clients
-
-    if (!m_knownClientsEndpoint.empty()) {
-        j.addValue("known_clients_endpoint", m_knownClientsEndpoint);
-    }
-
-    j.startArray("known_loggers");
-    for (auto c : m_configurations) {
-        std::string loggerId = c.first;
-        if (m_remoteKnownLoggers.find(loggerId) != m_remoteKnownLoggers.end()) {
-            // do not save known loggers fetched by URL
-            continue;
-        }
-        j.startObject();
-        j.addValue("logger_id", loggerId);
-        j.addValue("configuration_file", c.second);
-        if (hasFlag(Configuration::Flag::ALLOW_PLAIN_LOG_REQUEST)) {
-            if (!hasLoggerFlag(loggerId, Configuration::Flag::ALLOW_PLAIN_LOG_REQUEST)) {
-                j.addValue("allow_plain_log_request", false);
-            }
-        } else {
-            // no global
-            if (hasLoggerFlag(loggerId, Configuration::Flag::ALLOW_PLAIN_LOG_REQUEST)) {
-                // but local
-                j.addValue("allow_plain_log_request", true);
-            }
-        }
-
-        std::string frequencyStr;
-        if (m_rotationFrequencies.find(loggerId) != m_rotationFrequencies.end()
-                && m_rotationFrequencies.at(loggerId) != Configuration::RotationFrequency::NEVER) {
-            switch (m_rotationFrequencies.at(loggerId)) {
-            case HOURLY:
-                frequencyStr = "HOURLY";
-                break;
-            case DAILY:
-                frequencyStr = "DAILY";
-                break;
-            case WEEKLY:
-                frequencyStr = "WEEKLY";
-                break;
-            case MONTHLY:
-                frequencyStr = "MONTHLY";
-                break;
-            case YEARLY:
-                frequencyStr = "YEARLY";
-                break;
-            default:
-                frequencyStr = "NEVER";
-            }
-            j.addValue("rotation_freq", frequencyStr);
-        }
-
-        if (m_archivedLogsFilenames.find(loggerId) != m_archivedLogsFilenames.end()) {
-            j.addValue("archived_log_filename", m_archivedLogsFilenames.at(loggerId).substr(std::string("%logger-").size()));
-        }
-
-        if (m_accessCodeBlacklist.find(loggerId) != m_accessCodeBlacklist.end() && !m_accessCodeBlacklist.at(loggerId).empty()) {
-            j.startArray("access_code_blacklist");
-            const auto& list = m_accessCodeBlacklist.at(loggerId);
-            for (const auto& code : list) {
-                j.addValue(code);
-            }
-            j.endArray();
-        }
-
-        if (m_archivedLogsCompressedFilenames.find(loggerId) != m_archivedLogsCompressedFilenames.end()) {
-            j.addValue("archived_log_compressed_filename", m_archivedLogsCompressedFilenames.at(loggerId));
-        }
-
-        if (m_archivedLogsDirectories.find(loggerId) != m_archivedLogsDirectories.end()) {
-            j.addValue("archived_log_directory", m_archivedLogsDirectories.at(loggerId));
-        }
-
-        if (m_knownLoggerUserMap.find(loggerId) != m_knownLoggerUserMap.end()) {
-            j.addValue("user", m_knownLoggerUserMap.at(loggerId));
-        }
-
-        if (m_accessCodes.find(loggerId) != m_accessCodes.end()) {
-            j.startArray("access_codes");
-            for (AccessCode accessCode : m_accessCodes.at(loggerId)) {
-                j.startObject();
-                j.addValue("code", accessCode.data());
-                j.addValue("token_age", accessCode.age());
-                j.endObject();
-            }
-            j.endArray(); // access_codes
-        }
-
-        j.endObject();
-    }
-    j.endArray(); // known_loggers
-    if (!m_knownLoggersEndpoint.empty()) {
-        j.addValue("known_loggers_endpoint", m_knownLoggersEndpoint);
-    }
-    j.endObject();
-    std::string jDump = source;
-
     std::fstream file;
     file.open(outputFile, std::ofstream::out);
     if (!file) {
         RLOG(ERROR) << "Unable to open file for writing [" << outputFile << "]";
         return false;
     }
-    file << jDump;
+    file << m_jsonDoc.dump(4);
     file.flush();
     file.close();
     return true;

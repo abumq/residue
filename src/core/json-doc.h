@@ -61,8 +61,8 @@ public:
 
     void parse(const std::string& jstr);
 
-    std::string dump() const;
-    static void dump(Value o, std::stringstream& ss);
+    std::string dump(int indent = -1) const;
+    static void dump(Value o, std::stringstream& ss, int indent = -1, int depth = 1);
     static void dumpStr(const char* s, std::stringstream& ss);
 
     inline bool isValid() const

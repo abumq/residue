@@ -109,11 +109,12 @@ TEST(UtilsTest, BigAdd)
         auto first = PARAM(0);
         auto second = PARAM(1);
         auto expected = PARAM(2);
-        std::cout << std::endl << std::endl;
-        TIMED_BLOCK(timer, std::string("Add Big Num\n    " + first + "\n +  " + second + "\n-------------------\n =  " + expected + "\n").c_str()) {
+        //std::cout << std::endl << std::endl;
+        //TIMED_BLOCK(timer, std::string("Add Big Num\n    " + first + "\n +  " + second + "\n-------------------\n =  " + expected + "\n").c_str())
+        {
             Utils::bigAdd(first, std::move(second));
         }
-        std::cout << std::endl;
+        //std::cout << std::endl;
         ASSERT_EQ(first, expected);
     }
     std::cout << std::endl;

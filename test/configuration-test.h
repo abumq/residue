@@ -115,14 +115,16 @@ protected:
                               "allow_unknown_clients": false,
                               "enable_cli": false,
                               "requires_token": true,
+                              "allow_plain_connection": true,
                               "allow_plain_log_request": true,
                               "immediate_flush": true,
                               "allow_bulk_log_request": true,
                               "client_integrity_task_interval": 500,
-                              "client_age": 0,
+                              "client_age": 2147483648,
                               "token_age": 25,
+                              "compression":false,
                               "max_token_age": 60,
-                              "non_acknowledged_client_age": 3600,
+                              "non_acknowledged_client_age": 400,
                               "dispatch_delay": 1,
                               "archived_log_directory": "%original",
                               "archived_log_filename": "mylogs-%hour-00-%wday-%level.log",
@@ -156,7 +158,6 @@ protected:
                                   {
                                       "logger_id": "muflihun",
                                       "configuration_file": "muflihun-logger.conf",
-                                      "max_file_size": 102400000,
                                       "rotation_freq": "hourly",
                                       "archived_log_filename": "mylogs-%hour-00-%wday-%level.log",
                                       "archived_log_directory": "/tmp/logs-backup/custom-location-for-%logger",
@@ -179,6 +180,8 @@ protected:
                                       ]
                                   }
                               ],
+                              "known_loggers_endpoint": "http://localhost:3000/known-loggers",
+                              "known_clients_endpoint": "http://localhost:3000/known-clients",
                               "extensions": {
                                   "log_extensions": ["basic"]
                               },
@@ -216,17 +219,19 @@ TEST_F(ConfigurationTest, CheckValues)
     ASSERT_EQ(conf->tokenPort(), 87781);
     ASSERT_EQ(conf->loggingPort(), 87791);
     ASSERT_EQ(conf->serverKey(), "048CB7050312DB329788CE1533C294A1F248F8A1BD6F611D7516803EDE271C65");
-    ASSERT_EQ(conf->clientAge(), 0);
+    ASSERT_EQ(conf->clientAge(), 2147483648);
     ASSERT_EQ(conf->tokenAge(), 25);
     ASSERT_EQ(conf->maxTokenAge(), 60);
-    ASSERT_EQ(conf->nonAcknowledgedClientAge(), 3600);
+    ASSERT_EQ(conf->nonAcknowledgedClientAge(), 400);
     ASSERT_EQ(conf->clientIntegrityTaskInterval(), 500);
     ASSERT_FALSE(conf->hasFlag(Configuration::Flag::ENABLE_CLI));
     ASSERT_TRUE(conf->hasFlag(Configuration::Flag::ALLOW_UNKNOWN_LOGGERS));
     ASSERT_FALSE(conf->hasFlag(Configuration::Flag::ALLOW_UNKNOWN_CLIENTS));
     ASSERT_TRUE(conf->hasFlag(Configuration::Flag::ALLOW_DEFAULT_ACCESS_CODE));
+    ASSERT_FALSE(conf->hasFlag(Configuration::Flag::COMPRESSION));
     ASSERT_TRUE(conf->hasFlag(Configuration::Flag::REQUIRES_TOKEN));
     ASSERT_TRUE(conf->hasFlag(Configuration::Flag::ALLOW_PLAIN_LOG_REQUEST));
+    ASSERT_TRUE(conf->hasFlag(Configuration::Flag::ALLOW_PLAIN_CONNECTION));
     ASSERT_FALSE(conf->hasLoggerFlag("residue", Configuration::Flag::ALLOW_PLAIN_LOG_REQUEST));
     ASSERT_TRUE(conf->hasLoggerFlag("muflihun", Configuration::Flag::ALLOW_PLAIN_LOG_REQUEST));
     ASSERT_FALSE(conf->isKnownLoggerForClient("missing-client", "muflihun"));
@@ -256,6 +261,9 @@ TEST_F(ConfigurationTest, CheckValues)
 
     r.setClientId("unknown-client");
     ASSERT_EQ(conf->getConfigurationFile("unknownlogger", &r), "");
+
+    ASSERT_EQ(conf->knownLoggersEndpoint(), "http://localhost:3000/known-loggers");
+    ASSERT_EQ(conf->knownClientsEndpoint(), "http://localhost:3000/known-clients");
 }
 
 TEST_F(ConfigurationTest, Load)
