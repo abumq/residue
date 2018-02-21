@@ -160,7 +160,7 @@ install:
  - cd build
  - export TZ=Australia/Canberra
  - date
- - cmake -Dtest=ON -Denable_extensions=OFF -Duse_boost=OFF -Dold_toolchain=$OLD_TOOLCHAIN ..
+ - cmake -Dproduction=OFF -Denable_extensions=OFF -Duse_boost=OFF -Dold_toolchain=$OLD_TOOLCHAIN ..
  - make
  - ls -l
  - ldd ./residue
