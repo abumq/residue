@@ -46,7 +46,7 @@ fi
 
 
 cmake -DCMAKE_BUILD_TYPE=Release -Duse_mine=OFF -Ddebug=$DEBUG_VERSION -Dprofiling=OFF -Dproduction=ON -Dspecial_edition=$SPECIAL_EDITION_VERSION ..
-make
+make -j4
 
 echo "Creating $PACK.tar.gz ..."
 mkdir $PACK
