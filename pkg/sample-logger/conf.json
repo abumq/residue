@@ -1,0 +1,16 @@
+{
+    "url": "localhost:8777",
+    "access_codes": [
+        {
+            "logger_id": "sample-app",
+            "code": "a2dcb"
+        }
+    ],
+    "application_id": "com.muflihun.residue.sampleapp",
+    "rsa_key_size": 2048,
+    "utc_time": false,
+    "time_offset": 0,
+    "main_thread_id": "Main Thread",
+    "client_id": "sample-client",
+    "client_private_key": "sample-logger/client.pem"
+}
