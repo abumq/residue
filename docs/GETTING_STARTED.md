@@ -17,17 +17,24 @@ cd residue-1.4.5-linux-x86_64/
 Start server using this configuration
 
 ```
-sudo ./residue config/config.json
+sudo ./residue config/server.conf
 ```
 
 ## Send Log Request
-You can send log requests to local server using sample client logger
+Open another terminal and start sending log requests using sample client logger
 
 ```
 ./sample-logger/linux/residue-logger --conf=sample-logger/conf.json
 ```
 
-Source code for this sample client logger can be found @ [Residue C++ samples](https://github.com/muflihun/residue-cpp/blob/master/samples/minimal/main.cc)
+This sample sends using `default` logger. Source code for this sample client logger can be found @ [Residue C++ samples](https://github.com/muflihun/residue-cpp/blob/master/samples/minimal/main.cc)
+
+## View Logs
+You can tail your logs using
+
+```
+tail -f /tmp/logs/residue.log
+```
 
 ## Conclusion
-This is a very simple "getting started" guide. If you're facing any challenge setting your first server please feel free to create new issue on github.
+This is a very simple _getting started_ guide. If you're facing any challenge setting your first server please feel free to create new issue on github.
