@@ -16,7 +16,8 @@ PATCH=`grep 'RESIDUE_PATCH' ../CMakeLists.txt | grep [0-9] | awk '{print $3}' | 
 VERSION="$MAJOR.$MINOR.$PATCH"
 echo "Releasing $VERSION on $TYPE. Continue (y/n)?"
 read confirm
-if [ "$confirm" = "y" || "$config" = "yes" ]; then
+if [ "$confirm" = "y" ]; then
+    rm -rf *
     sh ../tools/package.sh $TYPE $VERSION && sh ../tools/package.sh $TYPE-debug $VERSION ON
 fi
     
