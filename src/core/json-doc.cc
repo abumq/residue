@@ -27,18 +27,23 @@ void JsonDoc::parse(const std::string& jstr)
 {
     src = std::unique_ptr<char[]>(new char[jstr.size() + 1]);
     strcpy(src.get(), jstr.c_str());
-    status = gason::jsonParse(src.get(), val, alloc);
+    m_status = gason::jsonParse(src.get(), m_val, alloc);
 }
 
-std::string JsonDoc::dump() const
+std::string JsonDoc::dump(int indent) const
 {
     std::stringstream ss;
-    dump(val, ss);
+    dump(m_val, ss, indent);
     return ss.str();
 }
 
-void JsonDoc::dump(JsonDoc::Value o, std::stringstream& ss)
+void JsonDoc::dump(JsonDoc::Value o, std::stringstream& ss, int indent, int depth)
 {
+    const std::string spaces = indent > 0 ? std::string(depth * indent, ' ') : "";
+    const std::string indentBack = indent > 0 && depth > 1 ? std::string((depth - 1) * indent, ' ') : "";
+    const std::string newLine = indent > 0 ? "\n" : "";
+    const std::string separator = indent > 0 ? " " : "";
+
     switch (o.getTag()) {
     case gason::JSON_NUMBER:
         ss << static_cast<long>(o.toNumber());
@@ -51,26 +56,28 @@ void JsonDoc::dump(JsonDoc::Value o, std::stringstream& ss)
             ss << "[]";
             break;
         }
-        ss << "[";
+        ss << "[" << newLine << spaces;
         for (auto i : o) {
-            dump(i->value, ss);
-            ss << (i->next ? "," : "");
+            dump(i->value, ss, indent, depth + 1);
+            ss << (i->next ? "," + newLine : "");
+            ss << spaces;
         }
-        ss << "]";
+        ss << newLine << indentBack << "]";
         break;
     case gason::JSON_OBJECT:
         if (!o.toNode()) {
             ss << "{}";
             break;
         }
-        ss << "{";
+        ss << "{" << newLine;
         for (auto i : o) {
+            ss << spaces;
             dumpStr(i->key, ss);
-            ss << ":";
-            dump(i->value, ss);
-            ss << (i->next ? "," : "");
+            ss << ":" << separator;
+            dump(i->value, ss, indent, depth + 1);
+            ss << (i->next ? "," + newLine : "");
         }
-        ss << "}";
+        ss << newLine << indentBack << "}";
         break;
     case gason::JSON_TRUE:
         ss << "true";
@@ -120,7 +127,7 @@ void JsonDoc::dumpStr(const char *s, std::stringstream &ss)
 
 std::string JsonDoc::errorText() const
 {
-    switch (status)
+    switch (m_status)
     {
     case gason::JsonParseStatus::JSON_PARSE_OK:
         return "";

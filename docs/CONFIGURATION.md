@@ -3,12 +3,75 @@
 </p>
 
 # Configuration
+
 This document gives you details on configuring residue
 
 Residue is fully configurable to support various features and for security. Configuration is always in [JSON](http://json.org/) format.
 
 You can use [Server Config Tool](https://muflihun.github.io/residue/create-server-config) to create configurations for your server
 
+## Table of Contents
+
+* [admin_port](#admin_port)
+* [connect_port](#connect_port)
+* [token_port](#token_port)
+* [logging_port](#logging_port)
+* [default_key_size](#default_key_size)
+* [server_key](#server_key)
+* [server_rsa_private_key](#server_rsa_private_key)
+* [server_rsa_public_key](#server_rsa_public_key)
+* [server_rsa_secret](#server_rsa_secret)
+* [enable_cli](#enable_cli)
+* [allow_plain_connection](#allow_plain_connection)
+* [allow_default_access_code](#allow_default_access_code)
+* [allow_unknown_loggers](#allow_unknown_loggers)
+* [allow_unknown_clients](#allow_unknown_clients)
+* [requires_token](#requires_token)
+* [immediate_flush](#immediate_flush)
+* [requires_timestamp](#requires_timestamp)
+* [compression](#compression)
+* [allow_plain_log_request](#allow_plain_log_request)
+* [allow_bulk_log_request](#allow_bulk_log_request)
+* [max_items_in_bulk](#max_items_in_bulk)
+* [timestamp_validity](#timestamp_validity)
+* [client_age](#client_age)
+* [non_acknowledged_client_age](#non_acknowledged_client_age)
+* [max_token_age](#max_token_age)
+* [token_age](#token_age)
+* [client_integrity_task_interval](#client_integrity_task_interval)
+* [dispatch_delay](#dispatch_delay)
+* [archived_log_directory](#archived_log_directory)
+* [archived_log_filename](#archived_log_filename)
+* [archived_log_compressed_filename](#archived_log_compressed_filename)
+* [known_clients](#known_clients)
+   * [client_id](#known_clientsclient_id)
+   * [public_key](#known_clientspublic_key)
+   * [key_size](#known_clientskey_size)
+   * [loggers](#known_clientsloggers)
+   * [default_logger](#known_clientsdefault_logger)
+   * [user](#known_clientsuser)
+* [known_clients_endpoint](#known_clients_endpoint)
+* [known_loggers](#known_loggers)
+   * [logger_id](#known_loggerslogger_id)
+   * [configuration_file](#known_loggersconfiguration_file)
+   * [access_codes](#known_loggersaccess_codes)
+       * [code](#known_loggersaccess_codescode)
+       * [token_age](#known_loggersaccess_codestoken_age)
+   * [access_code_blacklist](#known_loggersaccess_code_blacklist)
+   * [allow_plain_log_request](#known_loggersallow_plain_log_request)
+   * [rotation_freq](#known_loggersrotation_freq)
+   * [user](#known_loggersuser)
+   * [archived_log_filename](#known_loggersarchived_log_filename)
+   * [archived_log_compressed_filename](#known_loggersarchived_log_compressed_filename)
+   * [archived_log_directory](#known_loggersarchived_log_directory)
+* [known_loggers_endpoint](#known_loggers_endpoint)
+* [extensions](#extensions)
+   * [log_extensions](#extensionslog_extensions)
+* [loggers_blacklist](#loggers_blacklist)
+* [Comments](#comments)
+* [Sample](#sample)
+      
+  
 ### `admin_port`
 [Integer] Port that admin server listens to. All the admin requests are sent to this port. These requests must be encrypted using [`server_key`](#server_key).
 

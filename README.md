@@ -33,7 +33,7 @@ You can choose to integrate similar solutions like [`rsyslog`](https://github.co
 # Features
 This above diagram in [Overview](#overview) section only shows a very high-level picture of what residue server does. There are details around each area for example:
 
- * `Send Log` is sent in JSON format, residue takes care of formatting it
+ * `Send Log` is sent as JSON packet, residue takes care of formatting it, processing the batch of requests (aka bulk request)
  * `Scheduled Backups` can be configured so that residue can act as auto-log-rotator, for example you can [set the format](/docs/CONFIGURATION.md#archived_log_compressed_filename) in a way that logs get rotated weekly and each day in that week has it's own backup.
  
 Some of the notable features are listed below
@@ -46,8 +46,11 @@ Some of the notable features are listed below
  * Compression: Residue server and official client libraries provide ability to compress the network packets which makes a big difference in amount of data transferred over the wire.
  * Speed is not compromised in any way and there is a lot of testing being done every day to ensure that logging server meets the speed requirements.
  * Reliability: We are actively working on making the server much more reliable from restarting from the crash to handling bad traffic.
- * Tools: Residue comes with various tools for devops.
- * There are many more features available for this new application. Please feel free to download your copy of residue server and give it a try.
+ * Residue comes with various [tools](https://github.com/topics/residue-tools) for devops and [client libraries](https://github.com/topics/residue-client) for easy integration.
+ * There are many more features available. Please feel free to download your copy of residue binary and give it a try.
+
+# Getting Started
+Please see [GETTING_STARTED.md](/docs/GETTING_STARTED.md) to start with residue server now.
  
 # Supported Platforms
 Residue binaries can be run directly on the following platforms. 

@@ -34,22 +34,19 @@ public:
     using Value = gason::JsonValue;
     using Status = gason::JsonParseStatus;
 
-    Status status;
-    Value val;
-
     JsonDoc()
     {
-        status = gason::JsonParseStatus::JSON_PARSE_ALLOCATION_FAILURE;
+        m_status = gason::JsonParseStatus::JSON_PARSE_ALLOCATION_FAILURE;
     }
 
     explicit JsonDoc(const gason::JsonNode* v)
     {
-        val = v->value;
+        m_val = v->value;
     }
 
     explicit JsonDoc(const gason::JsonValue& v)
     {
-        val = v;
+        m_val = v;
     }
 
     explicit JsonDoc(const std::string& json)
@@ -61,35 +58,40 @@ public:
 
     void parse(const std::string& jstr);
 
-    std::string dump() const;
-    static void dump(Value o, std::stringstream& ss);
+    inline void set(const gason::JsonNode* v)
+    {
+        m_val = v->value;
+    }
+
+    std::string dump(int indent = -1) const;
+    static void dump(Value o, std::stringstream& ss, int indent = -1, int depth = 1);
     static void dumpStr(const char* s, std::stringstream& ss);
 
     inline bool isValid() const
     {
-        return status == gason::JsonParseStatus::JSON_PARSE_OK;
+        return m_status == gason::JsonParseStatus::JSON_PARSE_OK;
     }
 
     gason::JsonIterator begin() const
     {
-        return gason::begin(val);
+        return gason::begin(m_val);
     }
 
     gason::JsonIterator end() const
     {
-        return gason::end(val);
+        return gason::end(m_val);
     }
 
     std::string errorText() const;
 
     inline bool hasKey(const char* key) const
     {
-        return val(key).getTag() <= 5;
+        return m_val(key).getTag() <= 5;
     }
 
     inline bool isArray() const
     {
-        return val.isArray();
+        return m_val.isArray();
     }
 
     template <typename T>
@@ -98,15 +100,17 @@ public:
         if (isArray()) {
             return defaultVal;
         }
-        return val(key);
+        return m_val(key);
     }
 
     template <typename T>
     inline T as(const T&) const
     {
-        return val;
+        return m_val;
     }
 private:
+    Status m_status;
+    Value m_val;
     gason::JsonAllocator alloc;
     std::unique_ptr<char[]> src;
 };
@@ -117,8 +121,8 @@ inline std::string JsonDoc::as<std::string>(const std::string& defaultVal) const
     if (isArray()) {
         return defaultVal;
     }
-    if (val.isString()) {
-        return val.toString();
+    if (m_val.isString()) {
+        return m_val.toString();
     }
     return defaultVal;
 }
@@ -129,7 +133,7 @@ inline bool JsonDoc::get<bool>(const char* key, const bool& defaultVal) const
     if (isArray()) {
         return defaultVal;
     }
-    JsonDoc::Value v = val(key);
+    JsonDoc::Value v = m_val(key);
     if (v.isBoolean()) {
         return v.toBool();
     }
@@ -142,7 +146,7 @@ inline std::string JsonDoc::get<std::string>(const char* key, const std::string&
     if (isArray()) {
         return defaultVal;
     }
-    JsonDoc::Value v = val(key);
+    JsonDoc::Value v = m_val(key);
     if (v.isString()) {
         return v.toString();
     }
@@ -155,7 +159,7 @@ inline int JsonDoc::get<int>(const char* key, const int& defaultVal) const
     if (isArray()) {
         return defaultVal;
     }
-    JsonDoc::Value v = val(key);
+    JsonDoc::Value v = m_val(key);
     if (v.isNumber()) {
         return v.toInt();
     }
@@ -168,7 +172,7 @@ inline unsigned int JsonDoc::get<unsigned int>(const char* key, const unsigned i
     if (isArray()) {
         return defaultVal;
     }
-    JsonDoc::Value v = val(key);
+    JsonDoc::Value v = m_val(key);
     if (v.isNumber()) {
         return static_cast<unsigned int>(v.toInt());
     }
@@ -181,7 +185,7 @@ inline float JsonDoc::get<float>(const char* key, const float& defaultVal) const
     if (isArray()) {
         return defaultVal;
     }
-    JsonDoc::Value v = val(key);
+    JsonDoc::Value v = m_val(key);
     if (v.isNumber()) {
         return static_cast<float>(v.toNumber());
     }
@@ -194,7 +198,7 @@ inline unsigned long JsonDoc::get<unsigned long>(const char* key, const unsigned
     if (isArray()) {
         return defaultVal;
     }
-    JsonDoc::Value v = val(key);
+    JsonDoc::Value v = m_val(key);
     if (v.isNumber()) {
         return static_cast<unsigned long>(v.toNumber());
     }
