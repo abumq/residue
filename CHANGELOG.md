@@ -3,6 +3,7 @@
 ## [Unreleased]
 ### Updates
 - Configuration saving is not pretty-printed
+- Server requires timestamp by default
 
 ## [1.4.4] - 20-02-2018
 ### Fixes

@@ -150,7 +150,7 @@ void Configuration::loadFromInput(std::string&& jsonStr)
     if (m_jsonDoc.get<bool>("immediate_flush", true)) {
         addFlag(Configuration::Flag::IMMEDIATE_FLUSH);
     }
-    if (m_jsonDoc.get<bool>("requires_timestamp", false)) {
+    if (m_jsonDoc.get<bool>("requires_timestamp", true)) {
         addFlag(Configuration::Flag::REQUIRES_TIMESTAMP);
     }
 
