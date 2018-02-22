@@ -1,4 +1,4 @@
-# Setup
+# Getting Started
 
 This document will walk you through setup your first running server.
 

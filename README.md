@@ -48,6 +48,9 @@ Some of the notable features are listed below
  * Reliability: We are actively working on making the server much more reliable from restarting from the crash to handling bad traffic.
  * Residue comes with various [tools](https://github.com/topics/residue-tools) for devops and [client libraries](https://github.com/topics/residue-client) for easy integration.
  * There are many more features available. Please feel free to download your copy of residue binary and give it a try.
+
+# Getting Started
+Please see [GETTING_STARTED.md](/docs/GETTING_STARTED.md) to start with residue server now.
  
 # Supported Platforms
 Residue binaries can be run directly on the following platforms. 
