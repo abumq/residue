@@ -73,7 +73,7 @@
                     "token_age": 0
                 }
             ],
-            "access_codes_blacklist": ["abcd"]
+            "access_code_blacklist": ["abcd"]
         }
     ],
     "loggers_blacklist": [
