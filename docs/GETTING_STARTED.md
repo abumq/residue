@@ -24,6 +24,8 @@ sudo ./residue config/server.conf
 Open another terminal and start sending log requests using sample client logger
 
 ```
+wget https://github.com/muflihun/muflihun.github.io/raw/master/downloads/sample-logger.tar.gz
+tar -xf sample-logger.tar.gz
 ./sample-logger/linux/residue-logger --conf=sample-logger/conf.json
 ```
 
