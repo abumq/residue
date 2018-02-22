@@ -7,6 +7,18 @@ When residue server starts it can accept some commands from command-line interfa
 
 Please note, some of these commands can also be triggered using admin requests.
 
+## Table of Contents
+
+* [quit](#quit)
+* [rconfig](#rconfig)
+* [reset](#reset)
+* [history](#history)
+* [clients](#clients)
+* [tokens](#tokens)
+* [rotate](#rotate)
+* [stats](#stats)
+* [files](#files)
+               
 ### `quit`
 Quits the server gracefully
 
@@ -72,9 +84,6 @@ Lists for active sessions (received, sent and how long session has been active f
 
 ##### `--client-id <client-id>`
 Filters stats for specified client. Some of the clients may not be listed as they're only registered when server receives anything from them.
-
-### `stats`
-Displays server stats
 
 ### `files`
 Displays list of logging files for speicified client, logger or levels
