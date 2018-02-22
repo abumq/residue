@@ -27,11 +27,6 @@ if [ "$TYPE" = "" ] || [ "$VERSION" = "" ];then
     exit;
 fi
 
-if [ `grep -o ' -O0 ' ../CMakeLists.txt -c` != "0" ];then
-    echo "Error: Optimization not reset"
-    exit;
-fi
-
 PACK=residue-$VERSION-$TYPE-x86_64
 
 if [ -d "$PACK" ];then
