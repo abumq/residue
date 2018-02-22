@@ -7,6 +7,37 @@ This document gives you detailed guidelines on how to write a new client library
 
 We highly recommend you understand how the server and client interact and what's the role of a developer in the whole process. You can understand all this by looking at [DATA_FLOW.md](/docs/DATA_FLOW.md) diagram and reading [CONNECTIVITY.md](/docs/CONNECTIVITY.md) specifications.
 
+## Table of Contents
+
+* [Official Libraries](#official-libraries)
+* [What is Client Library?](#what-is-client-library)
+* [Development](#development)
+   * [Helpers](#helpers)
+      * [Asyncronous TCP Client](#asyncronous-tcp-client)
+      * [RSA Encryption/Decryption with PKCS#1 padding](#rsa-encryptiondecryption-with-pkcs1-padding)
+      * [AES-CBC Encryption/Decryption](#aes-cbc-encryptiondecryption)
+      * [Base64 Encoding/Decoding](#base64-encodingdecoding)
+      * [Base16 Encoding/Decoding (optional)](#base16-encodingdecoding-optional)
+      * [GZip Compression (optional)](#gzip-compression-optional)
+   * [Public API](#public-api)
+      * [loadConfiguration](#loadconfiguration)
+      * [connect](#connect)
+      * [log](#log)
+   * [Dispatcher Thread](#dispatcher-thread)
+   * [JSON Payload](#json-payload)
+   * [Conclusion](#conclusion)
+* [Make It Official](#make-it-official)
+   * [Seamless](#seamless)
+   * [API](#api)
+   * [No Malware Policy](#no-malware-policy)
+   * [Documentation](#documentation)
+   * [Licensing](#licensing)
+   * [Naming Conventions](#naming-conventions)
+   * [Plug &amp; Play](#plug--play)
+   * [Asyncronous](#asyncronous)
+   * [Compression](#compression)
+   * [Re-establish Lost Connection](#re-establish-lost-connection)
+            
 ## Official Libraries
 Residue comes with following official client libraries. You can look at their source code for references and guidelines.
 
