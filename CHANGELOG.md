@@ -1,6 +1,6 @@
 # Change Log
 
-## [Unreleased]
+## [1.4.5] - 22-02-2018
 ### Updates
 - Configuration saving is not pretty-printed
 - Server requires timestamp by default
