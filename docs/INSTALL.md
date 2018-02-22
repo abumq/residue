@@ -33,7 +33,7 @@ In a nut shell, you will do:
 ```
 mkdir build
 cd build
-cmake -Dtest=ON ..
+cmake ..
 make
 ```
 
@@ -42,7 +42,6 @@ You can change following options in CMake (using `-D<option>=ON`)
 
 |    Option    | Description                     | Default |
 | ------------ | ------------------------------- |---------|
-| `test`       | Compile unit tests (require gtest)              | `OFF`   |
 | `debug`      | Turn on extra logging           | `OFF`   |
 | `production` | Compile for production use      | `ON`   |
 | `profiling`  | Turn on profiling information (for development only - must have `debug` option turned on) | `OFF` |
