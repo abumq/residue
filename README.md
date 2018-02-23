@@ -50,10 +50,41 @@ Some of the notable features are listed below
  * There are many more features available. Please feel free to download your copy of residue binary and give it a try.
 
 # Getting Started
-Please see [GETTING_STARTED.md](/docs/GETTING_STARTED.md) to start with residue server now.
- 
+## Download Binary
+[Download latest release](https://github.com/muflihun/residue/releases/latest) for your platform
+
+```
+wget https://github.com/muflihun/residue/releases/download/v1.4.5/residue-1.4.5-linux-x86_64.tar.gz
+tar -xf residue-1.4.5-linux-x86_64.tar.gz
+cd residue-1.4.5-linux-x86_64/
+```
+
+## Start Server
+Start server using this configuration
+
+```
+sudo ./residue config/server.conf
+```
+
+## Send Logs
+Open another terminal and start sending log requests using sample client logger
+
+```
+wget https://github.com/muflihun/muflihun.github.io/raw/master/downloads/sample-logger.tar.gz
+tar -xf sample-logger.tar.gz
+./sample-logger/linux/residue-logger --conf=sample-logger/conf.json
+```
+
+This sample sends using `default` logger. Source code for this sample client logger can be found @ [Residue C++ samples](https://github.com/muflihun/residue-cpp/blob/master/samples/minimal/main.cc)
+
+## View Logs
+You can tail your logs using
+
+```
+tail -f /tmp/logs/residue.log
+``` 
 # Supported Platforms
-Residue binaries can be run directly on the following platforms. 
+Residue binaries are tested on the following platforms. 
 
  * Ubuntu 14.04 or higher (64-bit)
  * macOS 10.11 (El Capitan) or higher (64-bit)
