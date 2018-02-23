@@ -5,6 +5,10 @@
 - Upgraded Easylogging++ to 9.96.1
 - Implemented file locks for updated logging library
 
+### Changes
+- `ALLOW_PLAIN_LOG_REQUEST` removed #97
+- Changed `ALLOW_PLAIN_CONNECTION` to `ALLOW_INSECURE_CONNECTION` to be more clear
+
 ## [1.4.5] - 22-02-2018
 ### Updates
 - Configuration saving is not pretty-printed

@@ -216,7 +216,7 @@ protected:
         }
 
         if (result && !usedRsaKey && tryServerRSAKey && request->m_client == nullptr
-                && !m_registry->configuration()->hasFlag(Configuration::ALLOW_PLAIN_CONNECTION)) {
+                && !m_registry->configuration()->hasFlag(Configuration::ALLOW_INSECURE_CONNECTION)) {
             // This will only happen when we have plain request
             request->m_errorText = "Plain connections not allowed by the server";
             request->m_statusCode = Request::StatusCode::BAD_REQUEST;

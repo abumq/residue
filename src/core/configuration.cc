@@ -126,8 +126,8 @@ void Configuration::loadFromInput(std::string&& jsonStr)
     if (m_jsonDoc.get<bool>("allow_unknown_loggers", true)) {
         addFlag(Configuration::Flag::ALLOW_UNKNOWN_LOGGERS);
     }
-    if (m_jsonDoc.get<bool>("allow_plain_connection", true)) {
-        addFlag(Configuration::ALLOW_PLAIN_CONNECTION);
+    if (m_jsonDoc.get<bool>("allow_insecure_connection", true)) {
+        addFlag(Configuration::ALLOW_INSECURE_CONNECTION);
     }
     if (m_jsonDoc.get<bool>("compression", true)) {
         addFlag(Configuration::COMPRESSION);
@@ -140,9 +140,6 @@ void Configuration::loadFromInput(std::string&& jsonStr)
     }
     if (m_jsonDoc.get<bool>("allow_default_access_code", false)) {
         addFlag(Configuration::Flag::ALLOW_DEFAULT_ACCESS_CODE);
-    }
-    if (m_jsonDoc.get<bool>("allow_plain_log_request", false)) {
-        addFlag(Configuration::Flag::ALLOW_PLAIN_LOG_REQUEST);
     }
     if (m_jsonDoc.get<bool>("allow_bulk_log_request", true)) {
         addFlag(Configuration::Flag::ALLOW_BULK_LOG_REQUEST);
@@ -192,7 +189,7 @@ void Configuration::loadFromInput(std::string&& jsonStr)
                 }
             }
         }
-    } else if (!hasFlag(Configuration::ALLOW_PLAIN_CONNECTION)) {
+    } else if (!hasFlag(Configuration::ALLOW_INSECURE_CONNECTION)) {
         errorStream << "  Server does not allow plain connections. Please provide RSA key pair" << std::endl;
     }
 
@@ -414,10 +411,6 @@ void Configuration::loadKnownLoggers(const JsonDoc::Value& json, std::stringstre
             }
             endpwent();
             m_knownLoggerUserMap.insert(std::make_pair(loggerId, loggerUser));
-        }
-
-        if (j.get<bool>("allow_plain_log_request", hasFlag(Configuration::Flag::ALLOW_PLAIN_LOG_REQUEST))) {
-            addLoggerFlag(loggerId, Configuration::Flag::ALLOW_PLAIN_LOG_REQUEST);
         }
 
         std::string rotationFreq = j.get<std::string>("rotation_freq", "");

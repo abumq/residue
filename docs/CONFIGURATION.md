@@ -22,7 +22,7 @@ You can use [Server Config Tool](https://muflihun.github.io/residue/create-serve
 * [server_rsa_public_key](#server_rsa_public_key)
 * [server_rsa_secret](#server_rsa_secret)
 * [enable_cli](#enable_cli)
-* [allow_plain_connection](#allow_plain_connection)
+* [allow_insecure_connection](#allow_insecure_connection)
 * [allow_default_access_code](#allow_default_access_code)
 * [allow_unknown_loggers](#allow_unknown_loggers)
 * [allow_unknown_clients](#allow_unknown_clients)
@@ -30,7 +30,6 @@ You can use [Server Config Tool](https://muflihun.github.io/residue/create-serve
 * [immediate_flush](#immediate_flush)
 * [requires_timestamp](#requires_timestamp)
 * [compression](#compression)
-* [allow_plain_log_request](#allow_plain_log_request)
 * [allow_bulk_log_request](#allow_bulk_log_request)
 * [max_items_in_bulk](#max_items_in_bulk)
 * [timestamp_validity](#timestamp_validity)
@@ -58,7 +57,6 @@ You can use [Server Config Tool](https://muflihun.github.io/residue/create-serve
        * [code](#known_loggersaccess_codescode)
        * [token_age](#known_loggersaccess_codestoken_age)
    * [access_code_blacklist](#known_loggersaccess_code_blacklist)
-   * [allow_plain_log_request](#known_loggersallow_plain_log_request)
    * [rotation_freq](#known_loggersrotation_freq)
    * [user](#known_loggersuser)
    * [archived_log_filename](#known_loggersarchived_log_filename)
@@ -128,7 +126,7 @@ See [Ripe](https://github.com/muflihun/ripe#readme) for more details.
 
 Default: `true`
 
-### `allow_plain_connection`
+### `allow_insecure_connection`
 [Boolean] Specifies whether plain connections to the server are allowed or not. Either this should be true or server key pair must be provided (or both)
 
 Default: `true`
@@ -187,13 +185,6 @@ It always has very good performance when you have [`compression`](#compression) 
 This is because lossless-compression is done on similar bytes. If you wish to know more about compression algorithm see [gzlib algorithm](www.gzip.org/algorithm.txt).
 
 Default: `true`
-
-### `allow_plain_log_request`
-[Boolean] Specifies whether to allow clients to send plain log requests or not.
-
-We recommend that you keep it disabled as it has some security implications, i.e, tokens can be compromised by party in the middle. Thus they can send unauthorised log requests. If this is enabled, we highly recommend you do allow loggers with forever lifetime and you keep [`token_age`](#token_age) to minimum (and not `0` which is "forever"), e.g, 300 (5 minutes)
-
-Default: `false`
 
 ### `allow_bulk_log_request`
 [Boolean] Specifies whether clients can send bulk log requests or not.
@@ -452,11 +443,6 @@ Maximum: [`max_token_age`](#max_token_age)
 
 #### `known_loggers`::`access_code_blacklist`
 [Array] String that define black listed access codes. You may access code to this list if one of the access codes is compromised. (alternatively, you may remove from the original list)
-
-#### `known_loggers`::`allow_plain_log_request`
-[Boolean] Value that allows users to send plain log requests if server level [`allow_plain_log_request`](#allow_plain_connection) configruation is enabled.
-
-Default: `false`
 
 #### `known_loggers`::`rotation_freq`
 [String] One of [`never`, `hourly`, `six_hours`, `twelve_hours`, `daily`, `weekly`, `monthly`, `yearly`] to specify rotation frequency for corresponding log files. This is rotated regardless of file size.
