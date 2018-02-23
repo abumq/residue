@@ -100,6 +100,10 @@ el::base::type::string_t UserLogBuilder::build(const el::LogMessage* logMessage,
         // Log message
         el::base::utils::Str::replaceFirstWithEscape(logLine, el::base::consts::kMessageFormatSpecifier, m_request->msg());
     }
+
+    el::base::utils::Str::replaceFirstWithEscape(logLine, "%client_id", m_request->clientId());
+    el::base::utils::Str::replaceFirstWithEscape(logLine, "%ip", m_request->ipAddr());
+
 #if !defined(ELPP_DISABLE_CUSTOM_FORMAT_SPECIFIERS)
     for (auto cfs : *ELPP->customFormatSpecifiers()) {
         std::string fs(cfs.formatSpecifier());

@@ -115,8 +115,7 @@ protected:
                               "allow_unknown_clients": false,
                               "enable_cli": false,
                               "requires_token": true,
-                              "allow_plain_connection": true,
-                              "allow_plain_log_request": true,
+                              "allow_insecure_connection": true,
                               "immediate_flush": true,
                               "allow_bulk_log_request": true,
                               "client_integrity_task_interval": 500,
@@ -147,7 +146,6 @@ protected:
                                   {
                                       "logger_id": "residue",
                                       "configuration_file": "residue-logger.conf",
-                                      "allow_plain_log_request": false
                                   },
                                   {
                                       "logger_id": "default",
@@ -230,10 +228,7 @@ TEST_F(ConfigurationTest, CheckValues)
     ASSERT_TRUE(conf->hasFlag(Configuration::Flag::ALLOW_DEFAULT_ACCESS_CODE));
     ASSERT_FALSE(conf->hasFlag(Configuration::Flag::COMPRESSION));
     ASSERT_TRUE(conf->hasFlag(Configuration::Flag::REQUIRES_TOKEN));
-    ASSERT_TRUE(conf->hasFlag(Configuration::Flag::ALLOW_PLAIN_LOG_REQUEST));
-    ASSERT_TRUE(conf->hasFlag(Configuration::Flag::ALLOW_PLAIN_CONNECTION));
-    ASSERT_FALSE(conf->hasLoggerFlag("residue", Configuration::Flag::ALLOW_PLAIN_LOG_REQUEST));
-    ASSERT_TRUE(conf->hasLoggerFlag("muflihun", Configuration::Flag::ALLOW_PLAIN_LOG_REQUEST));
+    ASSERT_TRUE(conf->hasFlag(Configuration::Flag::ALLOW_INSECURE_CONNECTION));
     ASSERT_FALSE(conf->isKnownLoggerForClient("missing-client", "muflihun"));
     ASSERT_FALSE(conf->isKnownLoggerForClient("client-for-test", "missing-logger"));
     ASSERT_TRUE(conf->isKnownLoggerForClient("client-for-test", "muflihun"));
@@ -295,9 +290,6 @@ TEST_F(ConfigurationTest, Save)
     ASSERT_EQ(conf2->hasFlag(Configuration::Flag::ALLOW_UNKNOWN_CLIENTS), conf->hasFlag(Configuration::Flag::ALLOW_UNKNOWN_CLIENTS));
     ASSERT_EQ(conf2->hasFlag(Configuration::Flag::ALLOW_DEFAULT_ACCESS_CODE), conf->hasFlag(Configuration::Flag::ALLOW_DEFAULT_ACCESS_CODE));
     ASSERT_EQ(conf2->hasFlag(Configuration::Flag::REQUIRES_TOKEN), conf->hasFlag(Configuration::Flag::REQUIRES_TOKEN));
-    ASSERT_EQ(conf2->hasFlag(Configuration::Flag::ALLOW_PLAIN_LOG_REQUEST), conf->hasFlag(Configuration::Flag::ALLOW_PLAIN_LOG_REQUEST));
-    ASSERT_EQ(conf2->hasLoggerFlag("residue", Configuration::Flag::ALLOW_PLAIN_LOG_REQUEST), conf->hasLoggerFlag("residue", Configuration::Flag::ALLOW_PLAIN_LOG_REQUEST));
-    ASSERT_EQ(conf2->hasLoggerFlag("muflihun", Configuration::Flag::ALLOW_PLAIN_LOG_REQUEST), conf->hasLoggerFlag("muflihun", Configuration::Flag::ALLOW_PLAIN_LOG_REQUEST));
     ASSERT_FALSE(conf2->isKnownLoggerForClient("missing-client", "muflihun"));
     ASSERT_FALSE(conf2->isKnownLoggerForClient("client-for-test", "missing-logger"));
     ASSERT_TRUE(conf2->isKnownLoggerForClient("client-for-test", "muflihun"));

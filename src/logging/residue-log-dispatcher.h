@@ -49,6 +49,9 @@ public:
 protected:
     void handle(const el::LogDispatchData* data) override
     {
+        el::LogDispatchCallback::handle(data);
+        el::base::threading::ScopedLock scopedLock(fileHandle(data));
+
         m_data = data;
         try {
             if (m_data == nullptr) {

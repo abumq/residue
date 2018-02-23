@@ -63,7 +63,6 @@ void LogRequestHandler::handle(RawRequest&& rawRequest)
 
 void LogRequestHandler::processRequestQueue()
 {
-    bool allowPlainRequest = m_registry->configuration()->hasFlag(Configuration::Flag::ALLOW_PLAIN_LOG_REQUEST);
     bool compressionEnabled = m_registry->configuration()->hasFlag(Configuration::Flag::COMPRESSION);
     bool allowBulkRequests = m_registry->configuration()->hasFlag(Configuration::ALLOW_BULK_LOG_REQUEST);
     auto maxItemsInBulk = m_registry->configuration()->maxItemsInBulk();
@@ -102,8 +101,7 @@ void LogRequestHandler::processRequestQueue()
         RawRequest rawRequest = m_queue.pull();
 
         std::shared_ptr<Session> session = rawRequest.session;
-        RequestHandler::handle(std::move(rawRequest), &request, allowPlainRequest ?
-                                   Request::StatusCode::CONTINUE : Request::StatusCode::BAD_REQUEST,
+        RequestHandler::handle(std::move(rawRequest), &request, Request::StatusCode::BAD_REQUEST,
                                false, false, compressionEnabled);
 
         if ((!request.isValid() && !request.isBulk())
@@ -211,32 +209,8 @@ bool LogRequestHandler::processRequest(LogRequest* request, Client** clientRef, 
     Client* client = clientRef != nullptr && *clientRef != nullptr ? *clientRef : request->client();
 
     if (client == nullptr) {
-        // This bit is only when ALLOW_PLAIN_LOG_REQUEST is true
-        if (m_registry->configuration()->hasFlag(Configuration::Flag::ALLOW_PLAIN_LOG_REQUEST)
-                && (
-                    // following || is: see if logger is unknown.. this line implies unknown loggers allow plain log requests but whether server allows or not is a different story
-                    (m_registry->configuration()->hasLoggerFlag(request->loggerId(), Configuration::Flag::ALLOW_PLAIN_LOG_REQUEST))
-                        || (!m_registry->configuration()->isKnownLogger(request->loggerId()) && m_registry->configuration()->hasFlag(Configuration::Flag::ALLOW_UNKNOWN_LOGGERS))
-                    )
-                && !request->clientId().empty()) {
-            // Try to find client assuming plain JSON request
-            client = m_registry->findClient(request->clientId());
-        } else if (request->clientId().empty()) {
-            RVLOG(RV_ERROR) << "Invalid request. No client ID found";
-            if (m_registry->configuration()->hasFlag(Configuration::Flag::ALLOW_PLAIN_LOG_REQUEST)) {
-                RVLOG(RV_ERROR) << "Please check if logger has ALLOW_PLAIN_LOG_REQUEST option set and it contains client ID if needed.";
-            }
-            return false;
-        }
-
-        // if still null we cannot continue
-        if (client == nullptr) {
-            RVLOG(RV_ERROR) << "Invalid request. No client found [" << request->clientId() << "]";
-            if (m_registry->configuration()->hasFlag(Configuration::Flag::ALLOW_PLAIN_LOG_REQUEST)) {
-                RVLOG(RV_ERROR) << "Please check if logger has ALLOW_PLAIN_LOG_REQUEST option set and it contains client ID if needed.";
-            }
-            return false;
-        }
+        RVLOG(RV_ERROR) << "Invalid request. No client found [" << request->clientId() << "]";
+        return false;
     }
 
     if (!bypassChecks && !client->isAlive(request->dateReceived())) {
@@ -284,10 +258,6 @@ void LogRequestHandler::dispatch(const LogRequest* request)
     DRVLOG(RV_TRACE) << "Dispatching";
  #endif
     m_userLogBuilder->setRequest(request);
-    // %client_id
-    el::Helpers::installCustomFormatSpecifier(el::CustomFormatSpecifier("%client_id",  std::bind(&LogRequestHandler::getClientId, this, std::placeholders::_1)));
-    // %ip
-    el::Helpers::installCustomFormatSpecifier(el::CustomFormatSpecifier("%ip",  std::bind(&LogRequestHandler::getIpAddr, this, std::placeholders::_1)));
 
  #ifdef RESIDUE_DEV
     DRVLOG(RV_TRACE) << "Writing";
@@ -302,9 +272,6 @@ void LogRequestHandler::dispatch(const LogRequest* request)
  #ifdef RESIDUE_DEV
     DRVLOG(RV_TRACE) << "Write complete";
  #endif
-    // Reset
-    el::Helpers::uninstallCustomFormatSpecifier("%client_id");
-    el::Helpers::uninstallCustomFormatSpecifier("%ip");
 
     m_userLogBuilder->setRequest(nullptr);
 
