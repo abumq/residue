@@ -1,6 +1,6 @@
 # Change Log
 
-## [Unreleased]
+## [1.5.0] - 23-02-2018
 ### Updates
 - Upgraded Easylogging++ to 9.96.1
 - Implemented file locks for updated logging library
