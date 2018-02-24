@@ -23,6 +23,7 @@
 #define CONFIGURATION_TEST_H
 
 #include <cstdio>
+#include <cstdlib>
 #include <fstream>
 #include <memory>
 #include "ripe/Ripe.h"

@@ -206,6 +206,22 @@ std::string Utils::generateRandomFromArray(const char* list,
     return s;
 }
 
+std::string Utils::resolveResidueHomeEnvVar(std::string& str)
+{
+    auto pos = str.find_first_of("$RESIDUE_HOME");
+    if (pos != std::string::npos) {
+        std::string val = el::base::utils::OS::getEnvironmentVariable("RESIDUE_HOME",
+                                                                      "",
+                                                                      "echo $RESIDUE_HOME");
+        if (val.empty()) {
+            RLOG(WARNING) << "Environment variable RESIDUE_HOME not set";
+        } else {
+            str.replace(pos, std::string("$RESIDUE_HOME").size(), val);
+        }
+    }
+    return str;
+}
+
 std::string& Utils::ltrim(std::string& str)
 {
     str.erase(str.begin(), std::find_if(str.begin(), str.end(), [](char c) {

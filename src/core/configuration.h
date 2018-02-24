@@ -345,8 +345,6 @@ private:
     std::unordered_map<std::string, std::string> m_knownLoggerUserMap;
     std::unordered_map<std::string, std::string> m_unknownLoggerUserMap;
     std::unordered_map<std::string, std::string> m_knownClientDefaultLogger;
-    // only for saving
-    std::unordered_map<std::string, std::string> m_knownClientUserMap;
 
     unsigned int m_nonAcknowledgedClientAge;
     unsigned int m_clientAge;

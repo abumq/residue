@@ -1,5 +1,9 @@
 # Change Log
 
+## [Unreleased]
+### Updates
+- Some configurations now support `RESIDUE_HOME` environment variable
+
 ## [1.5.0] - 23-02-2018
 ### Updates
 - Upgraded Easylogging++ to 9.96.1

@@ -120,7 +120,11 @@ public:
     // serization
     static bool isJSON(const std::string& data);
 
-    static std::string generateRandomFromArray(const char* list, std::size_t size, unsigned int length);
+    static std::string generateRandomFromArray(const char* list,
+                                               std::size_t size,
+                                               unsigned int length);
+
+    static std::string resolveResidueHomeEnvVar(std::string& str);
 };
 }
 #endif /* Utils_h */

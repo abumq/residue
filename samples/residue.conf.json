@@ -4,8 +4,8 @@
     "token_port": 8778,
     "logging_port": 8779,
     "server_key": "048CB7050312DB329788CE1533C294A1F248F8A1BD6F611D7516803EDE271C65",
-    "server_rsa_private_key": "samples/keys/server-1024-private.pem",
-    "server_rsa_public_key": "samples/keys/server-1024-public.pem",
+    "server_rsa_private_key": "$RESIDUE_HOME/samples/keys/server-1024-private.pem",
+    "server_rsa_public_key": "$RESIDUE_HOME/samples/keys/server-1024-public.pem",
     "server_rsa_secret": "",
     "default_key_size": 256,
     "enable_cli": true,
@@ -32,30 +32,30 @@
     "known_clients": [
         {
             "client_id": "muflihun00102030",
-            "public_key": "samples/keys/client-256-public.pem",
+            "public_key": "$RESIDUE_HOME/samples/keys/client-256-public.pem",
             "key_size": 128,
             "loggers": ["sample-app"],
             "default_logger": "sample-app"
         },
         {
             "client_id": "muflihun00102031",
-            "public_key": "samples/keys/encrypted-pubkey.pem",
+            "public_key": "$RESIDUE_HOME/samples/keys/encrypted-pubkey.pem",
             "loggers": ["residue"]
         }
     ],
     "known_loggers": [
         {
             "logger_id": "residue",
-            "configuration_file": "samples/configurations/residue-Logger.conf",
+            "configuration_file": "$RESIDUE_HOME/samples/configurations/residue-Logger.conf",
             "rotation_freq": "hourly"
         },
         {
             "logger_id": "default",
-            "configuration_file": "samples/configurations/default-Logger.conf"
+            "configuration_file": "$RESIDUE_HOME/samples/configurations/default-Logger.conf"
         },
         {
             "logger_id": "sample-app",
-            "configuration_file": "samples/configurations/sample-app-Logger.conf",
+            "configuration_file": "$RESIDUE_HOME/samples/configurations/sample-app-Logger.conf",
             "rotation_freq": "hourly",
             "access_codes": [
                 {
