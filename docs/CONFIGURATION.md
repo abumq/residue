@@ -8,7 +8,7 @@ This document gives you details on configuring residue
 
 Residue is fully configurable to support various features and for security. Configuration is always in [JSON](http://json.org/) format.
 
-You can use [Server Config Tool](https://muflihun.github.io/residue/create-server-config) to create configurations for your server
+You can use [Server Config Tool](https://muflihun.github.io/residue/create-server-config) to generate configurations for your server
 
 ## Table of Contents
 
@@ -288,7 +288,8 @@ Possible format specifiers:
 | `%quarter` | Month quarter (`Q1`, `Q2`, `Q3`, `Q4`) |
 | `%year` | Year (`2016`, `2017`, `2018`, ...) |
 
-Default: It must be provided by user
+Default: It must be provided by the user
+
 Example: `%original/backups/%logger/`
 
 ### `archived_log_filename`
@@ -308,7 +309,8 @@ Possible format specifiers:
 | `%year`| Year (`2017`, ...) |
 | `%level`| log level (`info`, `error`, ...) |
 
-Default: It must be provided by user.
+Default: It must be provided by the user
+
 Example: `%level-%hour-%min-%day-%month-%year.log`
 
 ### `archived_log_compressed_filename`
@@ -326,7 +328,8 @@ Possible format specifiers:
 | `%quarter` | Month quarter (`Q1`, `Q2`, `Q3`, `Q4`) |
 | `%year` | Year (`2017`, ...) |
 
-Default: It must be provided by user.
+Default: It must be provided by the user
+
 Example: `%hour-%min-%day-%month-%year.tar.gz`
 
 ### `known_clients`
