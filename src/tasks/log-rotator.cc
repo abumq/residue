@@ -151,7 +151,7 @@ LogRotator::RotateTarget LogRotator::createRotateTarget(const std::string& logge
 
         std::map<std::string, std::set<std::string>> levelsInFilename;
 
-        std::lock_guard<std::recursive_mutex>(logger->lock());
+        std::lock_guard<std::recursive_mutex> l(logger->lock());
 
         // mv fnInfo -> mylogs-17-00-19-Feb-info.log
         // mv fnError -> mylogs-17-00-19-Feb-error.log
@@ -254,7 +254,7 @@ void LogRotator::rotate(const std::string& loggerId)
         //
         //===================================================================
 
-        std::lock_guard<std::recursive_mutex>(logger->lock());
+        std::lock_guard<std::recursive_mutex> l(logger->lock());
 
         // Create backups
 
