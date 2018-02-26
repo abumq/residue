@@ -120,24 +120,26 @@ el::LogBuilder* configureLogging(Configuration* configuration)
 
     std::string defaultConfigFile = configuration->getConfigurationFile("default");
     el::Configurations defaultLoggerConf = el::Configurations(defaultConfigFile);
-    el::Loggers::setDefaultConfigurations(defaultLoggerConf, true);
+
+    // do not reconfigure existing loggers as we have configured known loggers already
+    el::Loggers::setDefaultConfigurations(defaultLoggerConf, false);
 
     // Reset [residue] configuration from residue json configurations
-    std::string residueConfigFile = configuration->getConfigurationFile(RESIDUE_LOGGER_ID);
-    el::Configurations residueLoggerConf = el::Configurations(residueConfigFile);
-    el::Loggers::getLogger(RESIDUE_LOGGER_ID)->configure(residueLoggerConf);
+    /*std::string residueConfigFile = configuration->getConfigurationFile(RESIDUE_LOGGER_ID);
+    el::Configurations residueLoggerConf(residueConfigFile);
+    el::Loggers::getLogger(RESIDUE_LOGGER_ID)->configure(residueLoggerConf);*/
 
-    RVLOG(RV_INFO) << "Default configurations: " << defaultConfigFile;
-    RVLOG(RV_INFO) << "Server configurations: " << residueConfigFile;
+    //RVLOG(RV_INFO) << "Default configurations: " << defaultConfigFile;
+    //RVLOG(RV_INFO) << "Server configurations: " << residueConfigFile;
 
     // Whenever new logger is registered we will handle it to find right configuration
     // file and configure it accordingly, otherwise we use default configuration
-    const std::string configuratorName = "KnownLoggerConfigurator";
-    el::Loggers::installLoggerRegistrationCallback<KnownLoggerConfigurator>(configuratorName);
-    KnownLoggerConfigurator* configurator = el::Loggers::loggerRegistrationCallback<KnownLoggerConfigurator>(configuratorName);
-    configurator->setConfiguration(configuration);
+    //const std::string configuratorName = "KnownLoggerConfigurator";
+    //el::Loggers::installLoggerRegistrationCallback<KnownLoggerConfigurator>(configuratorName);
+    //KnownLoggerConfigurator* configurator = el::Loggers::loggerRegistrationCallback<KnownLoggerConfigurator>(configuratorName);
+    //configurator->setConfiguration(configuration);
     //configurator->setUserLogBuilder(static_cast<const UserLogBuilder*>(logBuilder.get()));
-    configurator->setEnabled(true);
+    //configurator->setEnabled(true);
 
     return logBuilder.get();
 }

@@ -47,7 +47,6 @@ LogRequestHandler::~LogRequestHandler()
 void LogRequestHandler::start()
 {
     m_stopped = false;
-
     m_backgroundWorker = std::thread([&]() {
         el::Helpers::setThreadName("LogDispatcher");
         while (!m_stopped) {
@@ -272,9 +271,9 @@ void LogRequestHandler::dispatch(const LogRequest* request)
                      request->verboseLevel()).construct(el::Loggers::getLogger(request->loggerId())) << request->msg();
 #else
 
-    KnownLoggerConfigurator* configurator = el::Loggers::loggerRegistrationCallback<KnownLoggerConfigurator>("KnownLoggerConfigurator");
+    //KnownLoggerConfigurator* configurator = el::Loggers::loggerRegistrationCallback<KnownLoggerConfigurator>("KnownLoggerConfigurator");
 
-    configurator->setLogRequest(request);
+    //configurator->setLogRequest(request);
 
     el::Logger* logger = el::Loggers::getLogger(request->loggerId());
     el::base::threading::ScopedLock lock(logger->lock());

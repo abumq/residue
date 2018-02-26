@@ -400,6 +400,23 @@ void Configuration::loadKnownLoggers(const JsonDoc::Value& json, std::stringstre
             if (viaUrl) {
                 m_remoteKnownLoggers.insert(loggerId);
             }
+
+            // load logger and configure
+            el::Configurations confs(easyloggingConfigFile);
+            el::Logger* logger = el::Loggers::getLogger(loggerId);
+            el::base::type::EnumType lIndex = el::LevelHelper::kMinValid;
+            el::Loggers::reconfigureLogger(logger, confs);
+            std::string fn = logger->typedConfigurations()->filename(el::Level::Info);
+            std::string fn2 = logger->typedConfigurations()->filename(el::Level::Info);
+            std::vector<std::string> doneList;
+            el::LevelHelper::forEachLevel(&lIndex, [&](void) -> bool {
+                el::Configuration* filenameConf = confs.get(el::LevelHelper::castFromInt(lIndex), el::ConfigurationType::Filename);
+                if (filenameConf != nullptr && std::find(doneList.begin(), doneList.end(), filenameConf->value()) == doneList.end()) {
+                    doneList.push_back(filenameConf->value());
+                    Utils::updateFilePermissions(filenameConf->value().data(), logger, this);
+                }
+                return false; // don't exit yet
+            });
         } else {
             errorStream << "  Please specify Easylogging++ configuration for known logger [" << loggerId << "]" << std::endl;
             continue;

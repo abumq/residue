@@ -3,6 +3,7 @@
 ## [Unreleased]
 ### Updates
 - Some configurations now support `RESIDUE_HOME` environment variable
+- Known loggers configured at start up
 
 ### Fixes
 - Fix rotation locks
