@@ -277,21 +277,21 @@ int main(int argc, char* argv[])
 
         // log rotator tasks
 
-#define START_LOG_ROTATOR(THREAD_NAME, NAME)\
+#define START_LOG_ROTATOR(NAME)\
         threads.push_back(std::thread([&]() {\
-            el::Helpers::setThreadName(THREAD_NAME);\
+            el::Helpers::setThreadName(#NAME);\
             NAME rotator(&registry);\
             registry.addLogRotator(&rotator);\
             rotator.start();\
         }))
 
-        START_LOG_ROTATOR("HourlyLogRotator", HourlyLogRotator);
-        START_LOG_ROTATOR("SixHoursLogRotator", SixHoursLogRotator);
-        START_LOG_ROTATOR("TwelveHoursLogRotator", TwelveHoursLogRotator);
-        START_LOG_ROTATOR("DailyLogRotator", DailyLogRotator);
-        START_LOG_ROTATOR("WeeklyLogRotator", WeeklyLogRotator);
-        START_LOG_ROTATOR("MonthlyLogRotator", MonthlyLogRotator);
-        START_LOG_ROTATOR("YearlyLogRotator", YearlyLogRotator);
+        START_LOG_ROTATOR(HourlyLogRotator);
+        START_LOG_ROTATOR(SixHoursLogRotator);
+        START_LOG_ROTATOR(TwelveHoursLogRotator);
+        START_LOG_ROTATOR(DailyLogRotator);
+        START_LOG_ROTATOR(WeeklyLogRotator);
+        START_LOG_ROTATOR(MonthlyLogRotator);
+        START_LOG_ROTATOR(YearlyLogRotator);
 
 #undef START_LOG_ROTATOR
 
