@@ -46,7 +46,12 @@ public:
         m_configuration = configuration;
     }
 
-protected:
+    inline void setLogLine(std::string&& line)
+    {
+        logLine = line;
+    }
+
+public:
     void handle(const el::LogDispatchData* data) override
     {
         el::LogDispatchCallback::handle(data);
@@ -60,9 +65,8 @@ protected:
                 std::cout << "Log dispatch data is unexpectedly null" << std::endl;
                 return;
             }
-            std::string logLine(data->logMessage()->logger()->logBuilder()->build(data->logMessage(),
-                                                                                    data->dispatchAction() == el::base::DispatchAction::NormalLog));
-            //dispatch(logLine);
+//            std::string logLine(data->logMessage()->logger()->logBuilder()->build(data->logMessage(),
+//                                                                                    data->dispatchAction() == el::base::DispatchAction::NormalLog));
 
             el::Logger* logger = data->logMessage()->logger();
             el::base::TypedConfigurations* conf = logger->typedConfigurations();
@@ -122,6 +126,7 @@ protected:
 private:
     const el::LogDispatchData* m_data;
     Configuration* m_configuration;
+    std::string logLine;
 
     void callExtensions(const el::LogDispatchData* data,
                         const el::base::type::string_t& logLine)

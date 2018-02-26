@@ -23,6 +23,7 @@
 #include "logging/log-request-handler.h"
 #include "logging/log-request.h"
 #include "logging/user-log-builder.h"
+#include "logging/residue-log-dispatcher.h"
 #include "core/configuration.h"
 #include "tasks/client-integrity-task.h"
 
@@ -262,13 +263,36 @@ void LogRequestHandler::dispatch(const LogRequest* request)
  #ifdef RESIDUE_DEV
     DRVLOG(RV_TRACE) << "Writing";
  #endif
+#if 0
     el::base::Writer(request->level(),
                      request->filename().c_str(),
                      request->lineNumber(),
                      request->function().c_str(),
                      el::base::DispatchAction::NormalLog,
                      request->verboseLevel()).construct(el::Loggers::getLogger(request->loggerId())) << request->msg();
+#else
 
+    el::Logger* logger = el::Loggers::getLogger(request->loggerId());
+    el::base::threading::ScopedLock lock(logger->lock());
+
+    el::base::MessageBuilder msgBuilder;
+    msgBuilder.initialize(logger);
+    msgBuilder << request->msg();
+
+    el::LogMessage msg(request->level(), request->filename(), request->lineNumber(), request->function(), request->verboseLevel(), logger);
+
+    std::string line = m_userLogBuilder->build(&msg, true);
+
+    el::LogDispatchData data;
+    data.setLogMessage(&msg);
+    data.setDispatchAction(el::base::DispatchAction::NormalLog);
+
+    ResidueLogDispatcher dispatcher;
+    dispatcher.setConfiguration(m_registry->configuration());
+    dispatcher.setLogLine(std::move(line));
+
+    dispatcher.handle(&data);
+#endif
  #ifdef RESIDUE_DEV
     DRVLOG(RV_TRACE) << "Write complete";
  #endif

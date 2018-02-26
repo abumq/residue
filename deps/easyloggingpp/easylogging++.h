@@ -2223,17 +2223,17 @@ class LogDispatchData {
   inline base::DispatchAction dispatchAction(void) const {
     return m_dispatchAction;
   }
- private:
-  LogMessage* m_logMessage;
-  base::DispatchAction m_dispatchAction;
-  friend class base::LogDispatcher;
-
   inline void setLogMessage(LogMessage* logMessage) {
     m_logMessage = logMessage;
   }
   inline void setDispatchAction(base::DispatchAction dispatchAction) {
     m_dispatchAction = dispatchAction;
   }
+ private:
+  LogMessage* m_logMessage;
+  base::DispatchAction m_dispatchAction;
+  friend class base::LogDispatcher;
+
 };
 class LogDispatchCallback : public Callback<LogDispatchData> {
  protected: 
