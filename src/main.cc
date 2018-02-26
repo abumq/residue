@@ -172,7 +172,7 @@ int main(int argc, char* argv[])
     }
 
     if (argc < 2) {
-        std::cerr << "USAGE: residue <residue_config_file> [--run-without-root] [--v=<verbose-level>]" << std::endl;
+        std::cerr << "USAGE: residue <residue_config_file> [--force-without-root] [--v=<verbose-level>]" << std::endl;
         return 1;
     }
 

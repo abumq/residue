@@ -6,6 +6,7 @@
 
 ### Fixes
 - Fix rotation locks
+- `--force-without-root` message fix at startup
 
 ## [1.5.0] - 23-02-2018
 ### Updates
