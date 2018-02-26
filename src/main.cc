@@ -136,7 +136,7 @@ el::LogBuilder* configureLogging(Configuration* configuration)
     el::Loggers::installLoggerRegistrationCallback<KnownLoggerConfigurator>(configuratorName);
     KnownLoggerConfigurator* configurator = el::Loggers::loggerRegistrationCallback<KnownLoggerConfigurator>(configuratorName);
     configurator->setConfiguration(configuration);
-    configurator->setUserLogBuilder(static_cast<const UserLogBuilder*>(logBuilder.get()));
+    //configurator->setUserLogBuilder(static_cast<const UserLogBuilder*>(logBuilder.get()));
     configurator->setEnabled(true);
 
     return logBuilder.get();

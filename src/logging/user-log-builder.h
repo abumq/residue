@@ -29,16 +29,15 @@ namespace residue {
 
 class LogRequest;
 
-///
-/// \brief Custom log builder for Residue
-///
-class UserLogBuilder final : public el::LogBuilder, NonCopyable
+class UserMessage : public el::LogMessage
 {
 public:
-    UserLogBuilder();
-    virtual el::base::type::string_t build(const el::LogMessage* logMessage,
-                                   bool appendNewLine) const override;
-
+    UserMessage(el::Level level, const std::string& file, el::base::type::LineNumber line, const std::string& func,
+               el::base::type::VerboseLevel verboseLevel, el::Logger* logger) :
+      el::LogMessage(level, file, line, func, verboseLevel, logger),
+      m_request(nullptr)
+    {
+    }
     inline const LogRequest* request() const
     {
         return m_request;
@@ -50,6 +49,15 @@ public:
     }
 private:
     const LogRequest* m_request;
+};
+///
+/// \brief Custom log builder for Residue
+///
+class UserLogBuilder final : public el::LogBuilder, NonCopyable
+{
+public:
+    virtual el::base::type::string_t build(const el::LogMessage* logMessage,
+                                   bool appendNewLine) const override;
 };
 }
 

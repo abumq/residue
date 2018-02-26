@@ -56,17 +56,6 @@ public:
     bool isRequestAllowed(const LogRequest*) const;
 
     virtual void handle(RawRequest&&);
-
-    // Format specifiers
-    inline std::string getClientId(const el::LogMessage*)
-    {
-        return m_userLogBuilder->request() != nullptr ? m_userLogBuilder->request()->clientId() : "";
-    }
-
-    inline std::string getIpAddr(const el::LogMessage*)
-    {
-        return m_userLogBuilder->request() != nullptr ? m_userLogBuilder->request()->ipAddr() : "";
-    }
 private:
 
     ////

@@ -47,16 +47,16 @@ public:
         m_configuration = configuration;
     }
 
-    inline void setUserLogBuilder(const UserLogBuilder* userLogBuilder)
+    inline void setLogRequest(const LogRequest* logRequest)
     {
-        m_userLogBuilder = userLogBuilder;
+        m_logRequest = logRequest;
     }
 protected:
 
     virtual void handle(const el::Logger* logger)
     {
         KnownLoggerConfigurator* f = static_cast<KnownLoggerConfigurator*>(this);
-        std::string configFile = f->m_configuration->getConfigurationFile(logger->id(), m_userLogBuilder);
+        std::string configFile = f->m_configuration->getConfigurationFile(logger->id(), m_logRequest);
 
         if (!configFile.empty()) {
             el::Configurations confs(configFile);
@@ -76,7 +76,7 @@ protected:
     }
 private:
     const Configuration* m_configuration;
-    const UserLogBuilder* m_userLogBuilder;
+    const LogRequest* m_logRequest;
 };
 }
 #endif /* KnownLoggerConfigurator_h */

@@ -797,10 +797,12 @@ bool Configuration::isValidAccessCode(const std::string& loggerId,
     return std::find(iter->second.begin(), iter->second.end(), accessCode) != iter->second.end();
 }
 
+#if 0
 std::string Configuration::getConfigurationFile(const std::string& loggerId, const UserLogBuilder* userLogBuilder) const
 {
     return getConfigurationFile(loggerId, userLogBuilder != nullptr ? userLogBuilder->request() : nullptr);
 }
+#endif
 
 std::string Configuration::getConfigurationFile(const std::string& loggerId, const LogRequest* request) const
 {

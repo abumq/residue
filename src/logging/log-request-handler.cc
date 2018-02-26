@@ -26,6 +26,7 @@
 #include "logging/residue-log-dispatcher.h"
 #include "core/configuration.h"
 #include "tasks/client-integrity-task.h"
+#include "logging/known-logger-configurator.h"
 
 using namespace residue;
 
@@ -258,7 +259,6 @@ void LogRequestHandler::dispatch(const LogRequest* request)
  #ifdef RESIDUE_DEV
     DRVLOG(RV_TRACE) << "Dispatching";
  #endif
-    m_userLogBuilder->setRequest(request);
 
  #ifdef RESIDUE_DEV
     DRVLOG(RV_TRACE) << "Writing";
@@ -272,6 +272,10 @@ void LogRequestHandler::dispatch(const LogRequest* request)
                      request->verboseLevel()).construct(el::Loggers::getLogger(request->loggerId())) << request->msg();
 #else
 
+    KnownLoggerConfigurator* configurator = el::Loggers::loggerRegistrationCallback<KnownLoggerConfigurator>("KnownLoggerConfigurator");
+
+    configurator->setLogRequest(request);
+
     el::Logger* logger = el::Loggers::getLogger(request->loggerId());
     el::base::threading::ScopedLock lock(logger->lock());
 
@@ -279,7 +283,8 @@ void LogRequestHandler::dispatch(const LogRequest* request)
     msgBuilder.initialize(logger);
     msgBuilder << request->msg();
 
-    el::LogMessage msg(request->level(), request->filename(), request->lineNumber(), request->function(), request->verboseLevel(), logger);
+    UserMessage msg(request->level(), request->filename(), request->lineNumber(), request->function(), request->verboseLevel(), logger);
+    msg.setRequest(request);
 
     std::string line = m_userLogBuilder->build(&msg, true);
 
@@ -296,8 +301,6 @@ void LogRequestHandler::dispatch(const LogRequest* request)
  #ifdef RESIDUE_DEV
     DRVLOG(RV_TRACE) << "Write complete";
  #endif
-
-    m_userLogBuilder->setRequest(nullptr);
 
  #ifdef RESIDUE_DEV
     DRVLOG(RV_TRACE) << "Dispatch complete";
