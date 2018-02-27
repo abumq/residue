@@ -19,12 +19,13 @@
 //  limitations under the License.
 //
 
+#include "core/configuration.h"
 #include "logging/log.h"
 #include "logging/log-request-handler.h"
 #include "logging/log-request.h"
+#include "logging/user-message.h"
 #include "logging/user-log-builder.h"
 #include "logging/residue-log-dispatcher.h"
-#include "core/configuration.h"
 #include "tasks/client-integrity-task.h"
 
 using namespace residue;
@@ -258,8 +259,7 @@ void LogRequestHandler::dispatch(const LogRequest* request)
 
     el::Logger* logger = el::Loggers::getLogger(request->loggerId());
 
-    UserMessage msg(request->level(), request->filename(), request->lineNumber(), request->function(), request->verboseLevel(), logger);
-    msg.setRequest(request);
+    UserMessage msg(request->level(), request->filename(), request->lineNumber(), request->function(), request->verboseLevel(), logger, request);
 
     el::base::Writer(&msg).construct(logger) << request->msg();
 

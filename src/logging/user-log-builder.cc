@@ -20,7 +20,9 @@
 //
 
 #include "logging/user-log-builder.h"
+
 #include "logging/log-request.h"
+#include "logging/user-message.h"
 
 using namespace residue;
 

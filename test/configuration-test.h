@@ -54,8 +54,7 @@ protected:
         std::fstream fs;
         // Logger confs
         fs.open(kLoggerConfDefault, std::fstream::out);
-        fs << std::string(R"(
-                          * GLOBAL:
+        fs << std::string(R"(* GLOBAL:
                               FORMAT                  =   "%datetime [%logger] [%app] %level %msg"
                               FILENAME                =   "/tmp/logs/default.log"
                               ENABLED                 =   true
@@ -63,13 +62,11 @@ protected:
                               SUBSECOND_PRECISION      =   3
                               PERFORMANCE_TRACKING    =   false
                           * VERBOSE:
-                              FORMAT                  =   "%datetime [%logger] %app %level-%vlevel %msg"
-                          ")");
+                              FORMAT                  =   "%datetime [%logger] %app %level-%vlevel %msg")");
         fs.flush();
         fs.close();
         fs.open(kLoggerConfResidue, std::fstream::out);
-        fs << std::string(R"(
-                          * GLOBAL:
+        fs << std::string(R"(* GLOBAL:
                               FORMAT                  =   "%datetime [%logger] [%app] %level %msg"
                               FILENAME                =   "/tmp/logs/residue.log"
                               ENABLED                 =   true
@@ -77,14 +74,12 @@ protected:
                               SUBSECOND_PRECISION      =   3
                               PERFORMANCE_TRACKING    =   false
                           * VERBOSE:
-                              FORMAT                  =   "%datetime [%logger] %app %level-%vlevel %msg"
-                          ")");
+                              FORMAT                  =   "%datetime [%logger] %app %level-%vlevel %msg")");
 
         fs.flush();
         fs.close();
         fs.open(kLoggerConfMuflihun, std::fstream::out);
-        fs << std::string(R"(
-                          * GLOBAL:
+        fs << std::string(R"(* GLOBAL:
                               FORMAT                  =   "%datetime [%logger] [%app] %level %msg"
                               FILENAME                =   "/tmp/logs/muflihun.log"
                               ENABLED                 =   true
@@ -92,8 +87,7 @@ protected:
                               SUBSECOND_PRECISION      =   3
                               PERFORMANCE_TRACKING    =   false
                           * VERBOSE:
-                              FORMAT                  =   "%datetime [%logger] %app %level-%vlevel %msg"
-                          ")");
+                              FORMAT                  =   "%datetime [%logger] %app %level-%vlevel %msg")");
         fs.flush();
         fs.close();
 

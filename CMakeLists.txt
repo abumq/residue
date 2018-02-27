@@ -165,6 +165,7 @@ set (SOURCE_FILES
     src/logging/log-request-handler.cc
     src/logging/log-request.cc
     src/logging/user-log-builder.cc
+    src/logging/user-message.cc
     src/logging/logging-queue.cc
 
     src/core/request.cc

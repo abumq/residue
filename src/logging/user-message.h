@@ -1,5 +1,5 @@
 //
-//  user-log-builder.h
+//  user-message.h
 //  Residue
 //
 //  Copyright 2017-present Muflihun Labs
@@ -19,23 +19,31 @@
 //  limitations under the License.
 //
 
-#ifndef UserLogBuilder_h
-#define UserLogBuilder_h
+#ifndef UserMessage_h
+#define UserMessage_h
 
 #include "logging/log.h"
-#include "non-copyable.h"
 
 namespace residue {
 
+class LogRequest;
+
 ///
-/// \brief Custom log builder for Residue
+/// \brief Custom log message from user with extra information
 ///
-class UserLogBuilder final : public el::LogBuilder, NonCopyable
+class UserMessage : public el::LogMessage
 {
 public:
-    virtual el::base::type::string_t build(const el::LogMessage* logMessage,
-                                   bool appendNewLine) const override;
+    UserMessage(el::Level level, const std::string& file, el::base::type::LineNumber line, const std::string& func,
+               el::base::type::VerboseLevel verboseLevel, el::Logger* logger, const LogRequest* request);
+
+    inline const LogRequest* request() const
+    {
+        return m_request;
+    }
+private:
+    const LogRequest* m_request;
 };
 }
 
-#endif /* UserLogBuilder_h */
+#endif /* UserMessage_h */
