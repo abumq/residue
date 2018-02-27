@@ -6,6 +6,7 @@
 - Some configurations now support `RESIDUE_HOME` environment variable
 - Known loggers configured at start up
 - Client ID now supports `.` character
+- Introduced `_close` for closing connection immediately after response
 
 ### Fixes
 - Fix rotation locks

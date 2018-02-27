@@ -14,7 +14,7 @@ $req = array(
 	"file" => "index.html",
 	"line" => 857,
 	"app" => "Residue Netcat Sample",
-	"level" => 128
+	"level" => 128,
 );
 if ($encrypt) {
     $req = addslashes(json_encode($req));

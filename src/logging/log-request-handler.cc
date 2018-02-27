@@ -71,6 +71,9 @@ void LogRequestHandler::handle(RawRequest&& rawRequest)
     } else {
         rawRequest.session->writeStandardResponse(Response::StatusCode::OK);
 
+        if (request.closeImmediately()) {
+            rawRequest.session->close();
+        }
         // we do not queue up decrypted request here as it gets messy
         // with all the copy constructors and move constructors.
         // Processors run on different thread so it's OK to decrypt it second time
