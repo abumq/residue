@@ -4,8 +4,8 @@
 
 ![banner]
 
-[![Build Status](https://img.shields.io/travis/muflihun/residue/master.svg)](https://travis-ci.org/muflihun/residue/branches)
-[![Build Status](https://img.shields.io/travis/muflihun/residue/develop.svg)](https://travis-ci.org/muflihun/residue/branches)
+[![Build Status](https://img.shields.io/travis/muflihun/residue/master.svg)](#build-matrix)
+[![Build Status](https://img.shields.io/travis/muflihun/residue/develop.svg)](#build-matrix)
 [![Version](https://img.shields.io/github/release/muflihun/residue.svg)](https://github.com/muflihun/residue/releases/latest)
 [![Donate](https://img.shields.io/badge/Donate-PayPal-green.svg)](https://www.paypal.me/MuflihunDotCom/25)
 
