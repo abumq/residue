@@ -116,13 +116,11 @@ public:
 private:
     Status m_status;
     Value m_val;
-    gason::JsonAllocator alloc;
-    std::unique_ptr<char[]> src;
+    gason::JsonAllocator m_alloc;
+    std::unique_ptr<char[]> m_src;
 
     static void dump(Value o, std::stringstream& ss, int indent = -1, int depth = 1);
     static void dumpStr(const char* s, std::stringstream& ss);
-
-    friend class Request;
 };
 
 template <>

@@ -118,14 +118,13 @@ void ClientQueueProcessor::processRequestQueue()
  #ifdef RESIDUE_DEV
                 DRVLOG(RV_DEBUG) << "Request client: " << request.client();
  #endif
-                JsonDoc d;
                 for (const auto& js : request.jsonObject()) {
                     if (itemCount == maxItemsInBulk) {
                         RLOG(ERROR) << "Maximum number of bulk requests reached. Ignoring the rest of items in bulk";
                         break;
                     }
-                    d.set(js);
-                    std::string requestItemStr(d.dump());
+                    m_jsonDocForBulk.set(js);
+                    std::string requestItemStr(m_jsonDocForBulk.dump());
                     LogRequest requestItem(m_registry->configuration());
                     requestItem.deserialize(std::move(requestItemStr));
                     if (requestItem.isValid()) {

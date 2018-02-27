@@ -27,6 +27,7 @@
 #include <string>
 #include "core/request-handler.h"
 #include "logging/logging-queue.h"
+#include "core/json-doc.h"
 
 namespace residue {
 
@@ -64,6 +65,7 @@ private:
     std::atomic<bool> m_stopped;
     LoggingQueue m_queue;
     std::thread m_worker;
+    JsonDoc m_jsonDocForBulk;
 
     ////
     /// \brief Dispatches the request using custom user message

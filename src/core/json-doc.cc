@@ -25,9 +25,9 @@ using namespace residue;
 
 void JsonDoc::parse(const std::string& jstr)
 {
-    src = std::unique_ptr<char[]>(new char[jstr.size() + 1]);
-    strcpy(src.get(), jstr.c_str());
-    m_status = gason::jsonParse(src.get(), m_val, alloc);
+    m_src = std::unique_ptr<char[]>(new char[jstr.size() + 1]);
+    strcpy(m_src.get(), jstr.c_str());
+    m_status = gason::jsonParse(m_src.get(), m_val, m_alloc);
 }
 
 std::string JsonDoc::dump(int indent) const
