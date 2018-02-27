@@ -46,7 +46,6 @@
 #include "logging/user-log-builder.h"
 #include "logging/residue-log-dispatcher.h"
 #include "logging/log-request-handler.h"
-#include "logging/known-logger-configurator.h"
 #include "net/server.h"
 #include "admin/admin-request-handler.h"
 #include "connect/connection-request-handler.h"
@@ -76,19 +75,24 @@ static const std::map<int, std::string> VERBOSE_SEVERITY_MAP
     { 0,          ""         }
 };
 
+///
+/// \brief Used for custom format specifier
+///
 std::string getVerboseSeverityName(const el::LogMessage* message)
 {
     return VERBOSE_SEVERITY_MAP.at(message->verboseLevel());
 }
 
+///
+/// \brief Configure Easylogging++ to custom settings for residue server
+///
 el::LogBuilder* configureLogging(Configuration* configuration)
 {
-    // Configure Easylogging++ to custom settings for residue server
 
     // Note: Do not add StrictLogFileSizeCheck flag as we manually have log rotator in-place
 
-    // %ip, %client_id, %vnamelevel
-    el::Helpers::reserveCustomFormatSpecifiers(3);
+    // %vnamelevel
+    el::Helpers::reserveCustomFormatSpecifiers(1);
 
     // We do not want application to die on FATAL log
     el::Loggers::addFlag(el::LoggingFlag::DisableApplicationAbortOnFatalLog);
@@ -106,40 +110,29 @@ el::LogBuilder* configureLogging(Configuration* configuration)
     // to use it instead
     el::LogBuilderPtr logBuilder = el::LogBuilderPtr(new UserLogBuilder());
     el::Loggers::setDefaultLogBuilder(logBuilder);
-    el::Loggers::getLogger(el::base::consts::kDefaultLoggerId)->setLogBuilder(logBuilder);
-    if (std::string(el::base::consts::kDefaultLoggerId) != "default") {
-        el::Loggers::getLogger("default")->setLogBuilder(logBuilder);
+
+    // update all the loggers (this will include known loggers that were registered at the configuration time)
+    // to use this log builder
+    std::vector<std::string> registeredLoggers;
+    el::Loggers::populateAllLoggerIds(&registeredLoggers);
+
+    for (const std::string& loggerId : registeredLoggers) {
+        el::Loggers::getLogger(loggerId)->setLogBuilder(logBuilder);
     }
-    el::Loggers::getLogger(el::base::consts::kPerformanceLoggerId)->setLogBuilder(logBuilder);
 
     // We use our own log dispatcher as we want to do some checks for safety
+    // for missing files etc. This dispatcher also includes updating the file permission to the correct user
+    // which is picked up from configuration
     el::Helpers::uninstallLogDispatchCallback<el::base::DefaultLogDispatchCallback>("DefaultLogDispatchCallback");
     el::Helpers::installLogDispatchCallback<ResidueLogDispatcher>("ResidueLogDispatcher");
     ResidueLogDispatcher* dispatcher = el::Helpers::logDispatchCallback<ResidueLogDispatcher>("ResidueLogDispatcher");
     dispatcher->setConfiguration(configuration);
 
+    // do not reconfigure existing loggers as we have configured known loggers already
+    // with their respective configurations
     std::string defaultConfigFile = configuration->getConfigurationFile("default");
     el::Configurations defaultLoggerConf = el::Configurations(defaultConfigFile);
-
-    // do not reconfigure existing loggers as we have configured known loggers already
     el::Loggers::setDefaultConfigurations(defaultLoggerConf, false);
-
-    // Reset [residue] configuration from residue json configurations
-    /*std::string residueConfigFile = configuration->getConfigurationFile(RESIDUE_LOGGER_ID);
-    el::Configurations residueLoggerConf(residueConfigFile);
-    el::Loggers::getLogger(RESIDUE_LOGGER_ID)->configure(residueLoggerConf);*/
-
-    //RVLOG(RV_INFO) << "Default configurations: " << defaultConfigFile;
-    //RVLOG(RV_INFO) << "Server configurations: " << residueConfigFile;
-
-    // Whenever new logger is registered we will handle it to find right configuration
-    // file and configure it accordingly, otherwise we use default configuration
-    //const std::string configuratorName = "KnownLoggerConfigurator";
-    //el::Loggers::installLoggerRegistrationCallback<KnownLoggerConfigurator>(configuratorName);
-    //KnownLoggerConfigurator* configurator = el::Loggers::loggerRegistrationCallback<KnownLoggerConfigurator>(configuratorName);
-    //configurator->setConfiguration(configuration);
-    //configurator->setUserLogBuilder(static_cast<const UserLogBuilder*>(logBuilder.get()));
-    //configurator->setEnabled(true);
 
     return logBuilder.get();
 }
@@ -254,7 +247,7 @@ int main(int argc, char* argv[])
         threads.push_back(std::thread([&]() {
             el::Helpers::setThreadName("LogHandler");
             net::io_service io_service;
-            LogRequestHandler logRequestHandler(&registry, logBuilder);
+            LogRequestHandler logRequestHandler(&registry);
             logRequestHandler.start(); // Start handling incoming requests
             Server svr(io_service, config.loggingPort(), &logRequestHandler);
             io_service.run();

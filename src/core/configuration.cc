@@ -406,8 +406,6 @@ void Configuration::loadKnownLoggers(const JsonDoc::Value& json, std::stringstre
             el::Logger* logger = el::Loggers::getLogger(loggerId);
             el::base::type::EnumType lIndex = el::LevelHelper::kMinValid;
             el::Loggers::reconfigureLogger(logger, confs);
-            std::string fn = logger->typedConfigurations()->filename(el::Level::Info);
-            std::string fn2 = logger->typedConfigurations()->filename(el::Level::Info);
             std::vector<std::string> doneList;
             el::LevelHelper::forEachLevel(&lIndex, [&](void) -> bool {
                 el::Configuration* filenameConf = confs.get(el::LevelHelper::castFromInt(lIndex), el::ConfigurationType::Filename);

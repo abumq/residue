@@ -26,14 +26,11 @@
 #include "logging/residue-log-dispatcher.h"
 #include "core/configuration.h"
 #include "tasks/client-integrity-task.h"
-#include "logging/known-logger-configurator.h"
 
 using namespace residue;
 
-LogRequestHandler::LogRequestHandler(Registry* registry,
-                                     el::LogBuilder* userLogBuilder) :
-    RequestHandler("Log", registry),
-    m_userLogBuilder(static_cast<UserLogBuilder*>(userLogBuilder))
+LogRequestHandler::LogRequestHandler(Registry* registry) :
+    RequestHandler("Log", registry)
 {
     DRVLOG(RV_DEBUG) << "LogRequestHandler " << this << " with registry " << m_registry;
 }
@@ -256,53 +253,18 @@ bool LogRequestHandler::processRequest(LogRequest* request, Client** clientRef, 
 void LogRequestHandler::dispatch(const LogRequest* request)
 {
  #ifdef RESIDUE_DEV
-    DRVLOG(RV_TRACE) << "Dispatching";
- #endif
-
- #ifdef RESIDUE_DEV
     DRVLOG(RV_TRACE) << "Writing";
  #endif
-#if 0
-    el::base::Writer(request->level(),
-                     request->filename().c_str(),
-                     request->lineNumber(),
-                     request->function().c_str(),
-                     el::base::DispatchAction::NormalLog,
-                     request->verboseLevel()).construct(el::Loggers::getLogger(request->loggerId())) << request->msg();
-#else
-
-    //KnownLoggerConfigurator* configurator = el::Loggers::loggerRegistrationCallback<KnownLoggerConfigurator>("KnownLoggerConfigurator");
-
-    //configurator->setLogRequest(request);
 
     el::Logger* logger = el::Loggers::getLogger(request->loggerId());
-    el::base::threading::ScopedLock lock(logger->lock());
-
-    el::base::MessageBuilder msgBuilder;
-    msgBuilder.initialize(logger);
-    msgBuilder << request->msg();
 
     UserMessage msg(request->level(), request->filename(), request->lineNumber(), request->function(), request->verboseLevel(), logger);
     msg.setRequest(request);
 
-    std::string line = m_userLogBuilder->build(&msg, true);
+    el::base::Writer(&msg).construct(logger) << request->msg();
 
-    el::LogDispatchData data;
-    data.setLogMessage(&msg);
-    data.setDispatchAction(el::base::DispatchAction::NormalLog);
-
-    ResidueLogDispatcher dispatcher;
-    dispatcher.setConfiguration(m_registry->configuration());
-    dispatcher.setLogLine(std::move(line));
-
-    dispatcher.handle(&data);
-#endif
  #ifdef RESIDUE_DEV
     DRVLOG(RV_TRACE) << "Write complete";
- #endif
-
- #ifdef RESIDUE_DEV
-    DRVLOG(RV_TRACE) << "Dispatch complete";
  #endif
 }
 

@@ -26,13 +26,7 @@
 #include <thread>
 #include <string>
 #include "core/request-handler.h"
-#include "logging/user-log-builder.h"
 #include "logging/logging-queue.h"
-
-namespace el {
-    class LogBuilder;
-    class LogMessage;
-}
 
 namespace residue {
 
@@ -43,11 +37,11 @@ class Configuration;
 /// \brief Request handler for LogRequest
 /// \see LogRequest
 ///
-class LogRequestHandler : public RequestHandler
+class LogRequestHandler final : public RequestHandler
 {
 public:
-    LogRequestHandler(Registry*, el::LogBuilder*);
-    virtual ~LogRequestHandler();
+    LogRequestHandler(Registry*);
+    ~LogRequestHandler();
 
     ///
     /// \breif Start handling client's requests
@@ -74,8 +68,6 @@ private:
                         Session* session);
 
     bool isValidToken(const LogRequest*) const;
-
-    UserLogBuilder* m_userLogBuilder;
 
     std::atomic<bool> m_stopped;
 

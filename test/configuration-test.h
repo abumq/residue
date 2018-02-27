@@ -316,11 +316,10 @@ TEST_F(ConfigurationTest, KnownLoggersRequestAllowed)
 {
 
     // Setup basic request
-    UserLogBuilder logBuilder;
     Registry registry(conf.get());
     ClientIntegrityTask task(&registry, 300);
     registry.setClientIntegrityTask(&task);
-    LogRequestHandler logRequestHandler(&registry, &logBuilder);
+    LogRequestHandler logRequestHandler(&registry);
     logRequestHandler.start(); // start to handle ~LogRequestHandler
     // We remove token check for this test
     conf->removeFlag(Configuration::REQUIRES_TOKEN);
