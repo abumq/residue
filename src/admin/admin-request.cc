@@ -19,8 +19,9 @@
 //  limitations under the License.
 //
 
-#include "logging/log.h"
 #include "admin/admin-request.h"
+
+#include "logging/log.h"
 #include "utils/utils.h"
 
 using namespace residue;

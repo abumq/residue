@@ -19,11 +19,12 @@
 //  limitations under the License.
 //
 
-#include "logging/log.h"
 #include "admin/admin-request-handler.h"
+
 #include "admin/admin-request.h"
-#include "core/configuration.h"
 #include "cli/command-handler.h"
+#include "core/configuration.h"
+#include "logging/log.h"
 #include "net/session.h"
 #include "tasks/log-rotator.h"
 
