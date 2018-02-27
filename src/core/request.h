@@ -81,6 +81,11 @@ public:
         return m_ipAddr;
     }
 
+    inline const std::string& sessionId() const
+    {
+        return m_sessionId;
+    }
+
     inline const types::Time& dateReceived() const
     {
         return m_dateReceived;
@@ -89,6 +94,11 @@ public:
     inline void setIpAddr(const std::string& ipAddr)
     {
         m_ipAddr = ipAddr;
+    }
+
+    inline void setSessionId(const std::string& sessionId)
+    {
+        m_sessionId = sessionId;
     }
 
     inline void setDateReceived(const types::Time& dateReceived)
@@ -127,6 +137,7 @@ protected:
     std::string m_errorText;
     StatusCode m_statusCode;
     std::string m_ipAddr;
+    std::string m_sessionId;
 
     types::Time m_timestamp;
 

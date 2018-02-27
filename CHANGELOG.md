@@ -1,6 +1,8 @@
 # Change Log
 
 ## [Unreleased]
+### Updates
+- New format specifier `%session_id`
 
 ## [1.6.0] - 27-02-2018
 ### Updates

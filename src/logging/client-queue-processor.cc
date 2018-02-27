@@ -105,7 +105,6 @@ void ClientQueueProcessor::processRequestQueue()
             continue;
         }
 
-
 #ifdef RESIDUE_DEV
         DRVLOG(RV_DEBUG) << "Is bulk? " << request.isBulk();
 #endif
@@ -130,6 +129,7 @@ void ClientQueueProcessor::processRequestQueue()
                     if (requestItem.isValid()) {
                         requestItem.setIpAddr(request.ipAddr());
                         requestItem.setDateReceived(request.dateReceived());
+                        requestItem.setSessionId(request.sessionId());
                         requestItem.setClient(request.client());
 
                         if (processRequest(&requestItem, &currentClient, forceClientValidation, session.get())) {

@@ -101,6 +101,7 @@ el::base::type::string_t UserLogBuilder::build(const el::LogMessage* msg,
 
     el::base::utils::Str::replaceFirstWithEscape(logLine, "%client_id", logMessage->request()->clientId());
     el::base::utils::Str::replaceFirstWithEscape(logLine, "%ip", logMessage->request()->ipAddr());
+    el::base::utils::Str::replaceFirstWithEscape(logLine, "%session_id", logMessage->request()->sessionId());
 
 #if !defined(ELPP_DISABLE_CUSTOM_FORMAT_SPECIFIERS)
     for (auto cfs : *ELPP->customFormatSpecifiers()) {

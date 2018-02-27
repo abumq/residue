@@ -72,6 +72,7 @@ void LogRequestHandler::handle(RawRequest&& rawRequest)
         rawRequest.session->writeStandardResponse(Response::StatusCode::OK);
 
         if (request.closeImmediately()) {
+            RVLOG(RV_WARNING) << "Immediate close";
             rawRequest.session->close();
         }
         // we do not queue up decrypted request here as it gets messy
