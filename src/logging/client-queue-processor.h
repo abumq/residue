@@ -47,6 +47,13 @@ class ClientQueueProcessor final : public RequestHandler
 {
 public:
     ClientQueueProcessor(Registry* registry, const std::string& clientId);
+
+    explicit ClientQueueProcessor() = delete;
+    explicit ClientQueueProcessor(const ClientQueueProcessor&) = delete;
+    explicit ClientQueueProcessor(ClientQueueProcessor&&) = delete;
+    ClientQueueProcessor& operator=(const ClientQueueProcessor&) = delete;
+    ClientQueueProcessor& operator=(ClientQueueProcessor&&) = delete;
+
     ~ClientQueueProcessor();
 
     inline virtual void handle(RawRequest&& logRequest) override
