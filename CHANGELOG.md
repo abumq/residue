@@ -1,5 +1,7 @@
 # Change Log
 
+## [Unreleased]
+
 ## [1.6.0] - 27-02-2018
 ### Updates
 - Separate log dispatchers and logging queue by clients #96
