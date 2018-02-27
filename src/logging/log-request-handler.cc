@@ -36,17 +36,19 @@ LogRequestHandler::LogRequestHandler(Registry* registry) :
 
 void LogRequestHandler::start()
 {
-    std::string clientId = Configuration::UNKNOWN_CLIENT_ID;
-    ClientQueueProcessor* processor = new ClientQueueProcessor(m_registry, clientId);
-    processor->start();
+    auto add = [&](const std::string& clientId) {
+        m_queueProcessor.insert({ clientId, std::move(std::unique_ptr<ClientQueueProcessor>(new ClientQueueProcessor(m_registry, clientId))) });
+    };
 
-    m_queueProcessor.insert({ clientId, std::move(std::unique_ptr<ClientQueueProcessor>(processor)) }); // for unknown
+    add(Configuration::UNKNOWN_CLIENT_ID);
 
     for (auto& knownClientPair : m_registry->configuration()->knownClientsKeys()) {
-        clientId = knownClientPair.first;
-        processor = new ClientQueueProcessor(m_registry, clientId);
-        m_queueProcessor.insert({ clientId, std::move(std::unique_ptr<ClientQueueProcessor>(processor)) });
-        processor->start();
+        add(knownClientPair.first);
+    }
+
+    // start all the processors
+    for (auto& processorPair : m_queueProcessor) {
+        processorPair.second->start();
     }
 }
 
