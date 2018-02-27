@@ -19,11 +19,12 @@
 //  limitations under the License.
 //
 
-#include "logging/log.h"
 #include "admin/admin-request-handler.h"
+
 #include "admin/admin-request.h"
-#include "core/configuration.h"
 #include "cli/command-handler.h"
+#include "core/configuration.h"
+#include "logging/log.h"
 #include "net/session.h"
 #include "tasks/log-rotator.h"
 
@@ -45,7 +46,7 @@ void AdminRequestHandler::handle(RawRequest&& rawRequest)
     std::shared_ptr<Session> session = rawRequest.session;
     RequestHandler::handle(std::move(rawRequest), &request, Request::StatusCode::BAD_REQUEST, false, true);
 
-    if (request.statusCode() != Request::StatusCode::CONTINUE) {
+    if (request.statusCode() != Request::StatusCode::OK) {
         RLOG(ERROR) << "Unable to continue with this request! " << request.errorText();
         respond("Unable to continue with this request!", session);
         return;

@@ -20,6 +20,7 @@
 //
 
 #include "tokenization/token-response.h"
+
 #include "logging/log.h"
 #include "core/json-builder.h"
 
@@ -39,7 +40,7 @@ TokenResponse::TokenResponse(const std::string& token,
                              int life,
                              const std::string& loggerId) :
     Response(),
-    m_status(StatusCode::STATUS_OK),
+    m_status(StatusCode::OK),
     m_token(token),
     m_loggerId(loggerId),
     m_life(life)
@@ -49,7 +50,7 @@ TokenResponse::TokenResponse(const std::string& token,
 
 TokenResponse::TokenResponse(bool) :
     Response(),
-    m_status(StatusCode::STATUS_OK),
+    m_status(StatusCode::OK),
     m_life(-1)
 {
 

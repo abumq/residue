@@ -48,6 +48,11 @@ class Configuration final : NonCopyable
 public:
 
     ///
+    /// \brief For processor thread ID
+    ///
+    static const std::string UNKNOWN_CLIENT_ID;
+
+    ///
     /// \brief Default access code if ever need to use it
     ///
     static const std::string DEFAULT_ACCESS_CODE;
@@ -282,8 +287,7 @@ public:
         return m_keySizes.at(clientId);
     }
 
-    std::string getConfigurationFile(const std::string&, const UserLogBuilder* userLogBuilder) const;
-    std::string getConfigurationFile(const std::string&, const LogRequest* request = nullptr) const;
+    std::string getConfigurationFile(const std::string&) const;
 
     void updateUnknownLoggerUserFromRequest(const std::string& loggerId, const LogRequest* request = nullptr);
 
@@ -345,8 +349,6 @@ private:
     std::unordered_map<std::string, std::string> m_knownLoggerUserMap;
     std::unordered_map<std::string, std::string> m_unknownLoggerUserMap;
     std::unordered_map<std::string, std::string> m_knownClientDefaultLogger;
-    // only for saving
-    std::unordered_map<std::string, std::string> m_knownClientUserMap;
 
     unsigned int m_nonAcknowledgedClientAge;
     unsigned int m_clientAge;

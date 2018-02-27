@@ -25,10 +25,11 @@
 #include <sstream>
 #include <memory>
 #include "gason/gason.h"
+#include "non-copyable.h"
 
 namespace residue {
 
-class JsonDoc
+class JsonDoc final : NonCopyable
 {
 public:
     using Value = gason::JsonValue;
@@ -40,21 +41,22 @@ public:
     }
 
     explicit JsonDoc(const gason::JsonNode* v)
+        : JsonDoc()
     {
-        m_val = v->value;
+        set(v);
     }
 
     explicit JsonDoc(const gason::JsonValue& v)
+        : JsonDoc()
     {
-        m_val = v;
+        set(v);
     }
 
     explicit JsonDoc(const std::string& json)
+        : JsonDoc()
     {
         parse(json);
     }
-
-    JsonDoc(const JsonDoc&) = delete;
 
     void parse(const std::string& jstr);
 
@@ -63,9 +65,10 @@ public:
         m_val = v->value;
     }
 
-    std::string dump(int indent = -1) const;
-    static void dump(Value o, std::stringstream& ss, int indent = -1, int depth = 1);
-    static void dumpStr(const char* s, std::stringstream& ss);
+    inline void set(const gason::JsonValue& v)
+    {
+        m_val = v;
+    }
 
     inline bool isValid() const
     {
@@ -108,11 +111,16 @@ public:
     {
         return m_val;
     }
+
+    std::string dump(int indent = -1) const;
 private:
     Status m_status;
     Value m_val;
-    gason::JsonAllocator alloc;
-    std::unique_ptr<char[]> src;
+    gason::JsonAllocator m_alloc;
+    std::unique_ptr<char[]> m_src;
+
+    static void dump(Value o, std::stringstream& ss, int indent = -1, int depth = 1);
+    static void dumpStr(const char* s, std::stringstream& ss);
 };
 
 template <>

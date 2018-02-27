@@ -20,6 +20,7 @@
 //
 
 #include "cli/rotate.h"
+
 #include "core/registry.h"
 #include "tasks/log-rotator.h"
 
@@ -41,7 +42,7 @@ void Rotate::execute(std::vector<std::string>&& params, std::ostringstream& resu
         return;
     }
     if (el::Loggers::getLogger(loggerId, false) == nullptr) {
-        result << "Logger [" << loggerId << "] not yet registered";
+        result << "\nLogger [" << loggerId << "] not yet registered";
         return;
     }
     if (hasParam(params, "--check-only")) {
@@ -49,19 +50,19 @@ void Rotate::execute(std::vector<std::string>&& params, std::ostringstream& resu
         const auto& freqPair = frequencies.find(loggerId);
         if (freqPair != frequencies.end()) {
             if (freqPair->second == Configuration::RotationFrequency::NEVER) {
-                result << "Not scheduled";
+                result << "Not scheduled\n";
             } else {
                 for (const auto& rotator : registry()->logRotators()) {
                     if (rotator->frequency() == freqPair->second) {
                         result << "Logger [" << loggerId << "] uses ["
                                << rotator->name() << "] scheduled for next run @ ["
-                               << rotator->formattedNextExecution() << "]";
+                               << rotator->formattedNextExecution() << "]\n";
                         break;
                     }
                 }
             }
         } else {
-            result << "Not scheduled";
+            result << "Not scheduled\n";
         }
         return;
     }
@@ -76,17 +77,17 @@ void Rotate::execute(std::vector<std::string>&& params, std::ostringstream& resu
                 continue;
             }
             if (rotator->isExecuting()) {
-                result << "Log rotator already running, please try later";
+                result << "Log rotator already running, please try later\n";
                 return;
             }
-            result << "Rotating logs for [" << loggerId << "] using [" << rotator->name() << "]";
+            result << "Rotating logs for [" << loggerId << "] using [" << rotator->name() << "]\n";
             rotator->setLastExecution(Utils::now());
             rotator->rotate(loggerId);
             if (!hasParam(params, "--ignore-archive")) {
-                result << "Archiving logs for [" << loggerId << "]";
+                result << "Archiving logs for [" << loggerId << "]\n";
                 rotator->archiveRotatedItems();
             } else {
-                result << "Ignoring archive rotated logs for [" << loggerId << "]";
+                result << "Ignoring archive rotated logs for [" << loggerId << "]\n";
             }
 
         }

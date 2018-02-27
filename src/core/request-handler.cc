@@ -19,11 +19,12 @@
 //  limitations under the License.
 //
 
-#include "logging/log.h"
 #include "core/request-handler.h"
+
+#include "clients/client.h"
 #include "core/request.h"
 #include "crypto/aes.h"
-#include "clients/client.h"
+#include "logging/log.h"
 
 using namespace residue;
 
@@ -92,7 +93,7 @@ DecryptedRequest RequestHandler::decryptRequest(const std::string& requestStr,
         }
 
 
-        return { existingClient, requestInput, Request::StatusCode::CONTINUE, "" };
+        return { existingClient, requestInput, Request::StatusCode::OK, "" };
     }
     return { nullptr, requestInput, defaultStatus, "" };
 }

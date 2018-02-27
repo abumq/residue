@@ -22,8 +22,9 @@
 #ifndef AdminRequest_h
 #define AdminRequest_h
 
-#include <string>
 #include <set>
+#include <string>
+
 #include "core/request.h"
 
 namespace residue {

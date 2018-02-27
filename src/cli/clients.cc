@@ -20,10 +20,11 @@
 //
 
 #include "cli/clients.h"
-#include "core/registry.h"
+
 #include "core/configuration.h"
-#include "utils/utils.h"
+#include "core/registry.h"
 #include "tasks/client-integrity-task.h"
+#include "utils/utils.h"
 
 using namespace residue;
 

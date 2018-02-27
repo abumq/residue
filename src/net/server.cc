@@ -19,13 +19,16 @@
 //  limitations under the License.
 //
 
-#include <thread>
-#include "net/asio.h"
-#include "logging/log.h"
 #include "net/server.h"
-#include "net/session.h"
-#include "core/request-handler.h"
+
+#include <thread>
+
+#include "net/asio.h"
+
 #include "core/registry.h"
+#include "core/request-handler.h"
+#include "logging/log.h"
+#include "net/session.h"
 
 using namespace residue;
 using net::ip::tcp;

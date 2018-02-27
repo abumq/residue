@@ -20,14 +20,14 @@
 //
 
 #include "core/response.h"
+
 #include "net/session.h"
 
 using namespace residue;
 
-const Response::StandardResponse Response::STANDARD_RESPONSES[] = {
-    // do not use Session::PACKET_DELIMITER - sometimes resolves to nothing. Weird
-    { Response::StatusCode::STATUS_OK, "{r:0}\r\n\r\n" },
-    { Response::StatusCode::CONTINUE, "{r:0}\r\n\r\n" },
-    { Response::StatusCode::BAD_REQUEST, "{r:1}\r\n\r\n" },
+const std::unordered_map<unsigned short, std::string> Response::STANDARD_RESPONSES = {
+    { static_cast<unsigned short>(Response::StatusCode::OK), "{r:0}\r\n\r\n" },
+    { static_cast<unsigned short>(Response::StatusCode::CONTINUE), "{r:0}\r\n\r\n" },
+    { static_cast<unsigned short>(Response::StatusCode::BAD_REQUEST), "{r:1}\r\n\r\n" },
+    { static_cast<unsigned short>(Response::StatusCode::INVALID_CLIENT), "{r:2}\r\n\r\n" },
 };
-

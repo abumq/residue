@@ -19,17 +19,20 @@
 //  limitations under the License.
 //
 
+#include "tasks/log-rotator.h"
+
 #include <cmath>
+
 #include <iterator>
-#include <vector>
 #include <set>
 #include <thread>
-#include "logging/log.h"
-#include "tasks/log-rotator.h"
-#include "utils/utils.h"
+#include <vector>
+
 #include "core/registry.h"
-#include "crypto/zlib.h"
 #include "core/residue-exception.h"
+#include "crypto/zlib.h"
+#include "logging/log.h"
+#include "utils/utils.h"
 
 using namespace residue;
 
@@ -137,18 +140,21 @@ LogRotator::RotateTarget LogRotator::createRotateTarget(const std::string& logge
     //      - rotatedFilename still needs to resolve %level
     //      - initDestinationDir still needs to resolve %level and %original
     std::vector<BackupItem> items;
-    el::Logger* logger = el::Loggers::getLogger(loggerId);
+    el::Logger* logger = el::Loggers::getLogger(loggerId, false);
 
-    {
-        // NOTE: Be careful, do not log here using residue logger until this scope
-        std::lock_guard<std::recursive_mutex>(logger->lock());
+    if (logger != nullptr) {
+
+        //=========================== [ NOTE ]===============================
+        //
+        // Be careful, do not log here using residue logger until this scope
+        //
+        //===================================================================
 
         std::unordered_set<std::string> fileByLevel;
 
         std::map<std::string, std::set<std::string>> levelsInFilename;
 
-        el::Logger* logger = el::Loggers::getLogger(loggerId);
-        std::lock_guard<std::recursive_mutex>(logger->lock());
+        std::lock_guard<std::recursive_mutex> l(logger->lock());
 
         // mv fnInfo -> mylogs-17-00-19-Feb-info.log
         // mv fnError -> mylogs-17-00-19-Feb-error.log
@@ -181,6 +187,8 @@ LogRotator::RotateTarget LogRotator::createRotateTarget(const std::string& logge
             }
             return false;
         });
+
+        items.reserve(fileByLevel.size());
 
         // This set has three strings
         // { /tmp/log/muflihun.log, /tmp/log/verbose-muflihun.log, /tmp/log/debug-muflihun.log }
@@ -219,7 +227,7 @@ LogRotator::RotateTarget LogRotator::createRotateTarget(const std::string& logge
             RLOG_IF(loggerId != RESIDUE_LOGGER_ID, INFO) << "FSR: [" << sourceFilename << "] => [" << destinationDir << "] as [" << targetFilename << "]";
 
             items.push_back({ sourceFilename, destinationDir, targetFilename });
-        };
+        }
     }
 
     Utils::replaceAll(initDestinationDir, "%level", ""); // absolutely cannot have levels
@@ -239,12 +247,17 @@ void LogRotator::rotate(const std::string& loggerId)
     const RotateTarget rotateTarget = createRotateTarget(loggerId);
 
     std::map<std::string, std::string> files;
-    el::Logger* logger = el::Loggers::getLogger(loggerId);
+    el::Logger* logger = el::Loggers::getLogger(loggerId, false);
 
-    {
-        // NOTE: Be careful, do not log here using residue logger until this scope
+    if (logger != nullptr) {
 
-        std::lock_guard<std::recursive_mutex>(logger->lock());
+        //=========================== [ NOTE ]===============================
+        //
+        // Be careful, do not log here using residue logger until this scope
+        //
+        //===================================================================
+
+        std::lock_guard<std::recursive_mutex> l(logger->lock());
 
         // Create backups
 

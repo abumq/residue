@@ -102,6 +102,11 @@ public:
     {
         return m_bytesSent;
     }
+
+    ///
+    /// \brief close session
+    ///
+    void close();
 private:
     std::string m_id;
     tcp::socket m_socket;
@@ -117,11 +122,6 @@ private:
     /// \brief Read incoming data and calls sendToHandler on the packet
     ///
     void read();
-
-    ///
-    /// \brief close session
-    ///
-    void close();
 
     ///
     /// \brief Write plain data to the client

@@ -20,8 +20,9 @@
 //
 
 #include "cli/stats.h"
-#include "core/registry.h"
+
 #include "clients/client.h"
+#include "core/registry.h"
 #include "utils/utils.h"
 
 using namespace residue;

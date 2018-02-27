@@ -23,6 +23,7 @@
 #define ResidueException_h
 
 #include <exception>
+#include <stdexcept>
 
 namespace residue {
 

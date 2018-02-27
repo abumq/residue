@@ -1,5 +1,5 @@
 //
-//  known-logger-configurator.cc
+//  user-message.h
 //  Residue
 //
 //  Copyright 2017-present Muflihun Labs
@@ -19,5 +19,31 @@
 //  limitations under the License.
 //
 
-// We have definitions in header because we need to use
-// m_configuration (otherwise it becomes null in some compilers)
+#ifndef UserMessage_h
+#define UserMessage_h
+
+#include "logging/log.h"
+
+namespace residue {
+
+class LogRequest;
+
+///
+/// \brief Custom log message from user with extra information
+///
+class UserMessage : public el::LogMessage
+{
+public:
+    UserMessage(el::Level level, const std::string& file, el::base::type::LineNumber line, const std::string& func,
+               el::base::type::VerboseLevel verboseLevel, el::Logger* logger, const LogRequest* request);
+
+    inline const LogRequest* request() const
+    {
+        return m_request;
+    }
+private:
+    const LogRequest* m_request;
+};
+}
+
+#endif /* UserMessage_h */

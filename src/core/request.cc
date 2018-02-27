@@ -19,8 +19,9 @@
 //  limitations under the License.
 //
 
-#include "logging/log.h"
 #include "core/request.h"
+
+#include "logging/log.h"
 #include "core/configuration.h"
 
 using namespace residue;
@@ -46,6 +47,7 @@ bool Request::deserialize(std::string&& json)
         return false;
     }
     m_timestamp = m_jsonDoc.get<unsigned int>("_t", 0UL);
+    m_closeImmediately = m_jsonDoc.get<bool>("_close", false);
     m_isValid = validateTimestamp();
 
     RVLOG_IF(!m_isValid, RV_DEBUG) << "Potential replay. Timestamp is "

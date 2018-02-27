@@ -23,12 +23,13 @@
 #define CommandHandler_h
 
 #include <functional>
-#include <string>
 #include <set>
-#include <vector>
+#include <string>
 #include <unordered_map>
-#include "non-copyable.h"
+#include <vector>
+
 #include "cli/command.h"
+#include "non-copyable.h"
 
 namespace residue {
 

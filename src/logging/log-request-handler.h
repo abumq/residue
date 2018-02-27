@@ -22,77 +22,32 @@
 #ifndef LogRequestHandler_h
 #define LogRequestHandler_h
 
-#include <atomic>
-#include <thread>
+#include <unordered_map>
 #include <string>
 #include "core/request-handler.h"
-#include "logging/user-log-builder.h"
-#include "logging/logging-queue.h"
-
-namespace el {
-    class LogBuilder;
-    class LogMessage;
-}
+#include "logging/client-queue-processor.h"
 
 namespace residue {
 
-class LogRequest;
-class Configuration;
-
 ///
-/// \brief Request handler for LogRequest
-/// \see LogRequest
+/// \brief Handles incoming requests and passes it to correct queue processor
 ///
-class LogRequestHandler : public RequestHandler
+class LogRequestHandler final : public RequestHandler
 {
 public:
-    LogRequestHandler(Registry*, el::LogBuilder*);
-    virtual ~LogRequestHandler();
+    LogRequestHandler(Registry*);
+    ~LogRequestHandler() = default;
 
     ///
-    /// \breif Start handling client's requests
+    /// \brief Start handling client's requests
+    ///
+    /// This function initiates all the client queue processors according to their respective client IDs
     ///
     void start();
-    bool isRequestAllowed(const LogRequest*) const;
 
     virtual void handle(RawRequest&&);
-
-    // Format specifiers
-    inline std::string getClientId(const el::LogMessage*)
-    {
-        return m_userLogBuilder->request() != nullptr ? m_userLogBuilder->request()->clientId() : "";
-    }
-
-    inline std::string getIpAddr(const el::LogMessage*)
-    {
-        return m_userLogBuilder->request() != nullptr ? m_userLogBuilder->request()->ipAddr() : "";
-    }
 private:
-
-    ////
-    /// \brief Dispatches the request after temp configurating some elements of easylogging++
-    ///
-    void dispatch(const LogRequest* request);
-
-    ///
-    /// \brief Parses raw request and pushes it to m_requests ideally
-    /// in separate thread/s (m_backgroundWorkers)
-    ///
-    void processRequestQueue();
-    bool processRequest(LogRequest*,
-                        Client** clientRef,
-                        bool forceCheck,
-                        Session* session);
-
-    bool isValidToken(const LogRequest*) const;
-
-    UserLogBuilder* m_userLogBuilder;
-
-    std::atomic<bool> m_stopped;
-
-    LoggingQueue m_queue;
-
-    std::thread m_backgroundWorker;
+    std::unordered_map<std::string, std::unique_ptr<ClientQueueProcessor>> m_queueProcessor;
 };
 }
 #endif /* LogRequestHandler_h */

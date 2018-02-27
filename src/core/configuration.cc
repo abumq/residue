@@ -19,29 +19,32 @@
 //  limitations under the License.
 //
 
+#include "core/configuration.h"
+
 #include <sys/stat.h>
 #include <pwd.h>
+
 #include <set>
 #include <fstream>
 #include <utility>
 #include <iostream>
 #include <sstream>
 #include <algorithm>
-#include "logging/log.h"
-#include "core/configuration.h"
+
+#include "core/json-builder.h"
+#include "core/json-doc.h"
+#include "core/residue-exception.h"
 #include "crypto/aes.h"
 #include "crypto/base16.h"
 #include "crypto/rsa.h"
-#include "utils/utils.h"
-#include "net/http-client.h"
-#include "core/residue-exception.h"
-#include "logging/user-log-builder.h"
 #include "logging/log-request.h"
-#include "core/json-doc.h"
-#include "core/json-builder.h"
+#include "logging/log.h"
+#include "net/http-client.h"
+#include "utils/utils.h"
 
 using namespace residue;
 
+const std::string Configuration::UNKNOWN_CLIENT_ID = "unknown";
 const std::string Configuration::DEFAULT_ACCESS_CODE = "default";
 const int Configuration::MAX_BLACKLIST_LOGGERS = 10000;
 
@@ -167,6 +170,9 @@ void Configuration::loadFromInput(std::string&& jsonStr)
         if (m_serverRSAPublicKeyFile.empty()) {
             errorStream << "  Both RSA private and public keys must be provided if provided at all" << std::endl;
         } else {
+            Utils::resolveResidueHomeEnvVar(m_serverRSAPrivateKeyFile);
+            Utils::resolveResidueHomeEnvVar(m_serverRSAPublicKeyFile);
+
             if (!Utils::fileExists(m_serverRSAPrivateKeyFile.c_str()) || !Utils::fileExists(m_serverRSAPublicKeyFile.c_str())) {
                 errorStream << "  RSA private key or public key does not exist" << std::endl;
             } else {
@@ -382,6 +388,7 @@ void Configuration::loadKnownLoggers(const JsonDoc::Value& json, std::stringstre
         }
         std::string easyloggingConfigFile = j.get<std::string>("configuration_file", "");
         if (!easyloggingConfigFile.empty()) {
+            Utils::resolveResidueHomeEnvVar(easyloggingConfigFile);
             if (!Utils::fileExists(easyloggingConfigFile.c_str())) {
                 errorStream << "  File [" << easyloggingConfigFile << "] does not exist" << std::endl;
                 continue;
@@ -396,6 +403,21 @@ void Configuration::loadKnownLoggers(const JsonDoc::Value& json, std::stringstre
             if (viaUrl) {
                 m_remoteKnownLoggers.insert(loggerId);
             }
+
+            // load logger and configure
+            el::Configurations confs(easyloggingConfigFile);
+            el::Logger* logger = el::Loggers::getLogger(loggerId);
+            el::base::type::EnumType lIndex = el::LevelHelper::kMinValid;
+            el::Loggers::reconfigureLogger(logger, confs);
+            std::vector<std::string> doneList;
+            el::LevelHelper::forEachLevel(&lIndex, [&](void) -> bool {
+                el::Configuration* filenameConf = confs.get(el::LevelHelper::castFromInt(lIndex), el::ConfigurationType::Filename);
+                if (filenameConf != nullptr && std::find(doneList.begin(), doneList.end(), filenameConf->value()) == doneList.end()) {
+                    doneList.push_back(filenameConf->value());
+                    Utils::updateFilePermissions(filenameConf->value().data(), logger, this);
+                }
+                return false; // don't exit yet
+            });
         } else {
             errorStream << "  Please specify Easylogging++ configuration for known logger [" << loggerId << "]" << std::endl;
             continue;
@@ -523,8 +545,12 @@ void Configuration::loadKnownClients(const JsonDoc::Value& json, std::stringstre
             errorStream << "  Client ID not provided in known_clients" << std::endl;
             continue;
         }
-        if (!Utils::isAlphaNumeric(clientId, "-_@#")) {
-            errorStream << "  Invalid character in client ID, should be alpha-numeric (can also include these characters excluding square brackets: [_@-#])" << std::endl;
+        if (!Utils::isAlphaNumeric(clientId, "-_@#.")) {
+            errorStream << "  Invalid character in client ID, should be alpha-numeric (can also include these characters excluding square brackets: [_@-#.])" << std::endl;
+            continue;
+        }
+        if (clientId == UNKNOWN_CLIENT_ID) {
+            errorStream << "  " << UNKNOWN_CLIENT_ID << " is invalid name for client" << std::endl;
             continue;
         }
         std::string publicKey = j.get<std::string>("public_key", "");
@@ -532,6 +558,7 @@ void Configuration::loadKnownClients(const JsonDoc::Value& json, std::stringstre
             errorStream << "  RSA public key not provided in known_clients for [" << clientId << "]" << std::endl;
             continue;
         }
+        Utils::resolveResidueHomeEnvVar(publicKey);
         if (m_knownClientsKeys.find(clientId) != m_knownClientsKeys.end()) {
             errorStream << "  Duplicate client ID in known_clients [" << clientId << "]" << std::endl;
             continue;
@@ -604,9 +631,6 @@ void Configuration::loadKnownClients(const JsonDoc::Value& json, std::stringstre
                 for (std::string loggerId : loggerIds) {
                     if (m_knownLoggerUserMap.find(loggerId) == m_knownLoggerUserMap.end()) {
                         m_knownLoggerUserMap.insert(std::make_pair(loggerId, loggerUser));
-
-                        // folowing is only for saving purposes
-                        m_knownClientUserMap.insert(std::make_pair(clientId, loggerUser));
                     } else {
                         // for same user ignore, for different user this is a config warning
                         std::string existingAssignedUser = m_knownLoggerUserMap.at(loggerId);
@@ -795,29 +819,12 @@ bool Configuration::isValidAccessCode(const std::string& loggerId,
     return std::find(iter->second.begin(), iter->second.end(), accessCode) != iter->second.end();
 }
 
-std::string Configuration::getConfigurationFile(const std::string& loggerId, const UserLogBuilder* userLogBuilder) const
-{
-    return getConfigurationFile(loggerId, userLogBuilder != nullptr ? userLogBuilder->request() : nullptr);
-}
-
-std::string Configuration::getConfigurationFile(const std::string& loggerId, const LogRequest* request) const
+std::string Configuration::getConfigurationFile(const std::string& loggerId) const
 {
     DRVLOG(RV_DEBUG) << "Finding configuration file for [" << loggerId << "]";
     if (m_configurations.find(loggerId) != m_configurations.end()) {
         DRVLOG(RV_DEBUG) << "Configuration file found for [" << loggerId << "]";
         return m_configurations.at(loggerId);
-    }
-    // get conf of client's default logger
-    if (request != nullptr) {
-        DRVLOG(RV_DEBUG) << "Finding configuration file using client ID [" << request->clientId() << "]";
-        if (m_knownClientDefaultLogger.find(request->clientId()) != m_knownClientDefaultLogger.end()) {
-            std::string defaultLoggerForClient = m_knownClientDefaultLogger.at(request->clientId());
-            if (m_configurations.find(defaultLoggerForClient) != m_configurations.end()) {
-                DRVLOG(RV_DEBUG) << "Found configuration file for logger [" << loggerId << "] via default logger ["
-                                 << defaultLoggerForClient << "] for client [" << request->clientId() << "]";
-                return m_configurations.at(defaultLoggerForClient);
-            }
-        }
     }
     return "";
 }

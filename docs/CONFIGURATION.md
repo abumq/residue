@@ -8,7 +8,7 @@ This document gives you details on configuring residue
 
 Residue is fully configurable to support various features and for security. Configuration is always in [JSON](http://json.org/) format.
 
-You can use [Server Config Tool](https://muflihun.github.io/residue/create-server-config) to create configurations for your server
+You can use [Server Config Tool](https://muflihun.github.io/residue/create-server-config) to generate configurations for your server
 
 ## Table of Contents
 
@@ -101,7 +101,7 @@ Default: `256`
 Default: Randomly generated and residue outputs it in start-up
 
 ### `server_rsa_private_key`
-[Optional, String] RSA private key (PEM format file path). If provided, it is used to read initial requests for extra security.
+[Optional, String] RSA private key (PEM format file path). You can use `$RESIDUE_HOME` environment variable in this file path. If provided, it is used to read initial requests for extra security.
 
 Note: You should have big enough key to cover for unknown clients. Remember, unknown clients will need to send their public key in initial request, which makes request quite bigger.
 
@@ -116,7 +116,7 @@ Alternatively, you can use openssl command-line tool.
 See [Ripe](https://github.com/muflihun/ripe#readme) for more details.
 
 ### `server_rsa_public_key`
-[String] Corresponding public key for [`server_rsa_private_key`](#server_rsa_private_key)
+[String] Corresponding public key for [`server_rsa_private_key`](#server_rsa_private_key). You can use `$RESIDUE_HOME` environment variable in this file path.
 
 ### `server_rsa_secret`
 [String] If private key is encrypted, this is the secret (passphrase) to decrypt it. **THIS SHOULD BE HEX ENCODED**.
@@ -288,7 +288,8 @@ Possible format specifiers:
 | `%quarter` | Month quarter (`Q1`, `Q2`, `Q3`, `Q4`) |
 | `%year` | Year (`2016`, `2017`, `2018`, ...) |
 
-Default: It must be provided by user
+Default: It must be provided by the user
+
 Example: `%original/backups/%logger/`
 
 ### `archived_log_filename`
@@ -304,11 +305,12 @@ Possible format specifiers:
 | `%wday`| Day of the week (`sun`, `mon`, ...) |
 | `%day`| Day of month (`1`, `2`, ...) |
 | `%month`| Month name (`jan`, `feb`, ...) |
-| `%quarter`| Month quarter (`1`, `2`, `3`, `4`) |
+| `%quarter`| Month quarter (`Q1`, `Q2`, `Q3`, `Q4`) |
 | `%year`| Year (`2017`, ...) |
 | `%level`| log level (`info`, `error`, ...) |
 
-Default: It must be provided by user.
+Default: It must be provided by the user
+
 Example: `%level-%hour-%min-%day-%month-%year.log`
 
 ### `archived_log_compressed_filename`
@@ -323,10 +325,11 @@ Possible format specifiers:
 | `%wday` | Day of the week (`sun`, `mon`, ...) |
 | `%day` | Day of month (`1`, `2`, ...) |
 | `%month` | Month name (`jan`, `feb`, ...) |
-| `%quarter` | Month quarter (`1`, `2`, `3`, `4`) |
+| `%quarter` | Month quarter (`Q1`, `Q2`, `Q3`, `Q4`) |
 | `%year` | Year (`2017`, ...) |
 
-Default: It must be provided by user.
+Default: It must be provided by the user
+
 Example: `%hour-%min-%day-%month-%year.tar.gz`
 
 ### `known_clients`
@@ -337,6 +340,8 @@ Example: `%hour-%min-%day-%month-%year.tar.gz`
 
 #### `known_clients`::`public_key`
 [String] Path to RSA public key file for associated client ID. This key must be present and readable at the time of starting the server.
+
+You can use `$RESIDUE_HOME` environment variable in this file path.
 
 #### `known_clients`::`key_size`
 [Optional, Integer] Integer value of `128`, `192` or `256` to specify key size for this client.
@@ -393,7 +398,7 @@ You need to make sure that [`configuration_file`](#configuration_file) exists on
 [String] The logger ID
 
 #### `known_loggers`::`configuration_file`
-[String] Path to [Easylogging++ configuration file](https://github.com/muflihun/easyloggingpp#using-configuration-file). When the new logger is registered, it's configured using this configuration.
+[String] Path to [Easylogging++ configuration file](https://github.com/muflihun/easyloggingpp#using-configuration-file). You can use `$RESIDUE_HOME` environment variable in this file path. When the new logger is registered, it's configured using this configuration.
 
 Residue supports following [custom format specifiers](https://github.com/muflihun/easyloggingpp#custom-format-specifiers):
 

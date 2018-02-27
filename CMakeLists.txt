@@ -11,7 +11,7 @@ option (use_boost "Use boost or standalone networking lib" OFF)
 option (old_toolchain "Is old toolchain" OFF)
 
 set (RESIDUE_MAJOR "1")
-set (RESIDUE_MINOR "5")
+set (RESIDUE_MINOR "6")
 set (RESIDUE_PATCH "0")
 set (RESIDUE_VERSION "${RESIDUE_MAJOR}.${RESIDUE_MINOR}.${RESIDUE_PATCH}")
 set (RESIDUE_NAME "Residue")
@@ -165,7 +165,9 @@ set (SOURCE_FILES
     src/logging/log-request-handler.cc
     src/logging/log-request.cc
     src/logging/user-log-builder.cc
+    src/logging/user-message.cc
     src/logging/logging-queue.cc
+    src/logging/client-queue-processor.cc
 
     src/core/request.cc
     src/core/request-handler.cc

@@ -19,22 +19,26 @@
 //  limitations under the License.
 //
 
+#include "utils/utils.h"
+
 #include <sys/stat.h>
 #include <unistd.h>
 #include <pwd.h>
+
 #include <cstdlib>
 #include <cstdio>
 #include <ctime>
+
 #include <iomanip>
 #include <string>
 #include <random>
 #include <algorithm>
+
 #include "logging/log.h"
 #include "core/configuration.h"
 #include "core/residue-exception.h"
 #include "utils/tar.h"
 #include "net/url.h"
-#include "utils/utils.h"
 
 using namespace residue;
 
@@ -204,6 +208,22 @@ std::string Utils::generateRandomFromArray(const char* list,
         return list[uni(rng)];
     });
     return s;
+}
+
+std::string Utils::resolveResidueHomeEnvVar(std::string& str)
+{
+    auto pos = str.find_first_of("$RESIDUE_HOME");
+    if (pos != std::string::npos) {
+        std::string val = el::base::utils::OS::getEnvironmentVariable("RESIDUE_HOME",
+                                                                      "",
+                                                                      "echo $RESIDUE_HOME");
+        if (val.empty()) {
+            RLOG(WARNING) << "Environment variable RESIDUE_HOME not set";
+        } else {
+            str.replace(pos, std::string("$RESIDUE_HOME").size(), val);
+        }
+    }
+    return str;
 }
 
 std::string& Utils::ltrim(std::string& str)

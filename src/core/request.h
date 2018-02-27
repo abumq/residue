@@ -23,9 +23,10 @@
 #define Request_h
 
 #include <string>
-#include "non-copyable.h"
+
 #include "core/json-doc.h"
 #include "core/types.h"
+#include "non-copyable.h"
 
 namespace residue {
 
@@ -41,9 +42,8 @@ class Request : NonCopyable
 public:
     enum StatusCode : unsigned short
     {
-        STATUS_OK = 0,
-        BAD_REQUEST = 1,
-        CONTINUE = 0
+        OK = 0,
+        BAD_REQUEST = 1
     };
 
     explicit Request(const Configuration* conf);
@@ -101,6 +101,15 @@ public:
         m_client = client;
     }
 
+    ///
+    /// \brief Whether to close the connection immediately after responding to client
+    /// or leave it open until it closes itself
+    ///
+    inline bool closeImmediately()
+    {
+        return m_closeImmediately;
+    }
+
     template <class Other>
     inline bool typeOf() const
     {
@@ -111,6 +120,8 @@ public:
 protected:
     JsonDoc m_jsonDoc;
     bool m_isValid;
+
+    bool m_closeImmediately;
 
     Client* m_client;
     std::string m_errorText;

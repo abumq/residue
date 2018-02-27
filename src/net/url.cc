@@ -19,12 +19,15 @@
 //  limitations under the License.
 //
 
+#include "utils/utils.h"
+
 #include <cctype>
+
 #include <algorithm>
 #include <functional>
+
 #include "logging/log.h"
 #include "net/url.h"
-#include "utils/utils.h"
 
 using namespace residue;
 

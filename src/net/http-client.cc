@@ -19,15 +19,17 @@
 //  limitations under the License.
 //
 
+#include "net/http-client.h"
+
+#include "core/residue-exception.h"
+#include "logging/log.h"
+#include "net/url.h"
+
 #ifdef RESIDUE_HAS_CURL
 #   include <curl/curl.h>
 #else
 #   include "net/asio.h"
 #endif
-#include "logging/log.h"
-#include "net/http-client.h"
-#include "net/url.h"
-#include "core/residue-exception.h"
 
 using namespace residue;
 

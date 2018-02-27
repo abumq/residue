@@ -19,41 +19,45 @@
 //  limitations under the License.
 //
 
-#include <unistd.h>
 #include <csignal>
 #include <cstdlib>
+#include <unistd.h>
+
+#include <chrono>
+#include <fstream>
+#include <functional>
 #include <iomanip>
 #include <iostream>
-#include <chrono>
-#include <functional>
-#include <fstream>
 #include <memory>
 #include <thread>
+#include <unordered_map>
 #include <utility>
+
+#include "extensions/python.h"
 #include "net/asio.h"
 #include "ripe/Ripe.h"
+
+#include "admin/admin-request-handler.h"
+#include "cli/command-handler.h"
+#include "connect/connection-request-handler.h"
+#include "core/configuration.h"
+#include "core/registry.h"
+#include "core/residue-exception.h"
+#include "crash-handlers.h"
+#include "crypto/base64.h"
+#include "logging/log-request-handler.h"
+#include "logging/log.h"
+#include "logging/residue-log-dispatcher.h"
+#include "logging/user-log-builder.h"
+#include "net/server.h"
+#include "tasks/auto-updater.h"
+#include "tasks/client-integrity-task.h"
+#include "tasks/log-rotator.h"
+#include "tokenization/token-request-handler.h"
+
 #ifdef RESIDUE_USE_MINE
 #   include "mine/mine.h"
 #endif
-#include "crash-handlers.h"
-#include "extensions/python.h"
-#include "logging/log.h"
-#include "core/configuration.h"
-#include "crypto/base64.h"
-#include "core/registry.h"
-#include "core/residue-exception.h"
-#include "cli/command-handler.h"
-#include "logging/user-log-builder.h"
-#include "logging/residue-log-dispatcher.h"
-#include "logging/log-request-handler.h"
-#include "logging/known-logger-configurator.h"
-#include "net/server.h"
-#include "admin/admin-request-handler.h"
-#include "connect/connection-request-handler.h"
-#include "tokenization/token-request-handler.h"
-#include "tasks/client-integrity-task.h"
-#include "tasks/auto-updater.h"
-#include "tasks/log-rotator.h"
 
 using namespace residue;
 using net::ip::tcp;
@@ -62,7 +66,7 @@ INITIALIZE_EASYLOGGINGPP
 
 extern bool s_exitOnInterrupt;
 
-static const std::map<int, std::string> VERBOSE_SEVERITY_MAP
+static const std::unordered_map<el::base::type::VerboseLevel, std::string> VERBOSE_SEVERITY_MAP
 {
     { RV_CRAZY,   "vCRAZY"   },
     { RV_TRACE,   "vTRACE"   },
@@ -76,19 +80,27 @@ static const std::map<int, std::string> VERBOSE_SEVERITY_MAP
     { 0,          ""         }
 };
 
+///
+/// \brief Used for custom format specifier
+///
 std::string getVerboseSeverityName(const el::LogMessage* message)
 {
-    return VERBOSE_SEVERITY_MAP.at(message->verboseLevel());
+    if (message->verboseLevel() <= RV_CRAZY) {
+        return VERBOSE_SEVERITY_MAP.at(message->verboseLevel());
+    }
+    return "";
 }
 
+///
+/// \brief Configure Easylogging++ to custom settings for residue server
+///
 el::LogBuilder* configureLogging(Configuration* configuration)
 {
-    // Configure Easylogging++ to custom settings for residue server
 
     // Note: Do not add StrictLogFileSizeCheck flag as we manually have log rotator in-place
 
-    // %ip, %client_id, %vnamelevel
-    el::Helpers::reserveCustomFormatSpecifiers(3);
+    // %vnamelevel
+    el::Helpers::reserveCustomFormatSpecifiers(1);
 
     // We do not want application to die on FATAL log
     el::Loggers::addFlag(el::LoggingFlag::DisableApplicationAbortOnFatalLog);
@@ -106,38 +118,31 @@ el::LogBuilder* configureLogging(Configuration* configuration)
     // to use it instead
     el::LogBuilderPtr logBuilder = el::LogBuilderPtr(new UserLogBuilder());
     el::Loggers::setDefaultLogBuilder(logBuilder);
-    el::Loggers::getLogger(el::base::consts::kDefaultLoggerId)->setLogBuilder(logBuilder);
-    if (std::string(el::base::consts::kDefaultLoggerId) != "default") {
-        el::Loggers::getLogger("default")->setLogBuilder(logBuilder);
+
+    // update all the loggers (this will include known loggers that were registered at the configuration time)
+    // to use this log builder
+    std::vector<std::string> registeredLoggers;
+    el::Loggers::populateAllLoggerIds(&registeredLoggers);
+
+    for (const std::string& loggerId : registeredLoggers) {
+        if (loggerId != RESIDUE_LOGGER_ID) { // all the loggers except for 'residue' uses custom log builder
+            el::Loggers::getLogger(loggerId)->setLogBuilder(logBuilder);
+        }
     }
-    el::Loggers::getLogger(el::base::consts::kPerformanceLoggerId)->setLogBuilder(logBuilder);
 
     // We use our own log dispatcher as we want to do some checks for safety
+    // for missing files etc. This dispatcher also includes updating the file permission to the correct user
+    // which is picked up from configuration
     el::Helpers::uninstallLogDispatchCallback<el::base::DefaultLogDispatchCallback>("DefaultLogDispatchCallback");
     el::Helpers::installLogDispatchCallback<ResidueLogDispatcher>("ResidueLogDispatcher");
     ResidueLogDispatcher* dispatcher = el::Helpers::logDispatchCallback<ResidueLogDispatcher>("ResidueLogDispatcher");
     dispatcher->setConfiguration(configuration);
 
+    // do not reconfigure existing loggers as we have configured known loggers already
+    // with their respective configurations
     std::string defaultConfigFile = configuration->getConfigurationFile("default");
     el::Configurations defaultLoggerConf = el::Configurations(defaultConfigFile);
-    el::Loggers::setDefaultConfigurations(defaultLoggerConf, true);
-
-    // Reset [residue] configuration from residue json configurations
-    std::string residueConfigFile = configuration->getConfigurationFile(RESIDUE_LOGGER_ID);
-    el::Configurations residueLoggerConf = el::Configurations(residueConfigFile);
-    el::Loggers::getLogger(RESIDUE_LOGGER_ID)->configure(residueLoggerConf);
-
-    RVLOG(RV_INFO) << "Default configurations: " << defaultConfigFile;
-    RVLOG(RV_INFO) << "Server configurations: " << residueConfigFile;
-
-    // Whenever new logger is registered we will handle it to find right configuration
-    // file and configure it accordingly, otherwise we use default configuration
-    const std::string configuratorName = "KnownLoggerConfigurator";
-    el::Loggers::installLoggerRegistrationCallback<KnownLoggerConfigurator>(configuratorName);
-    KnownLoggerConfigurator* configurator = el::Loggers::loggerRegistrationCallback<KnownLoggerConfigurator>(configuratorName);
-    configurator->setConfiguration(configuration);
-    configurator->setUserLogBuilder(static_cast<const UserLogBuilder*>(logBuilder.get()));
-    configurator->setEnabled(true);
+    el::Loggers::setDefaultConfigurations(defaultLoggerConf, false);
 
     return logBuilder.get();
 }
@@ -172,7 +177,7 @@ int main(int argc, char* argv[])
     }
 
     if (argc < 2) {
-        std::cerr << "USAGE: residue <residue_config_file> [--run-without-root] [--v=<verbose-level>]" << std::endl;
+        std::cerr << "USAGE: residue <residue_config_file> [--force-without-root] [--v=<verbose-level>]" << std::endl;
         return 1;
     }
 
@@ -252,7 +257,7 @@ int main(int argc, char* argv[])
         threads.push_back(std::thread([&]() {
             el::Helpers::setThreadName("LogHandler");
             net::io_service io_service;
-            LogRequestHandler logRequestHandler(&registry, logBuilder);
+            LogRequestHandler logRequestHandler(&registry);
             logRequestHandler.start(); // Start handling incoming requests
             Server svr(io_service, config.loggingPort(), &logRequestHandler);
             io_service.run();
@@ -277,21 +282,21 @@ int main(int argc, char* argv[])
 
         // log rotator tasks
 
-#define START_LOG_ROTATOR(THREAD_NAME, NAME)\
+#define START_LOG_ROTATOR(NAME)\
         threads.push_back(std::thread([&]() {\
-            el::Helpers::setThreadName(THREAD_NAME);\
+            el::Helpers::setThreadName(#NAME);\
             NAME rotator(&registry);\
             registry.addLogRotator(&rotator);\
             rotator.start();\
         }))
 
-        START_LOG_ROTATOR("HourlyLogRotator", HourlyLogRotator);
-        START_LOG_ROTATOR("SixHoursLogRotator", SixHoursLogRotator);
-        START_LOG_ROTATOR("TwelveHoursLogRotator", TwelveHoursLogRotator);
-        START_LOG_ROTATOR("DailyLogRotator", DailyLogRotator);
-        START_LOG_ROTATOR("WeeklyLogRotator", WeeklyLogRotator);
-        START_LOG_ROTATOR("MonthlyLogRotator", MonthlyLogRotator);
-        START_LOG_ROTATOR("YearlyLogRotator", YearlyLogRotator);
+        START_LOG_ROTATOR(HourlyLogRotator);
+        START_LOG_ROTATOR(SixHoursLogRotator);
+        START_LOG_ROTATOR(TwelveHoursLogRotator);
+        START_LOG_ROTATOR(DailyLogRotator);
+        START_LOG_ROTATOR(WeeklyLogRotator);
+        START_LOG_ROTATOR(MonthlyLogRotator);
+        START_LOG_ROTATOR(YearlyLogRotator);
 
 #undef START_LOG_ROTATOR
 

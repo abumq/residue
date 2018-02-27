@@ -19,19 +19,22 @@
 //  limitations under the License.
 //
 
-#include <cstdio>
-#include "linenoise/linenoise.h"
-#include "logging/log.h"
 #include "cli/command-handler.h"
-#include "utils/utils.h"
-#include "cli/update.h"
+
+#include <cstdio>
+
+#include "linenoise/linenoise.h"
+
+#include "cli/clients.h"
+#include "cli/list-tokens.h"
+#include "cli/list-logging-files.h"
+#include "cli/rotate.h"
 #include "cli/reset.h"
 #include "cli/reload-config.h"
 #include "cli/stats.h"
-#include "cli/rotate.h"
-#include "cli/list-tokens.h"
-#include "cli/list-logging-files.h"
-#include "cli/clients.h"
+#include "cli/update.h"
+#include "logging/log.h"
+#include "utils/utils.h"
 
 using namespace residue;
 

@@ -1,5 +1,18 @@
 # Change Log
 
+## [1.6.0] - 27-02-2018
+### Updates
+- Separate log dispatchers and logging queue by clients #96
+- Some configurations now support `RESIDUE_HOME` environment variable
+- Known loggers configured at start up
+- Client ID now supports `.` character
+- Introduced `_close` for closing connection immediately after response
+
+### Fixes
+- Fix rotation locks
+- `--force-without-root` message fix at startup
+- Fix standard responses if initial check on log request failed
+
 ## [1.5.0] - 23-02-2018
 ### Updates
 - Upgraded Easylogging++ to 9.96.1

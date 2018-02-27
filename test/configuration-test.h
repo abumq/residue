@@ -23,6 +23,7 @@
 #define CONFIGURATION_TEST_H
 
 #include <cstdio>
+#include <cstdlib>
 #include <fstream>
 #include <memory>
 #include "ripe/Ripe.h"
@@ -32,6 +33,7 @@
 #include "core/registry.h"
 #include "logging/user-log-builder.h"
 #include "logging/log-request-handler.h"
+#include "logging/client-queue-processor.h"
 #include "connect/connection-request.h"
 #include "tasks/client-integrity-task.h"
 
@@ -53,8 +55,7 @@ protected:
         std::fstream fs;
         // Logger confs
         fs.open(kLoggerConfDefault, std::fstream::out);
-        fs << std::string(R"(
-                          * GLOBAL:
+        fs << std::string(R"(* GLOBAL:
                               FORMAT                  =   "%datetime [%logger] [%app] %level %msg"
                               FILENAME                =   "/tmp/logs/default.log"
                               ENABLED                 =   true
@@ -62,13 +63,11 @@ protected:
                               SUBSECOND_PRECISION      =   3
                               PERFORMANCE_TRACKING    =   false
                           * VERBOSE:
-                              FORMAT                  =   "%datetime [%logger] %app %level-%vlevel %msg"
-                          ")");
+                              FORMAT                  =   "%datetime [%logger] %app %level-%vlevel %msg")");
         fs.flush();
         fs.close();
         fs.open(kLoggerConfResidue, std::fstream::out);
-        fs << std::string(R"(
-                          * GLOBAL:
+        fs << std::string(R"(* GLOBAL:
                               FORMAT                  =   "%datetime [%logger] [%app] %level %msg"
                               FILENAME                =   "/tmp/logs/residue.log"
                               ENABLED                 =   true
@@ -76,14 +75,12 @@ protected:
                               SUBSECOND_PRECISION      =   3
                               PERFORMANCE_TRACKING    =   false
                           * VERBOSE:
-                              FORMAT                  =   "%datetime [%logger] %app %level-%vlevel %msg"
-                          ")");
+                              FORMAT                  =   "%datetime [%logger] %app %level-%vlevel %msg")");
 
         fs.flush();
         fs.close();
         fs.open(kLoggerConfMuflihun, std::fstream::out);
-        fs << std::string(R"(
-                          * GLOBAL:
+        fs << std::string(R"(* GLOBAL:
                               FORMAT                  =   "%datetime [%logger] [%app] %level %msg"
                               FILENAME                =   "/tmp/logs/muflihun.log"
                               ENABLED                 =   true
@@ -91,8 +88,7 @@ protected:
                               SUBSECOND_PRECISION      =   3
                               PERFORMANCE_TRACKING    =   false
                           * VERBOSE:
-                              FORMAT                  =   "%datetime [%logger] %app %level-%vlevel %msg"
-                          ")");
+                              FORMAT                  =   "%datetime [%logger] %app %level-%vlevel %msg")");
         fs.flush();
         fs.close();
 
@@ -247,16 +243,6 @@ TEST_F(ConfigurationTest, CheckValues)
     ASSERT_EQ(conf->logExtensions().size(), 0);
 #endif
 
-    LogRequest r(conf.get());
-    r.setClientId("client-for-test");
-    ASSERT_EQ(conf->getConfigurationFile("unknownlogger", &r), "muflihun-logger.conf");
-
-    r.setClientId("client-for-test2");
-    ASSERT_EQ(conf->getConfigurationFile("unknownlogger", &r), "");
-
-    r.setClientId("unknown-client");
-    ASSERT_EQ(conf->getConfigurationFile("unknownlogger", &r), "");
-
     ASSERT_EQ(conf->knownLoggersEndpoint(), "http://localhost:3000/known-loggers");
     ASSERT_EQ(conf->knownClientsEndpoint(), "http://localhost:3000/known-clients");
 }
@@ -298,16 +284,8 @@ TEST_F(ConfigurationTest, Save)
     ASSERT_EQ(conf2->keySize("client-for-test"), 128);
     ASSERT_EQ(conf2->keySize("client-for-test2"), 256);
     ASSERT_EQ(conf2->logExtensions().size(), conf->logExtensions().size());
-
-    LogRequest r(conf2);
-    r.setClientId("client-for-test");
-    ASSERT_EQ(conf2->getConfigurationFile("unknownlogger", &r), "muflihun-logger.conf");
-
-    r.setClientId("client-for-test2");
-    ASSERT_EQ(conf2->getConfigurationFile("unknownlogger", &r), "");
-
-    r.setClientId("unknown-client");
-    ASSERT_EQ(conf2->getConfigurationFile("unknownlogger", &r), "");
+    ASSERT_EQ(conf2->getConfigurationFile("muflihun"), "muflihun-logger.conf");
+    ASSERT_EQ(conf2->getConfigurationFile("unknownlogger"), "");
 }
 
 
@@ -315,12 +293,11 @@ TEST_F(ConfigurationTest, KnownLoggersRequestAllowed)
 {
 
     // Setup basic request
-    UserLogBuilder logBuilder;
     Registry registry(conf.get());
     ClientIntegrityTask task(&registry, 300);
     registry.setClientIntegrityTask(&task);
-    LogRequestHandler logRequestHandler(&registry, &logBuilder);
-    logRequestHandler.start(); // start to handle ~LogRequestHandler
+    ClientQueueProcessor logProcessor(&registry, "");
+    logProcessor.start(); // start to handle ~logProcessor
     // We remove token check for this test
     conf->removeFlag(Configuration::REQUIRES_TOKEN);
     std::string connectionRequestStr(R"({
@@ -356,7 +333,7 @@ TEST_F(ConfigurationTest, KnownLoggersRequestAllowed)
             logRequest.setDateReceived(Utils::now());
             logRequest.deserialize(std::move(r1));
             logRequest.setClient(&client);
-            ASSERT_EQ(logRequestHandler.isRequestAllowed(&logRequest), t.second);
+            ASSERT_EQ(logProcessor.isRequestAllowed(&logRequest), t.second);
         }
     };
 

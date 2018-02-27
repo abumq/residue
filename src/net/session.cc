@@ -19,17 +19,19 @@
 //  limitations under the License.
 //
 
+#include "net/session.h"
+
 #include <iomanip>
 #include <sstream>
-#include "logging/log.h"
-#include "net/session.h"
+
+#include "core/configuration.h"
 #include "core/registry.h"
 #include "core/request-handler.h"
-#include "core/configuration.h"
 #include "core/response.h"
-#include "crypto/base64.h"
 #include "crypto/aes.h"
+#include "crypto/base64.h"
 #include "crypto/rsa.h"
+#include "logging/log.h"
 
 using namespace residue;
 
@@ -151,8 +153,8 @@ void Session::write(const char* data,
 
 void Session::writeStandardResponse(const Response::StatusCode& r)
 {
-    write(Response::STANDARD_RESPONSES[r].response.c_str(),
-          Response::STANDARD_RESPONSES[r].response.length());
+    std::string s(Response::STANDARD_RESPONSES.at(static_cast<unsigned short>(r)));
+    write(s.c_str(), s.length());
 }
 
 void Session::write(const std::string& s)
