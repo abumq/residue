@@ -40,12 +40,12 @@ void LogRequestHandler::start()
     ClientQueueProcessor* processor = new ClientQueueProcessor(m_registry, clientId);
     processor->start();
 
-    m_queueProcessor.insert({ clientId, std::unique_ptr<ClientQueueProcessor>(processor) }); // for unknown
+    m_queueProcessor.insert({ clientId, std::move(std::unique_ptr<ClientQueueProcessor>(processor)) }); // for unknown
 
     for (auto& knownClientPair : m_registry->configuration()->knownClientsKeys()) {
         clientId = knownClientPair.first;
         processor = new ClientQueueProcessor(m_registry, clientId);
-        m_queueProcessor.insert({ clientId, std::unique_ptr<ClientQueueProcessor>(processor) });
+        m_queueProcessor.insert({ clientId, std::move(std::unique_ptr<ClientQueueProcessor>(processor)) });
         processor->start();
     }
 }
