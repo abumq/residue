@@ -284,7 +284,8 @@ TEST_F(ConfigurationTest, Save)
     ASSERT_EQ(conf2->keySize("client-for-test"), 128);
     ASSERT_EQ(conf2->keySize("client-for-test2"), 256);
     ASSERT_EQ(conf2->logExtensions().size(), conf->logExtensions().size());
-    ASSERT_EQ(conf2->getConfigurationFile("unknownlogger"), "muflihun-logger.conf");
+    ASSERT_EQ(conf2->getConfigurationFile("muflihun"), "muflihun-logger.conf");
+    ASSERT_EQ(conf2->getConfigurationFile("unknownlogger"), "");
 }
 
 
