@@ -37,7 +37,7 @@ LogRequestHandler::LogRequestHandler(Registry* registry) :
 void LogRequestHandler::start()
 {
     auto add = [&](const std::string& clientId) {
-        m_queueProcessor.insert({ clientId, std::move(std::unique_ptr<ClientQueueProcessor>(new ClientQueueProcessor(m_registry, clientId))) });
+        m_queueProcessor[clientId] = std::unique_ptr<ClientQueueProcessor>(new ClientQueueProcessor(m_registry, clientId));
     };
 
     add(Configuration::UNKNOWN_CLIENT_ID);
