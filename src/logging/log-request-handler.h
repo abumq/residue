@@ -25,16 +25,12 @@
 #include <unordered_map>
 #include <string>
 #include "core/request-handler.h"
+#include "logging/client-queue-processor.h"
 
 namespace residue {
 
-class ClientQueueProcessor;
-class LogRequest;
-class Configuration;
-
 ///
-/// \brief Request handler for LogRequest
-/// \see LogRequest
+/// \brief Handles incoming requests and passes it to correct queue processor
 ///
 class LogRequestHandler final : public RequestHandler
 {
@@ -44,6 +40,8 @@ public:
 
     ///
     /// \brief Start handling client's requests
+    ///
+    /// This function initiates all the client queue processors according to their respective client IDs
     ///
     void start();
 

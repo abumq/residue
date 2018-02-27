@@ -286,10 +286,8 @@ public:
         }
         return m_keySizes.at(clientId);
     }
-#if 0
-    std::string getConfigurationFile(const std::string&, const UserLogBuilder* userLogBuilder) const;
-#endif
-    std::string getConfigurationFile(const std::string&, const LogRequest* request = nullptr) const;
+
+    std::string getConfigurationFile(const std::string&) const;
 
     void updateUnknownLoggerUserFromRequest(const std::string& loggerId, const LogRequest* request = nullptr);
 

@@ -243,16 +243,6 @@ TEST_F(ConfigurationTest, CheckValues)
     ASSERT_EQ(conf->logExtensions().size(), 0);
 #endif
 
-    LogRequest r(conf.get());
-    r.setClientId("client-for-test");
-    ASSERT_EQ(conf->getConfigurationFile("unknownlogger", &r), "muflihun-logger.conf");
-
-    r.setClientId("client-for-test2");
-    ASSERT_EQ(conf->getConfigurationFile("unknownlogger", &r), "");
-
-    r.setClientId("unknown-client");
-    ASSERT_EQ(conf->getConfigurationFile("unknownlogger", &r), "");
-
     ASSERT_EQ(conf->knownLoggersEndpoint(), "http://localhost:3000/known-loggers");
     ASSERT_EQ(conf->knownClientsEndpoint(), "http://localhost:3000/known-clients");
 }
@@ -294,16 +284,7 @@ TEST_F(ConfigurationTest, Save)
     ASSERT_EQ(conf2->keySize("client-for-test"), 128);
     ASSERT_EQ(conf2->keySize("client-for-test2"), 256);
     ASSERT_EQ(conf2->logExtensions().size(), conf->logExtensions().size());
-
-    LogRequest r(conf2);
-    r.setClientId("client-for-test");
-    ASSERT_EQ(conf2->getConfigurationFile("unknownlogger", &r), "muflihun-logger.conf");
-
-    r.setClientId("client-for-test2");
-    ASSERT_EQ(conf2->getConfigurationFile("unknownlogger", &r), "");
-
-    r.setClientId("unknown-client");
-    ASSERT_EQ(conf2->getConfigurationFile("unknownlogger", &r), "");
+    ASSERT_EQ(conf2->getConfigurationFile("unknownlogger"), "muflihun-logger.conf");
 }
 
 

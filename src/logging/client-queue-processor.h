@@ -54,9 +54,10 @@ public:
     }
 
     ///
-    /// \breif Start handling client's requests
+    /// \breif Starts the background worker
     ///
     void start();
+
     bool isRequestAllowed(const LogRequest*) const;
 private:
     std::string m_clientId;
@@ -73,11 +74,22 @@ private:
     /// \brief Parses raw request and pushes dispatches it
     ///
     void processRequestQueue();
+
+    ///
+    /// \brief Processes single log request
+    /// \param clientRef A client reference pointer for fast processing (by skipping upcoming items in the bulk)
+    /// \param forceCheck Whether to forcefully check the relevant properties of the request e.g, token etc.
+    /// \param session Original session of the request
+    /// \return True if successfully processed. Also sets client reference pointer accordingly.
+    ///
     bool processRequest(LogRequest*,
                         Client** clientRef,
                         bool forceCheck,
                         Session* session);
 
+    ///
+    /// \brief Checks whether token in the specified request is still valid or not
+    ///
     bool isValidToken(const LogRequest*) const;
 
 };

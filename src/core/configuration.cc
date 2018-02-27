@@ -19,23 +19,25 @@
 //  limitations under the License.
 //
 
+#include "core/configuration.h"
+
 #include <sys/stat.h>
 #include <pwd.h>
+
 #include <set>
 #include <fstream>
 #include <utility>
 #include <iostream>
 #include <sstream>
 #include <algorithm>
-#include "logging/log.h"
-#include "core/configuration.h"
+
 #include "crypto/aes.h"
 #include "crypto/base16.h"
 #include "crypto/rsa.h"
 #include "utils/utils.h"
 #include "net/http-client.h"
 #include "core/residue-exception.h"
-#include "logging/user-log-builder.h"
+#include "logging/log.h"
 #include "logging/log-request.h"
 #include "core/json-doc.h"
 #include "core/json-builder.h"
@@ -817,31 +819,12 @@ bool Configuration::isValidAccessCode(const std::string& loggerId,
     return std::find(iter->second.begin(), iter->second.end(), accessCode) != iter->second.end();
 }
 
-#if 0
-std::string Configuration::getConfigurationFile(const std::string& loggerId, const UserLogBuilder* userLogBuilder) const
-{
-    return getConfigurationFile(loggerId, userLogBuilder != nullptr ? userLogBuilder->request() : nullptr);
-}
-#endif
-
-std::string Configuration::getConfigurationFile(const std::string& loggerId, const LogRequest* request) const
+std::string Configuration::getConfigurationFile(const std::string& loggerId) const
 {
     DRVLOG(RV_DEBUG) << "Finding configuration file for [" << loggerId << "]";
     if (m_configurations.find(loggerId) != m_configurations.end()) {
         DRVLOG(RV_DEBUG) << "Configuration file found for [" << loggerId << "]";
         return m_configurations.at(loggerId);
-    }
-    // get conf of client's default logger
-    if (request != nullptr) {
-        DRVLOG(RV_DEBUG) << "Finding configuration file using client ID [" << request->clientId() << "]";
-        if (m_knownClientDefaultLogger.find(request->clientId()) != m_knownClientDefaultLogger.end()) {
-            std::string defaultLoggerForClient = m_knownClientDefaultLogger.at(request->clientId());
-            if (m_configurations.find(defaultLoggerForClient) != m_configurations.end()) {
-                DRVLOG(RV_DEBUG) << "Found configuration file for logger [" << loggerId << "] via default logger ["
-                                 << defaultLoggerForClient << "] for client [" << request->clientId() << "]";
-                return m_configurations.at(defaultLoggerForClient);
-            }
-        }
     }
     return "";
 }
