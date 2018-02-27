@@ -54,9 +54,9 @@ Some of the notable features are listed below
 [Download latest release](https://github.com/muflihun/residue/releases/latest) for your platform
 
 ```
-wget https://github.com/muflihun/residue/releases/download/v1.4.5/residue-1.4.5-linux-x86_64.tar.gz
-tar -xf residue-1.4.5-linux-x86_64.tar.gz
-cd residue-1.4.5-linux-x86_64/
+wget https://github.com/muflihun/residue/releases/download/v1.6.0/residue-1.6.0-linux-x86_64.tar.gz
+tar -xf residue-1.6.0-linux-x86_64.tar.gz
+cd residue-1.6.0-linux-x86_64/
 ```
 
 ## Start Server
