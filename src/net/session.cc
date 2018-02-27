@@ -151,7 +151,7 @@ void Session::write(const char* data,
 
 void Session::writeStandardResponse(const Response::StatusCode& r)
 {
-    std::string s(Response::STANDARD_RESPONSES.at(static_cast<unsigned short>(r)).second);
+    std::string s(Response::STANDARD_RESPONSES.at(static_cast<unsigned short>(r)));
     write(s.c_str(), s.length());
 }
 

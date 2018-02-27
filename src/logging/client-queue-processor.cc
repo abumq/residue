@@ -94,7 +94,7 @@ void ClientQueueProcessor::processRequestQueue()
         RawRequest rawRequest = m_queue.pull();
 
         // get another reference to shared pointer for session
-        std::shared_ptr<Session> session = rawRequest.session;
+        //std::shared_ptr<Session> session = rawRequest.session;
 
         RequestHandler::handle(std::move(rawRequest), &request, Request::StatusCode::BAD_REQUEST,
                                false, false, compressionEnabled);
@@ -133,7 +133,7 @@ void ClientQueueProcessor::processRequestQueue()
                         requestItem.setDateReceived(request.dateReceived());
                         requestItem.setClient(request.client());
 
-                        if (processRequest(&requestItem, &currentClient, forceClientValidation, session.get())) {
+                        if (processRequest(&requestItem, &currentClient, forceClientValidation, /*session.get()*/nullptr)) {
                             forceClientValidation = false;
                         } else {
                             // force next client validation if last process was unsuccessful
@@ -155,7 +155,7 @@ void ClientQueueProcessor::processRequestQueue()
             if (request.client() != nullptr) {
                 request.setClientId(request.client()->id());
             }
-            processRequest(&request, nullptr, true, session.get());
+            processRequest(&request, nullptr, true, /*session.get()*/nullptr);
 #ifdef RESIDUE_PROFILING
             totalRequests++;
 #endif
