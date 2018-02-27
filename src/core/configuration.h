@@ -48,6 +48,11 @@ class Configuration final : NonCopyable
 public:
 
     ///
+    /// \brief For processor thread ID
+    ///
+    static const std::string UNKNOWN_CLIENT_ID;
+
+    ///
     /// \brief Default access code if ever need to use it
     ///
     static const std::string DEFAULT_ACCESS_CODE;

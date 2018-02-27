@@ -42,7 +42,7 @@ void TokenRequestHandler::handle(RawRequest&& rawRequest)
     std::shared_ptr<Session> session = rawRequest.session;
     RequestHandler::handle(std::move(rawRequest), &request);
 
-    if (request.statusCode() != Request::StatusCode::CONTINUE) {
+    if (request.statusCode() != Request::StatusCode::OK) {
         session->write(request.errorText());
         return;
     }

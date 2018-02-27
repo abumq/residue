@@ -19,14 +19,12 @@
 //  limitations under the License.
 //
 
-#include "core/configuration.h"
-#include "logging/log.h"
 #include "logging/log-request-handler.h"
+
+#include "core/configuration.h"
+#include "logging/client-queue-processor.h"
+#include "logging/log.h"
 #include "logging/log-request.h"
-#include "logging/user-message.h"
-#include "logging/user-log-builder.h"
-#include "logging/residue-log-dispatcher.h"
-#include "tasks/client-integrity-task.h"
 
 using namespace residue;
 
@@ -36,266 +34,49 @@ LogRequestHandler::LogRequestHandler(Registry* registry) :
     DRVLOG(RV_DEBUG) << "LogRequestHandler " << this << " with registry " << m_registry;
 }
 
-LogRequestHandler::~LogRequestHandler()
-{
-    m_stopped = true;
-    m_backgroundWorker.join();
-}
-
 void LogRequestHandler::start()
 {
-    m_stopped = false;
-    m_backgroundWorker = std::thread([&]() {
-        el::Helpers::setThreadName("LogDispatcher");
-        while (!m_stopped) {
-            processRequestQueue();
-            std::this_thread::sleep_for(std::chrono::milliseconds(100));
-        }
-    });
+    std::string clientId = Configuration::UNKNOWN_CLIENT_ID;
+    ClientQueueProcessor* processor = new ClientQueueProcessor(m_registry, clientId);
+    processor->start();
+
+    m_queueProcessor.insert({ clientId, std::unique_ptr<ClientQueueProcessor>(processor) }); // for unknown
+
+    for (auto& knownClientPair : m_registry->configuration()->knownClientsKeys()) {
+        clientId = knownClientPair.first;
+        processor = new ClientQueueProcessor(m_registry, clientId);
+        m_queueProcessor.insert({ clientId, std::unique_ptr<ClientQueueProcessor>(processor) });
+        processor->start();
+    }
 }
 
 void LogRequestHandler::handle(RawRequest&& rawRequest)
 {
-    rawRequest.session->writeStandardResponse(Response::StatusCode::STATUS_OK);
-    m_queue.push(std::move(rawRequest));
-}
+    LogRequest request(m_registry->configuration());
+    RequestHandler::handleWithCopy(rawRequest, &request, Request::StatusCode::BAD_REQUEST,
+                           false, false,  m_registry->configuration()->hasFlag(Configuration::Flag::COMPRESSION));
 
-void LogRequestHandler::processRequestQueue()
-{
-    bool compressionEnabled = m_registry->configuration()->hasFlag(Configuration::Flag::COMPRESSION);
-    bool allowBulkRequests = m_registry->configuration()->hasFlag(Configuration::ALLOW_BULK_LOG_REQUEST);
-    auto maxItemsInBulk = m_registry->configuration()->maxItemsInBulk();
-
- #ifdef RESIDUE_PROFILING
-    types::Time m_timeTaken;
-    RESIDUE_PROFILE_START(t_process_queue);
-    std::size_t totalRequests = 0; // 1 for 1 request so for bulk of 50 this will be 50
- #endif
-
-    // we take snapshot to prevent potential race conditions (even though we have LoggingQueue that is safe)
-    const std::size_t total = m_queue.size();
-
-    const types::Time lastClientIntegrityRun = m_registry->clientIntegrityTask() == nullptr
-            ? 0L : m_registry->clientIntegrityTask()->lastExecution();
-
-    if (total > 0 && m_registry->clientIntegrityTask() != nullptr) {
-        // we pause client integrity task until we clear this queue
-        // so we don't clean a (now) dead client that passed initial validation
-#ifdef RESIDUE_DEV
-        DRVLOG(RV_DEBUG) << "Pausing schedule for client integrity task";
-#endif
-        m_registry->clientIntegrityTask()->pauseScheduledCleanup();
+    // bad request
+    if ((!request.isValid() && !request.isBulk())
+            || request.statusCode() == Request::StatusCode::BAD_REQUEST) {
+        rawRequest.session->writeStandardResponse(Response::StatusCode::BAD_REQUEST);
+        return;
     }
 
-    for (std::size_t i = 0; i < total; ++i) {
+    if (request.client() == nullptr) {
+        // no way we are able to process this request
+        rawRequest.session->writeStandardResponse(Response::StatusCode::INVALID_CLIENT);
+    } else {
+        rawRequest.session->writeStandardResponse(Response::StatusCode::OK);
 
-        if (m_registry->configuration()->dispatchDelay() > 0) {
-            std::this_thread::sleep_for(std::chrono::milliseconds(m_registry->configuration()->dispatchDelay()));
-        }
-
-#ifdef RESIDUE_DEBUG
-        DRVLOG(RV_CRAZY) << "-----============= [ BEGIN ] =============-----";
-#endif
-        LogRequest request(m_registry->configuration());
-        RawRequest rawRequest = m_queue.pull();
-
-        std::shared_ptr<Session> session = rawRequest.session;
-        RequestHandler::handle(std::move(rawRequest), &request, Request::StatusCode::BAD_REQUEST,
-                               false, false, compressionEnabled);
-
-        if ((!request.isValid() && !request.isBulk())
-                || request.statusCode() != Request::StatusCode::CONTINUE) {
-            RVLOG(RV_ERROR) << "Failed: " << request.errorText();
-            continue;
-        }
-#ifdef RESIDUE_DEV
-        DRVLOG(RV_DEBUG) << "Is bulk? " << request.isBulk();
-#endif
-        if (request.isBulk()) {
-            if (allowBulkRequests) {
-                // Create bulk request items
-                unsigned int itemCount = 0U;
-                Client* currentClient = request.client();
-                bool forceClientValidation = true;
- #ifdef RESIDUE_DEV
-                DRVLOG(RV_DEBUG) << "Request client: " << request.client();
- #endif
-                JsonDoc d;
-                for (const auto& js : request.jsonObject()) {
-                    if (itemCount == maxItemsInBulk) {
-                        RLOG(ERROR) << "Maximum number of bulk requests reached. Ignoring the rest of items in bulk";
-                        break;
-                    }
-                    d.set(js);
-                    std::string requestItemStr(d.dump());
-                    LogRequest requestItem(m_registry->configuration());
-                    requestItem.deserialize(std::move(requestItemStr));
-                    if (requestItem.isValid()) {
-                        requestItem.setIpAddr(request.ipAddr());
-                        requestItem.setDateReceived(request.dateReceived());
-                        requestItem.setClient(request.client());
-
-                        if (processRequest(&requestItem, &currentClient, forceClientValidation, session.get())) {
-                            forceClientValidation = false;
-                        } else {
-                            // force next client validation if last process was unsuccessful
-                            forceClientValidation = true;
-                        }
-                        itemCount++;
- #ifdef RESIDUE_PROFILING
-                        totalRequests++;
- #endif
-                    } else {
-                        RLOG(ERROR) << "Invalid request in bulk.";
-                    }
-                }
-            } else {
-                RLOG(ERROR) << "Bulk requests are not allowed";
-            }
+        // we do not queue up decrypted request here as it gets messy
+        // with all the copy constructors and move constructors.
+        // Processors run on different thread so it's OK to decrypt it second time
+        if (!request.client()->isKnown()) {
+            m_queueProcessor.find(Configuration::UNKNOWN_CLIENT_ID)->second->handle(std::move(rawRequest));
         } else {
-
-            if (request.client() != nullptr) {
-                request.setClientId(request.client()->id());
-            }
-            processRequest(&request, nullptr, true, session.get());
-#ifdef RESIDUE_PROFILING
-            totalRequests++;
-#endif
-        }
-
-#ifdef RESIDUE_DEBUG
-        DRVLOG(RV_CRAZY) << "-----============= [ ✓ ] =============-----";
-#endif
-    }
-
-    if (m_registry->clientIntegrityTask() != nullptr &&
-            lastClientIntegrityRun < m_registry->clientIntegrityTask()->lastExecution() &&
-            m_queue.backlogEmpty()) {
-        RVLOG(RV_DEBUG) << "Starting client integrity task after queue is processed.";
-        // trigger client integrity task as it was run while this queue was being processed
-        if (!m_registry->clientIntegrityTask()->isExecuting()) {
-            m_registry->clientIntegrityTask()->performCleanup();
+            m_queueProcessor.find(request.client()->id())->second->handle(std::move(rawRequest));
         }
     }
 
-    if (total > 0 && m_registry->clientIntegrityTask() != nullptr && m_queue.backlogEmpty()) {
-#ifdef RESIDUE_DEV
-        DRVLOG(RV_DEBUG) << "Resuming schedule for client integrity task";
-#endif
-        m_registry->clientIntegrityTask()->resumeScheduledCleanup();
-    }
-
- #ifdef RESIDUE_PROFILING
-    RESIDUE_PROFILE_END(t_process_queue, m_timeTaken);
-    float timeTakenInSec = static_cast<float>(m_timeTaken / 1000.0f);
-    RLOG_IF(total > 0, DEBUG) << "Took " << timeTakenInSec << "s to process the queue of "
-                                   << total << " items (" << totalRequests << " requests). Average: "
-                                   << (static_cast<float>(m_timeTaken) / static_cast<float>(total)) << "ms/item ["
-                                   << (static_cast<float>(m_timeTaken) / static_cast<float>(totalRequests)) << "ms/request]";
- #endif
-
-    m_queue.switchContext();
-}
-
-bool LogRequestHandler::processRequest(LogRequest* request, Client** clientRef, bool forceCheck, Session *session)
-{
-    bool bypassChecks = !forceCheck && clientRef != nullptr && *clientRef != nullptr;
- #ifdef RESIDUE_DEV
-    DRVLOG(RV_DEBUG_2) << "Force check: " << forceCheck << ", clientRef: " << clientRef << ", *clientRef: "
-                     << (clientRef == nullptr ? "N/A" : *clientRef == nullptr ? "null" : (*clientRef)->id())
-                     << ", bypassChecks: " << bypassChecks;
- #endif
-    Client* client = clientRef != nullptr && *clientRef != nullptr ? *clientRef : request->client();
-
-    if (client == nullptr) {
-        RVLOG(RV_ERROR) << "Invalid request. No client found [" << request->clientId() << "]";
-        return false;
-    }
-
-    if (!bypassChecks && !client->isAlive(request->dateReceived())) {
-        RLOG(ERROR) << "Invalid request. Client is dead";
-        RLOG(DEBUG) << "Req received: " << request->dateReceived() << ", client created: " << client->dateCreated() << ", age: " << client->age() << ", result: " << client->dateCreated() + client->age();
-        return false;
-    }
-
-    request->setClientId(client->id());
-    request->setClient(client);
-
-    if (session != nullptr && session->client() == nullptr) {
-        DRVLOG(RV_DEBUG) << "Updating session client";
-        session->setClient(client);
-    }
-
-    if (!bypassChecks && client->isKnown()) {
-        // take this opportunity to update the user for unknown logger
-
-        // unknown loggers cannot be updated to specific user
-        // without having a known client parent
-
-        // make sure the current logger is unknown
-        // otherwise we already know the user either from client or from logger itself
-        if (m_registry->configuration()->hasFlag(Configuration::Flag::ALLOW_UNKNOWN_LOGGERS) // cannot be unknown logger unless server supports it
-                && !m_registry->configuration()->isKnownLogger(request->loggerId())) {
-            m_registry->configuration()->updateUnknownLoggerUserFromRequest(request->loggerId(), request);
-        }
-    }
-
-    if (request->isValid()) {
-        if (!bypassChecks && !isRequestAllowed(request)) {
-            RLOG(WARNING) << "Ignoring log from unauthorized logger [" << request->loggerId() << "]";
-            return false;
-        }
-        dispatch(request);
-        return true;
-    }
-    return false;
-}
-
-void LogRequestHandler::dispatch(const LogRequest* request)
-{
- #ifdef RESIDUE_DEV
-    DRVLOG(RV_TRACE) << "Writing";
- #endif
-
-    el::Logger* logger = el::Loggers::getLogger(request->loggerId());
-
-    UserMessage msg(request->level(), request->filename(), request->lineNumber(), request->function(), request->verboseLevel(), logger, request);
-
-    el::base::Writer(&msg).construct(logger) << request->msg();
-
- #ifdef RESIDUE_DEV
-    DRVLOG(RV_TRACE) << "Write complete";
- #endif
-}
-
-bool LogRequestHandler::isRequestAllowed(const LogRequest* request) const
-{
-    Client* client = request->client();
-    if (client == nullptr) {
-        RLOG(DEBUG) << "Client may have expired";
-        return false;
-    }
-    // Ensure flag is on
-    bool allowed = m_registry->configuration()->hasFlag(Configuration::Flag::ALLOW_UNKNOWN_LOGGERS);
-    if (!allowed) {
-        // we're not allowed to use unknown loggers. we make sure the current logger is actually known.
-        allowed = m_registry->configuration()->isKnownLogger(request->loggerId());
-    }
-    if (allowed) {
-         // We do not allow users to log using residue internal logger
-        allowed = request->loggerId() != RESIDUE_LOGGER_ID;
-    }
-    if (allowed) {
-         // Logger is blacklisted
-        allowed = !m_registry->configuration()->isBlacklisted(request->loggerId());
-    }
-    if (allowed) {
-        // Invalid token (either expired or not initialized)
-        allowed = client->isValidToken(request->loggerId(), request->token(), m_registry, request->dateReceived());
-
-        if (!allowed) {
-            RLOG(WARNING) << "Token expired";
-        }
-    }
-    return allowed;
 }

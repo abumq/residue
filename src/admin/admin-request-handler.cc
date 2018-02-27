@@ -46,7 +46,7 @@ void AdminRequestHandler::handle(RawRequest&& rawRequest)
     std::shared_ptr<Session> session = rawRequest.session;
     RequestHandler::handle(std::move(rawRequest), &request, Request::StatusCode::BAD_REQUEST, false, true);
 
-    if (request.statusCode() != Request::StatusCode::CONTINUE) {
+    if (request.statusCode() != Request::StatusCode::OK) {
         RLOG(ERROR) << "Unable to continue with this request! " << request.errorText();
         respond("Unable to continue with this request!", session);
         return;

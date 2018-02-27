@@ -2,8 +2,10 @@
 
 ## [Unreleased]
 ### Updates
+- Separate log dispatchers and logging queue by clients #96
 - Some configurations now support `RESIDUE_HOME` environment variable
 - Known loggers configured at start up
+- Client ID now supports `.` character
 
 ### Fixes
 - Fix rotation locks

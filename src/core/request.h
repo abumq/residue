@@ -41,9 +41,8 @@ class Request : NonCopyable
 public:
     enum StatusCode : unsigned short
     {
-        STATUS_OK = 0,
-        BAD_REQUEST = 1,
-        CONTINUE = 0
+        OK = 0,
+        BAD_REQUEST = 1
     };
 
     explicit Request(const Configuration* conf);

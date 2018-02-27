@@ -28,6 +28,7 @@
 #include <functional>
 #include <fstream>
 #include <memory>
+#include <unordered_map>
 #include <thread>
 #include <utility>
 #include "net/asio.h"
@@ -61,7 +62,7 @@ INITIALIZE_EASYLOGGINGPP
 
 extern bool s_exitOnInterrupt;
 
-static const std::map<int, std::string> VERBOSE_SEVERITY_MAP
+static const std::unordered_map<int, std::string> VERBOSE_SEVERITY_MAP
 {
     { RV_CRAZY,   "vCRAZY"   },
     { RV_TRACE,   "vTRACE"   },
@@ -80,7 +81,10 @@ static const std::map<int, std::string> VERBOSE_SEVERITY_MAP
 ///
 std::string getVerboseSeverityName(const el::LogMessage* message)
 {
-    return VERBOSE_SEVERITY_MAP.at(message->verboseLevel());
+    if (message->verboseLevel() >= 0 && message->verboseLevel() <= RV_CRAZY) {
+        return VERBOSE_SEVERITY_MAP.at(message->verboseLevel());
+    }
+    return "";
 }
 
 ///
@@ -117,7 +121,9 @@ el::LogBuilder* configureLogging(Configuration* configuration)
     el::Loggers::populateAllLoggerIds(&registeredLoggers);
 
     for (const std::string& loggerId : registeredLoggers) {
-        el::Loggers::getLogger(loggerId)->setLogBuilder(logBuilder);
+        if (loggerId != RESIDUE_LOGGER_ID) {
+            el::Loggers::getLogger(loggerId)->setLogBuilder(logBuilder);
+        }
     }
 
     // We use our own log dispatcher as we want to do some checks for safety

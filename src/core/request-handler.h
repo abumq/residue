@@ -118,6 +118,21 @@ protected:
 
     ///
     /// \brief Takes raw requests and turns it in to Request
+    ///
+    template <typename T = Request>
+    inline void handleWithCopy(RawRequest rawRequest,
+                       T* request,
+                       Request::StatusCode defaultStatus = Request::StatusCode::BAD_REQUEST,
+                       bool tryServerRSAKey = false,
+                       bool tryServerAESKey = false,
+                       bool decompress = false)
+    {
+        handle(std::move(rawRequest.data), std::move(rawRequest.ip), std::move(rawRequest.dateReceived),
+               request, defaultStatus, tryServerRSAKey, tryServerAESKey, decompress);
+    }
+
+    ///
+    /// \brief Takes raw requests and turns it in to Request
     /// \see handle(std::string&& requestStr, T* request)
     ///
     template <typename T = Request>

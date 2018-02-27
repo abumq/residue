@@ -33,6 +33,7 @@
 #include "core/registry.h"
 #include "logging/user-log-builder.h"
 #include "logging/log-request-handler.h"
+#include "logging/client-queue-processor.h"
 #include "connect/connection-request.h"
 #include "tasks/client-integrity-task.h"
 
@@ -313,8 +314,8 @@ TEST_F(ConfigurationTest, KnownLoggersRequestAllowed)
     Registry registry(conf.get());
     ClientIntegrityTask task(&registry, 300);
     registry.setClientIntegrityTask(&task);
-    LogRequestHandler logRequestHandler(&registry);
-    logRequestHandler.start(); // start to handle ~LogRequestHandler
+    ClientQueueProcessor logProcessor(&registry, "");
+    logProcessor.start(); // start to handle ~logProcessor
     // We remove token check for this test
     conf->removeFlag(Configuration::REQUIRES_TOKEN);
     std::string connectionRequestStr(R"({
@@ -350,7 +351,7 @@ TEST_F(ConfigurationTest, KnownLoggersRequestAllowed)
             logRequest.setDateReceived(Utils::now());
             logRequest.deserialize(std::move(r1));
             logRequest.setClient(&client);
-            ASSERT_EQ(logRequestHandler.isRequestAllowed(&logRequest), t.second);
+            ASSERT_EQ(logProcessor.isRequestAllowed(&logRequest), t.second);
         }
     };
 

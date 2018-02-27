@@ -41,14 +41,14 @@ void ConnectionRequestHandler::handle(RawRequest&& rawRequest)
 {
     ConnectionRequest request(m_registry->configuration());
     std::shared_ptr<Session> session = rawRequest.session;
-    RequestHandler::handle(std::move(rawRequest), &request, Request::StatusCode::CONTINUE, true);
+    RequestHandler::handle(std::move(rawRequest), &request, Request::StatusCode::OK, true);
 
     if (request.keySize() != 128 && request.keySize() != 192 && request.keySize() != 256) {
         // If valid key size is specified in connection request, we use that
         // otherwise we get from configuration
         request.setKeySize(m_registry->configuration()->keySize(request.clientId()));
     }
-    if (request.statusCode() != Request::StatusCode::CONTINUE) {
+    if (request.statusCode() != Request::StatusCode::OK) {
         ConnectionResponse response(static_cast<Response::StatusCode>(static_cast<unsigned int>(request.statusCode())),
                                     request.errorText());
         std::string output;

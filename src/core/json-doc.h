@@ -121,6 +121,8 @@ private:
 
     static void dump(Value o, std::stringstream& ss, int indent = -1, int depth = 1);
     static void dumpStr(const char* s, std::stringstream& ss);
+
+    friend class Request;
 };
 
 template <>

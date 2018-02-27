@@ -42,6 +42,7 @@
 
 using namespace residue;
 
+const std::string Configuration::UNKNOWN_CLIENT_ID = "unknown";
 const std::string Configuration::DEFAULT_ACCESS_CODE = "default";
 const int Configuration::MAX_BLACKLIST_LOGGERS = 10000;
 
@@ -542,8 +543,12 @@ void Configuration::loadKnownClients(const JsonDoc::Value& json, std::stringstre
             errorStream << "  Client ID not provided in known_clients" << std::endl;
             continue;
         }
-        if (!Utils::isAlphaNumeric(clientId, "-_@#")) {
-            errorStream << "  Invalid character in client ID, should be alpha-numeric (can also include these characters excluding square brackets: [_@-#])" << std::endl;
+        if (!Utils::isAlphaNumeric(clientId, "-_@#.")) {
+            errorStream << "  Invalid character in client ID, should be alpha-numeric (can also include these characters excluding square brackets: [_@-#.])" << std::endl;
+            continue;
+        }
+        if (clientId == UNKNOWN_CLIENT_ID) {
+            errorStream << "  " << UNKNOWN_CLIENT_ID << " is invalid name for client" << std::endl;
             continue;
         }
         std::string publicKey = j.get<std::string>("public_key", "");

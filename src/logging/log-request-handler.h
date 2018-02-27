@@ -22,14 +22,13 @@
 #ifndef LogRequestHandler_h
 #define LogRequestHandler_h
 
-#include <atomic>
-#include <thread>
+#include <unordered_map>
 #include <string>
 #include "core/request-handler.h"
-#include "logging/logging-queue.h"
 
 namespace residue {
 
+class ClientQueueProcessor;
 class LogRequest;
 class Configuration;
 
@@ -41,39 +40,16 @@ class LogRequestHandler final : public RequestHandler
 {
 public:
     LogRequestHandler(Registry*);
-    ~LogRequestHandler();
+    ~LogRequestHandler() = default;
 
     ///
-    /// \breif Start handling client's requests
+    /// \brief Start handling client's requests
     ///
     void start();
-    bool isRequestAllowed(const LogRequest*) const;
 
     virtual void handle(RawRequest&&);
 private:
-
-    ////
-    /// \brief Dispatches the request after temp configurating some elements of easylogging++
-    ///
-    void dispatch(const LogRequest* request);
-
-    ///
-    /// \brief Parses raw request and pushes it to m_requests ideally
-    /// in separate thread/s (m_backgroundWorkers)
-    ///
-    void processRequestQueue();
-    bool processRequest(LogRequest*,
-                        Client** clientRef,
-                        bool forceCheck,
-                        Session* session);
-
-    bool isValidToken(const LogRequest*) const;
-
-    std::atomic<bool> m_stopped;
-
-    LoggingQueue m_queue;
-
-    std::thread m_backgroundWorker;
+    std::unordered_map<std::string, std::unique_ptr<ClientQueueProcessor>> m_queueProcessor;
 };
 }
 #endif /* LogRequestHandler_h */

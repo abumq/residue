@@ -36,9 +36,10 @@ public:
 
     enum StatusCode : unsigned short
     {
-        STATUS_OK = 0,
+        OK = 0,
         BAD_REQUEST = 1,
-        CONTINUE = 0
+        CONTINUE = 0,
+        INVALID_CLIENT = 2
     };
 
     struct StandardResponse

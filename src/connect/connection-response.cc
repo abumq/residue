@@ -28,7 +28,7 @@ using namespace residue;
 
 ConnectionResponse::ConnectionResponse(const Client* client, const Configuration* c):
     Response(),
-    m_status(Response::StatusCode::STATUS_OK),
+    m_status(Response::StatusCode::OK),
     m_errorText(""),
     m_configuration(c),
     m_tokenPort(0),

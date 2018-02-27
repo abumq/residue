@@ -92,7 +92,7 @@ DecryptedRequest RequestHandler::decryptRequest(const std::string& requestStr,
         }
 
 
-        return { existingClient, requestInput, Request::StatusCode::CONTINUE, "" };
+        return { existingClient, requestInput, Request::StatusCode::OK, "" };
     }
     return { nullptr, requestInput, defaultStatus, "" };
 }
