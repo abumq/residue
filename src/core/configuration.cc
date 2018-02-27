@@ -404,6 +404,20 @@ void Configuration::loadKnownLoggers(const JsonDoc::Value& json, std::stringstre
                 m_remoteKnownLoggers.insert(loggerId);
             }
 
+            // load users before configuring
+
+            std::string loggerUser = j.get<std::string>("user", "");
+            if (!loggerUser.empty()) {
+                struct passwd* userpwd = getpwnam(loggerUser.data());
+                if (userpwd == nullptr) {
+                    errorStream << "  User corresponding to logger [" << loggerId << "] does not exist [" << loggerUser << "]" << std::endl;
+                    endpwent();
+                    continue;
+                }
+                endpwent();
+                m_knownLoggerUserMap.insert(std::make_pair(loggerId, loggerUser));
+            }
+
             // load logger and configure
             el::Configurations confs(easyloggingConfigFile);
             el::Logger* logger = el::Loggers::getLogger(loggerId);
@@ -421,18 +435,6 @@ void Configuration::loadKnownLoggers(const JsonDoc::Value& json, std::stringstre
         } else {
             errorStream << "  Please specify Easylogging++ configuration for known logger [" << loggerId << "]" << std::endl;
             continue;
-        }
-
-        std::string loggerUser = j.get<std::string>("user", "");
-        if (!loggerUser.empty()) {
-            struct passwd* userpwd = getpwnam(loggerUser.data());
-            if (userpwd == nullptr) {
-                errorStream << "  User corresponding to logger [" << loggerId << "] does not exist [" << loggerUser << "]" << std::endl;
-                endpwent();
-                continue;
-            }
-            endpwent();
-            m_knownLoggerUserMap.insert(std::make_pair(loggerId, loggerUser));
         }
 
         std::string rotationFreq = j.get<std::string>("rotation_freq", "");
