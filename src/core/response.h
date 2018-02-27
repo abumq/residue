@@ -23,6 +23,7 @@
 #define Response_h
 
 #include <string>
+#include <unordered_map>
 #include "non-copyable.h"
 
 namespace residue {
@@ -42,13 +43,7 @@ public:
         INVALID_CLIENT = 2
     };
 
-    struct StandardResponse
-    {
-        StatusCode code;
-        std::string response;
-    };
-
-    static const StandardResponse STANDARD_RESPONSES[];
+    static const std::unordered_map<unsigned short, std::string> STANDARD_RESPONSES;
 
     Response() = default;
     virtual ~Response() = default;
