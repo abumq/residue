@@ -20,6 +20,7 @@
 //
 
 #include "cli/reset.h"
+
 #include "core/registry.h"
 
 using namespace residue;

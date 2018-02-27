@@ -20,6 +20,7 @@
 //
 
 #include "cli/rotate.h"
+
 #include "core/registry.h"
 #include "tasks/log-rotator.h"
 

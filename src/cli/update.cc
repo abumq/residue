@@ -20,6 +20,7 @@
 //
 
 #include "cli/update.h"
+
 #include "core/registry.h"
 #include "tasks/auto-updater.h"
 
