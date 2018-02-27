@@ -19,13 +19,16 @@
 //  limitations under the License.
 //
 
+#include "crypto/rsa.h"
+
 #include "ripe/Ripe.h"
-#   ifdef RESIDUE_USE_MINE
+
+#include "crypto/base64.h"
+#include "logging/log.h"
+
+#ifdef RESIDUE_USE_MINE
 #   include "mine/mine.h"
 #endif
-#include "logging/log.h"
-#include "crypto/rsa.h"
-#include "crypto/base64.h"
 
 using namespace residue;
 #ifdef RESIDUE_USE_MINE

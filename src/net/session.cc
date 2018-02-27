@@ -19,17 +19,19 @@
 //  limitations under the License.
 //
 
+#include "net/session.h"
+
 #include <iomanip>
 #include <sstream>
-#include "logging/log.h"
-#include "net/session.h"
+
+#include "core/configuration.h"
 #include "core/registry.h"
 #include "core/request-handler.h"
-#include "core/configuration.h"
 #include "core/response.h"
-#include "crypto/base64.h"
 #include "crypto/aes.h"
+#include "crypto/base64.h"
 #include "crypto/rsa.h"
+#include "logging/log.h"
 
 using namespace residue;
 

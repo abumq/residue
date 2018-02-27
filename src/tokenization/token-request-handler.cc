@@ -19,9 +19,11 @@
 //  limitations under the License.
 //
 
-#include <sstream>
-#include "logging/log.h"
 #include "tokenization/token-request-handler.h"
+
+#include <sstream>
+
+#include "logging/log.h"
 #include "tokenization/token-request.h"
 #include "core/configuration.h"
 #include "net/session.h"

@@ -19,11 +19,13 @@
 //  limitations under the License.
 //
 
-#include <thread>
-#include <chrono>
-#include "logging/log.h"
 #include "tasks/task.h"
+
+#include <chrono>
+#include <thread>
+
 #include "logging/custom-logging.h"
+#include "logging/log.h"
 #include "utils/utils.h"
 
 using namespace residue;

@@ -20,6 +20,7 @@
 //
 
 #include "tokenization/token-response.h"
+
 #include "logging/log.h"
 #include "core/json-builder.h"
 

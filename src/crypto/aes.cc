@@ -19,14 +19,16 @@
 //  limitations under the License.
 //
 
+#include "crypto/aes.h"
+
+#include "logging/log.h"
+#include "net/session.h"
+
 #ifdef RESIDUE_USE_MINE
 #   include "mine/mine.h"
 #else
 #   include "ripe/Ripe.h"
 #endif
-#include "logging/log.h"
-#include "net/session.h"
-#include "crypto/aes.h"
 
 using namespace residue;
 

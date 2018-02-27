@@ -19,41 +19,45 @@
 //  limitations under the License.
 //
 
-#include <unistd.h>
 #include <csignal>
 #include <cstdlib>
+#include <unistd.h>
+
+#include <chrono>
+#include <fstream>
+#include <functional>
 #include <iomanip>
 #include <iostream>
-#include <chrono>
-#include <functional>
-#include <fstream>
 #include <memory>
-#include <unordered_map>
 #include <thread>
+#include <unordered_map>
 #include <utility>
+
+#include "extensions/python.h"
 #include "net/asio.h"
 #include "ripe/Ripe.h"
+
+#include "admin/admin-request-handler.h"
+#include "cli/command-handler.h"
+#include "connect/connection-request-handler.h"
+#include "core/configuration.h"
+#include "core/registry.h"
+#include "core/residue-exception.h"
+#include "crash-handlers.h"
+#include "crypto/base64.h"
+#include "logging/log-request-handler.h"
+#include "logging/log.h"
+#include "logging/residue-log-dispatcher.h"
+#include "logging/user-log-builder.h"
+#include "net/server.h"
+#include "tasks/auto-updater.h"
+#include "tasks/client-integrity-task.h"
+#include "tasks/log-rotator.h"
+#include "tokenization/token-request-handler.h"
+
 #ifdef RESIDUE_USE_MINE
 #   include "mine/mine.h"
 #endif
-#include "crash-handlers.h"
-#include "extensions/python.h"
-#include "logging/log.h"
-#include "core/configuration.h"
-#include "crypto/base64.h"
-#include "core/registry.h"
-#include "core/residue-exception.h"
-#include "cli/command-handler.h"
-#include "logging/user-log-builder.h"
-#include "logging/residue-log-dispatcher.h"
-#include "logging/log-request-handler.h"
-#include "net/server.h"
-#include "admin/admin-request-handler.h"
-#include "connect/connection-request-handler.h"
-#include "tokenization/token-request-handler.h"
-#include "tasks/client-integrity-task.h"
-#include "tasks/auto-updater.h"
-#include "tasks/log-rotator.h"
 
 using namespace residue;
 using net::ip::tcp;
@@ -62,7 +66,7 @@ INITIALIZE_EASYLOGGINGPP
 
 extern bool s_exitOnInterrupt;
 
-static const std::unordered_map<int, std::string> VERBOSE_SEVERITY_MAP
+static const std::unordered_map<el::base::type::VerboseLevel, std::string> VERBOSE_SEVERITY_MAP
 {
     { RV_CRAZY,   "vCRAZY"   },
     { RV_TRACE,   "vTRACE"   },
@@ -81,7 +85,7 @@ static const std::unordered_map<int, std::string> VERBOSE_SEVERITY_MAP
 ///
 std::string getVerboseSeverityName(const el::LogMessage* message)
 {
-    if (message->verboseLevel() >= 0 && message->verboseLevel() <= RV_CRAZY) {
+    if (message->verboseLevel() <= RV_CRAZY) {
         return VERBOSE_SEVERITY_MAP.at(message->verboseLevel());
     }
     return "";
@@ -121,7 +125,7 @@ el::LogBuilder* configureLogging(Configuration* configuration)
     el::Loggers::populateAllLoggerIds(&registeredLoggers);
 
     for (const std::string& loggerId : registeredLoggers) {
-        if (loggerId != RESIDUE_LOGGER_ID) {
+        if (loggerId != RESIDUE_LOGGER_ID) { // all the loggers except for 'residue' uses custom log builder
             el::Loggers::getLogger(loggerId)->setLogBuilder(logBuilder);
         }
     }

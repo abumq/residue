@@ -19,12 +19,14 @@
 //  limitations under the License.
 //
 
-#include <utility>
-#include <algorithm>
-#include "logging/log.h"
 #include "core/registry.h"
-#include "utils/utils.h"
+
+#include <algorithm>
+#include <utility>
+
 #include "core/configuration.h"
+#include "logging/log.h"
+#include "utils/utils.h"
 
 using namespace residue;
 

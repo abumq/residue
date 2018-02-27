@@ -19,17 +19,20 @@
 //  limitations under the License.
 //
 
+#include "tasks/log-rotator.h"
+
 #include <cmath>
+
 #include <iterator>
-#include <vector>
 #include <set>
 #include <thread>
-#include "logging/log.h"
-#include "tasks/log-rotator.h"
-#include "utils/utils.h"
+#include <vector>
+
 #include "core/registry.h"
-#include "crypto/zlib.h"
 #include "core/residue-exception.h"
+#include "crypto/zlib.h"
+#include "logging/log.h"
+#include "utils/utils.h"
 
 using namespace residue;
 

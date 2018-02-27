@@ -19,8 +19,9 @@
 //  limitations under the License.
 //
 
-#include "logging/log.h"
 #include "tokenization/token-request.h"
+
+#include "logging/log.h"
 
 using namespace residue;
 

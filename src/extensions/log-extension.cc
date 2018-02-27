@@ -20,8 +20,9 @@
 //
 
 #include "extensions/log-extension.h"
-#include "logging/user-log-builder.h"
+
 #include "logging/log-request.h"
+#include "logging/user-log-builder.h"
 
 using namespace residue;
 

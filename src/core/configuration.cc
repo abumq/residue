@@ -31,16 +31,16 @@
 #include <sstream>
 #include <algorithm>
 
+#include "core/json-builder.h"
+#include "core/json-doc.h"
+#include "core/residue-exception.h"
 #include "crypto/aes.h"
 #include "crypto/base16.h"
 #include "crypto/rsa.h"
-#include "utils/utils.h"
-#include "net/http-client.h"
-#include "core/residue-exception.h"
-#include "logging/log.h"
 #include "logging/log-request.h"
-#include "core/json-doc.h"
-#include "core/json-builder.h"
+#include "logging/log.h"
+#include "net/http-client.h"
+#include "utils/utils.h"
 
 using namespace residue;
 

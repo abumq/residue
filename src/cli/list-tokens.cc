@@ -20,6 +20,7 @@
 //
 
 #include "cli/list-tokens.h"
+
 #include "core/registry.h"
 
 using namespace residue;

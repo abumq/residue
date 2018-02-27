@@ -19,22 +19,26 @@
 //  limitations under the License.
 //
 
+#include "utils/utils.h"
+
 #include <sys/stat.h>
 #include <unistd.h>
 #include <pwd.h>
+
 #include <cstdlib>
 #include <cstdio>
 #include <ctime>
+
 #include <iomanip>
 #include <string>
 #include <random>
 #include <algorithm>
+
 #include "logging/log.h"
 #include "core/configuration.h"
 #include "core/residue-exception.h"
 #include "utils/tar.h"
 #include "net/url.h"
-#include "utils/utils.h"
 
 using namespace residue;
 

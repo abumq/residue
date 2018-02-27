@@ -19,11 +19,13 @@
 //  limitations under the License.
 //
 
-#include <vector>
-#include "logging/log.h"
 #include "tasks/client-integrity-task.h"
-#include "core/registry.h"
+
+#include <vector>
+
 #include "clients/client.h"
+#include "core/registry.h"
+#include "logging/log.h"
 #include "tokenization/token.h"
 
 using namespace residue;

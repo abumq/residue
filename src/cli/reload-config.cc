@@ -20,8 +20,9 @@
 //
 
 #include "cli/reload-config.h"
-#include "core/registry.h"
+
 #include "core/configuration.h"
+#include "core/registry.h"
 
 using namespace residue;
 

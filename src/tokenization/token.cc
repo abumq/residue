@@ -19,8 +19,9 @@
 //  limitations under the License.
 //
 
-#include <chrono>
 #include "tokenization/token.h"
+
+#include <chrono>
 
 using namespace residue;
 

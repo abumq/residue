@@ -19,8 +19,9 @@
 //  limitations under the License.
 //
 
-#include <ctime>
 #include "logging/log-request.h"
+
+#include <ctime>
 
 using namespace residue;
 
