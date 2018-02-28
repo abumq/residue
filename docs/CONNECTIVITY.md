@@ -13,7 +13,7 @@ All the requests and responses are delimited by 4-bytes `<CR><LF><CR><LF>`, i.e,
 First request comes from client library either in plain format or encrypted with server public key, containing:
 
  * Type = 1 (CONNECT)
- * Client ID (if any)
+ * Client ID (if known)
  * Client public key
  
 ### Hello from Server
@@ -42,7 +42,7 @@ After verifying the client, server finally establishes the full connection. This
  * Logging port — The port that server listens to, for log requests
  * Age — Maximum age of the client. A time in seconds which specifies when client will be removed. Client library will send `TOUCH` request if client needs to stay active. This request will give another life to the client.
  * Date created — Date the client was created on the server. This is what client library calculates the age off.
-  * Server Info — Server information containing server version, licensee, license expiry date etc.
+  * Server Info — Server information containing server version etc.
 
 At this point, client knows server and server knows client. Now they can talk securily without letting any third-party interfering with the connection.
 
