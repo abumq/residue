@@ -12,7 +12,7 @@
 # Overview 
 Residue is an effort to standardize application logging by implementing simple logging API, making it easily configurable, build-in configurable log rotators, simple way to format your log messages according to need of your application and most of all language-independent.
 
-![overview]
+[![overview]](/docs/OVERVIEW.md)
 
 # Details
 Logging is an essential part of any application. But not all the applications can store these logs on the same device where they're running. For this reason, the logs must be transferred to a remote system.
