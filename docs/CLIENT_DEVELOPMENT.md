@@ -5,7 +5,7 @@
 # Client Development
 This document gives you detailed guidelines on how to write a new client library.
 
-We highly recommend you understand how the server and client interact and what's the role of a developer in the whole process. You can understand all this by looking at [DATA_FLOW.md](/docs/DATA_FLOW.md) diagram and reading [CONNECTIVITY.md](/docs/CONNECTIVITY.md) specifications.
+We highly recommend you understand how the server and client interact and what's the role of a developer in the whole process. You can understand all this by looking at [OVERVIEW.md](/docs/OVERVIEW.md) and reading [CONNECTIVITY.md](/docs/CONNECTIVITY.md) specifications.
 
 ## Table of Contents
 
