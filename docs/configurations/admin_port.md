@@ -5,7 +5,7 @@
 [← Configuration Page](/docs/CONFIGURATION.md)
 
 # admin_port
-[Integer] Port that admin server listens to. All the admin requests are sent to this port. These requests must be encrypted using [`server_key`](#server_key).
+[Integer] Port that admin server listens to. All the admin requests are sent to this port.
 
 Default: `8776`
 
