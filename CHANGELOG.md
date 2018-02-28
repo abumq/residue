@@ -1,6 +1,6 @@
 # Change Log
 
-## [Unreleased]
+## [1.6.1] - 28-02-2018
 ### Updates
 - New format specifier `%session_id`
 - Client integrity tasks are paused for specific clients being processed instead of all clients
