@@ -42,7 +42,7 @@ void ClientIntegrityTask::performCleanup()
     for (auto clientIter = list->begin(); clientIter != list->end();) {
         Client* client = &(clientIter->second);
         if (!client->isAlive()) {
-            RVLOG(RV_WARNING) << "Client expired " << client->id();
+            RLOG(INFO) << "Client expired " << client->id();
             // Do not use m_registry.removeClient, instead,
             // manually remove as we need to manually increment
             // iterator as erase invalidates it
@@ -65,6 +65,6 @@ void ClientIntegrityTask::execute()
     } else {
         // This only marks last execution
         // it's processed in log request handler to prevent any damange
-        RVLOG(RV_DEBUG) << "Paused for scheduled clean up";
+        RLOG(DEBUG) << "Paused for scheduled clean up";
     }
 }
