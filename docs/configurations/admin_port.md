@@ -39,7 +39,7 @@ A typical admin request will look like:
 ```
 
 ## Encrypted Request
-Each admin request is encrypted using [`server_key`](/docs/CONFIGURATION.md#server_key) that in turn is used by admin server to read the request.
+Each admin request must be encrypted using [`server_key`](/docs/CONFIGURATION.md#server_key) that in turn is used by admin server to read the request.
 
 ## See Also
  * [`server_key`](/docs/CONFIGURATION.md#server_key)
