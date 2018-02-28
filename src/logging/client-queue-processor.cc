@@ -298,6 +298,9 @@ bool ClientQueueProcessor::isRequestAllowed(const LogRequest* request) const
 
         if (!allowed) {
             RLOG(WARNING) << "Token expired";
+        } else if (!client->isKnown() && m_registry->configuration()->isKnownLogger(request->loggerId())) {
+            allowed = false;
+            RLOG(WARNING) << "Unknown client trying to use known logger using valid access code is no longer allowed";
         }
     }
     return allowed;
