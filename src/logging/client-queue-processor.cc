@@ -76,9 +76,9 @@ void ClientQueueProcessor::processRequestQueue()
         // we pause client integrity task until we clear this queue
         // so we don't clean a (now) dead client that passed initial validation
 #ifdef RESIDUE_DEV
-        DRVLOG(RV_DEBUG) << "Pausing schedule for client integrity task";
+        DRVLOG(RV_DEBUG) << "Pausing client integrity task for [" << m_clientId << "]";
 #endif
-        m_registry->clientIntegrityTask()->pauseScheduledCleanup();
+        m_registry->clientIntegrityTask()->pauseClient(m_clientId);
     }
 
     for (std::size_t i = 0; i < total; ++i) {
@@ -171,15 +171,21 @@ void ClientQueueProcessor::processRequestQueue()
         RVLOG(RV_DEBUG) << "Starting client integrity task after queue is processed.";
         // trigger client integrity task as it was run while this queue was being processed
         if (!m_registry->clientIntegrityTask()->isExecuting()) {
-            m_registry->clientIntegrityTask()->performCleanup();
+            if (m_clientId != Configuration::UNKNOWN_CLIENT_ID) {
+                // Unknown clients are special case as CLIENT ID is not real ID
+                // so we execute whole task at next schedule (provided no other unknown client)
+                // add more logs to the queue in which case it will be paused again
+            } else {
+                m_registry->clientIntegrityTask()->performCleanup(m_clientId);
+            }
         }
     }
 
     if (total > 0 && m_registry->clientIntegrityTask() != nullptr && m_queue.backlogEmpty()) {
 #ifdef RESIDUE_DEV
-        DRVLOG(RV_DEBUG) << "Resuming schedule for client integrity task";
+        DRVLOG(RV_DEBUG) << "Resuming client integrity task for [" << m_clientId << "]";
 #endif
-        m_registry->clientIntegrityTask()->resumeScheduledCleanup();
+        m_registry->clientIntegrityTask()->resumeClient(m_clientId);
     }
 
  #ifdef RESIDUE_PROFILING

@@ -22,7 +22,8 @@
 #ifndef ClientIntegrityTask_h
 #define ClientIntegrityTask_h
 
-#include <atomic>
+#include <unordered_set>
+#include <mutex>
 #include "tasks/task.h"
 
 namespace residue {
@@ -37,25 +38,33 @@ class ClientIntegrityTask final : public Task
 {
 public:
     ClientIntegrityTask(Registry* registry, unsigned int interval);
-    void performCleanup();
 
-    inline void pauseScheduledCleanup()
+    ///
+    /// \brief Perform forceful clean up for specified client
+    ///
+    void performCleanup(const std::string&);
+
+    inline void pauseClient(const std::string& clientId)
     {
-        if (m_performCleanUpOnSchedule) {
-            m_performCleanUpOnSchedule = false;
+        std::lock_guard<std::mutex> lock(m_mutex);
+        if (m_pausedClients.find(clientId) == m_pausedClients.end()) {
+            m_pausedClients.insert(clientId);
         }
     }
 
-    inline void resumeScheduledCleanup()
+    inline void resumeClient(const std::string& clientId)
     {
-        if (!m_performCleanUpOnSchedule) {
-            m_performCleanUpOnSchedule = true;
+        std::lock_guard<std::mutex> lock(m_mutex);
+        auto pos = m_pausedClients.find(clientId);
+        if (pos != m_pausedClients.end()) {
+            m_pausedClients.erase(pos);
         }
     }
 protected:
     virtual void execute() override;
 private:
-    std::atomic<bool> m_performCleanUpOnSchedule;
+    std::unordered_set<std::string> m_pausedClients;
+    std::mutex m_mutex;
 };
 }
 #endif /* ClientIntegrityTask_h */
