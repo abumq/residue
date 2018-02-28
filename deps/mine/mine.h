@@ -1,10 +1,11 @@
 //
 //  Bismillah ar-Rahmaan ar-Raheem
 //
-//  Mine (1.1.0)
+//  Mine (1.1.2)
 //  Single header minimal cryptography library
 //
-//  Copyright (c) 2017 Muflihun Labs
+//  Copyright (c) 2017-present Muflihun Labs
+//  Copyright (c) 2017-present @abumusamq
 //
 //  This library is released under the Apache 2.0 license
 //  https://github.com/muflihun/mine/blob/master/LICENSE
