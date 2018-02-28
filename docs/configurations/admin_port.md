@@ -2,7 +2,7 @@
    ﷽
 </p>
 
-[← Configurations](/docs/CONFIGURATIONS.md)
+[← Configuration Page](/docs/CONFIGURATION.md)
 
 # admin_port
 [Integer] Port that admin server listens to. All the admin requests are sent to this port. These requests must be encrypted using [`server_key`](#server_key).
@@ -46,4 +46,4 @@ Each admin request is encrypted using [`server_key`](/docs/CONFIGURATION.md#serv
  * [`requires_timestamp`](/docs/CONFIGURATION.md#requires_timestamp)
  * [`timestamp_validity`](/docs/CONFIGURATION.md#timestamp_validity)
 
-[← Configurations](/docs/CONFIGURATIONS.md)
+[← Configuration Page](/docs/CONFIGURATION.md)
