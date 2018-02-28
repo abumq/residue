@@ -75,6 +75,8 @@ You can use [Server Config Tool](https://muflihun.github.io/residue/create-serve
 
 Default: `8776`
 
+[Learn more...](/docs/configurations/admin_port.md)
+
 ### `connect_port`
 [Integer] Port that connection server listens to. All the connection requests are sent to this port and handled accordingly. This is the port that all the clients libraries initially connect to.
 
