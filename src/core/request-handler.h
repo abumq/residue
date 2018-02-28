@@ -119,6 +119,8 @@ protected:
     ///
     /// \brief Takes raw requests and turns it in to Request
     ///
+    /// The raw request is copied instead of referenced
+    ///
     template <typename T = Request>
     inline void handleWithCopy(RawRequest rawRequest,
                        T* request,
@@ -128,7 +130,7 @@ protected:
                        bool decompress = false)
     {
         handle(std::move(rawRequest.data), std::move(rawRequest.ip), std::move(rawRequest.dateReceived),
-               request, defaultStatus, tryServerRSAKey, tryServerAESKey, decompress);
+               rawRequest.session.get(), request, defaultStatus, tryServerRSAKey, tryServerAESKey, decompress);
     }
 
     ///
@@ -144,7 +146,7 @@ protected:
                        bool decompress = false)
     {
         handle(std::move(rawRequest.data), std::move(rawRequest.ip), std::move(rawRequest.dateReceived),
-               request, defaultStatus, tryServerRSAKey, tryServerAESKey, decompress);
+               rawRequest.session.get(), request, defaultStatus, tryServerRSAKey, tryServerAESKey, decompress);
     }
 
     ///
@@ -155,6 +157,7 @@ protected:
     void handle(std::string&& requestStr,
                 std::string&& ipAddr,
                 types::Time&& dateReceived,
+                Session* session,
                 T* request,
                 Request::StatusCode defaultStatus = Request::StatusCode::BAD_REQUEST,
                 bool tryServerRSAKey = false,
@@ -175,6 +178,9 @@ protected:
         request->m_errorText = dr.errorText;
         request->m_ipAddr = std::move(ipAddr);
         request->m_dateReceived = std::move(dateReceived);
+        if (session != nullptr) {
+            request->m_sessionId = session->id();
+        }
         if (decompress) {
 #ifdef RESIDUE_DEV
             DRVLOG(RV_TRACE) << "Decompressing: " << plainRequestStr;

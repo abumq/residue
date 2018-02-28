@@ -406,6 +406,7 @@ Residue supports following [custom format specifiers](https://github.com/muflihu
 | ---------------- | ----------- |
 | `%client_id`     | Print client ID with specified log format / level |
 | `%ip`     | IP address of the request |
+| `%session_id`     | Current session ID |
 | `%vnamelevel`     | Verbose level name (instead of number) |
 
 Verbose level names are:

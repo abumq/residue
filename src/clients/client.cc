@@ -62,16 +62,18 @@ bool Client::isValidToken(const std::string& loggerId,
                           const Registry* registry,
                           const types::Time& compareTo) const
 {
-    DRVLOG(RV_DEBUG) << "Checking token " << token << " (client [" << m_id << "])";
     if (!registry->configuration()->hasFlag(Configuration::Flag::REQUIRES_TOKEN) || // ignore tokens
         (registry->configuration()->hasFlag(Configuration::Flag::ALLOW_UNKNOWN_LOGGERS) && !registry->configuration()->isKnownLogger(loggerId)) || // unknown loggers allowed and this logger is actually unknown
         (registry->configuration()->hasFlag(Configuration::Flag::ALLOW_DEFAULT_ACCESS_CODE) && registry->configuration()->accessCodes().find(loggerId) == registry->configuration()->accessCodes().end())) { // loggers without access codes are allowed and this logger actually does not have access codes
 
 #ifdef RESIDUE_DEV
-        DRVLOG(RV_TRACE) << "Token always (client [" << m_id << "])";
+        DRVLOG(RV_TRACE) << "Token always allowed (client [" << m_id << "])";
 #endif
         return true;
     }
+#ifdef RESIDUE_DEBUG
+    DRVLOG(RV_DEBUG) << "Checking token " << token << " (client [" << m_id << "])";
+#endif
     std::lock_guard<std::mutex> lock_(s_mutex);
     const auto& iter = m_tokens.find(loggerId);
     if (iter == m_tokens.end()) {

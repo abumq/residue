@@ -23,14 +23,14 @@
 #define RSA_h
 
 #include <string>
-#ifdef RESIDUE_USE_MINE
-#include "include/mine.h"
 
+#include "static-base.h"
+
+#ifdef RESIDUE_USE_MINE
+#include "mine/mine.h"
 #include <cryptopp/integer.h>
 #include <cryptopp/pem-com.h> // for readPem func
 #endif
-
-#include "static-base.h"
 
 #ifdef RESIDUE_USE_MINE
 namespace mine {
