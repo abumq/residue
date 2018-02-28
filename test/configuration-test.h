@@ -310,8 +310,15 @@ TEST_F(ConfigurationTest, KnownLoggersRequestAllowed)
     connectionReq.setDateReceived(1000);
     connectionReq.deserialize(std::move(connectionRequestStr));
     Client client(&connectionReq);
+    client.setIsKnown(true);
     ASSERT_EQ(client.keySize(), 32);
     registry.addClient(client);
+
+    Client unknownClient(&connectionReq);
+    unknownClient.setIsKnown(false);
+    ASSERT_EQ(unknownClient.keySize(), 32);
+    registry.addClient(unknownClient);
+
     auto createLogRequest = [](const std::string& loggerId) -> std::string {
         return std::string(R"(
                                       {"client_id":"blah",
@@ -326,32 +333,40 @@ TEST_F(ConfigurationTest, KnownLoggersRequestAllowed)
                                        })");
     };
 
-    auto runTests = [&](const std::map<std::string, bool>& testCases) {
+    auto runTests = [&](const TestData<std::string, Client*, bool>& testCases) {
         for (auto& t : testCases) {
-            std::string r1 = createLogRequest(t.first);
+            std::string r1 = createLogRequest(t.get<0>());
             LogRequest logRequest(registry.configuration());
             logRequest.setDateReceived(Utils::now());
             logRequest.deserialize(std::move(r1));
-            logRequest.setClient(&client);
-            ASSERT_EQ(logProcessor.isRequestAllowed(&logRequest), t.second);
+            logRequest.setClient(t.get<1>());
+            ASSERT_EQ(logProcessor.isRequestAllowed(&logRequest), t.get<2>());
         }
     };
 
-    std::map<std::string, bool> testCases = {
-        { "muflihun", true },
-        { "default", true },
-        { "residue", false }, // residue is not allowed in any case
-        { "test", true }
+    TestData<std::string, Client*, bool> testCases = {
+        { "muflihun", &client, true },
+        { "default", &client, true },
+        { "residue", &client, false }, // residue is not allowed in any case
+        { "test", &client, true },
+        { "muflihun", &unknownClient, false },
+        { "default", &unknownClient, false },
+        { "residue", &unknownClient, false },
+        { "test", &unknownClient, true }
     };
     runTests(testCases);
 
     conf->removeFlag(Configuration::ALLOW_UNKNOWN_LOGGERS);
 
-    std::map<std::string, bool> testCases2 = {
-        { "muflihun", true },
-        { "default", true },
-        { "residue", false }, // residue is not allowed in any case
-        { "test", false } // unknown
+    TestData<std::string, Client*, bool> testCases2 = {
+        { "muflihun", &client, true },
+        { "default", &client, true },
+        { "residue", &client, false }, // residue is not allowed in any case
+        { "test", &client, false }, // unknown
+        { "muflihun", &unknownClient, false },
+        { "default", &unknownClient, false },
+        { "residue", &unknownClient, false },
+        { "test", &unknownClient, false }
     };
     runTests(testCases2);
 
