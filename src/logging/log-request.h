@@ -131,8 +131,6 @@ private:
     el::Level m_level;
     el::base::type::LineNumber m_lineNumber;
     el::base::type::VerboseLevel m_verboseLevel;
-
-    bool m_isValid;
 };
 }
 #endif /* LogRequest_h */

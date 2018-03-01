@@ -4,7 +4,6 @@
 
 $connection = json_decode(file_get_contents($argv[1]));
 function f($c) {
- global $token;
  return array(
         "_t" => time(),
         "datetime" => round(microtime(true) * 1000),
@@ -17,7 +16,7 @@ function f($c) {
  );
 };
 $arr = array();
-for ($i = 1; $i <= 6; ++$i) {
+for ($i = 1; $i <= 50; ++$i) {
     $arr[] = f($i);
 }
 $req = addslashes(json_encode($arr));

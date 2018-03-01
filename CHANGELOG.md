@@ -9,6 +9,7 @@
 
 ### Fixes
 - Fixed duplicate files when listing files being used (admin)
+- Fix crash with invalid bulk requests
 
 ## [1.6.1] - 28-02-2018
 ### Updates

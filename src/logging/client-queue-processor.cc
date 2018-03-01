@@ -133,10 +133,13 @@ void ClientQueueProcessor::processRequestQueue()
                     m_jsonDocForBulk.set(js);
                     std::string requestItemStr(m_jsonDocForBulk.dump());
                     LogRequest requestItem(m_registry->configuration());
+
+                    // we need this for timestamp checking
+                    requestItem.setDateReceived(request.dateReceived());
+
                     requestItem.deserialize(std::move(requestItemStr));
                     if (requestItem.isValid()) {
                         requestItem.setIpAddr(request.ipAddr());
-                        requestItem.setDateReceived(request.dateReceived());
                         requestItem.setSessionId(request.sessionId());
                         requestItem.setClient(request.client());
 

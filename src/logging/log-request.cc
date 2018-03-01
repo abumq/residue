@@ -26,8 +26,7 @@
 using namespace residue;
 
 LogRequest::LogRequest(const Configuration* conf) :
-    Request(conf),
-    m_isValid(true)
+    Request(conf)
 {
 }
 
