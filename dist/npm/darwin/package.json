@@ -1,5 +1,5 @@
 {
-  "name": "residue-server-darwin",
+  "name": "residue-darwin",
   "version": "2.0.0",
   "description": "Residue server daemon (Darwin)",
   "homepage": "https://github.com/muflihun/residue",

@@ -1,5 +1,5 @@
 {
-  "name": "residue-server-linux",
+  "name": "residue-linux",
   "version": "2.0.0",
   "description": "Residue server daemon (Linux)",
   "homepage": "https://github.com/muflihun/residue",
