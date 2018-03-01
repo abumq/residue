@@ -36,8 +36,16 @@ LogRequestHandler::LogRequestHandler(Registry* registry) :
 
 void LogRequestHandler::start()
 {
+    addMissingClientProcessors();
+}
+
+
+void LogRequestHandler::addMissingClientProcessors()
+{
     auto add = [&](const std::string& clientId) {
-        m_queueProcessor[clientId] = std::unique_ptr<ClientQueueProcessor>(new ClientQueueProcessor(m_registry, clientId));
+        if (m_queueProcessor.find(clientId) == m_queueProcessor.end()) {
+            m_queueProcessor[clientId] = std::unique_ptr<ClientQueueProcessor>(new ClientQueueProcessor(m_registry, clientId));
+        }
     };
 
     add(Configuration::UNKNOWN_CLIENT_ID);
@@ -48,6 +56,7 @@ void LogRequestHandler::start()
 
     // start all the processors
     for (auto& processorPair : m_queueProcessor) {
+        // starting multiple times is safe as we have check in-place
         processorPair.second->start();
     }
 }

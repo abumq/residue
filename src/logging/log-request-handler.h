@@ -45,6 +45,11 @@ public:
     ///
     void start();
 
+    ///
+    /// \brief Adds clients that are missing in existing list of processors
+    ///
+    void addMissingClientProcessors();
+
     virtual void handle(RawRequest&&);
 private:
     std::unordered_map<std::string, std::unique_ptr<ClientQueueProcessor>> m_queueProcessor;

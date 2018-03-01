@@ -259,6 +259,7 @@ int main(int argc, char* argv[])
             net::io_service io_service;
             LogRequestHandler logRequestHandler(&registry);
             logRequestHandler.start(); // Start handling incoming requests
+            registry.setLogRequestHandler(&logRequestHandler);
             Server svr(io_service, config.loggingPort(), &logRequestHandler);
             io_service.run();
         }));

@@ -44,14 +44,16 @@ ClientQueueProcessor::~ClientQueueProcessor()
 
 void ClientQueueProcessor::start()
 {
-    m_stopped = false;
-    m_worker = std::thread([&]() {
-        el::Helpers::setThreadName("LogDispatcher<" + m_clientId + ">");
-        while (!m_stopped) {
-            processRequestQueue();
-            std::this_thread::sleep_for(std::chrono::milliseconds(100));
-        }
-    });
+    if (m_stopped == true) {
+        m_stopped = false;
+        m_worker = std::thread([&]() {
+            el::Helpers::setThreadName("LogDispatcher<" + m_clientId + ">");
+            while (!m_stopped) {
+                processRequestQueue();
+                std::this_thread::sleep_for(std::chrono::milliseconds(100));
+            }
+        });
+    }
 }
 
 void ClientQueueProcessor::processRequestQueue()
