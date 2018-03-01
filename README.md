@@ -86,6 +86,8 @@ $ sudo npm install -g residue-darwin@latest
 Start server using this configuration
 
 ```
+pwd # check current working directory to set RESIDUE_HOME
+export RESIDUE_HOME=`pwd`
 sudo ./residue config/server.conf
 ```
 
