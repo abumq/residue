@@ -303,9 +303,11 @@ bool ClientQueueProcessor::isRequestAllowed(const LogRequest* request) const
          // Logger is blacklisted
         allowed = !m_registry->configuration()->isBlacklisted(request->loggerId());
     }
-    if (allowed && !client->isKnown() && m_registry->configuration()->isKnownLogger(request->loggerId())) {
+    if (allowed && !client->isKnown()
+            && m_registry->configuration()->isKnownLogger(request->loggerId())
+            && request->loggerId() != "default") {
         allowed = false;
-        DRVLOG(RV_WARNING) << "Unknown client trying to use known logger using valid access code is no longer allowed";
+        DRVLOG(RV_WARNING) << "Unknown client trying to use known logger is no longer allowed";
     }
     return allowed;
 }
