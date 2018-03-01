@@ -1,7 +1,6 @@
 {
     "admin_port": 8776,
     "connect_port": 8777,
-    "token_port": 8778,
     "logging_port": 8779,
     "server_key": "048CB7050312DB329788CE1533C294A1F248F8A1BD6F611D7516803EDE271C65",
     "server_rsa_private_key": "$RESIDUE_HOME/samples/keys/server-1024-private.pem",
@@ -9,20 +8,17 @@
     "server_rsa_secret": "",
     "default_key_size": 256,
     "enable_cli": true,
-    "allow_default_access_code": true,
     "allow_insecure_connection": true,
     "allow_unknown_loggers": true,
     "allow_unknown_clients": true,
-    "requires_token": true,
     "immediate_flush": false,
     "compression": true,
     "allow_bulk_log_request": true,
     "max_items_in_bulk": 50,
-    "token_age": 120,
     "client_age": 240,
     "file_mode": 416,
     "timestamp_validity": 120,
-    "requires_timestamp": false,
+    "requires_timestamp": true,
     "non_acknowledged_client_age": 300,
     "client_integrity_task_interval": 300,
     "dispatch_delay": 1,
@@ -56,28 +52,11 @@
         {
             "logger_id": "sample-app",
             "configuration_file": "$RESIDUE_HOME/samples/configurations/sample-app-Logger.conf",
-            "rotation_freq": "hourly",
-            "access_codes": [
-                {
-                    "code": "a2dcb",
-                    "token_age": 6000
-                },
-                {
-                    "code": "eif89"
-                },
-                {
-                    "code": "a2dc3",
-                    "token_age": 0
-                }
-            ],
-            "access_code_blacklist": ["abcd"]
+            "rotation_freq": "hourly"
         }
     ],
     "loggers_blacklist": [
         "bracket",
         "truli"
-    ],
-    "extensions": {
-        "log_extensions": ["first"]
-    }
+    ]
 }

@@ -37,7 +37,6 @@ bool LogRequest::deserialize(std::string&& json)
 
         m_clientId = m_jsonDoc.get<std::string>("client_id", "");
         m_datetime = m_jsonDoc.get<unsigned long>("datetime", 0UL);
-        m_token = m_jsonDoc.get<std::string>("token", "");
         m_loggerId = m_jsonDoc.get<std::string>("logger", "default");
         m_filename = m_jsonDoc.get<std::string>("file", "");
         m_function = m_jsonDoc.get<std::string>("func", "");
@@ -51,12 +50,6 @@ bool LogRequest::deserialize(std::string&& json)
         m_isValid = m_datetime != 0L && m_level != el::Level::Unknown && !m_loggerId.empty() && !m_msg.empty();
     }
     return m_isValid;
-}
-
-bool LogRequest::validateTimestamp() const
-{
-    // always valid for log request
-    return true;
 }
 
 std::string LogRequest::formattedDatetime(const char* format, const el::base::MillisecondsWidth* msWidth) const

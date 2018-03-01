@@ -25,7 +25,6 @@
 #include <string>
 #include <unordered_map>
 #include <unordered_set>
-#include "tokenization/token.h"
 #include "utils/utils.h"
 
 namespace residue {
@@ -143,19 +142,7 @@ public:
         m_backupKey = key;
     }
 
-    inline std::unordered_map<std::string, std::unordered_set<Token>>& tokens()
-    {
-        return m_tokens;
-    }
-
     bool isAlive(const types::Time& compareTo = 0L) const;
-
-    void addToken(const std::string&, const Token& token);
-    void removeToken(const std::string&, const std::string& token);
-    bool isValidToken(const std::string&,
-                      const std::string&,
-                      const Registry*,
-                      const types::Time& compareTo = 0L) const;
 
 private:
     std::string m_id;
@@ -167,8 +154,6 @@ private:
 
     bool m_acknowledged;
     bool m_isKnown;
-
-    std::unordered_map<std::string, std::unordered_set<Token>> m_tokens;
 
     // a backup key is previously set key with potentially different key size
     // see https://github.com/muflihun/residue/issues/75

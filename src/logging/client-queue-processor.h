@@ -74,8 +74,8 @@ public:
     bool isRequestAllowed(const LogRequest*) const;
 private:
     std::string m_clientId;
-    std::atomic<bool> m_stopped;
     std::atomic<bool> m_enabled;
+    std::atomic<bool> m_stopped;
     LoggingQueue m_queue;
     std::thread m_worker;
     JsonDoc m_jsonDocForBulk;
@@ -93,7 +93,7 @@ private:
     ///
     /// \brief Processes single log request
     /// \param clientRef A client reference pointer for fast processing (by skipping upcoming items in the bulk)
-    /// \param forceCheck Whether to forcefully check the relevant properties of the request e.g, token etc.
+    /// \param forceCheck Whether to forcefully check the relevant properties of the request e.g, timestamp etc.
     /// \param session Original session of the request
     /// \return True if successfully processed. Also sets client reference pointer accordingly.
     ///
@@ -101,11 +101,6 @@ private:
                         Client** clientRef,
                         bool forceCheck,
                         Session* session);
-
-    ///
-    /// \brief Checks whether token in the specified request is still valid or not
-    ///
-    bool isValidToken(const LogRequest*) const;
 
 };
 }

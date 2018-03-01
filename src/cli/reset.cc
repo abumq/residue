@@ -37,7 +37,7 @@ void Reset::execute(std::vector<std::string>&&, std::ostringstream& result, bool
 {
     if (ignoreConfirmation || getConfirmation("Reset does following things to the server:\n"
                                               "1. Reloads configurations\n"
-                                              "2. Disconnect all the clients (and remove corresponding tokens)\n"
+                                              "2. Disconnect all the clients\n"
                                               "3. Disconnect active sessions\n")) {
         registry()->reset();
         result << "Reset successful";

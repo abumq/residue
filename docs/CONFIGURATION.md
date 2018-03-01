@@ -14,7 +14,6 @@ You can use [Server Config Tool](https://muflihun.github.io/residue/create-serve
 
 * [admin_port](#admin_port)
 * [connect_port](#connect_port)
-* [token_port](#token_port)
 * [logging_port](#logging_port)
 * [default_key_size](#default_key_size)
 * [server_key](#server_key)
@@ -23,10 +22,8 @@ You can use [Server Config Tool](https://muflihun.github.io/residue/create-serve
 * [server_rsa_secret](#server_rsa_secret)
 * [enable_cli](#enable_cli)
 * [allow_insecure_connection](#allow_insecure_connection)
-* [allow_default_access_code](#allow_default_access_code)
 * [allow_unknown_loggers](#allow_unknown_loggers)
 * [allow_unknown_clients](#allow_unknown_clients)
-* [requires_token](#requires_token)
 * [immediate_flush](#immediate_flush)
 * [requires_timestamp](#requires_timestamp)
 * [compression](#compression)
@@ -35,8 +32,6 @@ You can use [Server Config Tool](https://muflihun.github.io/residue/create-serve
 * [timestamp_validity](#timestamp_validity)
 * [client_age](#client_age)
 * [non_acknowledged_client_age](#non_acknowledged_client_age)
-* [max_token_age](#max_token_age)
-* [token_age](#token_age)
 * [client_integrity_task_interval](#client_integrity_task_interval)
 * [dispatch_delay](#dispatch_delay)
 * [archived_log_directory](#archived_log_directory)
@@ -53,10 +48,6 @@ You can use [Server Config Tool](https://muflihun.github.io/residue/create-serve
 * [known_loggers](#known_loggers)
    * [logger_id](#known_loggerslogger_id)
    * [configuration_file](#known_loggersconfiguration_file)
-   * [access_codes](#known_loggersaccess_codes)
-       * [code](#known_loggersaccess_codescode)
-       * [token_age](#known_loggersaccess_codestoken_age)
-   * [access_code_blacklist](#known_loggersaccess_code_blacklist)
    * [rotation_freq](#known_loggersrotation_freq)
    * [user](#known_loggersuser)
    * [archived_log_filename](#known_loggersarchived_log_filename)
@@ -81,11 +72,6 @@ Default: `8776`
 [Integer] Port that connection server listens to. All the connection requests are sent to this port and handled accordingly. This is the port that all the clients libraries initially connect to.
 
 Default: `8777`
-
-### `token_port`
-[Integer] Port that token server listens to. If loggers require a token to use it, this is where client will obtain the token.
-
-Default: `8778`
 
 ### `logging_port`
 [Integer] Port that logging server listens to. This is where all the log requests are sent.
@@ -133,11 +119,6 @@ Default: `true`
 
 Default: `true`
 
-### `allow_default_access_code`
-[Boolean] Specifies whether all the loggers with no access codes are automatically allowed or not. If allowed, Easylogging++ default configurations are used.
-
-Default: `true`
-
 ### `allow_unknown_loggers`
 [Boolean] Specifies whether loggers other than the ones in [`known_loggers`](#known_loggers) list are allowed or ignored / rejected.
 
@@ -145,11 +126,6 @@ Default: `true`
 
 ### `allow_unknown_clients`
 [Boolean] Specifies whether clients other than the ones in [`known_clients`](#known_clients) list are allowed or ignored / rejected.
-
-Default: `true`
-
-### `requires_token`
-[Boolean] Turn on/off token checking with each log request.
 
 Default: `true`
 
@@ -165,7 +141,7 @@ This does not affect admin requests, timestamps for admin requests is always req
 
 See [`timestamp_validity`](#timestamp_validity)
 
-Default: `false`
+Default: `true`
 
 ### `compression`
 [Boolean] Specifies whether compression is enabled or not.
@@ -173,7 +149,7 @@ Default: `false`
 You should note few points:
 
  * If this is enabled client libraries should take advantage of it and send compressed data. However, if it doesn't, request is still processed.
- * Only log requests should be compressed, other requests (connection, token, touch etc) are sent normally.
+ * Only log requests should be compressed, other requests (connection, touch etc) are sent normally.
  * Outgoing data (from server) is never compressed.
 
 Compression has great affect and can save big data. We recommend you to enable compression in your server. Just to give you little bit of idea, when we run [simple example project](https://github.com/muflihun/residue-cpp/tree/master/samples/detailed-cmake) to log 1246 requests, without compression data transferred was `488669 bytes` and with compression it was `44509 bytes`. Same data transferred has same performance with high reliability.
@@ -231,33 +207,10 @@ Default: `300` (5 minutes)
 
 Cannot set it to *forever*
 
-### `max_token_age`
-[Integer] Value (in seconds) that defines maximum age of the token
-
-Minimum: `15`
-
-Default: `0` (Forever)
-
-### `token_age`
-[Integer] Value (in seconds) that defines default age of the token.
-
-This age is used in following scenarios:
-
- * If [`allow_default_access_code`](#allow_default_access_code) is `true` and token with unknown access code is requested, this is the age of the token.
- * If no access code is specified with access code, this is the age of that token.
-
-Minimum: `15`
-
-Maximum: [`max_token_age`](#max_token_age)
-
-Default: `3600` or `max_token_age` (which ever is smaller)
-
-Forever: `0` (not recommended)
-
 ### `client_integrity_task_interval`
 [Integer] Value that should be >= `client_age` or `non_acknowledged_client_age` (whichever is lower).
 
-This is a task that ensures integrity of the clients to remove dead clients that are unusable (and tokens accordingly)
+This is a task that ensures integrity of the clients to remove dead clients that are unusable
 
 Default: `300` or `min(client_age, non_acknowledged_client_age)` [whichever is higher]
 
@@ -394,7 +347,7 @@ Endpoint URL is `http://localhost:8000/localConfig.php`
 You need to make sure that [`configuration_file`](#configuration_file) exists on the server.
 
 ### `known_loggers`
-[Array] Object of loggers that are known to the server. You can use this to provide extra security and setup [`access_codes`](#access_codes) for each logger (to obtain the token and their respective lifetime)
+[Array] Object of loggers that are known to the server. 
 
 #### `known_loggers`::`logger_id`
 [String] The logger ID
@@ -433,24 +386,6 @@ You're not allowed to use following configurations in your configuration file as
  * `Max_Log_File_Size`
  * `To_Standard_Output`
  * `Log_Flush_Threshold`
-
-#### `known_loggers`::`access_codes`
-[Array] Object that is defined as `{"code" : "<string of any length>", "token_age" : <integer>}`.
-
-See [known_loggers::access_codes::code](#known_loggersaccess_codescode) and [known_loggers::access_codes::token_age](#known_loggersaccess_codestoken_age)
-
-#### `known_loggers`::`access_codes`::`code`
-[String] The access code require to get the token for this logger
-
-#### `known_loggers`::`access_codes`::`token_age`
-[Optional, Integer] Age of token (in seconds) generated as a result of this access code. Do not add it if you want it to stay alive forever.
-
-Default: [`token_age`](#token_age)
-
-Maximum: [`max_token_age`](#max_token_age)
-
-#### `known_loggers`::`access_code_blacklist`
-[Array] String that define black listed access codes. You may access code to this list if one of the access codes is compromised. (alternatively, you may remove from the original list)
 
 #### `known_loggers`::`rotation_freq`
 [String] One of [`never`, `hourly`, `six_hours`, `twelve_hours`, `daily`, `weekly`, `monthly`, `yearly`] to specify rotation frequency for corresponding log files. This is rotated regardless of file size.

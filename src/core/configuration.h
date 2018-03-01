@@ -53,11 +53,6 @@ public:
     static const std::string UNKNOWN_CLIENT_ID;
 
     ///
-    /// \brief Default access code if ever need to use it
-    ///
-    static const std::string DEFAULT_ACCESS_CODE;
-
-    ///
     /// \brief Maximum numbers of blacklist loggers possible
     ///
     static const int MAX_BLACKLIST_LOGGERS;
@@ -66,8 +61,6 @@ public:
     {
         NONE = 0,
         ALLOW_UNKNOWN_LOGGERS = 1,
-        REQUIRES_TOKEN = 2,
-        ALLOW_DEFAULT_ACCESS_CODE = 4,
         ALLOW_BULK_LOG_REQUEST = 16,
         IMMEDIATE_FLUSH = 32,
         ALLOW_UNKNOWN_CLIENTS = 64,
@@ -145,11 +138,6 @@ public:
         return m_loggingPort;
     }
 
-    inline int tokenPort() const
-    {
-        return m_tokenPort;
-    }
-
     inline unsigned int defaultKeySize() const
     {
         return m_defaultKeySize;
@@ -158,16 +146,6 @@ public:
     inline unsigned int clientAge() const
     {
         return m_clientAge;
-    }
-
-    inline unsigned int tokenAge() const
-    {
-        return m_tokenAge;
-    }
-
-    inline unsigned int maxTokenAge() const
-    {
-        return m_maxTokenAge;
     }
 
     inline unsigned int timestampValidity() const
@@ -229,11 +207,6 @@ public:
         return m_keySizes;
     }
 
-    inline const std::unordered_map<std::string, std::unordered_set<AccessCode>>& accessCodes() const
-    {
-        return m_accessCodes;
-    }
-
     inline const std::unordered_map<std::string, std::unordered_set<std::string>>& knownClientsLoggers() const
     {
         return m_knownClientsLoggers;
@@ -247,11 +220,6 @@ public:
     inline std::vector<std::unique_ptr<LogExtension>>& logExtensions()
     {
         return m_logExtensions;
-    }
-
-    inline const std::unordered_map<std::string, std::unordered_set<std::string>>& accessCodeBlacklist() const
-    {
-        return m_accessCodeBlacklist;
     }
 
     inline const std::unordered_map<std::string, std::pair<std::string, std::string>>& knownClientsKeys() const
@@ -296,9 +264,6 @@ public:
     std::string getArchivedLogCompressedFilename(const std::string&) const;
     RotationFrequency getRotationFrequency(const std::string&) const;
 
-    int getAccessCodeTokenLife(const std::string&, const std::string&) const;
-    bool isValidAccessCode(const std::string&, const std::string&) const;
-
     bool hasLoggerFlag(const std::string& loggerId, Flag flag) const;
 
     inline std::string knownLoggersEndpoint() const
@@ -326,7 +291,6 @@ private:
     int m_adminPort;
     int m_connectPort;
     int m_loggingPort;
-    int m_tokenPort;
 
     unsigned int m_flag;
 
@@ -342,9 +306,7 @@ private:
     std::unordered_set<std::string> m_remoteKnownLoggers;
     std::vector<std::unique_ptr<LogExtension>> m_logExtensions;
 
-    std::unordered_map<std::string, std::unordered_set<AccessCode>> m_accessCodes;
     std::unordered_map<std::string, std::pair<std::string, std::string>> m_knownClientsKeys;
-    std::unordered_map<std::string, std::unordered_set<std::string>> m_accessCodeBlacklist;
     std::unordered_map<std::string, std::unordered_set<std::string>> m_knownClientsLoggers;
     std::unordered_map<std::string, std::string> m_knownLoggerUserMap;
     std::unordered_map<std::string, std::string> m_unknownLoggerUserMap;
@@ -352,8 +314,6 @@ private:
 
     unsigned int m_nonAcknowledgedClientAge;
     unsigned int m_clientAge;
-    unsigned int m_tokenAge;
-    unsigned int m_maxTokenAge;
     unsigned int m_timestampValidity;
     unsigned int m_dispatchDelay;
     unsigned int m_clientIntegrityTaskInterval;

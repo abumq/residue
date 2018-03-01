@@ -83,7 +83,7 @@ void LogRequestHandler::handle(RawRequest&& rawRequest)
 {
     LogRequest request(m_registry->configuration());
     RequestHandler::handleWithCopy(rawRequest, &request, Request::StatusCode::BAD_REQUEST,
-                           false, false,  m_registry->configuration()->hasFlag(Configuration::Flag::COMPRESSION));
+                           false, false, m_registry->configuration()->hasFlag(Configuration::Flag::COMPRESSION));
 
     // bad request
     if ((!request.isValid() && !request.isBulk())

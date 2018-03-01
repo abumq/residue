@@ -300,16 +300,9 @@ bool ClientQueueProcessor::isRequestAllowed(const LogRequest* request) const
          // Logger is blacklisted
         allowed = !m_registry->configuration()->isBlacklisted(request->loggerId());
     }
-    if (allowed) {
-        // Invalid token (either expired or not initialized)
-        allowed = client->isValidToken(request->loggerId(), request->token(), m_registry, request->dateReceived());
-
-        if (!allowed) {
-            RLOG(WARNING) << "Token expired";
-        } else if (!client->isKnown() && m_registry->configuration()->isKnownLogger(request->loggerId())) {
-            allowed = false;
-            RLOG(WARNING) << "Unknown client trying to use known logger using valid access code is no longer allowed";
-        }
+    if (allowed && !client->isKnown() && m_registry->configuration()->isKnownLogger(request->loggerId())) {
+        allowed = false;
+        DRVLOG(RV_WARNING) << "Unknown client trying to use known logger using valid access code is no longer allowed";
     }
     return allowed;
 }

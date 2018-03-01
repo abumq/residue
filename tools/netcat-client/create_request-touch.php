@@ -3,6 +3,7 @@
 $connection = json_decode(file_get_contents($argv[1]));
 
 $request = json_encode(array(
+    "_t" => time(),
     "client_id" => "$connection->client_id",
     "type" => 3
 ));

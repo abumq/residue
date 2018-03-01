@@ -5,6 +5,7 @@
 - Removed ability to dynamically add/remove client #107
 - Reloading configuration starts processors for newly added clients
 - Disable previously removed client
+- Remove token server (this change may break existing client libs - please update) #108
 
 ### Fixes
 - Fixed duplicate files when listing files being used (admin)

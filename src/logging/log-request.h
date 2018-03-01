@@ -50,11 +50,6 @@ public:
         return m_level;
     }
 
-    inline const std::string& token() const
-    {
-        return m_token;
-    }
-
     inline const el::base::type::string_t& msg() const
     {
         return m_msg;
@@ -121,12 +116,10 @@ public:
     }
 
     virtual bool deserialize(std::string&& json) override;
-    virtual bool validateTimestamp() const override;
 
 private:
 
     std::string m_clientId;
-    std::string m_token;
     types::TimeMs m_datetime;
     std::string m_msg;
     std::string m_loggerId;

@@ -26,7 +26,6 @@
 #include "linenoise/linenoise.h"
 
 #include "cli/clients.h"
-#include "cli/list-tokens.h"
 #include "cli/list-logging-files.h"
 #include "cli/rotate.h"
 #include "cli/reset.h"
@@ -89,7 +88,6 @@ CommandHandler::CommandHandler(Registry* registry) :
     registerCommand(std::unique_ptr<Command>(new ReloadConfig(registry)));
     registerCommand(std::unique_ptr<Command>(new Stats(registry)));
     registerCommand(std::unique_ptr<Command>(new Rotate(registry)));
-    registerCommand(std::unique_ptr<Command>(new ListTokens(registry)));
     registerCommand(std::unique_ptr<Command>(new ListLoggingFiles(registry)));
     registerCommand(std::unique_ptr<Command>(new Clients(registry)));
 }

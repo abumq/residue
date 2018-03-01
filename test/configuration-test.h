@@ -103,22 +103,17 @@ protected:
                           {
                               "admin_port": 87761,
                               "connect_port": 87771,
-                              "token_port": 87781,
                               "logging_port": 87791,
                               "server_key": "048CB7050312DB329788CE1533C294A1F248F8A1BD6F611D7516803EDE271C65",
-                              "allow_default_access_code": true,
                               "allow_unknown_loggers": true,
                               "allow_unknown_clients": false,
                               "enable_cli": false,
-                              "requires_token": true,
                               "allow_insecure_connection": true,
                               "immediate_flush": true,
                               "allow_bulk_log_request": true,
                               "client_integrity_task_interval": 500,
                               "client_age": 2147483648,
-                              "token_age": 25,
                               "compression":false,
-                              "max_token_age": 60,
                               "non_acknowledged_client_age": 400,
                               "dispatch_delay": 1,
                               "archived_log_directory": "%original",
@@ -154,24 +149,7 @@ protected:
                                       "configuration_file": "muflihun-logger.conf",
                                       "rotation_freq": "hourly",
                                       "archived_log_filename": "mylogs-%hour-00-%wday-%level.log",
-                                      "archived_log_directory": "/tmp/logs-backup/custom-location-for-%logger",
-                                      "access_code_blacklist": [
-                                          "ii3faf",
-                                          "ii3fa2"
-                                      ],
-                                      "access_codes": [
-                                          {
-                                              "code": "a2dcb",
-                                              "token_age": 60
-                                          },
-                                          {
-                                              "code": "eif89",
-                                              "token_age": 20
-                                          },
-                                          {
-                                              "code": "eif82"
-                                          }
-                                      ]
+                                      "archived_log_directory": "/tmp/logs-backup/custom-location-for-%logger"
                                   }
                               ],
                               "known_loggers_endpoint": "http://localhost:3000/known-loggers",
@@ -210,20 +188,15 @@ TEST_F(ConfigurationTest, CheckValues)
 {
     ASSERT_EQ(conf->adminPort(), 87761);
     ASSERT_EQ(conf->connectPort(), 87771);
-    ASSERT_EQ(conf->tokenPort(), 87781);
     ASSERT_EQ(conf->loggingPort(), 87791);
     ASSERT_EQ(conf->serverKey(), "048CB7050312DB329788CE1533C294A1F248F8A1BD6F611D7516803EDE271C65");
     ASSERT_EQ(conf->clientAge(), 2147483648);
-    ASSERT_EQ(conf->tokenAge(), 25);
-    ASSERT_EQ(conf->maxTokenAge(), 60);
     ASSERT_EQ(conf->nonAcknowledgedClientAge(), 400);
     ASSERT_EQ(conf->clientIntegrityTaskInterval(), 500);
     ASSERT_FALSE(conf->hasFlag(Configuration::Flag::ENABLE_CLI));
     ASSERT_TRUE(conf->hasFlag(Configuration::Flag::ALLOW_UNKNOWN_LOGGERS));
     ASSERT_FALSE(conf->hasFlag(Configuration::Flag::ALLOW_UNKNOWN_CLIENTS));
-    ASSERT_TRUE(conf->hasFlag(Configuration::Flag::ALLOW_DEFAULT_ACCESS_CODE));
     ASSERT_FALSE(conf->hasFlag(Configuration::Flag::COMPRESSION));
-    ASSERT_TRUE(conf->hasFlag(Configuration::Flag::REQUIRES_TOKEN));
     ASSERT_TRUE(conf->hasFlag(Configuration::Flag::ALLOW_INSECURE_CONNECTION));
     ASSERT_FALSE(conf->isKnownLoggerForClient("missing-client", "muflihun"));
     ASSERT_FALSE(conf->isKnownLoggerForClient("client-for-test", "missing-logger"));
@@ -233,10 +206,6 @@ TEST_F(ConfigurationTest, CheckValues)
     ASSERT_EQ(conf->keySize("client-for-test"), 128);
     ASSERT_EQ(conf->keySize("client-for-test2"), 256);
     ASSERT_EQ(conf->getConfigurationFile("muflihun"), "muflihun-logger.conf");
-    ASSERT_TRUE(conf->isValidAccessCode("muflihun", "a2dcb"));
-    ASSERT_FALSE(conf->isValidAccessCode("muflihun", "a2dca"));
-    ASSERT_FALSE(conf->isValidAccessCode("residue", "a2dcb"));
-    ASSERT_FALSE(conf->isValidAccessCode("default", "a2dcb"));
 #ifdef RESIDUE_HAS_EXTENSIONS
     ASSERT_EQ(conf->logExtensions().size(), 1);
 #else
@@ -262,20 +231,15 @@ TEST_F(ConfigurationTest, Save)
     Configuration* conf2 = &loadedSavedConf;
     ASSERT_EQ(conf2->adminPort(), conf->adminPort());
     ASSERT_EQ(conf2->connectPort(), conf->connectPort());
-    ASSERT_EQ(conf2->tokenPort(), conf->tokenPort());
     ASSERT_EQ(conf2->loggingPort(), conf->loggingPort());
     ASSERT_EQ(conf2->serverKey(), conf->serverKey());
     ASSERT_EQ(conf2->clientAge(), conf->clientAge());
-    ASSERT_EQ(conf2->tokenAge(), conf->tokenAge());
-    ASSERT_EQ(conf2->maxTokenAge(), conf->maxTokenAge());
     ASSERT_EQ(conf2->knownClientsKeys().size(), conf->knownClientsKeys().size());
     ASSERT_EQ(conf2->nonAcknowledgedClientAge(), conf->nonAcknowledgedClientAge());
     ASSERT_EQ(conf2->clientIntegrityTaskInterval(), conf->clientIntegrityTaskInterval());
     ASSERT_EQ(conf2->hasFlag(Configuration::Flag::ENABLE_CLI), conf->hasFlag(Configuration::Flag::ENABLE_CLI));
     ASSERT_EQ(conf2->hasFlag(Configuration::Flag::ALLOW_UNKNOWN_LOGGERS), conf->hasFlag(Configuration::Flag::ALLOW_UNKNOWN_LOGGERS));
     ASSERT_EQ(conf2->hasFlag(Configuration::Flag::ALLOW_UNKNOWN_CLIENTS), conf->hasFlag(Configuration::Flag::ALLOW_UNKNOWN_CLIENTS));
-    ASSERT_EQ(conf2->hasFlag(Configuration::Flag::ALLOW_DEFAULT_ACCESS_CODE), conf->hasFlag(Configuration::Flag::ALLOW_DEFAULT_ACCESS_CODE));
-    ASSERT_EQ(conf2->hasFlag(Configuration::Flag::REQUIRES_TOKEN), conf->hasFlag(Configuration::Flag::REQUIRES_TOKEN));
     ASSERT_FALSE(conf2->isKnownLoggerForClient("missing-client", "muflihun"));
     ASSERT_FALSE(conf2->isKnownLoggerForClient("client-for-test", "missing-logger"));
     ASSERT_TRUE(conf2->isKnownLoggerForClient("client-for-test", "muflihun"));
@@ -298,13 +262,11 @@ TEST_F(ConfigurationTest, KnownLoggersRequestAllowed)
     registry.setClientIntegrityTask(&task);
     ClientQueueProcessor logProcessor(&registry, "");
     logProcessor.start(); // start to handle ~logProcessor
-    // We remove token check for this test
-    conf->removeFlag(Configuration::REQUIRES_TOKEN);
+    conf->removeFlag(Configuration::REQUIRES_TIMESTAMP);
     std::string connectionRequestStr(R"({
                                             "client_id":"blah",
                                             "type":1,
-                                            "key_size":256,
-                                            "_t": 999
+                                            "key_size":256
                                         })");
     ConnectionRequest connectionReq(registry.configuration());
     connectionReq.setDateReceived(1000);
@@ -321,16 +283,15 @@ TEST_F(ConfigurationTest, KnownLoggersRequestAllowed)
 
     auto createLogRequest = [](const std::string& loggerId) -> std::string {
         return std::string(R"(
-                                      {"client_id":"blah",
-                                          "token": 123,
-                                          "datetime" : 123,
-                                          "logger": ")" + loggerId + R"(",
-                                          "msg": "Efficient real-time centralized logging server",
-                                          "file": "index.html",
-                                          "line": 857,
-                                          "app": "Muflihun.com",
-                                          "level": 4
-                                       })");
+                           {"client_id":"blah",
+                               "datetime" : 123,
+                               "logger": ")" + loggerId + R"(",
+                               "msg": "Efficient real-time centralized logging server",
+                               "file": "index.html",
+                               "line": 857,
+                               "app": "Muflihun.com",
+                               "level": 4
+                            })");
     };
 
     auto runTests = [&](const TestData<std::string, Client*, bool>& testCases) {
@@ -371,20 +332,7 @@ TEST_F(ConfigurationTest, KnownLoggersRequestAllowed)
     runTests(testCases2);
 
     // reset it back
-    conf->addFlag(Configuration::REQUIRES_TOKEN);
-}
-
-TEST_F(ConfigurationTest, AccessCode)
-{
-    ASSERT_TRUE(conf->isValidAccessCode("muflihun", "a2dcb"));
-    ASSERT_FALSE(conf->isValidAccessCode("default", "a2dcb"));
-    // Blacklisted access code
-    ASSERT_FALSE(conf->isValidAccessCode("muflihun", "ii3faf"));
-    ASSERT_FALSE(conf->isValidAccessCode("default", "ii3faf"));
-
-    ASSERT_EQ(conf->getAccessCodeTokenLife("muflihun", "a2dcb"), 60);
-    ASSERT_EQ(conf->getAccessCodeTokenLife("muflihun", "eif89"), 20);
-    ASSERT_EQ(conf->getAccessCodeTokenLife("muflihun", "eif82"), 25);
+    conf->addFlag(Configuration::REQUIRES_TIMESTAMP);
 }
 
 TEST_F(ConfigurationTest, BlackListedLogger)
