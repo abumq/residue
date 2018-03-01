@@ -8,6 +8,49 @@ Residue can be installed either by building from the source or by downloading th
 # Download Binary
 You can download binary from [releases](https://github.com/muflihun/residue/releases) page for your platform. They are standalone binaries but they require some external libraries installed that are mentioned with each release notes. Most of these external libraries come with respective operating system distributions.
 
+## Using NPM
+
+```
+## For linux
+$ sudo npm install -g residue-linux@latest
+```
+
+```
+## For macOS
+$ sudo npm install -g residue-darwin@latest
+```
+
+## Direct
+```
+## For linux
+wget https://github.com/muflihun/residue/releases/download/v2.0.0/residue-2.0.0-linux-x86_64.tar.gz
+tar -xf residue-2.0.0-linux-x86_64.tar.gz
+cd residue-2.0.0-linux-x86_64/
+```
+
+```
+## For macOS
+wget https://github.com/muflihun/residue/releases/download/v2.0.0/residue-2.0.0-darwin-x86_64.tar.gz
+tar -xf residue-2.0.0-darwin-x86_64.tar.gz
+cd residue-2.0.0-darwin-x86_64/
+```
+
+## Start Server (NPM)
+If you downloaded using NPM
+
+```
+export RESIDUE_HOME=/usr/local/lib/node_modules/residue-linux/config/
+## Following will line will set environment variable for node
+sudo RESIDUE_HOME=$RESIDUE_HOME residue-linux $RESIDUE_HOME/server.conf
+```
+
+## Start Server (Direct)
+Start server using this configuration
+
+```
+sudo ./residue config/server.conf
+```
+
 # Building From Source
 You can follow steps below to build and install residue server on your machine.
 
