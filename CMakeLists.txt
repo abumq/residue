@@ -12,7 +12,7 @@ option (old_toolchain "Is old toolchain" OFF)
 
 set (RESIDUE_MAJOR "2")
 set (RESIDUE_MINOR "0")
-set (RESIDUE_PATCH "0-dev")
+set (RESIDUE_PATCH "0")
 set (RESIDUE_VERSION "${RESIDUE_MAJOR}.${RESIDUE_MINOR}.${RESIDUE_PATCH}")
 set (RESIDUE_NAME "Residue")
 

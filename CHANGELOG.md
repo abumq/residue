@@ -1,6 +1,6 @@
 # Change Log
 
-## [Unreleased]
+## [2.0.0] - 01-03-2018
 ### Updates
 - Removed ability to dynamically add/remove client #107
 - Reloading configuration starts processors for newly added clients
