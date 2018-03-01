@@ -4,6 +4,7 @@
 ### Updates
 - Removed ability to dynamically add/remove client #107
 - Reloading configuration starts processors for newly added clients
+- Disable previously removed client
 
 ### Fixes
 - Fixed duplicate files when listing files being used (admin)

@@ -31,13 +31,16 @@ using namespace residue;
 
 ClientQueueProcessor::ClientQueueProcessor(Registry* registry, const std::string& clientId) :
     RequestHandler("Processor", registry),
-    m_clientId(clientId)
+    m_clientId(clientId),
+    m_enabled(true),
+    m_stopped(true)
 {
-    DRVLOG(RV_DEBUG) << "Initialized processor for [" << clientId << "] @ " << this;
+    DRVLOG(RV_DEBUG) << "Initialized processor [LogDispatcher<" << m_clientId << ">] @ " << this;
 }
 
 ClientQueueProcessor::~ClientQueueProcessor()
 {
+    RLOG(WARNING) << "~LogDispatcher<" << m_clientId << ">";
     m_stopped = true;
     m_worker.join();
 }
@@ -49,10 +52,13 @@ void ClientQueueProcessor::start()
         m_worker = std::thread([&]() {
             el::Helpers::setThreadName("LogDispatcher<" + m_clientId + ">");
             while (!m_stopped) {
-                processRequestQueue();
+                if (m_enabled) {
+                    processRequestQueue();
+                }
                 std::this_thread::sleep_for(std::chrono::milliseconds(100));
             }
         });
+        RLOG(INFO) << "Started client processor [LogDispatcher<" << m_clientId << ">]";
     }
 }
 

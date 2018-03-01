@@ -44,6 +44,7 @@ void LogRequestHandler::addMissingClientProcessors()
 {
     auto add = [&](const std::string& clientId) {
         if (m_queueProcessor.find(clientId) == m_queueProcessor.end()) {
+            RLOG(INFO) << "Adding client processor [LogDispatcher<" << clientId << ">]";
             m_queueProcessor[clientId] = std::unique_ptr<ClientQueueProcessor>(new ClientQueueProcessor(m_registry, clientId));
         }
     };
@@ -58,6 +59,23 @@ void LogRequestHandler::addMissingClientProcessors()
     for (auto& processorPair : m_queueProcessor) {
         // starting multiple times is safe as we have check in-place
         processorPair.second->start();
+    }
+
+    if (m_queueProcessor.size() - 1 /* unknown */ > m_registry->configuration()->knownClientsKeys().size()) {
+        // stop previously removed clients if available
+        for (auto& processorPair : m_queueProcessor) {
+            if (processorPair.first == Configuration::UNKNOWN_CLIENT_ID) {
+                // we never stop processor for unknown clients
+                continue;
+            }
+            if (m_registry->configuration()->knownClientsKeys().find(processorPair.first)
+                    == m_registry->configuration()->knownClientsKeys().end()) {
+                // This client processor was removed between first time it was added and now
+                // so we stop accepting new requests for this processor
+                // but we keep it in memory
+                processorPair.second->disable();
+            }
+        }
     }
 }
 

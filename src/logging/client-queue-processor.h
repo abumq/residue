@@ -52,7 +52,9 @@ public:
 
     inline virtual void handle(RawRequest&& logRequest) override
     {
-        m_queue.push(std::move(logRequest));
+        if (m_enabled) {
+            m_queue.push(std::move(logRequest));
+        }
     }
 
     ///
@@ -60,10 +62,20 @@ public:
     ///
     void start();
 
+    ///
+    /// \brief Stop accepting new requests and processing of existing requests
+    ///
+    inline void disable()
+    {
+        RLOG(WARNING) << "Disabled LogDispatcher<" << m_clientId << ">";
+        m_enabled = false;
+    }
+
     bool isRequestAllowed(const LogRequest*) const;
 private:
     std::string m_clientId;
     std::atomic<bool> m_stopped;
+    std::atomic<bool> m_enabled;
     LoggingQueue m_queue;
     std::thread m_worker;
     JsonDoc m_jsonDocForBulk;
