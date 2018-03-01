@@ -35,8 +35,9 @@ tar -xf residue-2.0.0-darwin-x86_64.tar.gz
 cd residue-2.0.0-darwin-x86_64/
 ```
 
-## Start Server (NPM)
-If you downloaded using NPM
+## Start Server
+
+### NPM via Node
 
 ```
 export RESIDUE_HOME=/usr/local/lib/node_modules/residue-linux/config/
@@ -44,7 +45,7 @@ export RESIDUE_HOME=/usr/local/lib/node_modules/residue-linux/config/
 sudo RESIDUE_HOME=$RESIDUE_HOME residue-linux $RESIDUE_HOME/server.conf
 ```
 
-## Start Server (Direct)
+### Direct
 Start server using this configuration
 
 ```
