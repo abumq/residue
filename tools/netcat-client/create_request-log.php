@@ -7,9 +7,10 @@ $encrypt = isset($argv[2]) && $argv[2] == "0" ? false : true;
 $token = json_decode(file_get_contents("tokens/sample-app"));
 
 $req = array(
+        "_t" => time(),
 	"token" => $token->token,
 	"datetime" => round(microtime(true) * 1000),
-	"logger" => "sample-appf",
+	"logger" => "sample-app",
 	"msg" => "Efficient real-time centralized logging server ⚡ ",
 	"file" => "index.html",
 	"line" => 857,

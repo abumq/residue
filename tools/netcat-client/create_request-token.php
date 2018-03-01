@@ -5,6 +5,7 @@
 $connection = json_decode(file_get_contents($argv[1]));
 
 $request = json_encode(array(
+    "_t" => time(),
     "logger_id" => "sample-app",
     "access_code" => "a2dcb"
 ));

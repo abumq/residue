@@ -17,6 +17,7 @@ if ($json->status != 0) {
 }
 
 $acknowledgeRequest = json_encode(array(
+    "_t" => time(),
     "client_id" => $json->client_id,
     "type" => 2 // Acknowledgement
 ));
