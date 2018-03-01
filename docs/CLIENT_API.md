@@ -26,20 +26,10 @@ In your `main()`, send connection to residue. (NOTE: Residue server should be ru
 
 int main() {
    
-    // You will need to fill this map with access codes to access correct logger (depends on the server)
-    // For our samples we have used "sample-app" logger whose access code are in config file
-    // https://github.com/muflihun/residue-cpp/blob/master/samples/residue.conf.json
-    // so we define these access code for seamless interaction
-    Residue::AccessCodeMap accessCodes = {
-        {
-            "sample-app", "a2dcb"
-        }
-    };
-    
     // Connects to localhost on Residue::DEFAULT_PORT (8777)
     /
     / You can catch ResidueException for connection failure
-    Residue::connect(&accessCodeMap);
+    Residue::connect();
     
     ///
     /// Start logging using Easylogging++ macros i.e, LOG(INFO) etc

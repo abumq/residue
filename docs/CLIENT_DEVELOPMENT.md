@@ -143,12 +143,6 @@ This function will allow user to pass in JSON file or JSON data and load all the
 ```javascript
 {
     "url": "localhost:8777",
-    "access_codes": [
-        {
-            "logger_id": "<logger-id>",
-            "code": "<access-code>"
-        }
-    ],
     "application_id": "<application-id>",
     "rsa_key_size": 2048,
     "plain_request": false,
@@ -171,11 +165,11 @@ See `loadConfigurations` from [Java](https://github.com/muflihun/residue-java/bl
 #### `connect`
 This function connects user to specified host and port running residue server.
 
-The connection is estabilished syncronously with short timeout. This function can be overloaded with various parameters, i.e., host, port or access code map (like we have for [C++](https://muflihun.github.io/residue/docs/class_residue.html) library
+The connection is estabilished syncronously with short timeout. This function can be overloaded with various parameters, i.e., host or port (like we have for [C++](https://muflihun.github.io/residue/docs/class_residue.html) library
 
 This function will notify user if there was failure in estabilishing the connection and clear reasoning:
  * If host is unavailable or not connected to the network
- * If residue denied the connection e.g, invalid access code or invalid public key
+ * If residue denied the connection e.g, invalid public key etc.
  
 Once connected, the connection response is most important thing, it contains what has been mentioned in [`CONNECTIVITY`](/docs/CONNECTIVITY.md#connection-establishment) specification. You will need it throughout.
  
@@ -194,7 +188,6 @@ What do we mean by that? this is where "seamless" comes in, it will check for:
  * Whether still connecting - if connecting then come back and try in few moment (Find `Still connecting...` on [C++](https://github.com/muflihun/residue-cpp/blob/master/src/Residue.cc) for example)
  * Whether client is still valid or not - if not it will reconnect and then call do it again (See `isClientValid()` on [Java](https://github.com/muflihun/residue-java/blob/master/src/com/muflihun/residue/Residue.java) and see the usages)
  * Whether client is about to die and can be _retouched_ (See `shouldTouch()` and `touch()` on [Java](https://github.com/muflihun/residue-java/blob/master/src/com/muflihun/residue/Residue.java) and see the usages)
- * Whether we have token or need to obtain token or token is valid - if not we will first obtain token using access code previously provided by the user (See `obtainToken()` on [Java](https://github.com/muflihun/residue-java/blob/master/src/com/muflihun/residue/Residue.java) and it's usages especially in `dispatcher` thread)
  * Create bulk request if your library and server supports it (see [`allow_bulk_log_request`](/docs/CONFIGURATION.md#allow_bulk_log_request))
  * Compress the data if your library and server supports it (see [`compression`](/docs/CONFIGURATION.md#compression) and search for `Flag.COMPRESSION.isSet()` in [Java](https://github.com/muflihun/residue-java/blob/master/src/com/muflihun/residue/Residue.java) library for example)
  * Encrypt the JSON object if needed. Otherwise, if developer prefers plain log request and server supports it, you can ignore encryption. (see [`allow_plain_log_request`](/docs/CONFIGURATION.md#allow_plain_log_request) and search for `Flag.ALLOW_PLAIN_LOG_REQUEST.isSet()` in [Java](https://github.com/muflihun/residue-java/blob/master/src/com/muflihun/residue/Residue.java) library for example)
