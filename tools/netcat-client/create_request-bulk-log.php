@@ -3,11 +3,9 @@
 // Usage: php create_request-log.php connection.json
 
 $connection = json_decode(file_get_contents($argv[1]));
-$token = json_decode(file_get_contents("tokens/sample-app"));
 function f($c) {
- global $token;
  return array(
-        "token" => $token->token,
+        "_t" => time(),
         "datetime" => round(microtime(true) * 1000),
         "logger" => "sample-app",
         "msg" => $c . " Efficient real-time centralized logging server ⚡ ",
@@ -18,7 +16,7 @@ function f($c) {
  );
 };
 $arr = array();
-for ($i = 1; $i <= 6; ++$i) {
+for ($i = 1; $i <= 50; ++$i) {
     $arr[] = f($i);
 }
 $req = addslashes(json_encode($arr));

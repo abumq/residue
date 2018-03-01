@@ -53,7 +53,6 @@
 #include "tasks/auto-updater.h"
 #include "tasks/client-integrity-task.h"
 #include "tasks/log-rotator.h"
-#include "tokenization/token-request-handler.h"
 
 #ifdef RESIDUE_USE_MINE
 #   include "mine/mine.h"
@@ -259,16 +258,8 @@ int main(int argc, char* argv[])
             net::io_service io_service;
             LogRequestHandler logRequestHandler(&registry);
             logRequestHandler.start(); // Start handling incoming requests
+            registry.setLogRequestHandler(&logRequestHandler);
             Server svr(io_service, config.loggingPort(), &logRequestHandler);
-            io_service.run();
-        }));
-
-        // token server
-        threads.push_back(std::thread([&]() {
-            el::Helpers::setThreadName("TokenHandler");
-            net::io_service io_service;
-            TokenRequestHandler tokenRequestHandler(&registry);
-            Server svr(io_service, config.tokenPort(), &tokenRequestHandler);
             io_service.run();
         }));
 

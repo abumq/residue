@@ -49,17 +49,11 @@ public:
         m_loggingPort = loggingPort;
     }
 
-    inline void setTokenPort(unsigned int tokenPort)
-    {
-        m_tokenPort = tokenPort;
-    }
-
 private:
     StatusCode m_status;
     std::string m_errorText;
     const Configuration* m_configuration;
 
-    int m_tokenPort;
     int m_loggingPort;
     std::string m_key;
     std::string m_clientId;

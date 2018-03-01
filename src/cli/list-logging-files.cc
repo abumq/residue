@@ -94,6 +94,7 @@ void ListLoggingFiles::execute(std::vector<std::string>&& params, std::ostringst
         std::string loggerId = p.first;
         j.addValue("client_id", clientId);
         j.addValue("logger_id", loggerId);
+        std::set<std::string> uniqFiles;
         j.startArray("files");
         for (std::string levelStr : loggingLevels) {
             if (levelStr.empty()) {
@@ -106,8 +107,11 @@ void ListLoggingFiles::execute(std::vector<std::string>&& params, std::ostringst
             }
             std::string file = getFile(loggerId, levelStr);
             if (!file.empty()) {
-                j.addValue(file);
+                uniqFiles.insert(file);
             }
+        }
+        for (std::string file : uniqFiles) {
+            j.addValue(file);
         }
         j.endArray(); // files
         j.endObject();

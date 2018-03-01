@@ -38,6 +38,7 @@ class Configuration;
 class ClientIntegrityTask;
 class AutoUpdater;
 class LogRotator;
+class LogRequestHandler;
 
 ///
 /// \brief Registry for client with helper functions
@@ -130,6 +131,16 @@ public:
         m_clientIntegrityTask = clientIntegrityTask;
     }
 
+    inline LogRequestHandler* logRequestHandler()
+    {
+        return m_logRequestHandler;
+    }
+
+    inline void setLogRequestHandler(LogRequestHandler* logRequestHandler)
+    {
+        m_logRequestHandler = logRequestHandler;
+    }
+
     inline AutoUpdater* autoUpdater()
     {
         return m_autoUpdater;
@@ -141,6 +152,7 @@ public:
     }
 
     void reset();
+    void reloadConfig();
 private:
     friend class CommandHandler;
 
@@ -149,6 +161,7 @@ private:
     std::vector<LogRotator*> m_logRotators;
     std::vector<ActiveSession> m_activeSessions;
     ClientIntegrityTask* m_clientIntegrityTask;
+    LogRequestHandler* m_logRequestHandler;
     AutoUpdater* m_autoUpdater;
 
     std::unordered_map<std::string, Client> m_clients;

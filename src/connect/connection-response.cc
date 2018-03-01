@@ -31,7 +31,6 @@ ConnectionResponse::ConnectionResponse(const Client* client, const Configuration
     m_status(Response::StatusCode::OK),
     m_errorText(""),
     m_configuration(c),
-    m_tokenPort(0),
     m_loggingPort(0),
     m_key(client->key()),
     m_clientId(client->id()),
@@ -47,7 +46,6 @@ ConnectionResponse::ConnectionResponse(Response::StatusCode status, const std::s
     m_status(status),
     m_errorText(errorText),
     m_configuration(nullptr),
-    m_tokenPort(0),
     m_loggingPort(0),
     m_clientAge(0),
     m_clientDateCreated(0),
@@ -90,9 +88,6 @@ void ConnectionResponse::serialize(std::string& output) const
     }
     if (!m_clientId.empty()) {
         doc.addValue("client_id", m_clientId.c_str());
-    }
-    if (m_tokenPort != 0) {
-        doc.addValue("token_port", m_tokenPort);
     }
     if (m_loggingPort != 0) {
         doc.addValue("logging_port", m_loggingPort);

@@ -31,7 +31,7 @@ namespace residue {
 class Registry;
 
 ///
-/// \brief Task to check integrity of the clients (and their tokens).
+/// \brief Task to check integrity of the clients.
 /// If invalid, this task will remove it from the registry
 ///
 class ClientIntegrityTask final : public Task

@@ -50,11 +50,6 @@ public:
         return m_level;
     }
 
-    inline const std::string& token() const
-    {
-        return m_token;
-    }
-
     inline const el::base::type::string_t& msg() const
     {
         return m_msg;
@@ -115,18 +110,16 @@ public:
         m_clientId = clientId;
     }
 
-    inline bool isBulk()
+    inline bool isBulk() const
     {
         return m_jsonDoc.isArray();
     }
 
     virtual bool deserialize(std::string&& json) override;
     virtual bool validateTimestamp() const override;
-
 private:
 
     std::string m_clientId;
-    std::string m_token;
     types::TimeMs m_datetime;
     std::string m_msg;
     std::string m_loggerId;
@@ -138,8 +131,6 @@ private:
     el::Level m_level;
     el::base::type::LineNumber m_lineNumber;
     el::base::type::VerboseLevel m_verboseLevel;
-
-    bool m_isValid;
 };
 }
 #endif /* LogRequest_h */

@@ -8,7 +8,7 @@ $encrypt = isset($argv[2]) && $argv[2] == "0" ? false : true;
 $req = array(
         "_t" => time(),
 	"datetime" => round(microtime(true) * 1000),
-	"logger" => "some-logger",
+	"logger" => "sample-app",
 	"msg" => "Efficient real-time centralized logging server ⚡ ",
 	"file" => "index.html",
 	"line" => 857,

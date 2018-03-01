@@ -54,7 +54,7 @@ void ReloadConfig::reloadServerConfig(std::ostringstream& result) const
     Configuration tmpConf(registry()->configuration()->configurationFile());
     if (tmpConf.isValid()) {
         result << "Reloading configurations...";
-        registry()->configuration()->reload();
+        registry()->reloadConfig();
     } else {
         result << "FAILED to reload configuration. There are errors in configuration file" << std::endl << tmpConf.errors();
     }

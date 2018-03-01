@@ -1,5 +1,17 @@
 # Change Log
 
+## [2.0.0] - 01-03-2018
+### Updates
+- Removed ability to dynamically add/remove client #107
+- Reloading configuration starts processors for newly added clients
+- Disable previously removed client
+- Remove token server (this change may break existing client libs - please update) #108
+- Removed `_close` support
+
+### Fixes
+- Fixed duplicate files when listing files being used (admin)
+- Fix crash with invalid bulk requests
+
 ## [1.6.1] - 28-02-2018
 ### Updates
 - New format specifier `%session_id`

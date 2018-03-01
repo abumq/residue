@@ -52,7 +52,9 @@ public:
 
     inline virtual void handle(RawRequest&& logRequest) override
     {
-        m_queue.push(std::move(logRequest));
+        if (m_enabled) {
+            m_queue.push(std::move(logRequest));
+        }
     }
 
     ///
@@ -60,9 +62,19 @@ public:
     ///
     void start();
 
+    ///
+    /// \brief Stop accepting new requests and processing of existing requests
+    ///
+    inline void disable()
+    {
+        RLOG(WARNING) << "Disabled LogDispatcher<" << m_clientId << ">";
+        m_enabled = false;
+    }
+
     bool isRequestAllowed(const LogRequest*) const;
 private:
     std::string m_clientId;
+    std::atomic<bool> m_enabled;
     std::atomic<bool> m_stopped;
     LoggingQueue m_queue;
     std::thread m_worker;
@@ -81,7 +93,7 @@ private:
     ///
     /// \brief Processes single log request
     /// \param clientRef A client reference pointer for fast processing (by skipping upcoming items in the bulk)
-    /// \param forceCheck Whether to forcefully check the relevant properties of the request e.g, token etc.
+    /// \param forceCheck Whether to forcefully check the relevant properties of the request e.g, timestamp etc.
     /// \param session Original session of the request
     /// \return True if successfully processed. Also sets client reference pointer accordingly.
     ///
@@ -89,11 +101,6 @@ private:
                         Client** clientRef,
                         bool forceCheck,
                         Session* session);
-
-    ///
-    /// \brief Checks whether token in the specified request is still valid or not
-    ///
-    bool isValidToken(const LogRequest*) const;
 
 };
 }

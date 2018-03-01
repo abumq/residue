@@ -36,8 +36,17 @@ LogRequestHandler::LogRequestHandler(Registry* registry) :
 
 void LogRequestHandler::start()
 {
+    addMissingClientProcessors();
+}
+
+
+void LogRequestHandler::addMissingClientProcessors()
+{
     auto add = [&](const std::string& clientId) {
-        m_queueProcessor[clientId] = std::unique_ptr<ClientQueueProcessor>(new ClientQueueProcessor(m_registry, clientId));
+        if (m_queueProcessor.find(clientId) == m_queueProcessor.end()) {
+            RLOG(INFO) << "Adding client processor [LogDispatcher<" << clientId << ">]";
+            m_queueProcessor[clientId] = std::unique_ptr<ClientQueueProcessor>(new ClientQueueProcessor(m_registry, clientId));
+        }
     };
 
     add(Configuration::UNKNOWN_CLIENT_ID);
@@ -48,7 +57,25 @@ void LogRequestHandler::start()
 
     // start all the processors
     for (auto& processorPair : m_queueProcessor) {
+        // starting multiple times is safe as we have check in-place
         processorPair.second->start();
+    }
+
+    if (m_queueProcessor.size() - 1 /* unknown */ > m_registry->configuration()->knownClientsKeys().size()) {
+        // stop previously removed clients if available
+        for (auto& processorPair : m_queueProcessor) {
+            if (processorPair.first == Configuration::UNKNOWN_CLIENT_ID) {
+                // we never stop processor for unknown clients
+                continue;
+            }
+            if (m_registry->configuration()->knownClientsKeys().find(processorPair.first)
+                    == m_registry->configuration()->knownClientsKeys().end()) {
+                // This client processor was removed between first time it was added and now
+                // so we stop accepting new requests for this processor
+                // but we keep it in memory
+                processorPair.second->disable();
+            }
+        }
     }
 }
 
@@ -56,7 +83,7 @@ void LogRequestHandler::handle(RawRequest&& rawRequest)
 {
     LogRequest request(m_registry->configuration());
     RequestHandler::handleWithCopy(rawRequest, &request, Request::StatusCode::BAD_REQUEST,
-                           false, false,  m_registry->configuration()->hasFlag(Configuration::Flag::COMPRESSION));
+                           false, false, m_registry->configuration()->hasFlag(Configuration::Flag::COMPRESSION));
 
     // bad request
     if ((!request.isValid() && !request.isBulk())
@@ -71,10 +98,6 @@ void LogRequestHandler::handle(RawRequest&& rawRequest)
     } else {
         rawRequest.session->writeStandardResponse(Response::StatusCode::OK);
 
-        if (request.closeImmediately()) {
-            RVLOG(RV_WARNING) << "Immediate close";
-            rawRequest.session->close();
-        }
         // we do not queue up decrypted request here as it gets messy
         // with all the copy constructors and move constructors.
         // Processors run on different thread so it's OK to decrypt it second time
@@ -84,5 +107,4 @@ void LogRequestHandler::handle(RawRequest&& rawRequest)
             m_queueProcessor.find(request.client()->id())->second->handle(std::move(rawRequest));
         }
     }
-
 }

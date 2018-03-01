@@ -26,6 +26,7 @@
 
 #include "core/configuration.h"
 #include "logging/log.h"
+#include "logging/log-request-handler.h"
 #include "utils/utils.h"
 
 using namespace residue;
@@ -33,6 +34,7 @@ using namespace residue;
 Registry::Registry(Configuration* configuration) :
     m_configuration(configuration),
     m_clientIntegrityTask(nullptr),
+    m_logRequestHandler(nullptr),
     m_autoUpdater(nullptr),
     m_bytesSent("0"),
     m_bytesReceived("0")
@@ -111,11 +113,17 @@ void Registry::reset()
     std::lock_guard<std::recursive_mutex> lock(m_mutex);
     std::lock_guard<std::recursive_mutex> lockSess(m_sessMutex);
     RLOG(INFO) << "Reloading configurations...";
-    m_configuration->reload();
+    reloadConfig();
     RLOG(INFO) << "Resetting clients...";
     m_clients.clear();
     RLOG(INFO) << "Resetting sessions...";
     m_activeSessions.clear();
     m_bytesReceived = "0";
     m_bytesSent = "0";
+}
+
+void Registry::reloadConfig()
+{
+    m_configuration->reload();
+    m_logRequestHandler->addMissingClientProcessors();
 }

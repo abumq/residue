@@ -4,7 +4,7 @@
 
 echo "Connecting..."
 # Connect to the server and retrieve encrypted symmetric key. process-handshake saves acknowledge request and the encryption key
-printf "{\"type\":1,\"rsa_public_key\":\"`cat client-256-public.pem | ripe -e --base64`\"}\r\n\r\n" | nc `cat host` 8777 | ripe -d --rsa --clean --in-key client-256-private.pem --base64 | php process-connect-response.php
+printf "{\"_t\":`awk 'BEGIN {srand(); print srand()}'`,\"type\":1,\"rsa_public_key\":\"`cat client-256-public.pem | ripe -e --base64`\"}\r\n\r\n" | nc `cat host` 8777 | ripe -d --rsa --clean --in-key client-256-private.pem --base64 | php process-connect-response.php
 
 if [ $? -eq 1 ]; then
     exit

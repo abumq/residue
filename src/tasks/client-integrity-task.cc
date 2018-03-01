@@ -27,7 +27,6 @@
 #include "core/configuration.h"
 #include "core/registry.h"
 #include "logging/log.h"
-#include "tokenization/token.h"
 
 using namespace residue;
 
@@ -97,5 +96,9 @@ void ClientIntegrityTask::execute()
             }
             ++clientIter;
         }
+    }
+
+    if (!m_registry->configuration()->hasFlag(Configuration::Flag::REQUIRES_TIMESTAMP)) {
+        RLOG(WARNING) << "You have disabled 'requires_timestamp'. Your server is prone to replay attack.";
     }
 }

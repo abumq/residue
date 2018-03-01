@@ -41,7 +41,6 @@ bool AdminRequest::deserialize(std::string&& json)
 
     m_type = static_cast<AdminRequest::Type>(m_jsonDoc.get<unsigned int>("type", 0));
     m_clientId = m_jsonDoc.get<std::string>("client_id", "");
-    m_rsaPublicKey = m_jsonDoc.get<std::string>("rsa_public_key", "");
     m_loggerId = m_jsonDoc.get<std::string>("logger_id", "");
     JsonDoc::Value levels = m_jsonDoc.get<JsonDoc::Value>("logging_levels", JsonDoc::Value());
     if (levels.isArray()) {
@@ -52,8 +51,6 @@ bool AdminRequest::deserialize(std::string&& json)
 
     m_isValid = (m_type == AdminRequest::Type::RELOAD_CONFIG)
             || (m_type == AdminRequest::Type::RESET)
-            || (m_type == AdminRequest::Type::ADD_CLIENT && !m_clientId.empty() && !m_rsaPublicKey.empty())
-            || (m_type == AdminRequest::Type::REMOVE_CLIENT && !m_clientId.empty())
             || (m_type == AdminRequest::Type::LIST_LOGGING_FILES && (!m_loggerId.empty() || !m_clientId.empty()))
             || (m_type == AdminRequest::Type::FORCE_LOG_ROTATION && !m_loggerId.empty())
             || (m_type == AdminRequest::Type::STATS)

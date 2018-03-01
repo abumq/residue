@@ -31,27 +31,35 @@ using namespace residue;
 
 ClientQueueProcessor::ClientQueueProcessor(Registry* registry, const std::string& clientId) :
     RequestHandler("Processor", registry),
-    m_clientId(clientId)
+    m_clientId(clientId),
+    m_enabled(true),
+    m_stopped(true)
 {
-    DRVLOG(RV_DEBUG) << "Initialized processor for [" << clientId << "] @ " << this;
+    DRVLOG(RV_DEBUG) << "Initialized processor [LogDispatcher<" << m_clientId << ">] @ " << this;
 }
 
 ClientQueueProcessor::~ClientQueueProcessor()
 {
+    RLOG(WARNING) << "~LogDispatcher<" << m_clientId << ">";
     m_stopped = true;
     m_worker.join();
 }
 
 void ClientQueueProcessor::start()
 {
-    m_stopped = false;
-    m_worker = std::thread([&]() {
-        el::Helpers::setThreadName("LogDispatcher<" + m_clientId + ">");
-        while (!m_stopped) {
-            processRequestQueue();
-            std::this_thread::sleep_for(std::chrono::milliseconds(100));
-        }
-    });
+    if (m_stopped == true) {
+        m_stopped = false;
+        m_worker = std::thread([&]() {
+            el::Helpers::setThreadName("LogDispatcher<" + m_clientId + ">");
+            while (!m_stopped) {
+                if (m_enabled) {
+                    processRequestQueue();
+                }
+                std::this_thread::sleep_for(std::chrono::milliseconds(100));
+            }
+        });
+        RLOG(INFO) << "Started client processor [LogDispatcher<" << m_clientId << ">]";
+    }
 }
 
 void ClientQueueProcessor::processRequestQueue()
@@ -125,10 +133,13 @@ void ClientQueueProcessor::processRequestQueue()
                     m_jsonDocForBulk.set(js);
                     std::string requestItemStr(m_jsonDocForBulk.dump());
                     LogRequest requestItem(m_registry->configuration());
+
+                    // we need this for timestamp checking
+                    requestItem.setDateReceived(request.dateReceived());
+
                     requestItem.deserialize(std::move(requestItemStr));
                     if (requestItem.isValid()) {
                         requestItem.setIpAddr(request.ipAddr());
-                        requestItem.setDateReceived(request.dateReceived());
                         requestItem.setSessionId(request.sessionId());
                         requestItem.setClient(request.client());
 
@@ -292,16 +303,9 @@ bool ClientQueueProcessor::isRequestAllowed(const LogRequest* request) const
          // Logger is blacklisted
         allowed = !m_registry->configuration()->isBlacklisted(request->loggerId());
     }
-    if (allowed) {
-        // Invalid token (either expired or not initialized)
-        allowed = client->isValidToken(request->loggerId(), request->token(), m_registry, request->dateReceived());
-
-        if (!allowed) {
-            RLOG(WARNING) << "Token expired";
-        } else if (!client->isKnown() && m_registry->configuration()->isKnownLogger(request->loggerId())) {
-            allowed = false;
-            RLOG(WARNING) << "Unknown client trying to use known logger using valid access code is no longer allowed";
-        }
+    if (allowed && !client->isKnown() && m_registry->configuration()->isKnownLogger(request->loggerId())) {
+        allowed = false;
+        DRVLOG(RV_WARNING) << "Unknown client trying to use known logger using valid access code is no longer allowed";
     }
     return allowed;
 }

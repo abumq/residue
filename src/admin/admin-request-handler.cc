@@ -77,17 +77,6 @@ void AdminRequestHandler::handle(RawRequest&& rawRequest)
         params.push_back("--logger-id");
         params.push_back(request.loggerId());
         break;
-    case AdminRequest::Type::ADD_CLIENT:
-        cmd = "clients";
-        params.push_back("add");
-        params.push_back(request.clientId());
-        params.push_back(request.rsaPublicKey());
-        break;
-    case AdminRequest::Type::REMOVE_CLIENT:
-        cmd = "clients";
-        params.push_back("remove");
-        params.push_back(request.clientId());
-        break;
     case AdminRequest::Type::LIST_CLIENTS:
         cmd = "clients";
         params.push_back("list");

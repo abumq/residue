@@ -81,7 +81,6 @@ public:
 
     virtual bool deserialize(std::string&& json) override;
 private:
-
     std::string m_clientId;
     std::string m_rsaPublicKey;
     unsigned int m_keySize;

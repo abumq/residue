@@ -10,9 +10,9 @@ option (use_mine "Use mine whereever possible" OFF)
 option (use_boost "Use boost or standalone networking lib" OFF)
 option (old_toolchain "Is old toolchain" OFF)
 
-set (RESIDUE_MAJOR "1")
-set (RESIDUE_MINOR "6")
-set (RESIDUE_PATCH "1")
+set (RESIDUE_MAJOR "2")
+set (RESIDUE_MINOR "0")
+set (RESIDUE_PATCH "0")
 set (RESIDUE_VERSION "${RESIDUE_MAJOR}.${RESIDUE_MINOR}.${RESIDUE_PATCH}")
 set (RESIDUE_NAME "Residue")
 
@@ -152,11 +152,6 @@ set (SOURCE_FILES
     src/connect/connection-request-handler.cc
     src/connect/connection-response.cc
 
-    src/tokenization/token-request-handler.cc
-    src/tokenization/token-request.cc
-    src/tokenization/token.cc
-    src/tokenization/token-response.cc
-
     src/admin/admin-request.cc
     src/admin/admin-request-handler.cc
 
@@ -194,7 +189,6 @@ set (SOURCE_FILES
     src/cli/reload-config.cc
     src/cli/stats.cc
     src/cli/rotate.cc
-    src/cli/list-tokens.cc
     src/cli/list-logging-files.cc
     src/cli/clients.cc
 

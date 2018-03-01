@@ -184,7 +184,6 @@ void ConnectionRequestHandler::acknowledge(const ConnectionRequest* request, con
     existingClient->resetDateCreated();
     if (m_registry->updateClient(*existingClient)) {
         ConnectionResponse response(existingClient, m_registry->configuration());
-        response.setTokenPort(m_registry->configuration()->tokenPort());
         response.setLoggingPort(m_registry->configuration()->loggingPort());
         std::string output;
         response.serialize(output);
@@ -217,7 +216,6 @@ void ConnectionRequestHandler::touch(const ConnectionRequest* request, const std
             client->resetDateCreated();
             m_registry->updateClient(*client);
             ConnectionResponse response(client, m_registry->configuration());
-            response.setTokenPort(m_registry->configuration()->tokenPort());
             response.setLoggingPort(m_registry->configuration()->loggingPort());
             std::string output;
             response.serialize(output);

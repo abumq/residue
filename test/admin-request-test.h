@@ -34,9 +34,7 @@ TEST(AdminRequestTest, DeserializeTest)
 {
     std::stringstream ss;
     ss << std::string(R"(
-                      {"type": 2,
-                      "client_id": "blah",
-                      "rsa_public_key": "blah"
+                      {"type": 8,
                       }
                       )");
     AdminRequest r(nullptr);
@@ -47,13 +45,12 @@ TEST(AdminRequestTest, DeserializeTest)
     ss.str("");
 
     ss << std::string(R"(
-                      {"type": 2,
-                      "client_id": "blah",
-                      "rsa_public_key": "blah",
-                      "_t":999}
-                      )");
+                      {"type": 8,
+                      "_t":)") << Utils::now() << "}";
 
-    r.setDateReceived(1000);
+    RLOG(INFO) << "Admin req: " << ss.str();
+
+    r.setDateReceived(Utils::now() + 1);
     r.deserialize(ss.str());
     ASSERT_TRUE(r.isValid());
 }
