@@ -51,16 +51,25 @@ Some of the notable features are listed below
 
 # Getting Started
 ## Download Binary
+
+### Direct
 [Download latest release](https://github.com/muflihun/residue/releases/latest) for your platform
 
-Following will download for linux
 ```
+## For linux
 wget https://github.com/muflihun/residue/releases/download/v2.0.0/residue-2.0.0-linux-x86_64.tar.gz
 tar -xf residue-2.0.0-linux-x86_64.tar.gz
 cd residue-2.0.0-linux-x86_64/
 ```
 
-or using NPM
+```
+## For macOS
+wget https://github.com/muflihun/residue/releases/download/v2.0.0/residue-2.0.0-darwin-x86_64.tar.gz
+tar -xf residue-2.0.0-darwin-x86_64.tar.gz
+cd residue-2.0.0-darwin-x86_64/
+```
+
+### Using NPM
 
 ```
 ## For linux
@@ -73,13 +82,14 @@ $ sudo npm install -g residue-darwin@latest
 ```
 
 ## Start Server
+### Direct
 Start server using this configuration
 
 ```
 sudo ./residue config/server.conf
 ```
 
-or if you downloaded using NPM
+### NPM via Node
 
 ```
 export RESIDUE_HOME=/usr/local/lib/node_modules/residue-linux/config/
