@@ -1,5 +1,5 @@
 {
-  "name": "residue-linux",
+  "name": "residue-server-linux",
   "version": "2.0.0",
   "description": "Residue server daemon (Linux)",
   "homepage": "https://github.com/muflihun/residue",
@@ -11,7 +11,8 @@
     "url": "http://github.com/muflihun/residue.git"
   },
   "files": [
-     "residued"
+     "residued",
+     "config"
   ],
   "keywords": [
     "residue",
