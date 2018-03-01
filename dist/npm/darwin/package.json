@@ -1,0 +1,23 @@
+{
+  "name": "residue-darwin",
+  "version": "2.0.0",
+  "description": "Residue server daemon (Darwin)",
+  "homepage": "https://github.com/muflihun/residue",
+  "author": "Muflihun Labs <info@muflihun.com>",
+  "license": "Apache-2.0",
+  "bin": "./residued",
+  "repository": {
+    "type": "git",
+    "url": "http://github.com/muflihun/residue.git"
+  },
+  "files": [
+     "residued"
+  ],
+  "keywords": [
+    "residue",
+    "realtime",
+    "darwin",
+    "macOS",
+    "logging-server"
+  ]
+}
