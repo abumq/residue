@@ -52,8 +52,6 @@ bool AdminRequest::deserialize(std::string&& json)
 
     m_isValid = (m_type == AdminRequest::Type::RELOAD_CONFIG)
             || (m_type == AdminRequest::Type::RESET)
-            || (m_type == AdminRequest::Type::ADD_CLIENT && !m_clientId.empty() && !m_rsaPublicKey.empty())
-            || (m_type == AdminRequest::Type::REMOVE_CLIENT && !m_clientId.empty())
             || (m_type == AdminRequest::Type::LIST_LOGGING_FILES && (!m_loggerId.empty() || !m_clientId.empty()))
             || (m_type == AdminRequest::Type::FORCE_LOG_ROTATION && !m_loggerId.empty())
             || (m_type == AdminRequest::Type::STATS)

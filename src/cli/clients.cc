@@ -31,7 +31,7 @@ using namespace residue;
 Clients::Clients(Registry* registry) :
     Command("clients",
             "List, add or remove clients from the server configuration",
-            "clients [list] [add --client-id <id> --rsa-public-key-file <rsa_key>] [remove --client-id <client-id>] [clean]",
+            "clients [list] [clean]",
             registry)
 {
 }
@@ -52,49 +52,6 @@ void Clients::execute(std::vector<std::string>&& params, std::ostringstream& res
         if (ignoreConfirmation || getConfirmation("This will run client integrity task and clean the expired clients")) {
             registry()->clientIntegrityTask()->kickOff();
             result << "\nFinished client integrity task" << std::endl;
-        }
-    }else if (hasParam(params, "remove")) {
-        const std::string clientId = getParamValue(params, "--client-id");
-        if (clientId.empty()) {
-            result << "\nNo client ID provided" << std::endl;
-            return;
-        }
-        Client* client = registry()->findClient(clientId);
-        if (client == nullptr) {
-            result << "\nClient not found [" << clientId << "]" << std::endl;
-            return;
-        }
-        if (ignoreConfirmation || getConfirmation("It can be extremely dangerous to remove the client. "
-                                                  "Your server may crash!!1 Just be sure what you're doing.")) {
-            registry()->removeClient(client);
-        }
-    } else if (hasParam(params, "add")) {
-        const std::string clientId = getParamValue(params, "--client-id");
-        const std::string rsaPublicKey = getParamValue(params, "--rsa-public-key-file");
-        if (clientId.empty() || rsaPublicKey.empty()) {
-            result << "\nNo client ID provided" << std::endl;
-            return;
-        }
-        if (rsaPublicKey.empty()) {
-            result << "\nNo public key provided" << std::endl;
-            return;
-        }
-        Client* client = registry()->findClient(clientId);
-        if (client != nullptr) {
-            result << "\nClient already exists [" << clientId << "]" << std::endl;
-            return;
-        }
-        if (Utils::fileExists(rsaPublicKey.c_str())) {
-            if (Utils::isAlphaNumeric(clientId, "-_@#")) {
-                bool cont = registry()->configuration()->addKnownClient(clientId, rsaPublicKey);
-                cont = cont && registry()->configuration()->save(registry()->configuration()->configurationFile());
-                result << (cont ? "Done" : "Failed") << std::endl;
-            } else {
-                result << "Invalid character in client ID, should be alpha-numeric "
-                           "(can also include these characters excluding square brackets: [_@-#])" << std::endl;
-            }
-        } else {
-            result << "Public key file does not exist on the server" << std::endl;
         }
     }
 }

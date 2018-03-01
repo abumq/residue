@@ -1,6 +1,8 @@
 # Change Log
 
 ## [Unreleased]
+### Updates
+- Removed ability to dynamically add/remove client #107
 
 ## [1.6.1] - 28-02-2018
 ### Updates

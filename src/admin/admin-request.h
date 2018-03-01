@@ -39,8 +39,6 @@ public:
     {
         UNKNOWN = 0,
         RELOAD_CONFIG = 1,
-        ADD_CLIENT = 2,
-        REMOVE_CLIENT = 3,
         RESET = 4,
         LIST_LOGGING_FILES = 5,
         FORCE_LOG_ROTATION = 6,
@@ -60,11 +58,6 @@ public:
         return m_clientId;
     }
 
-    inline std::string rsaPublicKey() const
-    {
-        return m_rsaPublicKey;
-    }
-
     inline std::string loggerId() const
     {
         return m_loggerId;
@@ -79,7 +72,6 @@ public:
     virtual bool validateTimestamp() const override;
 private:
     std::string m_clientId;
-    std::string m_rsaPublicKey;
     std::string m_loggerId;
     std::set<std::string> m_loggingLevels;
     Type m_type;
