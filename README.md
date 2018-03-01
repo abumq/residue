@@ -53,10 +53,23 @@ Some of the notable features are listed below
 ## Download Binary
 [Download latest release](https://github.com/muflihun/residue/releases/latest) for your platform
 
+Following will download for linux
 ```
-wget https://github.com/muflihun/residue/releases/download/v1.6.0/residue-1.6.0-linux-x86_64.tar.gz
-tar -xf residue-1.6.0-linux-x86_64.tar.gz
-cd residue-1.6.0-linux-x86_64/
+wget https://github.com/muflihun/residue/releases/download/v2.0.0/residue-2.0.0-linux-x86_64.tar.gz
+tar -xf residue-2.0.0-linux-x86_64.tar.gz
+cd residue-2.0.0-linux-x86_64/
+```
+
+or using NPM
+
+```
+## For linux
+$ sudo npm install -g residue-linux@latest
+```
+
+```
+## For macOS
+$ sudo npm install -g residue-darwin@latest
 ```
 
 ## Start Server
@@ -64,6 +77,14 @@ Start server using this configuration
 
 ```
 sudo ./residue config/server.conf
+```
+
+or if you downloaded using NPM
+
+```
+export RESIDUE_HOME=/usr/local/lib/node_modules/residue-linux/config/
+## Following will line will set environment variable for node
+sudo RESIDUE_HOME=$RESIDUE_HOME residue-linux $RESIDUE_HOME/server.conf
 ```
 
 ## Send Logs
