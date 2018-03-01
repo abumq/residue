@@ -286,6 +286,7 @@ TEST_F(ConfigurationTest, KnownLoggersRequestAllowed)
                            {"client_id":"blah",
                                "datetime" : 123,
                                "logger": ")" + loggerId + R"(",
+                               "_t": ")") + std::to_string(Utils::now()) + std::string(R"(",
                                "msg": "Efficient real-time centralized logging server",
                                "file": "index.html",
                                "line": 857,
@@ -301,7 +302,8 @@ TEST_F(ConfigurationTest, KnownLoggersRequestAllowed)
             logRequest.setDateReceived(Utils::now());
             logRequest.deserialize(std::move(r1));
             logRequest.setClient(t.get<1>());
-            ASSERT_EQ(logProcessor.isRequestAllowed(&logRequest), t.get<2>());
+            ASSERT_EQ(logProcessor.isRequestAllowed(&logRequest), t.get<2>())
+                    << "Logger: " << t.get<0>() << " Client: " << t.get<1>()->id();
         }
     };
 
@@ -311,7 +313,7 @@ TEST_F(ConfigurationTest, KnownLoggersRequestAllowed)
         { "residue", &client, false }, // residue is not allowed in any case
         { "test", &client, true },
         { "muflihun", &unknownClient, false },
-        { "default", &unknownClient, false },
+        { "default", &unknownClient, true },
         { "residue", &unknownClient, false },
         { "test", &unknownClient, true }
     };
@@ -325,7 +327,7 @@ TEST_F(ConfigurationTest, KnownLoggersRequestAllowed)
         { "residue", &client, false }, // residue is not allowed in any case
         { "test", &client, false }, // unknown
         { "muflihun", &unknownClient, false },
-        { "default", &unknownClient, false },
+        { "default", &unknownClient, true },
         { "residue", &unknownClient, false },
         { "test", &unknownClient, false }
     };
