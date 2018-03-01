@@ -4,6 +4,9 @@
 ### Updates
 - Removed ability to dynamically add/remove client #107
 
+### Fixes
+- Fixed duplicate files when listing files being used (admin)
+
 ## [1.6.1] - 28-02-2018
 ### Updates
 - New format specifier `%session_id`
