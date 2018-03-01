@@ -6,6 +6,7 @@
 - Reloading configuration starts processors for newly added clients
 - Disable previously removed client
 - Remove token server (this change may break existing client libs - please update) #108
+- Removed `_close` support
 
 ### Fixes
 - Fixed duplicate files when listing files being used (admin)

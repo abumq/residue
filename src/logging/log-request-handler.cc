@@ -99,7 +99,7 @@ void LogRequestHandler::handle(RawRequest&& rawRequest)
         rawRequest.session->writeStandardResponse(Response::StatusCode::OK);
 
         // manually reset session
-        rawRequest.session.reset();
+        //rawRequest.session.reset();
 
         // we do not queue up decrypted request here as it gets messy
         // with all the copy constructors and move constructors.
