@@ -110,13 +110,13 @@ public:
         m_clientId = clientId;
     }
 
-    inline bool isBulk()
+    inline bool isBulk() const
     {
         return m_jsonDoc.isArray();
     }
 
     virtual bool deserialize(std::string&& json) override;
-
+    virtual bool validateTimestamp() const override;
 private:
 
     std::string m_clientId;

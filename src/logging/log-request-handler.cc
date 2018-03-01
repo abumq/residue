@@ -98,10 +98,9 @@ void LogRequestHandler::handle(RawRequest&& rawRequest)
     } else {
         rawRequest.session->writeStandardResponse(Response::StatusCode::OK);
 
-        if (request.closeImmediately()) {
-            RVLOG(RV_WARNING) << "Immediate close";
-            rawRequest.session->close();
-        }
+        // manually reset session
+        rawRequest.session.reset();
+
         // we do not queue up decrypted request here as it gets messy
         // with all the copy constructors and move constructors.
         // Processors run on different thread so it's OK to decrypt it second time
@@ -111,5 +110,4 @@ void LogRequestHandler::handle(RawRequest&& rawRequest)
             m_queueProcessor.find(request.client()->id())->second->handle(std::move(rawRequest));
         }
     }
-
 }

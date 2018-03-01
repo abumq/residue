@@ -59,3 +59,8 @@ std::string LogRequest::formattedDatetime(const char* format, const el::base::Mi
     tval.tv_usec = epochInMs % 1000000;
     return el::base::utils::DateTime::timevalToString(tval, format, msWidth);
 }
+
+bool LogRequest::validateTimestamp() const
+{
+    return isBulk() || Request::validateTimestamp();
+}
