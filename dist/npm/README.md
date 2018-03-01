@@ -1,5 +1,5 @@
 # NPM
-This folder is used to distribute residue with node package manager (NPM)
+This folder is used to distribute residue via NPM
 
 Make sure you have copied binary file before publishing it
 
