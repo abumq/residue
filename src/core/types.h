@@ -27,8 +27,8 @@
 namespace residue {
 
 namespace types {
-using Time = std::time_t;
-using TimeMs = std::time_t;
-}
+    using Time = std::time_t;
+    using TimeMs = std::time_t;
+} // namespace types
 }
 #endif /* Types_h */

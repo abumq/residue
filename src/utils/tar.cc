@@ -23,9 +23,9 @@
 
 #include <unistd.h>
 
+#include <cerrno>
 #include <cstdio>
 #include <cstring>
-#include <cerrno>
 #include <ctime>
 
 #include "logging/log.h"

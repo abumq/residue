@@ -23,6 +23,7 @@
 #define HttpClient_h
 
 #include <string>
+
 #include "static-base.h"
 
 class HttpClient : StaticBase

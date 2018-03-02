@@ -22,9 +22,11 @@
 #ifndef JsonDoc_h
 #define JsonDoc_h
 
-#include <sstream>
 #include <memory>
+#include <sstream>
+
 #include "gason/gason.h"
+
 #include "non-copyable.h"
 
 namespace residue {
