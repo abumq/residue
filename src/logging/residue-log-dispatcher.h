@@ -128,14 +128,6 @@ private:
             logExtension->call(data, logLine);
         }
     }
-/*
-    void dispatch(const el::base::type::string_t& logLine)
-    {
-        if (m_data->dispatchAction() == el::base::DispatchAction::NormalLog) {
-
-        }
-        // do not use console (standard_output)
-    }*/
   };
 }
 
