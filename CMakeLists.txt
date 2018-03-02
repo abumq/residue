@@ -155,8 +155,6 @@ set (SOURCE_FILES
     src/admin/admin-request.cc
     src/admin/admin-request-handler.cc
 
-    src/clients/client.cc
-
     src/logging/log-request-handler.cc
     src/logging/log-request.cc
     src/logging/user-log-builder.cc
@@ -164,6 +162,7 @@ set (SOURCE_FILES
     src/logging/logging-queue.cc
     src/logging/client-queue-processor.cc
 
+    src/core/client.cc
     src/core/request.cc
     src/core/request-handler.cc
     src/core/response.cc

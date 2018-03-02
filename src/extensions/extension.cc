@@ -22,7 +22,6 @@
 #include "extensions/extension.h"
 
 #include "extensions/python.h"
-
 #include "utils/utils.h"
 
 using namespace residue;

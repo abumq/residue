@@ -21,7 +21,7 @@
 
 #include "cli/stats.h"
 
-#include "clients/client.h"
+#include "core/client.h"
 #include "core/registry.h"
 #include "utils/utils.h"
 

@@ -33,7 +33,6 @@
 #include <unordered_map>
 #include <utility>
 
-#include "extensions/python.h"
 #include "net/asio.h"
 #include "ripe/Ripe.h"
 
@@ -45,6 +44,7 @@
 #include "core/residue-exception.h"
 #include "crash-handlers.h"
 #include "crypto/base64.h"
+#include "extensions/python.h"
 #include "logging/log-request-handler.h"
 #include "logging/log.h"
 #include "logging/residue-log-dispatcher.h"
