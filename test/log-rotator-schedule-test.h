@@ -22,11 +22,13 @@
 #ifndef LOG_ROTATOR_SCHEDULE_TEST_H
 #define LOG_ROTATOR_SCHEDULE_TEST_H
 
+#include "test.h"
+
 #include <map>
 #include <memory>
-#include "test.h"
-#include "utils/utils.h"
+
 #include "tasks/log-rotator.h"
+#include "utils/utils.h"
 
 using namespace residue;
 

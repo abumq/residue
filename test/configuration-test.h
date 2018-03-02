@@ -22,19 +22,23 @@
 #ifndef CONFIGURATION_TEST_H
 #define CONFIGURATION_TEST_H
 
+#include "test.h"
+
 #include <cstdio>
 #include <cstdlib>
+
 #include <fstream>
 #include <memory>
+
 #include "ripe/Ripe.h"
-#include "test.h"
-#include "core/residue-exception.h"
+
+#include "connect/connection-request.h"
 #include "core/configuration.h"
 #include "core/registry.h"
-#include "logging/user-log-builder.h"
-#include "logging/log-request-handler.h"
+#include "core/residue-exception.h"
 #include "logging/client-queue-processor.h"
-#include "connect/connection-request.h"
+#include "logging/log-request-handler.h"
+#include "logging/user-log-builder.h"
 #include "tasks/client-integrity-task.h"
 
 using namespace residue;

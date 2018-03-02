@@ -22,9 +22,12 @@
 #ifndef CRYPTO_TEST_H
 #define CRYPTO_TEST_H
 
-#include <cstdio>
-#include <algorithm>
 #include "test.h"
+
+#include <cstdio>
+
+#include <algorithm>
+
 #include "crypto/aes.h"
 #include "crypto/zlib.h"
 #include "utils/utils.h"
