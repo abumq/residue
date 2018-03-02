@@ -62,13 +62,6 @@ void ListLoggingFiles::execute(std::vector<std::string>&& params, std::ostringst
 
     std::map<std::string, std::set<std::string>> listMap;
 
-    std::string defaultLogger = "default";
-    auto foundPos = registry()->configuration()->knownClientDefaultLogger().find(clientId);
-    if (foundPos != registry()->configuration()->knownClientDefaultLogger().end()) {
-        defaultLogger = foundPos->second;
-    }
-    listMap.insert(std::make_pair(defaultLogger, std::set<std::string>()));
-
     if (!loggerId.empty()) {
         if (!registry()->configuration()->isKnownLoggerForClient(clientId, loggerId)) {
             result << "Logger not mapped to client";
