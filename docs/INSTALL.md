@@ -37,7 +37,10 @@ cd residue-2.0.0-darwin-x86_64/
 
 ## Start Server
 
-### NPM via Node
+### Using NPM
+If you downloaded Residue binary using NPM, you can use following lines to start server with sample configs.
+
+We set `RESIDUE_HOME` environment variable as they are needed by sample server config.
 
 ```
 export RESIDUE_HOME=/usr/local/lib/node_modules/residue-linux/config/

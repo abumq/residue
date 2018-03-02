@@ -10,6 +10,9 @@ TYPE="darwin"
 if [ "$DAR" = "0" ];then
     TYPE="linux"
 fi
+if [ "$1" != "" ];then
+    TYPE="$1"
+fi
 
 MAJOR=`grep 'RESIDUE_MAJOR' ../../CMakeLists.txt | grep -o [0-9] | tr -d '\n'`
 MINOR=`grep 'RESIDUE_MINOR' ../../CMakeLists.txt | grep -o [0-9] | tr -d '\n'`
