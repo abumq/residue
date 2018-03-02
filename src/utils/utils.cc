@@ -21,24 +21,24 @@
 
 #include "utils/utils.h"
 
+#include <pwd.h>
 #include <sys/stat.h>
 #include <unistd.h>
-#include <pwd.h>
 
-#include <cstdlib>
 #include <cstdio>
+#include <cstdlib>
 #include <ctime>
 
-#include <iomanip>
-#include <string>
-#include <random>
 #include <algorithm>
+#include <iomanip>
+#include <random>
+#include <string>
 
-#include "logging/log.h"
 #include "core/configuration.h"
 #include "core/residue-exception.h"
-#include "utils/tar.h"
+#include "logging/log.h"
 #include "net/url.h"
+#include "utils/tar.h"
 
 using namespace residue;
 

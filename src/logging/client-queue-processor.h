@@ -23,11 +23,12 @@
 #define ClientQueueProcessor_h
 
 #include <atomic>
-#include <thread>
 #include <string>
+#include <thread>
+
+#include "core/json-doc.h"
 #include "core/request-handler.h"
 #include "logging/logging-queue.h"
-#include "core/json-doc.h"
 
 namespace residue {
 

@@ -19,14 +19,16 @@
 //  limitations under the License.
 //
 
+#include "core/client.h"
+
 #include <chrono>
 #include <mutex>
-#include "logging/log.h"
-#include "core/configuration.h"
-#include "clients/client.h"
+
 #include "connect/connection-request.h"
+#include "core/configuration.h"
 #include "core/registry.h"
 #include "crypto/aes.h"
+#include "logging/log.h"
 #include "utils/utils.h"
 
 using namespace residue;

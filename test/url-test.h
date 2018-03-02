@@ -23,6 +23,7 @@
 #define URL_TEST_H
 
 #include "test.h"
+
 #include "net/url.h"
 
 using namespace residue;

@@ -23,6 +23,7 @@
 #define JSON_TEST_H
 
 #include "test.h"
+
 #include "core/json-doc.h"
 
 using namespace residue;

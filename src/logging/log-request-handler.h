@@ -22,8 +22,9 @@
 #ifndef LogRequestHandler_h
 #define LogRequestHandler_h
 
-#include <unordered_map>
 #include <string>
+#include <unordered_map>
+
 #include "core/request-handler.h"
 #include "logging/client-queue-processor.h"
 

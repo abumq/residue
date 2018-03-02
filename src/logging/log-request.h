@@ -23,9 +23,10 @@
 #define LogRequest_h
 
 #include <string>
-#include "logging/log.h"
+
 #include "core/request.h"
 #include "core/types.h"
+#include "logging/log.h"
 
 namespace residue {
 

@@ -22,9 +22,12 @@
 #ifndef ADMIN_REQUEST_TEST_H
 #define ADMIN_REQUEST_TEST_H
 
-#include <cstdio>
-#include <vector>
 #include "test.h"
+
+#include <cstdio>
+
+#include <vector>
+
 #include "utils/utils.h"
 #include "admin/admin-request.h"
 

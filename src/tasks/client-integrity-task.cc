@@ -23,7 +23,7 @@
 
 #include <vector>
 
-#include "clients/client.h"
+#include "core/client.h"
 #include "core/configuration.h"
 #include "core/registry.h"
 #include "logging/log.h"

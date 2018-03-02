@@ -23,9 +23,9 @@
 #include "connect/connection-request-handler.h"
 #include "connect/connection-request.h"
 #include "connect/connection-response.h"
+#include "core/client.h"
 #include "core/configuration.h"
 #include "net/session.h"
-#include "clients/client.h"
 #include "utils/utils.h"
 #include "crypto/aes.h"
 

@@ -20,15 +20,17 @@
 //
 
 #include "easyloggingpp/easylogging++.h"
+
 #include "test.h"
-#include "configuration-test.h"
-#include "utils-test.h"
-#include "crypto-test.h"
-#include "url-test.h"
+
 #include "admin-request-test.h"
-#include "task-schedule-test.h"
-#include "log-rotator-schedule-test.h"
+#include "configuration-test.h"
+#include "crypto-test.h"
 #include "json-test.h"
+#include "log-rotator-schedule-test.h"
+#include "task-schedule-test.h"
+#include "url-test.h"
+#include "utils-test.h"
 
 INITIALIZE_EASYLOGGINGPP
 

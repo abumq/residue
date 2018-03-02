@@ -22,10 +22,10 @@
 #ifndef ResidueLogDispatcher_h
 #define ResidueLogDispatcher_h
 
+#include "extensions/log-extension.h"
 #include "logging/log.h"
 #include "non-copyable.h"
 #include "utils/utils.h"
-#include "extensions/log-extension.h"
 
 namespace residue {
 

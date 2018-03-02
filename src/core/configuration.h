@@ -22,17 +22,18 @@
 #ifndef Configuration_h
 #define Configuration_h
 
+#include <algorithm>
 #include <mutex>
 #include <string>
-#include <algorithm>
 #include <unordered_map>
 #include <unordered_set>
 #include <vector>
-#include "non-copyable.h"
-#include "clients/client.h"
+
+#include "core/client.h"
+#include "core/json-doc.h"
 #include "crypto/rsa.h"
 #include "extensions/log-extension.h"
-#include "core/json-doc.h"
+#include "non-copyable.h"
 
 namespace residue {
 

@@ -23,7 +23,9 @@
 #define UTILS_TEST_H
 
 #include <cstdio>
+
 #include "test.h"
+
 #include "utils/utils.h"
 
 using namespace residue;

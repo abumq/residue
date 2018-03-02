@@ -21,7 +21,7 @@
 
 #include "core/request-handler.h"
 
-#include "clients/client.h"
+#include "core/client.h"
 #include "core/request.h"
 #include "crypto/aes.h"
 #include "logging/log.h"
