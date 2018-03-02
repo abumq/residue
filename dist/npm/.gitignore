@@ -2,3 +2,5 @@ darwin/residued
 linux/residued
 darwin/residue-*
 linux/residue-*
+darwin/config
+linux/config

@@ -28,7 +28,10 @@ if [ "$confirm" = "y" ]; then
         exit 1;
     fi
     tar -xf ../../build/residue-$VERSION-$TYPE-x86_64.tar.gz -C $TYPE/
+    rm -rf $TYPE/residued
+    rm -rf $TYPE/config
     mv $TYPE/residue-$VERSION-$TYPE-x86_64/residue $TYPE/residued
+    mv $TYPE/residue-$VERSION-$TYPE-x86_64/config $TYPE/config
     rm -rf $TYPE/residue-$VERSION-$TYPE-x86_64
     echo "---- CONTENTS ------"
     ls -l $TYPE/
