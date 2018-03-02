@@ -91,7 +91,12 @@ export RESIDUE_HOME=`pwd`
 sudo ./residue config/server.conf
 ```
 
-### NPM via Node
+### Using NPM
+If you downloaded Residue binary using NPM, you can use following lines to start
+ server with sample configs.
+
+We set `RESIDUE_HOME` environment variable as they are needed by sample server c
+onfig.
 
 ```
 export RESIDUE_HOME=/usr/local/lib/node_modules/residue-linux/config/
