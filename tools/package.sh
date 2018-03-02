@@ -42,7 +42,7 @@ echo "Creating $PACK.tar.gz ..."
 mkdir $PACK
 cp residue-$VERSION $PACK/residue
 cp residue-config-validator-$VERSION $PACK/residue-config-validator
-cp -r ../pkg/* $PACK/
+cp -r ../dist/pkg/* $PACK/
 
 $STRIP $PACK/residue-config-validator
 $STRIP $PACK/residue
