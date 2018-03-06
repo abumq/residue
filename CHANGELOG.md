@@ -5,7 +5,7 @@
 - Prevent duplicate default loggers when logger is specified for one of the clients (admin)
 
 ### Updates
-- Extension framework with library
+- Extension API and shared+static library for extensions
 - Added `PRE_ARCHIVE` and `POST_ARCHIVE` extensions
 
 ## [2.0.0] - 01-03-2018
