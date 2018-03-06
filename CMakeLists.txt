@@ -182,6 +182,7 @@ set (SOURCE_FILES
 
     src/extensions/extension.cc
     src/extensions/log-extension.cc
+    src/extensions/pre-archive-extension.cc
 
     src/tasks/auto-updater.cc
     src/tasks/client-integrity-task.cc

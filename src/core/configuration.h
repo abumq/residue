@@ -223,6 +223,11 @@ public:
         return m_logExtensions;
     }
 
+    inline std::vector<Extension*>& preArchiveExtensions()
+    {
+        return m_preArchiveExtensions;
+    }
+
     inline const std::unordered_map<std::string, std::pair<std::string, std::string>>& knownClientsKeys() const
     {
         return m_knownClientsKeys;
@@ -306,6 +311,7 @@ private:
     std::unordered_set<std::string> m_remoteKnownClients;
     std::unordered_set<std::string> m_remoteKnownLoggers;
     std::vector<Extension*> m_logExtensions;
+    std::vector<Extension*> m_preArchiveExtensions;
 
     std::unordered_map<std::string, std::pair<std::string, std::string>> m_knownClientsKeys;
     std::unordered_map<std::string, std::unordered_set<std::string>> m_knownClientsLoggers;
@@ -354,34 +360,7 @@ private:
     void loadKnownClients(const JsonDoc::Value& json, std::stringstream& errorStream, bool viaUrl);
     void loadLoggersBlacklist(const JsonDoc::Value& json, std::stringstream& errorStream);
 
-    template <typename T, typename ListType = std::vector<T>>
-    void loadExtensions(const JsonDoc::Value& json, std::stringstream& errorStream, ListType* list)
-    {
-        std::vector<std::string> ext;
-
-        for (const auto& moduleName : json) {
-            JsonDoc j(moduleName);
-            std::string moduleNameStr = j.as<std::string>("");
-            if (moduleNameStr.empty()) {
-                continue;
-            }
-            if (std::find(ext.begin(), ext.end(), moduleNameStr) != ext.end()) {
-                errorStream << "Duplicate extension could not be loaded: " << moduleNameStr;
-            } else {
-                ext.push_back(moduleNameStr);
-                RLOG(INFO) << "Loading extension [" << moduleNameStr << "]";
-                Extension* e = Extension::load(moduleNameStr.c_str());
-                if (e == nullptr) {
-                    RLOG(ERROR) << "Extension [" << moduleNameStr << "] failed to load";
-                    continue;
-                }
-
-                RVLOG(RV_DEBUG) << "Extension [" << moduleNameStr << "] loaded @ " << e;
-
-                list->push_back(e);
-            }
-        }
-    }
+    void loadExtensions(const JsonDoc::Value& json, std::stringstream& errorStream, std::vector<Extension*>* list);
 };
 }
 #endif /* Configuration_h */

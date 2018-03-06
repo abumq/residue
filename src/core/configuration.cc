@@ -327,7 +327,11 @@ void Configuration::loadFromInput(std::string&& jsonStr)
         JsonDoc jExtensions(jExtensionsVal);
         JsonDoc::Value jLogExtensions = jExtensions.get<JsonDoc::Value>("log_extensions", JsonDoc::Value());
         if (jLogExtensions.isArray()) {
-            loadExtensions<LogExtension>(jLogExtensions, errorStream, &m_logExtensions);
+            loadExtensions(jLogExtensions, errorStream, &m_logExtensions);
+        }
+        JsonDoc::Value jPreArchiveExtensions = jExtensions.get<JsonDoc::Value>("pre_archive_extensions", JsonDoc::Value());
+        if (jPreArchiveExtensions.isArray()) {
+            loadExtensions(jPreArchiveExtensions, errorStream, &m_preArchiveExtensions);
         }
     }
  #endif
@@ -786,4 +790,32 @@ Configuration::RotationFrequency Configuration::getRotationFrequency(const std::
         return m_rotationFrequencies.at(loggerId);
     }
     return RotationFrequency::NEVER;
+}
+
+void Configuration::loadExtensions(const JsonDoc::Value &json, std::stringstream &errorStream, std::vector<Extension*>* list)
+{
+    std::vector<std::string> ext;
+
+    for (const auto& moduleName : json) {
+        JsonDoc j(moduleName);
+        std::string moduleNameStr = j.as<std::string>("");
+        if (moduleNameStr.empty()) {
+            continue;
+        }
+        if (std::find(ext.begin(), ext.end(), moduleNameStr) != ext.end()) {
+            errorStream << "Duplicate extension could not be loaded: " << moduleNameStr;
+        } else {
+            ext.push_back(moduleNameStr);
+            RLOG(INFO) << "Loading extension [" << moduleNameStr << "]";
+            Extension* e = Extension::load(moduleNameStr.c_str());
+            if (e == nullptr) {
+                RLOG(ERROR) << "Extension [" << moduleNameStr << "] failed to load";
+                continue;
+            }
+
+            RVLOG(RV_DEBUG) << "Extension [" << moduleNameStr << "] loaded @ " << e;
+
+            list->push_back(e);
+        }
+    }
 }
