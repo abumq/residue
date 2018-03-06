@@ -46,7 +46,7 @@ public:
         std::string formattedMessage;
     };
 
-    explicit LogExtension(const std::string& module);
+    explicit LogExtension(const std::string& id);
 
     virtual Extension::Result process(void*) override;
 };

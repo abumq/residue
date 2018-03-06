@@ -26,36 +26,51 @@
 #include <mutex>
 #include <string>
 
+#include "core/json-doc.h"
+
 namespace residue {
 class Extension
 {
 public:
-    struct Result {
+    struct Result
+    {
         int statusCode;
         bool continueProcess;
     };
 
-    Extension(const std::string& type, const std::string& module);
+    Extension(unsigned int type, const std::string& id);
 
-    virtual ~Extension() {}
+    virtual ~Extension() = default;
 
     static Extension* load(const char*);
 
 protected:
-    virtual Result process(void*) {
+
+    virtual Result process(void*)
+    {
         return {0, true};
     }
+
+    inline const JsonDoc& conf() const
+    {
+        return m_config;
+    }
 private:
-    std::string m_type;
-    std::string m_module;
+    unsigned int m_type;
+    std::string m_id;
     std::atomic<bool> m_running;
     std::mutex m_mutex;
-
+    JsonDoc m_config;
 
     Result execute(void*);
 
     friend class ResidueLogDispatcher;
     friend class LogRotator;
+    friend class Configuration;
+
+    inline void setConfig(JsonDoc::Value&& j) {
+        m_config.set(j);
+    }
 };
 
 }

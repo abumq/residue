@@ -85,7 +85,6 @@ public:
 
     enum ExtensionType : unsigned int
     {
-        UNKNOWN = 0,
         LOG = 1,
         PRE_ARCHIVE = 2,
         POST_ARCHIVE = 3,

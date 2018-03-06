@@ -23,8 +23,8 @@
 
 using namespace residue;
 
-PostArchiveExtension::PostArchiveExtension(const std::string& module)
-    : Extension("post_archive_extension", module)
+PostArchiveExtension::PostArchiveExtension(const std::string& id)
+    : Extension(3, id)
 {
 
 }

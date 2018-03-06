@@ -797,10 +797,6 @@ void Configuration::loadExtensions(const JsonDoc::Value& json, std::stringstream
             continue;
         }
         ExtensionType type = static_cast<ExtensionType>(j.get<unsigned int>("type", 0));
-        if (type != ExtensionType::UNKNOWN) {
-            errorStream << "  Invalid extension type [" << type << "]" << std::endl;
-            continue;
-        }
 
         std::string module = j.get<std::string>("path", "");
         if (module.empty()) {
@@ -836,6 +832,10 @@ void Configuration::loadExtensions(const JsonDoc::Value& json, std::stringstream
             if (e == nullptr) {
                 RLOG(ERROR) << "Extension [" << module << "] failed to load";
                 continue;
+            }
+            if (j.hasKey("config")) {
+                JsonDoc::Value jextConfig = j.get<JsonDoc::Value>("config", JsonDoc::Value());
+                e->setConfig(std::move(jextConfig));
             }
 
             RVLOG(RV_DEBUG) << "Extension [" << module << "] loaded @ " << e;

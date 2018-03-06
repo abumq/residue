@@ -28,9 +28,9 @@
 
 using namespace residue;
 
-Extension::Extension(const std::string& type, const std::string& module) :
+Extension::Extension(unsigned int type, const std::string& id) :
     m_type(type),
-    m_module(module),
+    m_id(id),
     m_running(false)
 {
 
@@ -42,13 +42,13 @@ Extension::Result Extension::execute(void* data)
     if (m_running) {
 #ifndef RESIDUE_EXTENSION_LIB
 #   ifdef RESIDUE_DEBUG
-        DRVLOG(RV_WARNING) << "Extension [" << m_type << "/" << m_module << "] already running";
+        DRVLOG(RV_WARNING) << "Extension [" << m_type << "/" << m_id << "] already running";
 #   endif
 #endif
         return {1, true};
     }
 #ifndef RESIDUE_EXTENSION_LIB
-    RVLOG(RV_INFO) << "Executing extension [" << m_type << "/" << m_module << "]";
+    RVLOG(RV_INFO) << "Executing extension [" << m_type << "/" << m_id << "]";
 #endif
     m_running = true;
     std::lock_guard<std::mutex> lock_(m_mutex);
@@ -59,10 +59,10 @@ Extension::Result Extension::execute(void* data)
 }
 
 
-Extension* Extension::load(const char* name)
+Extension* Extension::load(const char* path)
 {
 #ifndef RESIDUE_EXTENSION_LIB
-    void* handle = dlopen(name, RTLD_LAZY);
+    void* handle = dlopen(path, RTLD_LAZY);
 
     if (handle == nullptr) {
         return nullptr;
@@ -74,7 +74,7 @@ Extension* Extension::load(const char* name)
 
     return create();
 #else
-    (void) name;
+    (void) path;
     return nullptr;
 #endif
 }

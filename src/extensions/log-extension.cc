@@ -23,8 +23,8 @@
 
 using namespace residue;
 
-LogExtension::LogExtension(const std::string& module)
-    : Extension("log_extension", module)
+LogExtension::LogExtension(const std::string& id)
+    : Extension(1, id)
 {
 
 }

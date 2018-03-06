@@ -35,7 +35,7 @@ public:
         std::string archiveFilename;
     };
 
-    explicit PostArchiveExtension(const std::string& module);
+    explicit PostArchiveExtension(const std::string& id);
 
     virtual Extension::Result process(void*) override;
 };

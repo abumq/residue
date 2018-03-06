@@ -37,7 +37,7 @@ public:
         std::map<std::string, std::string> files;
     };
 
-    explicit PreArchiveExtension(const std::string& module);
+    explicit PreArchiveExtension(const std::string& id);
 
     virtual Extension::Result process(void*) override;
 };

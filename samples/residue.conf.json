@@ -64,7 +64,10 @@
             "name": "sample",
             "path": "samples/extensions/log-extension/simple.dylib",
             "description": "A simple sample for logging",
-            "type": 0
+            "type": 1,
+            "config": {
+                "key": "abcd"
+            }
         }
     ]
 }
