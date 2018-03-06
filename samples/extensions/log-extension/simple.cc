@@ -10,7 +10,7 @@ residue::Extension::Result Simple::execute(void* d)
         std::cout << "Simple::execute() No data found " << std::endl;
         return {0, true};
     }
-    std::cout << "Simple extension key: " << conf().get<std::string>("key", "") << std::endl;
+    writeLog("Simple extension key: " + conf().get<std::string>("key", ""), Extension::LogLevel::Debug);
 	std::cout << "Simple::execute() ==>" << data->formattedMessage << std::endl;
 	return {0, true};
 }

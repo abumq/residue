@@ -75,7 +75,26 @@ protected:
         return m_config;
     }
 
-    void writeLog(const std::string&) const;
+    ///
+    /// \brief Wrapper for Easylogging++ Level
+    ///
+    enum class LogLevel
+    {
+        Trace = 2,
+        Debug = 4,
+        Error = 16,
+        Warning = 32,
+        Info = 128,
+        Verbose = 64
+    };
+
+    ///
+    /// \brief Write log using 'residue' logger
+    /// \param msg The log message
+    /// \param level Logging level
+    /// \param vlevel Verbose level if logging level is VERBOSE
+    ///
+    void writeLog(const std::string& msg, LogLevel level = LogLevel::Info, unsigned short vlevel = 0) const;
 private:
     unsigned int m_type;
     std::string m_id;

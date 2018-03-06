@@ -79,9 +79,25 @@ Extension* Extension::load(const char* path)
 #endif
 }
 
-void Extension::writeLog(const std::string& msg) const
+void Extension::writeLog(const std::string& msg, LogLevel level, unsigned short vlevel) const
 {
 #ifndef RESIDUE_EXTENSION_LIB
-    RLOG(INFO) << m_id << ": " << msg;
+    if (level == LogLevel::Info) {
+        RLOG(INFO) << "[Extension <" << m_id << ">] " << msg;
+    } else if (level == LogLevel::Error) {
+        RLOG(ERROR) << "[Extension <" << m_id << ">] " << msg;
+    } else if (level == LogLevel::Warning) {
+        RLOG(WARNING) << "[Extension <" << m_id << ">] " << msg;
+    } else if (level == LogLevel::Debug) {
+        RLOG(DEBUG) << "[Extension <" << m_id << ">] " << msg;
+    } else if (level == LogLevel::Trace) {
+        RLOG(TRACE) << "[Extension <" << m_id << ">] " << msg;
+    } else if (level == LogLevel::Verbose) {
+        RVLOG(vlevel) << "[Extension <" << m_id << ">] " << msg;
+    }
+#else
+    (void) msg;
+    (void) level;
+    (void) vlevel;
 #endif
 }
