@@ -3,7 +3,7 @@
 ![banner]
     
 # Introduction
-This docs contain residue extension API that you can use to extend the features for residue server.
+This docs contain residue extensions API that you can use to extend the features for residue server.
 
 # Licence
 Following licence applies strictly to extension API. For Residue server licence please refer to [LICENCE](https://github.com/muflihun/residue/blob/master/LICENCE) on github.
