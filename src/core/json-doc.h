@@ -29,6 +29,11 @@
 
 namespace residue {
 
+///
+/// \brief JSON document that holds value for JSON
+///
+/// This is essentially a wrapper for gason
+///
 class JsonDoc final
 {
 public:
@@ -102,6 +107,10 @@ public:
         return m_val.isArray();
     }
 
+    ///
+    /// Get value by type. Please checkout out other template specializations
+    /// for a specific type
+    ///
     template <typename T>
     inline T get(const char* key, const T& defaultVal) const
     {
@@ -111,12 +120,19 @@ public:
         return m_val(key);
     }
 
+    ///
+    /// Get value as specific type. Best for single values as <code>get</code> will
+    /// not work for single value
+    ///
     template <typename T>
     inline T as(const T&) const
     {
         return m_val;
     }
 
+    ///
+    /// \brief Dumps JSON document as string with specific indentation
+    ///
     std::string dump(int indent = -1) const;
 private:
     Status m_status;

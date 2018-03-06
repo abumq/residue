@@ -27,10 +27,18 @@
 
 namespace residue {
 
+///
+/// \brief Base class for any extension that needs to execute a code
+/// with every dispatch of user logs
+///
+/// Data is well defined and contains all the necessary information about
+/// the log message
+///
 class LogExtension : public Extension
 {
 public:
-    struct Data {
+    struct Data
+    {
         unsigned int level;
         std::string app;
         std::string thread;

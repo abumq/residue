@@ -28,10 +28,19 @@
 
 namespace residue {
 
+///
+/// \brief Base class for any extension that needs to execute a code
+/// just before we are about to create .tar.gz
+///
+/// If as a result of execution, Extension::Result::continueProcess is
+/// false the server will not continue with archiving the log (hence
+/// PostArchiveExtension will also not be executed)
+///
 class PreArchiveExtension : public Extension
 {
 public:
-    struct Data {
+    struct Data
+    {
         std::string loggerId;
         std::string archiveFilename;
         std::map<std::string, std::string> files;

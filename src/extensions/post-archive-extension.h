@@ -27,10 +27,15 @@
 
 namespace residue {
 
+///
+/// \brief Base class for any extension that needs to execute a code
+/// after log rotation was successful and we have .tar.gz file available
+///
 class PostArchiveExtension : public Extension
 {
 public:
-    struct Data {
+    struct Data
+    {
         std::string loggerId;
         std::string archiveFilename;
     };

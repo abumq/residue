@@ -41,7 +41,8 @@
 namespace residue {
 
 ///
-/// \brief Please extend one of the
+/// \brief Abstract extension
+/// Please extend one of the base classes.
 ///
 class RESIDUE_EXTENSION_API Extension
 {
