@@ -51,6 +51,7 @@ private:
     std::atomic<bool> m_running;
     std::mutex m_mutex;
 
+
     Result execute(void*);
 
     friend class ResidueLogDispatcher;

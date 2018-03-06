@@ -59,15 +59,12 @@
         "bracket",
         "truli"
     ],
-    "extensions": {
-        "log": [
-            "samples/extensions/log-extension/simple.dylib"
-        ],
-        "pre_archive": [
-            "samples/extensions/pre-archive/simple-prearchive.dylib"
-        ],
-        "post_archive": [
-            "samples/extensions/post-archive/simple-postarchive.dylib"
-        ]
-    }
+    "extensions": [
+        {
+            "name": "sample",
+            "path": "samples/extensions/log-extension/simple.dylib",
+            "description": "A simple sample for logging",
+            "type": 0
+        }
+    ]
 }

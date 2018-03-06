@@ -83,6 +83,14 @@ public:
         YEARLY = RotationFrequency::MONTHLY * 12
     };
 
+    enum ExtensionType : unsigned int
+    {
+        UNKNOWN = 0,
+        LOG = 1,
+        PRE_ARCHIVE = 2,
+        POST_ARCHIVE = 3,
+    };
+
     Configuration();
     explicit Configuration(const std::string& configurationFile);
 
@@ -366,7 +374,7 @@ private:
     void loadKnownClients(const JsonDoc::Value& json, std::stringstream& errorStream, bool viaUrl);
     void loadLoggersBlacklist(const JsonDoc::Value& json, std::stringstream& errorStream);
 
-    void loadExtensions(const JsonDoc::Value& json, std::stringstream& errorStream, std::vector<Extension*>* list, const std::string& type);
+    void loadExtensions(const JsonDoc::Value& json, std::stringstream& errorStream);
 };
 }
 #endif /* Configuration_h */

@@ -322,21 +322,8 @@ void Configuration::loadFromInput(std::string&& jsonStr)
 
 
  #ifdef RESIDUE_HAS_EXTENSIONS
-    JsonDoc::Value jExtensionsVal = m_jsonDoc.get<JsonDoc::Value>("extensions", JsonDoc::Value());
-    if (jExtensionsVal.isObject()) {
-        JsonDoc jExtensions(jExtensionsVal);
-        JsonDoc::Value jLogExtensions = jExtensions.get<JsonDoc::Value>("log", JsonDoc::Value());
-        if (jLogExtensions.isArray()) {
-            loadExtensions(jLogExtensions, errorStream, &m_logExtensions, "log");
-        }
-        JsonDoc::Value jPreArchiveExtensions = jExtensions.get<JsonDoc::Value>("pre_archive", JsonDoc::Value());
-        if (jPreArchiveExtensions.isArray()) {
-            loadExtensions(jPreArchiveExtensions, errorStream, &m_preArchiveExtensions, "pre_archive");
-        }
-        JsonDoc::Value jPostArchiveExtensions = jExtensions.get<JsonDoc::Value>("post_archive", JsonDoc::Value());
-        if (jPostArchiveExtensions.isArray()) {
-            loadExtensions(jPostArchiveExtensions, errorStream, &m_postArchiveExtensions, "post_archive");
-        }
+    if (m_jsonDoc.hasKey("extensions")) {
+        loadExtensions(m_jsonDoc.get<JsonDoc::Value>("extensions", JsonDoc::Value()), errorStream);
     }
  #endif
 
@@ -796,29 +783,62 @@ Configuration::RotationFrequency Configuration::getRotationFrequency(const std::
     return RotationFrequency::NEVER;
 }
 
-void Configuration::loadExtensions(const JsonDoc::Value& json, std::stringstream& errorStream, std::vector<Extension*>* list, const std::string& type)
+void Configuration::loadExtensions(const JsonDoc::Value& json, std::stringstream& errorStream)
 {
+
     std::vector<std::string> ext;
 
-    for (const auto& moduleName : json) {
-        JsonDoc j(moduleName);
-        std::string moduleNameStr = j.as<std::string>("");
-        Utils::trim(moduleNameStr);
-        if (moduleNameStr.empty()) {
+    for (const auto& extension : json) {
+        JsonDoc j(extension);
+
+        std::string name = j.get<std::string>("name", "");
+        if (name.empty()) {
+            errorStream << "  Must provide extension name" << std::endl;
             continue;
         }
-        if (std::find(ext.begin(), ext.end(), moduleNameStr) != ext.end()) {
-            errorStream << "Duplicate extension could not be loaded: " << moduleNameStr;
+        ExtensionType type = static_cast<ExtensionType>(j.get<unsigned int>("type", 0));
+        if (type != ExtensionType::UNKNOWN) {
+            errorStream << "  Invalid extension type [" << type << "]" << std::endl;
+            continue;
+        }
+
+        std::string module = j.get<std::string>("path", "");
+        if (module.empty()) {
+            errorStream << "  Module path not provided" << std::endl;
+            continue;
+        }
+
+        std::vector<Extension*>* list;
+        switch (type) {
+        case ExtensionType::LOG:
+            list = &m_logExtensions;
+            break;
+        case ExtensionType::PRE_ARCHIVE:
+            list = &m_preArchiveExtensions;
+            break;
+        case ExtensionType::POST_ARCHIVE:
+            list = &m_postArchiveExtensions;
+            break;
+        default:
+            list = nullptr;
+        }
+        if (list == nullptr) {
+            errorStream << "  Unable to determine extension type [" << type << "]";
+            continue;
+        }
+
+        if (std::find(ext.begin(), ext.end(), module) != ext.end()) {
+            errorStream << "  Duplicate extension could not be loaded: " << name;
         } else {
-            ext.push_back(type + "/" + moduleNameStr);
-            RLOG(INFO) << "Loading extension [" << moduleNameStr << "]";
-            Extension* e = Extension::load(moduleNameStr.c_str());
+            ext.push_back(std::to_string(static_cast<unsigned int>(type)) + "/" + name);
+            RLOG(INFO) << "Loading extension [" << name << "]";
+            Extension* e = Extension::load(module.c_str());
             if (e == nullptr) {
-                RLOG(ERROR) << "Extension [" << moduleNameStr << "] failed to load";
+                RLOG(ERROR) << "Extension [" << module << "] failed to load";
                 continue;
             }
 
-            RVLOG(RV_DEBUG) << "Extension [" << moduleNameStr << "] loaded @ " << e;
+            RVLOG(RV_DEBUG) << "Extension [" << module << "] loaded @ " << e;
 
             list->push_back(e);
         }

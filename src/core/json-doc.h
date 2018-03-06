@@ -27,11 +27,9 @@
 
 #include "gason/gason.h"
 
-#include "non-copyable.h"
-
 namespace residue {
 
-class JsonDoc final : NonCopyable
+class JsonDoc final
 {
 public:
     using Value = gason::JsonValue;
@@ -41,6 +39,11 @@ public:
     {
         m_status = gason::JsonParseStatus::JSON_PARSE_ALLOCATION_FAILURE;
     }
+
+    explicit JsonDoc(const JsonDoc&) = delete;
+    explicit JsonDoc(JsonDoc&&) = delete;
+    JsonDoc& operator=(const JsonDoc&) = delete;
+    JsonDoc& operator=(JsonDoc&&) = delete;
 
     explicit JsonDoc(const gason::JsonNode* v)
         : JsonDoc()
