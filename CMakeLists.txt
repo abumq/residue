@@ -242,10 +242,10 @@ if (enable_extensions)
         RESIDUE_EXTENSION_LIB
     )
 
-    set_target_properties (residue-extension-st PROPERTIES OUTPUT_NAME "residue-extension")
+    set_target_properties (residue-extension-st PROPERTIES OUTPUT_NAME "residue-extension-st")
 
     ######### Shared lib for extension
-    add_library (residue-extension ${LIB_RESIDUE_SOURCE_FILES})
+    add_library (residue-extension SHARED ${EXTENSION_FILES})
 
     set_target_properties (residue-extension PROPERTIES
         VERSION ${RESIDUE_VERSION}
