@@ -33,8 +33,7 @@ class LogExtension final : public Extension
 public:
     explicit LogExtension(const std::string& module);
 
-    bool call(const el::LogDispatchData*,
-              const std::string& logLine);
+    virtual bool process() override;
 };
 }
 

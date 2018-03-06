@@ -105,21 +105,6 @@ else()
     add_definitions (-DASIO_STANDALONE)
 endif(use_boost)
 
-
-# Python
-
-if (enable_extensions)
-    #include (FindPythonLibs)
-    #add_definitions (-DRESIDUE_HAS_EXTENSIONS)
-    #add_definitions (-DRESIDUE_PYTHON_VERSION="${PYTHONLIBS_VERSION_STRING}")
-    #find_package(PythonLibs REQUIRED)
-    #find_package(PythonInterp REQUIRED)
-    #include_directories(${PYTHON_INCLUDE_DIRS})
-    #message ("-- python: " ${PYTHON_LIBRARY} " include: " ${PYTHON_INCLUDE_DIRS} " version: " ${PYTHONLIBS_VERSION_STRING})
-else()
-    set (PYTHON_LIBRARY "")
-endif()
-
 # Check for cryptopp (static)
 set(CryptoPP_USE_STATIC_LIBS ON)
 find_package(CryptoPP REQUIRED)
@@ -209,7 +194,6 @@ set (SHARED_REQUIRED_LIBS
     ${CMAKE_THREAD_LIBS_INIT}
     ${ZLIB_LIBRARIES}
     ${CRYPTOPP_LIBRARIES}
-    ${PYTHON_LIBRARY}
 )
 
 ############# RESIDUE CORE LIB (STATIC) ###############

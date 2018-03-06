@@ -23,44 +23,41 @@
 #define Extension_h
 
 #include <atomic>
-#include <thread>
 #include <mutex>
-#include <queue>
 #include <string>
+#include <unordered_map>
+
+#define RESIDUE_EXTENSION(Name)\
+    extern "C" Name* create_extension()\
+    {\
+        static Name singl;\
+        return &singl;\
+    }\
 
 namespace residue {
-
 class Extension
 {
-    static std::mutex s_extensionMutex;
 public:
-    Extension(const std::string& module, const std::string& func);
+    Extension(const std::string& name, const std::string& module);
 
-    virtual ~Extension();
+    virtual ~Extension() {}
 
-    inline std::string module() const
-    {
-        return m_module;
-    }
+    static Extension* load(const char*);
 
-    inline std::string func() const
-    {
-        return m_func;
-    }
-
-private:
-    std::string m_module;
-    std::string m_func;
-    std::atomic<bool> m_running;
-    std::thread m_worker;
-    std::mutex m_mutex;
-    std::queue<std::string> m_scripts;
 protected:
-    void escape(std::string& str) const;
-    void executeScript(const std::string& script);
-    void work();
-};
-}
+    virtual bool process() {
+        return true;
+    }
+private:
+    std::string m_name;
+    std::string m_module;
+    std::atomic<bool> m_running;
+    std::mutex m_mutex;
 
+    bool execute();
+
+};
+
+}
 
 #endif /* Extension_h */
