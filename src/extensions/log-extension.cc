@@ -29,7 +29,7 @@ LogExtension::LogExtension(const std::string& id)
 
 }
 
-Extension::Result LogExtension::process(void*)
+Extension::Result LogExtension::execute(void*)
 {
     return {0, true};
 }

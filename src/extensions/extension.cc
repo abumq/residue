@@ -37,7 +37,7 @@ Extension::Extension(unsigned int type, const std::string& id) :
 }
 
 
-Extension::Result Extension::execute(void* data)
+Extension::Result Extension::trigger(void* data)
 {
     if (m_running) {
 #ifndef RESIDUE_EXTENSION_LIB
@@ -53,7 +53,7 @@ Extension::Result Extension::execute(void* data)
     m_running = true;
     std::lock_guard<std::mutex> lock_(m_mutex);
     (void) lock_;
-    auto result = process(data);
+    auto result = execute(data);
     m_running = false;
     return result;
 }
@@ -76,5 +76,12 @@ Extension* Extension::load(const char* path)
 #else
     (void) path;
     return nullptr;
+#endif
+}
+
+void Extension::writeLog(const std::string& msg) const
+{
+#ifndef RESIDUE_EXTENSION_LIB
+    RLOG(INFO) << m_id << ": " << msg;
 #endif
 }

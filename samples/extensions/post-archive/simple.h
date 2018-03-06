@@ -8,7 +8,7 @@ public:
 	SimplePost() : PostArchiveExtension("simple-post") {}
 	virtual ~SimplePost() = default;
 
-	virtual residue::Extension::Result process(void*) override;
+	virtual residue::Extension::Result execute(void*) override;
 };
 
 #endif

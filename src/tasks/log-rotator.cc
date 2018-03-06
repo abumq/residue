@@ -338,7 +338,7 @@ void LogRotator::archiveAndCompress(const std::string& loggerId, const std::stri
         };
         bool continueProcess = true;
         for (auto& ext : m_registry->configuration()->preArchiveExtensions()) {
-            auto extResult = ext->execute(&d);
+            auto extResult = ext->trigger(&d);
             continueProcess = continueProcess && extResult.continueProcess;
         }
 
@@ -383,7 +383,7 @@ void LogRotator::archiveAndCompress(const std::string& loggerId, const std::stri
                 archiveFilename
             };
             for (auto& ext : m_registry->configuration()->postArchiveExtensions()) {
-                ext->execute(&d);
+                ext->trigger(&d);
             }
         }
 

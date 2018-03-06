@@ -39,7 +39,7 @@ public:
 
     explicit PreArchiveExtension(const std::string& id);
 
-    virtual Extension::Result process(void*) override;
+    virtual Extension::Result execute(void*) override;
 };
 }
 

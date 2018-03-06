@@ -145,7 +145,7 @@ private:
             logLine
         };
         for (auto& logExtension : m_configuration->logExtensions()) {
-            logExtension->execute(&d);
+            logExtension->trigger(&d);
         }
     }
   };

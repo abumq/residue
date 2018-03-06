@@ -10,7 +10,7 @@ public:
 	
 	virtual ~Simple() = default;
 
-	virtual residue::Extension::Result process(void*) override;
+	virtual residue::Extension::Result execute(void*) override;
 };
 
 #endif

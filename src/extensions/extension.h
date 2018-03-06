@@ -28,8 +28,22 @@
 
 #include "core/json-doc.h"
 
+#ifdef RESIDUE_EXTENSION_WIN
+#   ifdef  RESIDUE_EXTENSION_LIB
+#      define RESIDUE_EXTENSION_API __declspec(dllexport)
+#   else
+#      define RESIDUE_EXTENSION_API __declspec(dllimport)
+#   endif
+#else
+#   define RESIDUE_EXTENSION_API
+#endif
+
 namespace residue {
-class Extension
+
+///
+/// \brief Please extend one of the
+///
+class RESIDUE_EXTENSION_API Extension
 {
 public:
     struct Result
@@ -42,19 +56,26 @@ public:
 
     virtual ~Extension() = default;
 
-    static Extension* load(const char*);
-
 protected:
-
-    virtual Result process(void*)
+    ///
+    /// \brief You will override this function for actual work
+    ///
+    /// Do not forget to use both 'virtual' and 'override' modifiers
+    ///
+    virtual Result execute(void*)
     {
         return {0, true};
     }
 
+    ///
+    /// \brief Constant access to configurations for this extension
+    ///
     inline const JsonDoc& conf() const
     {
         return m_config;
     }
+
+    void writeLog(const std::string&) const;
 private:
     unsigned int m_type;
     std::string m_id;
@@ -62,26 +83,27 @@ private:
     std::mutex m_mutex;
     JsonDoc m_config;
 
-    Result execute(void*);
-
     friend class ResidueLogDispatcher;
     friend class LogRotator;
     friend class Configuration;
 
-    inline void setConfig(JsonDoc::Value&& j) {
+    Result trigger(void*);
+
+    inline void setConfig(JsonDoc::Value&& j)
+    {
         m_config.set(j);
     }
+
+    static Extension* load(const char*);
 };
 
 }
 
-#ifdef RESIDUE_EXTENSION_LIB
 #define RESIDUE_EXTENSION(Name, Version)\
-    extern "C" Name* create_extension()\
+    extern "C" RESIDUE_EXTENSION_API Name* create_extension()\
     {\
         static Name singl;\
         return &singl;\
     }
-#endif
 
 #endif /* Extension_h */
