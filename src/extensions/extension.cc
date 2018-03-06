@@ -37,7 +37,7 @@ Extension::Extension(const std::string& type, const std::string& module) :
 }
 
 
-bool Extension::execute(void* data)
+Extension::Result Extension::execute(void* data)
 {
     if (m_running) {
 #ifndef RESIDUE_EXTENSION_LIB
@@ -45,7 +45,7 @@ bool Extension::execute(void* data)
         RLOG(WARNING) << "Extension [" << m_type << "/" << m_module << "] already running";
 #   endif
 #endif
-        return false;
+        return {1, true};
     }
 #ifndef RESIDUE_EXTENSION_LIB
 #   ifdef RESIDUE_DEBUG
@@ -55,7 +55,7 @@ bool Extension::execute(void* data)
     m_running = true;
     std::lock_guard<std::mutex> lock_(m_mutex);
     (void) lock_;
-    bool result = process(data);
+    auto result = process(data);
     m_running = false;
     return result;
 }

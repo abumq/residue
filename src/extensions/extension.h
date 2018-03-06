@@ -30,6 +30,11 @@ namespace residue {
 class Extension
 {
 public:
+    struct Result {
+        int statusCode;
+        bool continueProcess;
+    };
+
     Extension(const std::string& type, const std::string& module);
 
     virtual ~Extension() {}
@@ -37,8 +42,8 @@ public:
     static Extension* load(const char*);
 
 protected:
-    virtual bool process(void*) {
-        return true;
+    virtual Result process(void*) {
+        return {0, true};
     }
 private:
     std::string m_type;
@@ -46,7 +51,7 @@ private:
     std::atomic<bool> m_running;
     std::mutex m_mutex;
 
-    bool execute(void*);
+    Result execute(void*);
 
     friend class ResidueLogDispatcher;
 };

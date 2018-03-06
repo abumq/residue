@@ -6,4 +6,6 @@ build/*
 samples/clients/java
 download-keys-from-live-server.sh
 simple.so
+simple.dylib
 samples/extensions/log-extension/simple.so
+samples/extensions/log-extension/simple.dylib

@@ -48,7 +48,7 @@ public:
 
     explicit LogExtension(const std::string& module);
 
-    virtual bool process(void*) override;
+    virtual Extension::Result process(void*) override;
 };
 }
 

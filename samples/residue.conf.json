@@ -61,7 +61,7 @@
     ],
     "extensions": {
         "log_extensions": [
-            "simple.so"
+            "simple.dylib"
         ]
     }
 }
