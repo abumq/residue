@@ -830,7 +830,7 @@ void Configuration::loadExtensions(const JsonDoc::Value& json, std::stringstream
             RLOG(INFO) << "Loading extension [" << name << "]";
             Extension* e = Extension::load(module.c_str());
             if (e == nullptr) {
-                RLOG(ERROR) << "Extension [" << module << "] failed to load";
+                RLOG(ERROR) << "Extension [" << module << "] failed to load: " << strerror(errno);
                 continue;
             }
             if (j.hasKey("config")) {
