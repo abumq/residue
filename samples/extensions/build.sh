@@ -1,15 +1,15 @@
 
 # Usage: sh build.sh log-extension
 
-darwin=1
 
-if [ "$darwin" = "1" ];then
+## Determine type of operating system (darwin or linux)
+DAR=`uname -a | grep 'Darwin' | wc -c | grep -o '[0-9]'`
 
-    # Compile extension
-    g++ -dynamiclib -flat_namespace -std=c++11 -I../../src/ -I../../deps/ -L../../build/ $1/simple.cc -lresidue-extension-st -o $1/simple.dylib
-
+if [ "$DAR" = "0" ];then
+    # Linux
+    g++ -fPIC -shared -std=c++11 -I/usr/local/include/residue/ -L../../build/ -lresidue-extension-st $1/simple.cc -o $1/simple.so
 else
-
-    # Compile extension
-    g++ -fPIC -shared -std=c++11 -I../../src/ -I../../deps/ -L../../build/ $1/simple.cc -lresidue-extension-st -o $1/simple.so
+    ## Darwin (macOS)
+    g++ -dynamiclib -flat_namespace -std=c++11 -I/usr/local/include/residue/ -L../../build/ -lresidue-extension-st $1/simple.cc -o $1/simple.dylib
 fi
+

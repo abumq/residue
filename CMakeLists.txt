@@ -262,9 +262,10 @@ if (enable_extensions)
     install (TARGETS residue-extension DESTINATION lib)
 
     file(GLOB EXTENSIONS_H "src/extensions/*.h")
-    install (FILES ${EXTENSIONS_H} DESTINATION "include/residue/ext/extensions/")
-    install (FILES src/core/json-doc.h DESTINATION "include/residue/ext/core/")
-    install (FILES deps/gason/gason.h DESTINATION "include/residue/ext/gason/")
+    install (FILES ${EXTENSIONS_H} DESTINATION "include/residue/extensions/")
+    install (FILES src/core/json-doc.h DESTINATION "include/residue/core/")
+    install (FILES deps/gason/gason.h DESTINATION "include/residue/gason/")
+    install (FILES include/extensions.h DESTINATION "include/residue/")
 
 endif(enable_extensions)
 

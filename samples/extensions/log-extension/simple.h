@@ -1,7 +1,7 @@
 #ifndef SAMPLE_LOG_EX
 #define SAMPLE_LOG_EX
 
-#include "../../../src/extensions/log-extension.h"
+#include <residue/extensions.h>
 
 class Simple : public residue::LogExtension {
 public:

@@ -1,7 +1,7 @@
 #ifndef SAMPLE_POST_ARCHIVE_EX
 #define SAMPLE_POST_ARCHIVE_EX
 
-#include "../../../src/extensions/post-archive-extension.h"
+#include <residue/extensions.h>
 
 class SimplePost : public residue::PostArchiveExtension {
 public:

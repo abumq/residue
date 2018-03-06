@@ -1,7 +1,7 @@
 #ifndef SAMPLE_PRE_ARCHIVE_EX
 #define SAMPLE_PRE_ARCHIVE_EX
 
-#include "../../../src/extensions/pre-archive-extension.h"
+#include <residue/extensions.h>
 
 class SimplePre : public residue::PreArchiveExtension {
 public:
