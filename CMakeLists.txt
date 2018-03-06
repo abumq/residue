@@ -220,6 +220,48 @@ target_compile_definitions (residue-core PUBLIC
 # Set RPATH to library install path.
 set (CMAKE_INSTALL_RPATH "${CMAKE_INSTALL_PREFIX}/lib")
 
+############# RESIDUE EXTENSION LIB (STATIC) ###############
+
+if (enable_extensions)
+    set (EXTENSION_FILES
+        src/extensions/extension.cc
+        src/extensions/log-extension.cc
+        src/extensions/pre-archive-extension.cc
+        src/extensions/post-archive-extension.cc
+        src/core/json-doc.cc
+        deps/gason/gason.cc
+    )
+
+    add_library (residue-extension-st STATIC ${EXTENSION_FILES})
+
+    set_target_properties (residue-extension-st PROPERTIES
+        VERSION ${RESIDUE_VERSION}
+    )
+
+    target_compile_definitions (residue-extension-st PUBLIC
+        RESIDUE_EXTENSION_LIB
+    )
+
+    set_target_properties (residue-extension-st PROPERTIES OUTPUT_NAME "residue-extension")
+
+    ######### Shared lib for extension
+    add_library (residue-extension ${LIB_RESIDUE_SOURCE_FILES})
+
+    set_target_properties (residue-extension PROPERTIES
+        VERSION ${RESIDUE_VERSION}
+    )
+    target_link_libraries (residue-extension
+        residue-extension-st
+    )
+
+    target_compile_definitions (residue-extension PUBLIC
+        RESIDUE_EXTENSION_LIB
+    )
+
+    set_target_properties (residue-extension PROPERTIES OUTPUT_NAME "residue-extension")
+    install (TARGETS residue-extension DESTINATION lib)
+endif(enable_extensions)
+
 ############# CONFIG VALIDATOR TOOL ###############
 
 if (true)
