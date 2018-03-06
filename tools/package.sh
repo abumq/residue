@@ -42,6 +42,8 @@ echo "Creating $PACK.tar.gz ..."
 mkdir $PACK
 cp residue-$VERSION $PACK/residue
 cp residue-config-validator-$VERSION $PACK/residue-config-validator
+cp libresidue-extension-st.a $PACK/libresidue-extension-st.$VERSION.a
+cp libresidue-extension.$VERSION.* $PACK/
 cp -r ../dist/pkg/* $PACK/
 
 $STRIP $PACK/residue-config-validator
