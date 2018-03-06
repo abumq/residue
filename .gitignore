@@ -5,3 +5,5 @@ CMakeFiles/*
 build/*
 samples/clients/java
 download-keys-from-live-server.sh
+simple.so
+samples/extensions/log-extension/simple.so

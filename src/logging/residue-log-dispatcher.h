@@ -24,6 +24,7 @@
 
 #include "extensions/log-extension.h"
 #include "logging/log.h"
+#include "logging/user-message.h"
 #include "non-copyable.h"
 #include "utils/utils.h"
 
@@ -124,8 +125,24 @@ private:
     void callExtensions(const el::LogDispatchData* data,
                         const el::base::type::string_t& logLine)
     {
+        const UserMessage* logMessage = static_cast<const UserMessage*>(data->logMessage());
+        LogExtension::Data d {
+            el::LevelHelper::castToInt(logMessage->request()->level()),
+            logMessage->request()->applicationName(),
+            logMessage->request()->threadId(),
+            logMessage->request()->filename(),
+            logMessage->request()->lineNumber(),
+            logMessage->request()->function(),
+            logMessage->request()->verboseLevel(),
+            logMessage->logger()->id(),
+            logMessage->request()->clientId(),
+            logMessage->request()->ipAddr(),
+            logMessage->request()->sessionId(),
+            logMessage->request()->msg(),
+            logLine
+        };
         for (auto& logExtension : m_configuration->logExtensions()) {
-            logExtension->call(data, logLine);
+            logExtension->execute(&d);
         }
     }
   };

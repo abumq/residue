@@ -159,7 +159,7 @@ protected:
                               "known_loggers_endpoint": "http://localhost:3000/known-loggers",
                               "known_clients_endpoint": "http://localhost:3000/known-clients",
                               "extensions": {
-                                  "log_extensions": ["basic"]
+                                  "log_extensions": ["simple.so"]
                               },
                               "loggers_blacklist": [
                                   "bracket",
@@ -211,7 +211,7 @@ TEST_F(ConfigurationTest, CheckValues)
     ASSERT_EQ(conf->keySize("client-for-test2"), 256);
     ASSERT_EQ(conf->getConfigurationFile("muflihun"), "muflihun-logger.conf");
 #ifdef RESIDUE_HAS_EXTENSIONS
-    ASSERT_EQ(conf->logExtensions().size(), 1);
+    ASSERT_EQ(conf->logExtensions().size(), 0 /* simple.so does not exist */);
 #else
     ASSERT_EQ(conf->logExtensions().size(), 0);
 #endif

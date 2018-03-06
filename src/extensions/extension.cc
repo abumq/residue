@@ -21,14 +21,15 @@
 
 #include "extensions/extension.h"
 
-#include <dlfcn.h>
-
-#include "utils/utils.h"
+#ifndef RESIDUE_EXTENSION_LIB
+#   include <dlfcn.h>
+#   include "logging/log.h"
+#endif
 
 using namespace residue;
 
-Extension::Extension(const std::string& name, const std::string& module) :
-    m_name(name),
+Extension::Extension(const std::string& type, const std::string& module) :
+    m_type(type),
     m_module(module),
     m_running(false)
 {
@@ -36,27 +37,46 @@ Extension::Extension(const std::string& name, const std::string& module) :
 }
 
 
-bool Extension::execute()
+bool Extension::execute(void* data)
 {
     if (m_running) {
-        RLOG(WARNING) << "Extension [" << m_name << "] already running";
+#ifndef RESIDUE_EXTENSION_LIB
+#   ifdef RESIDUE_DEBUG
+        RLOG(WARNING) << "Extension [" << m_type << "/" << m_module << "] already running";
+#   endif
+#endif
         return false;
     }
-    RLOG(WARNING) << "Executing extension [" << m_name << "]";
+#ifndef RESIDUE_EXTENSION_LIB
+#   ifdef RESIDUE_DEBUG
+    RLOG(WARNING) << "Executing extension [" << m_type << "/" << m_module << "]";
+#   endif
+#endif
     m_running = true;
     std::lock_guard<std::mutex> lock_(m_mutex);
     (void) lock_;
-    return process();
+    bool result = process(data);
+    m_running = false;
+    return result;
 }
 
 
 Extension* Extension::load(const char* name)
 {
-  void* handle = dlopen(name, RTLD_LAZY);
+#ifndef RESIDUE_EXTENSION_LIB
+    void* handle = dlopen(name, RTLD_LAZY);
 
-  Extension* (*create)();
+    if (handle == nullptr) {
+        return nullptr;
+    }
 
-  create = (Extension* (*)())dlsym(handle, "create_extension");
+    Extension* (*create)();
 
-  return create();
+    create = (Extension* (*)())dlsym(handle, "create_extension");
+
+    return create();
+#else
+    (void) name;
+    return nullptr;
+#endif
 }

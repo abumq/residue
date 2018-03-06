@@ -25,39 +25,41 @@
 #include <atomic>
 #include <mutex>
 #include <string>
-#include <unordered_map>
-
-#define RESIDUE_EXTENSION(Name)\
-    extern "C" Name* create_extension()\
-    {\
-        static Name singl;\
-        return &singl;\
-    }\
 
 namespace residue {
 class Extension
 {
 public:
-    Extension(const std::string& name, const std::string& module);
+    Extension(const std::string& type, const std::string& module);
 
     virtual ~Extension() {}
 
     static Extension* load(const char*);
 
 protected:
-    virtual bool process() {
+    virtual bool process(void*) {
         return true;
     }
 private:
-    std::string m_name;
+    std::string m_type;
     std::string m_module;
     std::atomic<bool> m_running;
     std::mutex m_mutex;
 
-    bool execute();
+    bool execute(void*);
 
+    friend class ResidueLogDispatcher;
 };
 
 }
+
+#ifdef RESIDUE_EXTENSION_LIB
+#define RESIDUE_EXTENSION(Name, Version)\
+    extern "C" Name* create_extension()\
+    {\
+        static Name singl;\
+        return &singl;\
+    }
+#endif
 
 #endif /* Extension_h */

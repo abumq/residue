@@ -218,7 +218,7 @@ public:
         return m_knownClientDefaultLogger;
     }
 
-    inline std::vector<std::unique_ptr<LogExtension>>& logExtensions()
+    inline std::vector<Extension*>& logExtensions()
     {
         return m_logExtensions;
     }
@@ -305,7 +305,7 @@ private:
     std::unordered_set<std::string> m_blacklist;
     std::unordered_set<std::string> m_remoteKnownClients;
     std::unordered_set<std::string> m_remoteKnownLoggers;
-    std::vector<std::unique_ptr<LogExtension>> m_logExtensions;
+    std::vector<Extension*> m_logExtensions;
 
     std::unordered_map<std::string, std::pair<std::string, std::string>> m_knownClientsKeys;
     std::unordered_map<std::string, std::unordered_set<std::string>> m_knownClientsLoggers;
@@ -354,7 +354,7 @@ private:
     void loadKnownClients(const JsonDoc::Value& json, std::stringstream& errorStream, bool viaUrl);
     void loadLoggersBlacklist(const JsonDoc::Value& json, std::stringstream& errorStream);
 
-    template <typename T, typename ListType = std::vector<std::unique_ptr<T>>>
+    template <typename T, typename ListType = std::vector<T>>
     void loadExtensions(const JsonDoc::Value& json, std::stringstream& errorStream, ListType* list)
     {
         std::vector<std::string> ext;
@@ -369,7 +369,16 @@ private:
                 errorStream << "Duplicate extension could not be loaded: " << moduleNameStr;
             } else {
                 ext.push_back(moduleNameStr);
-                list->push_back(std::unique_ptr<T>(new T(moduleNameStr)));
+                RLOG(INFO) << "Loading extension [" << moduleNameStr << "]";
+                Extension* e = Extension::load(moduleNameStr.c_str());
+                if (e == nullptr) {
+                    RLOG(ERROR) << "Extension [" << moduleNameStr << "] failed to load";
+                    continue;
+                }
+
+                RVLOG(RV_DEBUG) << "Extension [" << moduleNameStr << "] loaded @ " << e;
+
+                list->push_back(e);
             }
         }
     }

@@ -58,5 +58,10 @@
     "loggers_blacklist": [
         "bracket",
         "truli"
-    ]
+    ],
+    "extensions": {
+        "log_extensions": [
+            "simple.so"
+        ]
+    }
 }

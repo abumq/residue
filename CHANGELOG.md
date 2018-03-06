@@ -4,6 +4,9 @@
 ### Fixed
 - Prevent duplicate default loggers when logger is specified for one of the clients (admin)
 
+### Updates
+- Extension framework improved
+
 ## [2.0.0] - 01-03-2018
 ### Updates
 - Removed ability to dynamically add/remove client #107

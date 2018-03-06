@@ -1,0 +1,15 @@
+#ifndef SAMPLE_LOG_EX
+#define SAMPLE_LOG_EX
+
+#include "../../../src/extensions/log-extension.h"
+
+class Simple : public residue::LogExtension {
+public:
+	Simple() : LogExtension("simple") {}
+	virtual ~Simple() {}
+	virtual bool process(void*) override;
+};
+
+#endif
+
+

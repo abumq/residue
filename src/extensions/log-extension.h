@@ -23,17 +23,32 @@
 #define LogExtension_h
 
 #include <string>
-#include "logging/log.h"
 #include "extensions/extension.h"
 
 namespace residue {
 
-class LogExtension final : public Extension
+class LogExtension : public Extension
 {
 public:
+    struct Data {
+        unsigned int level;
+        std::string app;
+        std::string thread;
+        std::string file;
+        unsigned long int line;
+        std::string func;
+        unsigned short verboseLevel;
+        std::string loggerId;
+        std::string clientId;
+        std::string ipAddr;
+        std::string sessionId;
+        std::string message;
+        std::string formattedMessage;
+    };
+
     explicit LogExtension(const std::string& module);
 
-    virtual bool process() override;
+    virtual bool process(void*) override;
 };
 }
 
