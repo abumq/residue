@@ -1,5 +1,5 @@
 //
-//  pre-archive-extension.h
+//  post-archive-extension.h
 //  Residue
 //
 //  Copyright 2017-present Muflihun Labs
@@ -19,28 +19,26 @@
 //  limitations under the License.
 //
 
-#ifndef PreArchiveExtension_h
-#define PreArchiveExtension_h
+#ifndef PostArchiveExtension_h
+#define PostArchiveExtension_h
 
 #include <string>
-#include <map>
 #include "extensions/extension.h"
 
 namespace residue {
 
-class PreArchiveExtension : public Extension
+class PostArchiveExtension : public Extension
 {
 public:
     struct Data {
         std::string loggerId;
         std::string archiveFilename;
-        std::map<std::string, std::string> files;
     };
 
-    explicit PreArchiveExtension(const std::string& module);
+    explicit PostArchiveExtension(const std::string& module);
 
     virtual Extension::Result process(void*) override;
 };
 }
 
-#endif /* PreArchiveExtension_h */
+#endif /* PostArchiveExtension_h */

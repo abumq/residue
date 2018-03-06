@@ -31,6 +31,8 @@
 #include "core/registry.h"
 #include "core/residue-exception.h"
 #include "crypto/zlib.h"
+#include "extensions/pre-archive-extension.h"
+#include "extensions/post-archive-extension.h"
 #include "logging/log.h"
 #include "utils/utils.h"
 
@@ -327,6 +329,25 @@ void LogRotator::archiveAndCompress(const std::string& loggerId, const std::stri
     RLOG(INFO) << "Archiving for [" << loggerId << "] => [" << archiveFilename
                << "] containing " << files.size() << " file(s)";
 
+
+    if (!m_registry->configuration()->preArchiveExtensions().empty()) {
+        PreArchiveExtension::Data d {
+            loggerId,
+            archiveFilename,
+            files
+        };
+        bool continueProcess = true;
+        for (auto& ext : m_registry->configuration()->preArchiveExtensions()) {
+            auto extResult = ext->execute(&d);
+            continueProcess = continueProcess && extResult.continueProcess;
+        }
+
+        if (!continueProcess) {
+            RLOG(INFO) << "Stopping archive process for logger [" << loggerId << "] because of one of the [pre_archive] extensions";
+            return;
+        }
+    }
+
     // compress files after logger's lock is released
     RVLOG(RV_DETAILS) << "Compressing rotated files for logger [" << loggerId << "] to [" << archiveFilename << "]";
 
@@ -355,6 +376,17 @@ void LogRotator::archiveAndCompress(const std::string& loggerId, const std::stri
         if (::remove(tmpTar.c_str()) != 0) {
             RLOG(WARNING) << "Compressed file successfully but failed to remove tar: " << std::strerror(errno);
         }
+
+        if (!m_registry->configuration()->postArchiveExtensions().empty()) {
+            PostArchiveExtension::Data d {
+                loggerId,
+                archiveFilename
+            };
+            for (auto& ext : m_registry->configuration()->postArchiveExtensions()) {
+                ext->execute(&d);
+            }
+        }
+
     } else {
         RLOG(ERROR) << "Failed to compress rotated log for logger [" << loggerId << "]. Destination name: [" << archiveFilename + "]";
     }

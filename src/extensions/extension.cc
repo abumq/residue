@@ -42,15 +42,13 @@ Extension::Result Extension::execute(void* data)
     if (m_running) {
 #ifndef RESIDUE_EXTENSION_LIB
 #   ifdef RESIDUE_DEBUG
-        RLOG(WARNING) << "Extension [" << m_type << "/" << m_module << "] already running";
+        DRVLOG(RV_WARNING) << "Extension [" << m_type << "/" << m_module << "] already running";
 #   endif
 #endif
         return {1, true};
     }
 #ifndef RESIDUE_EXTENSION_LIB
-#   ifdef RESIDUE_DEBUG
-    RLOG(WARNING) << "Executing extension [" << m_type << "/" << m_module << "]";
-#   endif
+    RVLOG(RV_INFO) << "Executing extension [" << m_type << "/" << m_module << "]";
 #endif
     m_running = true;
     std::lock_guard<std::mutex> lock_(m_mutex);

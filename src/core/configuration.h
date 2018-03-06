@@ -228,6 +228,11 @@ public:
         return m_preArchiveExtensions;
     }
 
+    inline std::vector<Extension*>& postArchiveExtensions()
+    {
+        return m_postArchiveExtensions;
+    }
+
     inline const std::unordered_map<std::string, std::pair<std::string, std::string>>& knownClientsKeys() const
     {
         return m_knownClientsKeys;
@@ -312,6 +317,7 @@ private:
     std::unordered_set<std::string> m_remoteKnownLoggers;
     std::vector<Extension*> m_logExtensions;
     std::vector<Extension*> m_preArchiveExtensions;
+    std::vector<Extension*> m_postArchiveExtensions;
 
     std::unordered_map<std::string, std::pair<std::string, std::string>> m_knownClientsKeys;
     std::unordered_map<std::string, std::unordered_set<std::string>> m_knownClientsLoggers;
@@ -360,7 +366,7 @@ private:
     void loadKnownClients(const JsonDoc::Value& json, std::stringstream& errorStream, bool viaUrl);
     void loadLoggersBlacklist(const JsonDoc::Value& json, std::stringstream& errorStream);
 
-    void loadExtensions(const JsonDoc::Value& json, std::stringstream& errorStream, std::vector<Extension*>* list);
+    void loadExtensions(const JsonDoc::Value& json, std::stringstream& errorStream, std::vector<Extension*>* list, const std::string& type);
 };
 }
 #endif /* Configuration_h */

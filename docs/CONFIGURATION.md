@@ -55,7 +55,8 @@ You can use [Server Config Tool](https://muflihun.github.io/residue/create-serve
    * [archived_log_directory](#known_loggersarchived_log_directory)
 * [known_loggers_endpoint](#known_loggers_endpoint)
 * [extensions](#extensions)
-   * [log_extensions](#extensionslog_extensions)
+   * [log](#extensionslog)
+   * [pre_archive](#extensionspre_archive)
 * [loggers_blacklist](#loggers_blacklist)
 * [Comments](#comments)
 * [Sample](#sample)
@@ -428,12 +429,24 @@ See [archived_log_directory](#archived_log_directory)
 [String] This is URL same as [`known_clients_endpoint`](#known_clients_endpoint) with JSON object containing same properties as [`known_loggers`](#known_loggers)
 
 ### `extensions`
-[Object] [Unstable] Contains various types of extensions
+[Object] Contains various types of extensions. You can specify each type of extension's array shared library modules.
 
-#### `extensions::log_extensions`
-[Array] You can specify python modules. See [EXTENSIONS](/docs/EXTENSIONS.md) for more information.
+#### `extensions::log`
+[Array] These extensions get executed with every dispatch of log message. Only use trusted extensions as this may slow your server.
 
-Make sure environment variable `PYTHONPATH` is exported correctly
+Return value has no affect on the actual process
+
+#### `extensions::pre_archive`
+[Array] These extensions are triggered before rotated files are being archived.
+
+If returned with false `continueProcess`, server does not continue with archiving.
+
+This is best if you wish to archive it using your extension etc.
+
+#### `extensions::post_archive`
+[Array] These extensions are triggered after logs are archived.
+
+Return value has no affect on the actual process
 
 ### `loggers_blacklist`
 [Array] String where each string is logger ID. Whenever request using these loggers are received, they are ignored without notifying the user.

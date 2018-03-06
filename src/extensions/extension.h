@@ -54,6 +54,7 @@ private:
     Result execute(void*);
 
     friend class ResidueLogDispatcher;
+    friend class LogRotator;
 };
 
 }

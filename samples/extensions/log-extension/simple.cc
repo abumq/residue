@@ -10,6 +10,6 @@ residue::Extension::Result Simple::process(void* d)
             std::cout << "Simple::process() No data found " << std::endl;
             return {0, true};
         }
-	std::cout << "Simple::process() ->" << data->formattedMessage << std::endl;
+	std::cout << "Simple::process() ==>" << data->formattedMessage << std::endl;
 	return {0, true};
 }

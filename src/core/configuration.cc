@@ -325,13 +325,17 @@ void Configuration::loadFromInput(std::string&& jsonStr)
     JsonDoc::Value jExtensionsVal = m_jsonDoc.get<JsonDoc::Value>("extensions", JsonDoc::Value());
     if (jExtensionsVal.isObject()) {
         JsonDoc jExtensions(jExtensionsVal);
-        JsonDoc::Value jLogExtensions = jExtensions.get<JsonDoc::Value>("log_extensions", JsonDoc::Value());
+        JsonDoc::Value jLogExtensions = jExtensions.get<JsonDoc::Value>("log", JsonDoc::Value());
         if (jLogExtensions.isArray()) {
-            loadExtensions(jLogExtensions, errorStream, &m_logExtensions);
+            loadExtensions(jLogExtensions, errorStream, &m_logExtensions, "log");
         }
-        JsonDoc::Value jPreArchiveExtensions = jExtensions.get<JsonDoc::Value>("pre_archive_extensions", JsonDoc::Value());
+        JsonDoc::Value jPreArchiveExtensions = jExtensions.get<JsonDoc::Value>("pre_archive", JsonDoc::Value());
         if (jPreArchiveExtensions.isArray()) {
-            loadExtensions(jPreArchiveExtensions, errorStream, &m_preArchiveExtensions);
+            loadExtensions(jPreArchiveExtensions, errorStream, &m_preArchiveExtensions, "pre_archive");
+        }
+        JsonDoc::Value jPostArchiveExtensions = jExtensions.get<JsonDoc::Value>("post_archive", JsonDoc::Value());
+        if (jPostArchiveExtensions.isArray()) {
+            loadExtensions(jPostArchiveExtensions, errorStream, &m_postArchiveExtensions, "post_archive");
         }
     }
  #endif
@@ -792,20 +796,21 @@ Configuration::RotationFrequency Configuration::getRotationFrequency(const std::
     return RotationFrequency::NEVER;
 }
 
-void Configuration::loadExtensions(const JsonDoc::Value &json, std::stringstream &errorStream, std::vector<Extension*>* list)
+void Configuration::loadExtensions(const JsonDoc::Value& json, std::stringstream& errorStream, std::vector<Extension*>* list, const std::string& type)
 {
     std::vector<std::string> ext;
 
     for (const auto& moduleName : json) {
         JsonDoc j(moduleName);
         std::string moduleNameStr = j.as<std::string>("");
+        Utils::trim(moduleNameStr);
         if (moduleNameStr.empty()) {
             continue;
         }
         if (std::find(ext.begin(), ext.end(), moduleNameStr) != ext.end()) {
             errorStream << "Duplicate extension could not be loaded: " << moduleNameStr;
         } else {
-            ext.push_back(moduleNameStr);
+            ext.push_back(type + "/" + moduleNameStr);
             RLOG(INFO) << "Loading extension [" << moduleNameStr << "]";
             Extension* e = Extension::load(moduleNameStr.c_str());
             if (e == nullptr) {

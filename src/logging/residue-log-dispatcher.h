@@ -125,6 +125,9 @@ private:
     void callExtensions(const el::LogDispatchData* data,
                         const el::base::type::string_t& logLine)
     {
+        if (m_configuration->logExtensions().empty()) {
+            return;
+        }
         const UserMessage* logMessage = static_cast<const UserMessage*>(data->logMessage());
         LogExtension::Data d {
             el::LevelHelper::castToInt(logMessage->request()->level()),

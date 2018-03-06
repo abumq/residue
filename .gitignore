@@ -6,6 +6,14 @@ build/*
 samples/clients/java
 download-keys-from-live-server.sh
 simple.so
+simple-prearchive.so
+simple-postarchive.so
 simple.dylib
-samples/extensions/log-extension/simple.so
-samples/extensions/log-extension/simple.dylib
+simple-prearchive.dylib
+simple-postarchive.dylib
+samples/extensions/*/simple.so
+samples/extensions/*/simple-prearchive.so
+samples/extensions/*/simple-prearchive.dylib
+samples/extensions/*/simple.dylib
+samples/extensions/*/simple-postarchive.dylib
+samples/extensions/*/simple-postarchive.dylib
