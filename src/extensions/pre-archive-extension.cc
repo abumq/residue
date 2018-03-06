@@ -28,8 +28,3 @@ PreArchiveExtension::PreArchiveExtension(const std::string& id)
 {
 
 }
-
-Extension::Result PreArchiveExtension::execute(void*)
-{
-    return {0, true};
-}

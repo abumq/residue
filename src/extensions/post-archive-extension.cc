@@ -28,8 +28,3 @@ PostArchiveExtension::PostArchiveExtension(const std::string& id)
 {
 
 }
-
-Extension::Result PostArchiveExtension::execute(void*)
-{
-    return {0, true};
-}

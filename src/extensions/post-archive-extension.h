@@ -37,7 +37,7 @@ public:
 
     explicit PostArchiveExtension(const std::string& id);
 
-    virtual Extension::Result execute(void*) override;
+    virtual Extension::Result execute(void*) override = 0;
 };
 }
 

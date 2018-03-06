@@ -28,8 +28,3 @@ LogExtension::LogExtension(const std::string& id)
 {
 
 }
-
-Extension::Result LogExtension::execute(void*)
-{
-    return {0, true};
-}

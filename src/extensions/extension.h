@@ -62,10 +62,7 @@ protected:
     ///
     /// Do not forget to use both 'virtual' and 'override' modifiers
     ///
-    virtual Result execute(void*)
-    {
-        return {0, true};
-    }
+    virtual Result execute(void*) = 0;
 
     ///
     /// \brief Constant access to configurations for this extension
