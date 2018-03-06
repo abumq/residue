@@ -260,6 +260,12 @@ if (enable_extensions)
 
     set_target_properties (residue-extension PROPERTIES OUTPUT_NAME "residue-extension")
     install (TARGETS residue-extension DESTINATION lib)
+
+    file(GLOB EXTENSIONS_H "src/extensions/*.h")
+    install (FILES ${EXTENSIONS_H} DESTINATION "include/residue/ext/extensions/")
+    install (FILES src/core/json-doc.h DESTINATION "include/residue/ext/core/")
+    install (FILES deps/gason/gason.h DESTINATION "include/residue/ext/gason/")
+
 endif(enable_extensions)
 
 ############# CONFIG VALIDATOR TOOL ###############
