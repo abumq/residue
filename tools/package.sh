@@ -62,17 +62,19 @@ echo `pwd`/$PACK.tar.gz
 echo "Creating $PACK_EXT.tar.gz ..."
 mkdir $PACK_EXT
 mkdir $PACK_EXT/include
-mkdir $PACK_EXT/include/extensions/
-mkdir $PACK_EXT/include/core/
-mkdir $PACK_EXT/include/gason/
+mkdir $PACK_EXT/include/residue/
+mkdir $PACK_EXT/include/residue/extensions/
+mkdir $PACK_EXT/include/residue/core/
+mkdir $PACK_EXT/include/residue/gason/
 cp libresidue-extension-st.a $PACK_EXT/libresidue-extension-st.$VERSION.a
 cp libresidue-extension.$VERSION.* $PACK_EXT/
-cp ../src/extensions/extension.h $PACK_EXT/include/extensions/
-cp ../src/extensions/log-extension.h $PACK_EXT/include/extensions/
-cp ../src/extensions/pre-archive-extension.h $PACK_EXT/include/extensions/
-cp ../src/extensions/post-archive-extension.h $PACK_EXT/include/extensions/
-cp ../src/core/json-doc.h $PACK_EXT/include/core/
-cp ../deps/gason/gason.h $PACK_EXT/include/gason/
+cp ../include/extensions.h $PACK_EXT/include/residue/
+cp ../src/extensions/extension.h $PACK_EXT/include/residue/extensions/
+cp ../src/extensions/log-extension.h $PACK_EXT/include/residue/extensions/
+cp ../src/extensions/pre-archive-extension.h $PACK_EXT/include/residue/extensions/
+cp ../src/extensions/post-archive-extension.h $PACK_EXT/include/residue/extensions/
+cp ../src/core/json-doc.h $PACK_EXT/include/residue/core/
+cp ../deps/gason/gason.h $PACK_EXT/include/residue/gason/
 
 ls -lh $PACK_EXT
 tar cfz $PACK_EXT.tar.gz $PACK_EXT

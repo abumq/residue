@@ -429,6 +429,8 @@ See [archived_log_directory](#archived_log_directory)
 ### `extensions`
 [Array] Contains various types of extensions. You can specify each type of extension's array shared library modules.
 
+Extensions API documentation is available [here](https://muflihun.github.io/residue/extensions/)
+
 ### `loggers_blacklist`
 [Array] String where each string is logger ID. Whenever request using these loggers are received, they are ignored without notifying the user.
 
