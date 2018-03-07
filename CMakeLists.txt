@@ -202,6 +202,10 @@ set (SHARED_REQUIRED_LIBS
     ${CRYPTOPP_LIBRARIES}
 )
 
+if (enable_extensions)
+    set (SHARED_REQUIRED_LIBS ${SHARED_REQUIRED_LIBS} ${CMAKE_DL_LIBS})
+endif(enable_extensions)
+
 ############# RESIDUE CORE LIB (STATIC) ###############
 
 add_library (residue-core STATIC ${SOURCE_FILES})
