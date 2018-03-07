@@ -22,11 +22,10 @@
 #include "extensions/extension.h"
 
 #ifndef RESIDUE_EXTENSION_LIB
-#   include <dlfcn.h>
-
-#   include <functional>
-
-#   include "logging/log.h"
+#   ifdef RESIDUE_HAS_EXTENSIONS
+#      include <dlfcn.h>
+#      include "logging/log.h"
+#   endif
 #endif
 
 using namespace residue;
@@ -64,6 +63,7 @@ Extension::Result Extension::trigger(void* data)
 Extension* Extension::load(const char* path)
 {
 #ifndef RESIDUE_EXTENSION_LIB
+#   ifdef RESIDUE_HAS_EXTENSIONS
     void* handle = dlopen(path, RTLD_LAZY);
 
     if (handle == nullptr) {
@@ -72,10 +72,10 @@ Extension* Extension::load(const char* path)
 
     using CreateExtensionFn = Extension* (*)();
 
-#pragma GCC diagnostic push
-#pragma GCC diagnostic ignored "-Wpedantic"
+#   pragma GCC diagnostic push
+#   pragma GCC diagnostic ignored "-Wpedantic"
     CreateExtensionFn create = reinterpret_cast<CreateExtensionFn>(dlsym(handle, "create_extension"));
-#pragma GCC diagnostic pop
+#   pragma GCC diagnostic pop
 
     Extension* e = create();
 
@@ -86,6 +86,10 @@ Extension* Extension::load(const char* path)
         return nullptr;
     }
     return e;
+#   else
+    (void) path;
+    return nullptr
+#   endif
 #else
     (void) path;
     return nullptr;
