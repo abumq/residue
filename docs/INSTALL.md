@@ -43,6 +43,9 @@ If you downloaded Residue binary using NPM, you can use following lines to start
 We set `RESIDUE_HOME` environment variable as they are needed by sample server config.
 
 ```
+## You may want to reset the library path for extensions
+export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:/lib/node_modules/residue-linux/
+
 export RESIDUE_HOME=/usr/local/lib/node_modules/residue-linux/config/
 ## Following will line will set environment variable for node
 sudo RESIDUE_HOME=$RESIDUE_HOME residue-linux $RESIDUE_HOME/server.conf
