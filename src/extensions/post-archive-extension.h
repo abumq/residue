@@ -42,7 +42,7 @@ public:
 
     explicit PostArchiveExtension(const std::string& id);
 
-    virtual Extension::Result execute(Data*) = 0;
+    virtual Extension::Result execute(const Data* const) = 0;
 private:
     virtual Extension::Result executeWrapper(void* d) override
     {

@@ -12,7 +12,7 @@ public:
 	
 	virtual ~SimpleLogExtension() = default;
 
-	virtual Extension::Result execute(void*) override;
+	virtual Extension::Result execute(const LogExtension::Data* const) override;
 };
 
 #endif

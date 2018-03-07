@@ -10,7 +10,7 @@ public:
 	SimplePost() : PostArchiveExtension("simple-post") {}
 	virtual ~SimplePost() = default;
 
-	virtual Extension::Result execute(void*) override;
+	virtual Extension::Result execute(const PostArchiveExtension::Data* const) override;
 };
 
 #endif

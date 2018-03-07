@@ -1,4 +1,4 @@
 REQ=$(php create_request-bulk-log.php connection.json)
 #echo Sending...
 #echo $REQ
-printf "$REQ\r\n\r\n" | nc `cat host` 8779
+printf "$REQ\r\n\r\n" | nc `cat host` 8778

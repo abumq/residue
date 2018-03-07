@@ -3,9 +3,8 @@
 
 RESIDUE_EXTENSION(SimplePost, "1.0.0")
 
-Extension::Result SimplePost::execute(void* d)
+Extension::Result SimplePost::execute(const PostArchiveExtension::Data* const data)
 {
-    PostArchiveExtension::Data* data = static_cast<PostArchiveExtension::Data*>(d);
     if (!data) {
         writeLog("Data not passed in", Extension::LogLevel::Error);
         return {1, true};

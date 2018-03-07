@@ -62,7 +62,7 @@
     "extensions": [
         {
             "name": "sample",
-            "module": "samples/extensions/linked-lib/simple.dylib",
+            "module": "samples/extensions/log-extension/simple.dylib",
             "description": "A simple sample for logging",
             "config": {
                 "key": "abcd"

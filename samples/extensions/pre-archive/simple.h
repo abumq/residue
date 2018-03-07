@@ -10,7 +10,7 @@ public:
 	SimplePre() : PreArchiveExtension("simple-pre") {}
 	virtual ~SimplePre() = default;
 
-	virtual Extension::Result execute(void*) override;
+	virtual Extension::Result execute(const PreArchiveExtension::Data* const) override;
 };
 
 #endif
