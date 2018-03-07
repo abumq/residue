@@ -247,6 +247,7 @@ if (enable_extensions)
     )
 
     set_target_properties (residue-extension-st PROPERTIES OUTPUT_NAME "residue-extension-st")
+    install (TARGETS residue-extension-st DESTINATION lib)
 
     ######### Shared lib for extension
     add_library (residue-extension SHARED ${EXTENSION_FILES})
