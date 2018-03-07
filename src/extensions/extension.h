@@ -112,6 +112,7 @@ protected:
     /// \param vlevel Verbose level if logging level is VERBOSE
     ///
     void writeLog(const std::string& msg, LogLevel level = LogLevel::Info, unsigned short vlevel = 0) const;
+
 private:
     unsigned int m_type;
     std::string m_id;

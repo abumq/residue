@@ -33,7 +33,6 @@ Extension::Extension(unsigned int type, const std::string& id) :
     m_id(id),
     m_running(false)
 {
-
 }
 
 
