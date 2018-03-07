@@ -1,6 +1,6 @@
 # Change Log
 
-## [Unreleased]
+## [2.1.0] - 07-03-2018
 ### Fixed
 - Prevent duplicate default loggers when logger is specified for one of the clients (admin)
 
