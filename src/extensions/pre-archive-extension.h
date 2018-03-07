@@ -63,8 +63,16 @@ public:
     };
 
     explicit PreArchiveExtension(const std::string& id);
+    virtual ~PreArchiveExtension() = default;
 
-    virtual Extension::Result execute(const Data* const) = 0;
+    ///
+    /// \brief The pure virtual function that must be implemented by the extension
+    ///
+    /// \param data The data is passed in as constant pointer. Residue extension API does not
+    /// control the 'delete' over this pointer. No one should ever delete this data as other
+    /// extensions may need it
+    ///
+    virtual Extension::Result execute(const Data* const data) = 0;
 private:
     virtual Extension::Result executeWrapper(void* d) override;
 };

@@ -72,9 +72,14 @@ public:
     /// \brief Initialze extension by type and ID
     /// \param id ID should be unique for each loaded extension.
     ///
-    Extension(unsigned int type, const std::string& id);
+    explicit Extension(unsigned int type, const std::string& id);
 
     virtual ~Extension() = default;
+
+    Extension(const Extension&) = delete;
+    Extension(Extension&&) = delete;
+    Extension& operator=(const Extension&) = delete;
+    Extension& operator=(Extension&&) = delete;
 
 protected:
 
@@ -138,6 +143,9 @@ private:
 
 }
 
+///
+/// \brief Every extension must use this macro in source file
+///
 #define RESIDUE_EXTENSION(Name, Version)\
     extern "C" RESIDUE_EXTENSION_API Name* create_extension()\
     {\
