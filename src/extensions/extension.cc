@@ -72,6 +72,7 @@ Extension* Extension::load(const char* path)
 
     using CreateExtensionFn = Extension* (*)();
 
+#pragma GCC diagnostic push
 #pragma GCC diagnostic ignored "-Wpedantic"
     CreateExtensionFn create = reinterpret_cast<CreateExtensionFn>(dlsym(handle, "create_extension"));
 #pragma GCC diagnostic pop
