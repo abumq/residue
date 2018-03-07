@@ -23,6 +23,13 @@
 
 using namespace residue;
 
+
+JsonDoc::JsonDoc() :
+    m_status(JsonDoc::Status::JSON_PARSE_ALLOCATION_FAILURE)
+{
+
+}
+
 void JsonDoc::parse(const std::string& jstr)
 {
     m_src = std::unique_ptr<char[]>(new char[jstr.size() + 1]);
@@ -129,21 +136,21 @@ std::string JsonDoc::errorText() const
 {
     switch (m_status)
     {
-    case gason::JsonParseStatus::JSON_PARSE_OK:
+    case JsonDoc::Status::JSON_PARSE_OK:
         return "";
-    case gason::JsonParseStatus::JSON_PARSE_BAD_NUMBER:
+    case JsonDoc::Status::JSON_PARSE_BAD_NUMBER:
         return "Bad number";
-    case gason::JsonParseStatus::JSON_PARSE_ALLOCATION_FAILURE:
+    case JsonDoc::Status::JSON_PARSE_ALLOCATION_FAILURE:
         return "Failed to allocate memory";
-    case gason::JsonParseStatus::JSON_PARSE_BAD_STRING:
+    case JsonDoc::Status::JSON_PARSE_BAD_STRING:
         return "Bad string";
-    case gason::JsonParseStatus::JSON_PARSE_MISMATCH_BRACKET:
+    case JsonDoc::Status::JSON_PARSE_MISMATCH_BRACKET:
         return "Unclosed bracket";
-    case gason::JsonParseStatus::JSON_PARSE_STACK_OVERFLOW:
+    case JsonDoc::Status::JSON_PARSE_STACK_OVERFLOW:
         return "Too much nesting";
-    case gason::JsonParseStatus::JSON_PARSE_UNEXPECTED_CHARACTER:
+    case JsonDoc::Status::JSON_PARSE_UNEXPECTED_CHARACTER:
         return "Unexpected character";
-    case gason::JsonParseStatus::JSON_PARSE_UNQUOTED_KEY:
+    case JsonDoc::Status::JSON_PARSE_UNQUOTED_KEY:
         return "Unquoted keys are not allowed";
     default:
         return "Unknown error - [hint: single quote keys are not allowed]";

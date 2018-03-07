@@ -44,15 +44,34 @@ namespace residue {
 /// \brief Abstract extension
 /// Please extend one of the base classes.
 ///
+/// \note All the extensions derived from any of the base class should be unique and definitive. Any conflicting name loaded on server
+/// may crash the server. e.g, a <code>PostArchiveExtension</code> may be extended to a class called <code>SendToS3BucketExtension</code>
+///
 class RESIDUE_EXTENSION_API Extension
 {
 public:
+    ///
+    /// \brief Result of extension execution
+    ///
     struct Result
     {
+        ///
+        /// \brief Status code of the execution
+        ///
         int statusCode;
+
+        ///
+        /// \brief Whether process related to the execution should continue or not
+        ///
+        /// Some extensions do not honour this depending upon their type
+        ///
         bool continueProcess;
     };
 
+    ///
+    /// \brief Initialze extension by type and ID
+    /// \param id ID should be unique for each loaded extension.
+    ///
     Extension(unsigned int type, const std::string& id);
 
     virtual ~Extension() = default;

@@ -37,45 +37,78 @@ namespace residue {
 class JsonDoc final
 {
 public:
+    ///
+    /// \brief A single node in linked-list
+    ///
+    using Node = gason::JsonNode;
+
+    ///
+    /// \brief Value can hold either a whole document or a single value
+    ///
     using Value = gason::JsonValue;
+
+    ///
+    /// \brief Status of JSON doc when it was parsed
+    ///
     using Status = gason::JsonParseStatus;
 
-    JsonDoc()
-    {
-        m_status = gason::JsonParseStatus::JSON_PARSE_ALLOCATION_FAILURE;
-    }
+    ///
+    /// \brief Construct empty json doc with allocation failure status
+    ///
+    JsonDoc();
 
-    explicit JsonDoc(const JsonDoc&) = delete;
-    explicit JsonDoc(JsonDoc&&) = delete;
-    JsonDoc& operator=(const JsonDoc&) = delete;
-    JsonDoc& operator=(JsonDoc&&) = delete;
-
-    explicit JsonDoc(const gason::JsonNode* v)
+    ///
+    /// \brief Construct document by node
+    ///
+    explicit JsonDoc(const Node* v)
         : JsonDoc()
     {
         set(v);
     }
 
-    explicit JsonDoc(const gason::JsonValue& v)
+    ///
+    /// \brief Construct document by value
+    ///
+    explicit JsonDoc(const Value& v)
         : JsonDoc()
     {
         set(v);
     }
 
+    ///
+    /// \brief Construct document by JSON string (calls parse(const std::string&))
+    ///
     explicit JsonDoc(const std::string& json)
         : JsonDoc()
     {
         parse(json);
     }
 
+    // disabled copying and moving
+
+    explicit JsonDoc(const JsonDoc&) = delete;
+    explicit JsonDoc(JsonDoc&&) = delete;
+    JsonDoc& operator=(const JsonDoc&) = delete;
+    JsonDoc& operator=(JsonDoc&&) = delete;
+
+    ///
+    /// \brief Parses JSON string and store it. Any previous parsed document for this object
+    /// will be discarded
+    ///
     void parse(const std::string& jstr);
 
-    inline void set(const gason::JsonNode* v)
+    ///
+    /// \brief Set value by node
+    ///
+    inline void set(const Node* v)
     {
         m_val = v->value;
     }
 
-    inline void set(const gason::JsonValue& v)
+    ///
+    /// \brief Set value by JsonValue
+    ///
+    inline void set(const Value& v)
     {
         m_val = v;
     }
@@ -95,6 +128,9 @@ public:
         return gason::end(m_val);
     }
 
+    ///
+    /// \brief Error text if parsing failed
+    ///
     std::string errorText() const;
 
     inline bool hasKey(const char* key) const
@@ -102,13 +138,16 @@ public:
         return m_val(key).getTag() <= 5;
     }
 
+    ///
+    /// \return Whether the document base is an array or not
+    ///
     inline bool isArray() const
     {
         return m_val.isArray();
     }
 
     ///
-    /// Get value by type. Please checkout out other template specializations
+    /// \brief Get value by type. Please checkout out other template specializations
     /// for a specific type
     ///
     template <typename T>
@@ -121,7 +160,7 @@ public:
     }
 
     ///
-    /// Get value as specific type. Best for single values as <code>get</code> will
+    /// \brief Get value as specific type. Best for single values as <code>get</code> will
     /// not work for single value
     ///
     template <typename T>
@@ -144,6 +183,10 @@ private:
     static void dumpStr(const char* s, std::stringstream& ss);
 };
 
+///
+/// \brief Get single value as string
+/// \param defaultVal If value not found or is not a string the default value that should be returned
+///
 template <>
 inline std::string JsonDoc::as<std::string>(const std::string& defaultVal) const
 {
@@ -156,6 +199,11 @@ inline std::string JsonDoc::as<std::string>(const std::string& defaultVal) const
     return defaultVal;
 }
 
+///
+/// \brief Get value as bool
+/// \param key JSON key for the property
+/// \param defaultVal If value not found or is not a bool the default value that should be returned
+///
 template <>
 inline bool JsonDoc::get<bool>(const char* key, const bool& defaultVal) const
 {
@@ -169,6 +217,11 @@ inline bool JsonDoc::get<bool>(const char* key, const bool& defaultVal) const
     return defaultVal;
 }
 
+///
+/// \brief Get value as string
+/// \param key JSON key for the property
+/// \param defaultVal If value not found or is not a string the default value that should be returned
+///
 template <>
 inline std::string JsonDoc::get<std::string>(const char* key, const std::string& defaultVal) const
 {
@@ -182,6 +235,11 @@ inline std::string JsonDoc::get<std::string>(const char* key, const std::string&
     return defaultVal;
 }
 
+///
+/// \brief Get value as int
+/// \param key JSON key for the property
+/// \param defaultVal If value not found or is not a number the default value that should be returned
+///
 template <>
 inline int JsonDoc::get<int>(const char* key, const int& defaultVal) const
 {
@@ -195,6 +253,11 @@ inline int JsonDoc::get<int>(const char* key, const int& defaultVal) const
     return defaultVal;
 }
 
+///
+/// \brief Get value as unsigned int
+/// \param key JSON key for the property
+/// \param defaultVal If value not found or is not a number the default value that should be returned
+///
 template <>
 inline unsigned int JsonDoc::get<unsigned int>(const char* key, const unsigned int& defaultVal) const
 {
@@ -208,6 +271,11 @@ inline unsigned int JsonDoc::get<unsigned int>(const char* key, const unsigned i
     return defaultVal;
 }
 
+///
+/// \brief Get value as float
+/// \param key JSON key for the property
+/// \param defaultVal If value not found or is not a number the default value that should be returned
+///
 template <>
 inline float JsonDoc::get<float>(const char* key, const float& defaultVal) const
 {
@@ -221,6 +289,11 @@ inline float JsonDoc::get<float>(const char* key, const float& defaultVal) const
     return defaultVal;
 }
 
+///
+/// \brief Get value as unsigned long
+/// \param key JSON key for the property
+/// \param defaultVal If value not found or is not a number the default value that should be returned
+///
 template <>
 inline unsigned long JsonDoc::get<unsigned long>(const char* key, const unsigned long& defaultVal) const
 {
