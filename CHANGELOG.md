@@ -7,6 +7,7 @@
 ### Updates
 - Extension API and shared+static library for extensions
 - Added `PRE_ARCHIVE` and `POST_ARCHIVE` extensions
+- Change default logging port to 8778
 
 ## [2.0.0] - 01-03-2018
 ### Updates

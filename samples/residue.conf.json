@@ -1,7 +1,7 @@
 {
     "admin_port": 8776,
     "connect_port": 8777,
-    "logging_port": 8779,
+    "logging_port": 8778,
     "server_key": "048CB7050312DB329788CE1533C294A1F248F8A1BD6F611D7516803EDE271C65",
     "server_rsa_private_key": "$RESIDUE_HOME/samples/keys/server-1024-private.pem",
     "server_rsa_public_key": "$RESIDUE_HOME/samples/keys/server-1024-public.pem",
@@ -62,7 +62,7 @@
     "extensions": [
         {
             "name": "sample",
-            "module": "samples/extensions/log-extension/simple.dylib",
+            "module": "samples/extensions/linked-lib/simple.dylib",
             "description": "A simple sample for logging",
             "config": {
                 "key": "abcd"

@@ -97,6 +97,8 @@ void Configuration::loadFromInput(std::string&& jsonStr)
     m_knownLoggerUserMap.clear();
     m_knownClientDefaultLogger.clear();
     m_logExtensions.clear();
+    m_preArchiveExtensions.clear();
+    m_postArchiveExtensions.clear();
     m_isMalformedJson = false;
     m_isValid = true;
 
@@ -111,7 +113,7 @@ void Configuration::loadFromInput(std::string&& jsonStr)
     }
     m_adminPort = m_jsonDoc.get<int>("admin_port", 8776);
     m_connectPort = m_jsonDoc.get<int>("connect_port", 8777);
-    m_loggingPort = m_jsonDoc.get<int>("logging_port", 8779);
+    m_loggingPort = m_jsonDoc.get<int>("logging_port", 8778);
     m_isValid = m_adminPort > 0 && m_connectPort > 0 && m_loggingPort > 0;
 
 

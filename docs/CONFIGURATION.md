@@ -75,7 +75,7 @@ Default: `8777`
 ### `logging_port`
 [Integer] Port that logging server listens to. This is where all the log requests are sent.
 
-Default: `8779`
+Default: `8778`
 
 ### `default_key_size`
 [Integer] Default symmetric key size (`128`, `192` or `256`) for clients that do not specify key size. See [`key_size`](#known_clientskey_size)
