@@ -57,16 +57,16 @@ Some of the notable features are listed below
 
 ```
 ## For linux
-wget https://github.com/muflihun/residue/releases/download/v2.0.0/residue-2.0.0-linux-x86_64.tar.gz
-tar -xf residue-2.0.0-linux-x86_64.tar.gz
-cd residue-2.0.0-linux-x86_64/
+wget https://github.com/muflihun/residue/releases/download/v2.1.0/residue-2.1.0-linux-x86_64.tar.gz
+tar -xf residue-2.1.0-linux-x86_64.tar.gz
+cd residue-2.1.0-linux-x86_64/
 ```
 
 ```
 ## For macOS
-wget https://github.com/muflihun/residue/releases/download/v2.0.0/residue-2.0.0-darwin-x86_64.tar.gz
-tar -xf residue-2.0.0-darwin-x86_64.tar.gz
-cd residue-2.0.0-darwin-x86_64/
+wget https://github.com/muflihun/residue/releases/download/v2.1.0/residue-2.1.0-darwin-x86_64.tar.gz
+tar -xf residue-2.1.0-darwin-x86_64.tar.gz
+cd residue-2.1.0-darwin-x86_64/
 ```
 
 ### Using NPM
@@ -92,11 +92,17 @@ sudo ./residue config/server.conf
 ```
 
 ### Using NPM
-If you downloaded Residue binary using NPM, you can use following lines to start
- server with sample configs.
+If you downloaded Residue binary using NPM, you can use following lines to start server with sample configs.
 
-We set `RESIDUE_HOME` environment variable as they are needed by sample server c
-onfig.
+You will need to find out where global packages for NPM are installed (use `npm root -g`)
+
+If you are using residue extensions you will also need to update `LD_LIBRARY_PATH` environment variable where libresidue-extension is located.
+
+```
+export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:/usr/local/lib/node_modules/residue-linux/
+```
+
+We set `RESIDUE_HOME` environment variable as they are needed by sample server config. `RESIDUE_HOME` is usually the root for residue configurations.
 
 ```
 export RESIDUE_HOME=/usr/local/lib/node_modules/residue-linux/config/

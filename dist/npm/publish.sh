@@ -32,6 +32,7 @@ if [ "$confirm" = "y" ]; then
     rm -rf $TYPE/config
     mv $TYPE/residue-$VERSION-$TYPE-x86_64/residue $TYPE/residued
     mv $TYPE/residue-$VERSION-$TYPE-x86_64/config $TYPE/config
+    mv $TYPE/residue-$VERSION-$TYPE-x86_64/libresidue-extension* $TYPE/
     rm -rf $TYPE/residue-$VERSION-$TYPE-x86_64
     echo "---- CONTENTS ------"
     ls -l $TYPE/

@@ -23,16 +23,16 @@ $ sudo npm install -g residue-darwin@latest
 ## Direct
 ```
 ## For linux
-wget https://github.com/muflihun/residue/releases/download/v2.0.0/residue-2.0.0-linux-x86_64.tar.gz
-tar -xf residue-2.0.0-linux-x86_64.tar.gz
-cd residue-2.0.0-linux-x86_64/
+wget https://github.com/muflihun/residue/releases/download/v2.1.0/residue-2.1.0-linux-x86_64.tar.gz
+tar -xf residue-2.1.0-linux-x86_64.tar.gz
+cd residue-2.1.0-linux-x86_64/
 ```
 
 ```
 ## For macOS
-wget https://github.com/muflihun/residue/releases/download/v2.0.0/residue-2.0.0-darwin-x86_64.tar.gz
-tar -xf residue-2.0.0-darwin-x86_64.tar.gz
-cd residue-2.0.0-darwin-x86_64/
+wget https://github.com/muflihun/residue/releases/download/v2.1.0/residue-2.1.0-darwin-x86_64.tar.gz
+tar -xf residue-2.1.0-darwin-x86_64.tar.gz
+cd residue-2.1.0-darwin-x86_64/
 ```
 
 ## Start Server
@@ -40,7 +40,16 @@ cd residue-2.0.0-darwin-x86_64/
 ### Using NPM
 If you downloaded Residue binary using NPM, you can use following lines to start server with sample configs.
 
-We set `RESIDUE_HOME` environment variable as they are needed by sample server config.
+
+You will need to find out where global packages for NPM are installed (use `npm root -g`)
+
+If you are using residue extensions you will also need to update `LD_LIBRARY_PATH` environment variable where libresidue-extension is located.
+
+```
+export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:/usr/local/lib/node_modules/residue-linux/
+```
+
+We set `RESIDUE_HOME` environment variable as they are needed by sample server config. `RESIDUE_HOME` is usually the root for residue configurations.
 
 ```
 export RESIDUE_HOME=/usr/local/lib/node_modules/residue-linux/config/
@@ -50,6 +59,15 @@ sudo RESIDUE_HOME=$RESIDUE_HOME residue-linux $RESIDUE_HOME/server.conf
 
 ### Direct
 Start server using this configuration
+
+If you are using residue extensions you will also need to update `LD_LIBRARY_PATH` environment variable where libresidue-extension is located.
+
+```
+## LD_LIBRARY_PATH always include current working directory so we're commenting it out here
+## but if you are running residue from elsewhere you will need to update it
+
+# export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:./
+```
 
 ```
 sudo ./residue config/server.conf
@@ -91,6 +109,7 @@ You can change following options in CMake (using `-D<option>=ON`)
 | ------------ | ------------------------------- |---------|
 | `debug`      | Turn on extra logging           | `OFF`   |
 | `production` | Compile for production use      | `ON`   |
+| `enable_extensions` | Enable extension support      | `ON`   |
 | `profiling`  | Turn on profiling information (for development only - must have `debug` option turned on) | `OFF` |
 | `use_boost` | Link against boost library instead of standalone asio (must have boost 1.54-static installed) | `OFF` |
 

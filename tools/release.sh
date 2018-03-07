@@ -19,5 +19,6 @@ read confirm
 if [ "$confirm" = "y" ]; then
     rm -rf *
     sh ../tools/package.sh $TYPE $VERSION OFF ON && sh ../tools/package.sh $TYPE-debug $VERSION ON ON
+    rm residue-extensions-$VERSION-$TYPE-debug-x86_64.tar.gz
 fi
     
