@@ -70,7 +70,8 @@ if [ "$EXTENSIONS" = "ON" ];then
     mkdir $PACK_EXT/include/residue/gason/
     # do not pack static
     #    cp libresidue-extension-st.a $PACK_EXT/libresidue-extension-st.$VERSION.a
-    cp libresidue-extension.$VERSION.* $PACK_EXT/
+    cp libresidue-extension.$VERSION.dylib $PACK_EXT/
+    cp libresidue-extension.so.$VERSION $PACK_EXT/
     cp ../include/extensions.h $PACK_EXT/include/residue/
     cp ../src/extensions/extension.h $PACK_EXT/include/residue/extensions/
     cp ../src/extensions/log-extension.h $PACK_EXT/include/residue/extensions/
@@ -86,7 +87,8 @@ if [ "$EXTENSIONS" = "ON" ];then
     echo `pwd`/$PACK_EXT.tar.gz
 
     # extension shared lib with residue binary
-    cp libresidue-extension.$VERSION.* $PACK/
+    cp libresidue-extension.$VERSION.dylib $PACK/
+    cp libresidue-extension.so.$VERSION $PACK/
 fi
 
 ls -lh $PACK
