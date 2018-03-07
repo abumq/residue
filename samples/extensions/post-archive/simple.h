@@ -3,12 +3,14 @@
 
 #include <residue/extensions.h>
 
-class SimplePost : public residue::PostArchiveExtension {
+using namespace residue;
+
+class SimplePost : public PostArchiveExtension {
 public:
 	SimplePost() : PostArchiveExtension("simple-post") {}
 	virtual ~SimplePost() = default;
 
-	virtual residue::Extension::Result execute(void*) override;
+	virtual Extension::Result execute(void*) override;
 };
 
 #endif

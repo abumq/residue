@@ -3,14 +3,16 @@
 
 #include <residue/extensions.h>
 
-class Simple : public residue::LogExtension {
+using namespace residue;
+
+class SimpleLogExtension : public LogExtension {
 public:
-	Simple() : LogExtension("simple") 
+	SimpleLogExtension() : LogExtension("simple-log-extension") 
 	{}
 	
-	virtual ~Simple() = default;
+	virtual ~SimpleLogExtension() = default;
 
-	virtual residue::Extension::Result execute(void*) override;
+	virtual Extension::Result execute(void*) override;
 };
 
 #endif

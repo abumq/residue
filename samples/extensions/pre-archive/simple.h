@@ -3,12 +3,14 @@
 
 #include <residue/extensions.h>
 
-class SimplePre : public residue::PreArchiveExtension {
+using namespace residue;
+
+class SimplePre : public PreArchiveExtension {
 public:
 	SimplePre() : PreArchiveExtension("simple-pre") {}
 	virtual ~SimplePre() = default;
 
-	virtual residue::Extension::Result execute(void*) override;
+	virtual Extension::Result execute(void*) override;
 };
 
 #endif

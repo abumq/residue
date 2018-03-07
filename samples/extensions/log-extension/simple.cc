@@ -1,16 +1,16 @@
 #include "simple.h"
 #include <iostream>
 
-RESIDUE_EXTENSION(Simple, "1.0.0")
+RESIDUE_EXTENSION(SimpleLogExtension, "1.0.0")
 
-residue::Extension::Result Simple::execute(void* d)
+Extension::Result SimpleLogExtension::execute(void* d)
 {
     LogExtension::Data* data = static_cast<LogExtension::Data*>(d);
     if (!data) {
-        std::cout << "Simple::execute() No data found " << std::endl;
-        return {0, true};
+        writeLog("Data not passed in", Extension::LogLevel::Error);
+        return {1, true};
     }
-    writeLog("Simple extension key: " + conf().get<std::string>("key", ""), Extension::LogLevel::Debug);
-	std::cout << "Simple::execute() ==>" << data->formattedMessage << std::endl;
-	return {0, true};
+    writeLog("SimpleLogExtension->config->key: " + conf().get<std::string>("key", ""), Extension::LogLevel::Debug);
+    std::cout << "SimpleLogExtension::execute() ==>" << data->formattedMessage << std::endl;
+    return {0, true};
 }
