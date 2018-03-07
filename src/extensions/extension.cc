@@ -23,6 +23,9 @@
 
 #ifndef RESIDUE_EXTENSION_LIB
 #   include <dlfcn.h>
+
+#   include <functional>
+
 #   include "logging/log.h"
 #endif
 
@@ -67,11 +70,21 @@ Extension* Extension::load(const char* path)
         return nullptr;
     }
 
-    Extension* (*create)();
+    using CreateExtensionFn = Extension* (*)();
 
-    create = (Extension* (*)())dlsym(handle, "create_extension");
+#pragma GCC diagnostic ignored "-Wpedantic"
+    CreateExtensionFn create = reinterpret_cast<CreateExtensionFn>(dlsym(handle, "create_extension"));
+#pragma GCC diagnostic pop
 
-    return create();
+    Extension* e = create();
+
+    const char* dlsymError = dlerror();
+
+    if (dlsymError) {
+        RLOG(ERROR) << "Could not create extension. Did you forget to RESIDUE_EXTENSION(..., ...)? " << dlsymError;
+        return nullptr;
+    }
+    return e;
 #else
     (void) path;
     return nullptr;
