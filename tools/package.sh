@@ -60,12 +60,6 @@ cp -r ../dist/pkg/* $PACK/
 $STRIP $PACK/residue-config-validator
 $STRIP $PACK/residue
 
-ls -lh $PACK
-tar cfz $PACK.tar.gz $PACK
-rm -rf $PACK
-$SHASUM $PACK.tar.gz
-echo `pwd`/$PACK.tar.gz
-
 if [ "$EXTENSIONS" = "ON" ];then
     echo "Creating $PACK_EXT.tar.gz ..."
     mkdir $PACK_EXT
@@ -74,7 +68,8 @@ if [ "$EXTENSIONS" = "ON" ];then
     mkdir $PACK_EXT/include/residue/extensions/
     mkdir $PACK_EXT/include/residue/core/
     mkdir $PACK_EXT/include/residue/gason/
-    cp libresidue-extension-st.a $PACK_EXT/libresidue-extension-st.$VERSION.a
+    # do not pack static
+    #    cp libresidue-extension-st.a $PACK_EXT/libresidue-extension-st.$VERSION.a
     cp libresidue-extension.$VERSION.* $PACK_EXT/
     cp ../include/extensions.h $PACK_EXT/include/residue/
     cp ../src/extensions/extension.h $PACK_EXT/include/residue/extensions/
@@ -89,4 +84,13 @@ if [ "$EXTENSIONS" = "ON" ];then
     rm -rf $PACK_EXT
     $SHASUM $PACK_EXT.tar.gz
     echo `pwd`/$PACK_EXT.tar.gz
+
+    # extension shared lib with residue binary
+    cp libresidue-extension.$VERSION.* $PACK/
 fi
+
+ls -lh $PACK
+tar cfz $PACK.tar.gz $PACK
+rm -rf $PACK
+$SHASUM $PACK.tar.gz
+echo `pwd`/$PACK.tar.gz
