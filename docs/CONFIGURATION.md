@@ -431,6 +431,8 @@ See [archived_log_directory](#archived_log_directory)
 
 Extensions API documentation is available [here](https://muflihun.github.io/residue/extensions/)
 
+You will need `libresidue-extension` in your path
+
 ### `loggers_blacklist`
 [Array] String where each string is logger ID. Whenever request using these loggers are received, they are ignored without notifying the user.
 
