@@ -18,6 +18,6 @@ echo "Releasing $VERSION on $TYPE. Continue (y/n)?"
 read confirm
 if [ "$confirm" = "y" ]; then
     rm -rf *
-    sh ../tools/package.sh $TYPE $VERSION && sh ../tools/package.sh $TYPE-debug $VERSION ON
+    sh ../tools/package.sh $TYPE $VERSION OFF ON && sh ../tools/package.sh $TYPE-debug $VERSION ON ON
 fi
     
