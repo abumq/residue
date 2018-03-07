@@ -83,6 +83,13 @@ public:
         YEARLY = RotationFrequency::MONTHLY * 12
     };
 
+    enum ExtensionType : unsigned int
+    {
+        LOG = 1,
+        PRE_ARCHIVE = 2,
+        POST_ARCHIVE = 3,
+    };
+
     Configuration();
     explicit Configuration(const std::string& configurationFile);
 
@@ -218,9 +225,19 @@ public:
         return m_knownClientDefaultLogger;
     }
 
-    inline std::vector<std::unique_ptr<LogExtension>>& logExtensions()
+    inline std::vector<Extension*>& logExtensions()
     {
         return m_logExtensions;
+    }
+
+    inline std::vector<Extension*>& preArchiveExtensions()
+    {
+        return m_preArchiveExtensions;
+    }
+
+    inline std::vector<Extension*>& postArchiveExtensions()
+    {
+        return m_postArchiveExtensions;
     }
 
     inline const std::unordered_map<std::string, std::pair<std::string, std::string>>& knownClientsKeys() const
@@ -305,7 +322,9 @@ private:
     std::unordered_set<std::string> m_blacklist;
     std::unordered_set<std::string> m_remoteKnownClients;
     std::unordered_set<std::string> m_remoteKnownLoggers;
-    std::vector<std::unique_ptr<LogExtension>> m_logExtensions;
+    std::vector<Extension*> m_logExtensions;
+    std::vector<Extension*> m_preArchiveExtensions;
+    std::vector<Extension*> m_postArchiveExtensions;
 
     std::unordered_map<std::string, std::pair<std::string, std::string>> m_knownClientsKeys;
     std::unordered_map<std::string, std::unordered_set<std::string>> m_knownClientsLoggers;
@@ -354,25 +373,7 @@ private:
     void loadKnownClients(const JsonDoc::Value& json, std::stringstream& errorStream, bool viaUrl);
     void loadLoggersBlacklist(const JsonDoc::Value& json, std::stringstream& errorStream);
 
-    template <typename T, typename ListType = std::vector<std::unique_ptr<T>>>
-    void loadExtensions(const JsonDoc::Value& json, std::stringstream& errorStream, ListType* list)
-    {
-        std::vector<std::string> ext;
-
-        for (const auto& moduleName : json) {
-            JsonDoc j(moduleName);
-            std::string moduleNameStr = j.as<std::string>("");
-            if (moduleNameStr.empty()) {
-                continue;
-            }
-            if (std::find(ext.begin(), ext.end(), moduleNameStr) != ext.end()) {
-                errorStream << "Duplicate extension could not be loaded: " << moduleNameStr;
-            } else {
-                ext.push_back(moduleNameStr);
-                list->push_back(std::unique_ptr<T>(new T(moduleNameStr)));
-            }
-        }
-    }
+    void loadExtensions(const JsonDoc::Value& json, std::stringstream& errorStream);
 };
 }
 #endif /* Configuration_h */

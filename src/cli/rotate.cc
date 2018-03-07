@@ -38,11 +38,11 @@ void Rotate::execute(std::vector<std::string>&& params, std::ostringstream& resu
 {    
     const std::string loggerId = getParamValue(params, "--logger-id");
     if (loggerId.empty()) {
-        result << "\nNo logger ID provided";
+        result << "No logger ID provided\n";
         return;
     }
     if (el::Loggers::getLogger(loggerId, false) == nullptr) {
-        result << "\nLogger [" << loggerId << "] not yet registered";
+        result << "Logger [" << loggerId << "] not yet registered\n";
         return;
     }
     if (hasParam(params, "--check-only")) {

@@ -23,7 +23,7 @@
 #define Utils_h
 
 #include <string>
-#include <map>
+#include <unordered_map>
 #include <chrono>
 #include "logging/log.h"
 #include "static-base.h"
@@ -103,7 +103,7 @@ public:
     static std::string bytesToHumanReadable(long size);
 
     // compression
-    static bool archiveFiles(const std::string& outputFile, const std::map<std::string, std::string>& files);
+    static bool archiveFiles(const std::string& outputFile, const std::unordered_map<std::string, std::string>& files);
 
     // date
     static inline types::Time now()

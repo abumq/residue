@@ -253,7 +253,7 @@ bool Utils::isJSON(const std::string& data)
 }
 
 bool Utils::archiveFiles(const std::string& outputFile,
-                         const std::map<std::string, std::string>& files)
+                         const std::unordered_map<std::string, std::string>& files)
 {
     std::fstream out(outputFile, std::ios::out);
     if (!out.is_open()) {

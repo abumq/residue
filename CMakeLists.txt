@@ -5,13 +5,13 @@ project (Residue)
 option (production "Build for production" ON)
 option (debug "Enable debug logging" OFF)
 option (profiling "Turns profiling on for various scenarios" OFF)
-option (enable_extensions "Enables extensions support for the build" OFF)
+option (enable_extensions "Enables extensions support for the build" ON)
 option (use_mine "Use mine whereever possible" OFF)
 option (use_boost "Use boost or standalone networking lib" OFF)
 option (old_toolchain "Is old toolchain" OFF)
 
 set (RESIDUE_MAJOR "2")
-set (RESIDUE_MINOR "0")
+set (RESIDUE_MINOR "1")
 set (RESIDUE_PATCH "0")
 set (RESIDUE_VERSION "${RESIDUE_MAJOR}.${RESIDUE_MINOR}.${RESIDUE_PATCH}")
 set (RESIDUE_NAME "Residue")
@@ -22,6 +22,10 @@ add_definitions (-DRESIDUE_VERSION_MINOR="${RESIDUE_MINOR}")
 add_definitions (-DRESIDUE_VERSION_PATCH="${RESIDUE_PATCH}")
 
 add_definitions (-DRIPE_VERSION="4.1.1-static")
+
+if (enable_extensions)
+    add_definitions (-DRESIDUE_HAS_EXTENSIONS)
+endif(enable_extensions)
 
 if (old_toolchain)
     message ("==> USING OLD TOOLCHAIN")
@@ -105,21 +109,6 @@ else()
     add_definitions (-DASIO_STANDALONE)
 endif(use_boost)
 
-
-# Python
-
-if (enable_extensions)
-    #include (FindPythonLibs)
-    #add_definitions (-DRESIDUE_HAS_EXTENSIONS)
-    #add_definitions (-DRESIDUE_PYTHON_VERSION="${PYTHONLIBS_VERSION_STRING}")
-    #find_package(PythonLibs REQUIRED)
-    #find_package(PythonInterp REQUIRED)
-    #include_directories(${PYTHON_INCLUDE_DIRS})
-    #message ("-- python: " ${PYTHON_LIBRARY} " include: " ${PYTHON_INCLUDE_DIRS} " version: " ${PYTHONLIBS_VERSION_STRING})
-else()
-    set (PYTHON_LIBRARY "")
-endif()
-
 # Check for cryptopp (static)
 set(CryptoPP_USE_STATIC_LIBS ON)
 find_package(CryptoPP REQUIRED)
@@ -193,6 +182,8 @@ set (SOURCE_FILES
 
     src/extensions/extension.cc
     src/extensions/log-extension.cc
+    src/extensions/pre-archive-extension.cc
+    src/extensions/post-archive-extension.cc
 
     src/tasks/auto-updater.cc
     src/tasks/client-integrity-task.cc
@@ -209,8 +200,11 @@ set (SHARED_REQUIRED_LIBS
     ${CMAKE_THREAD_LIBS_INIT}
     ${ZLIB_LIBRARIES}
     ${CRYPTOPP_LIBRARIES}
-    ${PYTHON_LIBRARY}
 )
+
+if (enable_extensions)
+    set (SHARED_REQUIRED_LIBS ${SHARED_REQUIRED_LIBS} ${CMAKE_DL_LIBS})
+endif(enable_extensions)
 
 ############# RESIDUE CORE LIB (STATIC) ###############
 
@@ -229,6 +223,56 @@ target_compile_definitions (residue-core PUBLIC
 
 # Set RPATH to library install path.
 set (CMAKE_INSTALL_RPATH "${CMAKE_INSTALL_PREFIX}/lib")
+
+############# RESIDUE EXTENSION LIB (STATIC) ###############
+
+if (enable_extensions)
+    set (EXTENSION_FILES
+        src/extensions/extension.cc
+        src/extensions/log-extension.cc
+        src/extensions/pre-archive-extension.cc
+        src/extensions/post-archive-extension.cc
+        src/core/json-doc.cc
+        deps/gason/gason.cc
+    )
+
+    add_library (residue-extension-st STATIC ${EXTENSION_FILES})
+
+    set_target_properties (residue-extension-st PROPERTIES
+        VERSION ${RESIDUE_VERSION}
+    )
+
+    target_compile_definitions (residue-extension-st PUBLIC
+        RESIDUE_EXTENSION_LIB
+    )
+
+    set_target_properties (residue-extension-st PROPERTIES OUTPUT_NAME "residue-extension-st")
+    # install (TARGETS residue-extension-st DESTINATION lib)
+
+    ######### Shared lib for extension
+    add_library (residue-extension SHARED ${EXTENSION_FILES})
+
+    set_target_properties (residue-extension PROPERTIES
+        VERSION ${RESIDUE_VERSION}
+    )
+    target_link_libraries (residue-extension
+        residue-extension-st
+    )
+
+    target_compile_definitions (residue-extension PUBLIC
+        RESIDUE_EXTENSION_LIB
+    )
+
+    set_target_properties (residue-extension PROPERTIES OUTPUT_NAME "residue-extension")
+    install (TARGETS residue-extension DESTINATION lib)
+
+    file(GLOB EXTENSIONS_H "src/extensions/*.h")
+    install (FILES ${EXTENSIONS_H} DESTINATION "include/residue/extensions/")
+    install (FILES src/core/json-doc.h DESTINATION "include/residue/core/")
+    install (FILES deps/gason/gason.h DESTINATION "include/residue/gason/")
+    install (FILES include/extensions.h DESTINATION "include/residue/")
+
+endif(enable_extensions)
 
 ############# CONFIG VALIDATOR TOOL ###############
 

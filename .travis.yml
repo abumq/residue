@@ -128,14 +128,6 @@ install:
  - sudo cp -a libgtest_main.* libgtest.* /usr/lib/
  - cd ..
 
-## Python
-# - wget https://www.python.org/ftp/python/2.7.14/Python-2.7.14.tgz
-# - tar xf Python-2.7.14.tgz
-# - cd Python-2.7.14
-# - ./configure
-# - make
-# - make install
-
 ## Easylogging++
  - wget https://github.com/muflihun/easyloggingpp/archive/develop.zip
  - unzip develop.zip
@@ -160,7 +152,7 @@ install:
  - cd build
  - export TZ=Australia/Canberra
  - date
- - cmake -Dproduction=OFF -Denable_extensions=OFF -Duse_boost=OFF -Dold_toolchain=$OLD_TOOLCHAIN ..
+ - cmake -Dproduction=OFF -Denable_extensions=ON -Duse_boost=OFF -Dold_toolchain=$OLD_TOOLCHAIN ..
  - make -j4
  - ls -l
  - ldd ./residue

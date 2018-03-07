@@ -1,5 +1,5 @@
 //
-//  python.h
+//  extensions.h
 //  Residue
 //
 //  Copyright 2017-present Muflihun Labs
@@ -19,11 +19,9 @@
 //  limitations under the License.
 //
 
-#ifndef ResiduePython_h
-#define ResiduePython_h
-
-#ifdef RESIDUE_HAS_EXTENSIONS
-#   include <python2.7/Python.h>
-#endif
-
-#endif /* ResiduePython_h */
+#ifndef RESIDUE_EXTENSIONS_BASE_H
+#define RESIDUE_EXTENSIONS_BASE_H
+#include <residue/extensions/log-extension.h>
+#include <residue/extensions/pre-archive-extension.h>
+#include <residue/extensions/post-archive-extension.h>
+#endif /* RESIDUE_EXTENSIONS_BASE_H */

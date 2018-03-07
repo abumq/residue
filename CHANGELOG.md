@@ -1,5 +1,14 @@
 # Change Log
 
+## [2.1.0] - 07-03-2018
+### Fixed
+- Prevent duplicate default loggers when logger is specified for one of the clients (admin)
+
+### Updates
+- Extension API and shared+static library for extensions
+- Added `PRE_ARCHIVE` and `POST_ARCHIVE` extensions
+- Change default logging port to 8778
+
 ## [2.0.0] - 01-03-2018
 ### Updates
 - Removed ability to dynamically add/remove client #107

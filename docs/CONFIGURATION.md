@@ -55,7 +55,6 @@ You can use [Server Config Tool](https://muflihun.github.io/residue/create-serve
    * [archived_log_directory](#known_loggersarchived_log_directory)
 * [known_loggers_endpoint](#known_loggers_endpoint)
 * [extensions](#extensions)
-   * [log_extensions](#extensionslog_extensions)
 * [loggers_blacklist](#loggers_blacklist)
 * [Comments](#comments)
 * [Sample](#sample)
@@ -76,7 +75,7 @@ Default: `8777`
 ### `logging_port`
 [Integer] Port that logging server listens to. This is where all the log requests are sent.
 
-Default: `8779`
+Default: `8778`
 
 ### `default_key_size`
 [Integer] Default symmetric key size (`128`, `192` or `256`) for clients that do not specify key size. See [`key_size`](#known_clientskey_size)
@@ -428,12 +427,11 @@ See [archived_log_directory](#archived_log_directory)
 [String] This is URL same as [`known_clients_endpoint`](#known_clients_endpoint) with JSON object containing same properties as [`known_loggers`](#known_loggers)
 
 ### `extensions`
-[Object] [Unstable] Contains various types of extensions
+[Array] Contains various types of extensions. You can specify each type of extension's array shared library modules.
 
-#### `extensions::log_extensions`
-[Array] You can specify python modules. See [EXTENSIONS](/docs/EXTENSIONS.md) for more information.
+Extensions API documentation is available [here](https://muflihun.github.io/residue/extensions/)
 
-Make sure environment variable `PYTHONPATH` is exported correctly
+**NOTE You will need `libresidue-extension` in your `LD_LIBRARY_PATH`**
 
 ### `loggers_blacklist`
 [Array] String where each string is logger ID. Whenever request using these loggers are received, they are ignored without notifying the user.

@@ -21,80 +21,100 @@
 
 #include "extensions/extension.h"
 
-#include "extensions/python.h"
-#include "utils/utils.h"
+#if (!defined(RESIDUE_EXTENSION_LIB) && defined(RESIDUE_HAS_EXTENSIONS))
+#   include <dlfcn.h>
+#   include "logging/log.h"
+#endif
 
 using namespace residue;
 
-std::mutex Extension::s_extensionMutex;
-
-Extension::Extension(const std::string& module, const std::string& func) :
-    m_module(module),
-    m_func(func),
-    m_running(true)
+Extension::Extension(unsigned int type, const std::string& id) :
+    m_type(type),
+    m_id(id),
+    m_running(false)
 {
-#ifdef RESIDUE_HAS_EXTENSIONS
-    Py_Initialize();
-    PyEval_InitThreads();
-    m_worker = std::thread(&Extension::work, this);
-#endif
 }
 
-Extension::~Extension()
+
+Extension::Result Extension::trigger(void* data)
 {
-    m_running = false;
-#ifdef RESIDUE_HAS_EXTENSIONS
-    if (m_worker.joinable()) {
-        m_worker.join();
+#if (!defined(RESIDUE_EXTENSION_LIB) && defined(RESIDUE_HAS_EXTENSIONS))
+    if (m_running) {
+#   ifdef RESIDUE_DEBUG
+        DRVLOG(RV_WARNING) << "Extension [" << m_type << "/" << m_id << "] already running";
+#   endif
+        return {0, true};
     }
-    PyGILState_Ensure();
-    Py_Finalize();
-#endif
-}
-
-void Extension::escape(std::string& text) const
-{
-    Utils::replaceAll(text, "\r", "\\r");
-    Utils::replaceAll(text, "\n", "\\n");
-    Utils::replaceAll(text, "'", "\\'", 2);
-}
-
-void Extension::executeScript(const std::string &script)
-{
+    RVLOG(RV_INFO) << "Executing extension [" << m_type << "/" << m_id << "]";
+    m_running = true;
     std::lock_guard<std::mutex> lock_(m_mutex);
     (void) lock_;
-    m_scripts.push(script);
+    auto result = executeWrapper(data);
+    m_running = false;
+    return result;
+#else
+    (void) data;
+    return {0, true};
+#endif
 }
 
-void Extension::work()
+
+Extension* Extension::load(const char* path)
 {
-    el::Helpers::setThreadName("Extension::" + m_module);
-#ifdef RESIDUE_HAS_EXTENSIONS
-    while (m_running) {
-        if (!m_scripts.empty()) {
-            std::string script;
-            {
-                std::lock_guard<std::mutex> lock_(m_mutex);
-                (void) lock_;
-                script = m_scripts.front();
-                m_scripts.pop();
-            }
-            if (!script.empty()) {
-                std::lock_guard<std::mutex> lock_(s_extensionMutex);
-                (void) lock_;
-#ifdef RESIDUE_DEBUG
-                    DRVLOG(RV_CRAZY) << "Executing extension " << m_module;
-#endif
-                int result = PyRun_SimpleString(script.c_str());
-                RLOG_IF(result != 0, WARNING) << "Extension ["
-                                              << m_module << "] exited with ["
-                                              << result << "]";
-#ifdef RESIDUE_DEBUG
-                    DRVLOG(RV_CRAZY) << "Finished extension " << m_module;
-#endif
-            }
-        }
-        std::this_thread::sleep_for(std::chrono::milliseconds(10));
+#if (!defined(RESIDUE_EXTENSION_LIB) && defined(RESIDUE_HAS_EXTENSIONS))
+    void* handle = dlopen(path, RTLD_LAZY);
+
+    if (handle == nullptr) {
+        return nullptr;
     }
+
+    using CreateExtensionFn = Extension* (*)();
+
+#   pragma GCC diagnostic push
+#   pragma GCC diagnostic ignored "-Wpedantic"
+
+    CreateExtensionFn create = reinterpret_cast<CreateExtensionFn>(dlsym(handle, "create_extension"));
+
+#   pragma GCC diagnostic pop
+
+    if (create == nullptr) {
+        RLOG(ERROR) << "Extension failed [" << path << "]. Missing RESIDUE_EXTENSION.";
+        return nullptr;
+    }
+    Extension* e = create();
+
+    const char* dlsymError = dlerror();
+
+    if (dlsymError) {
+        RLOG(ERROR) << "Extension failed [" << path << "]. Hint: did you forget to RESIDUE_EXTENSION? " << dlsymError;
+        return nullptr;
+    }
+    return e;
+#else
+    (void) path;
+    return nullptr;
+#endif
+}
+
+void Extension::writeLog(const std::string& msg, LogLevel level, unsigned short vlevel) const
+{
+#if (!defined(RESIDUE_EXTENSION_LIB) && defined(RESIDUE_HAS_EXTENSIONS))
+    if (level == LogLevel::Info) {
+        RLOG(INFO) << "[Extension <" << m_id << ">] " << msg;
+    } else if (level == LogLevel::Error) {
+        RLOG(ERROR) << "[Extension <" << m_id << ">] " << msg;
+    } else if (level == LogLevel::Warning) {
+        RLOG(WARNING) << "[Extension <" << m_id << ">] " << msg;
+    } else if (level == LogLevel::Debug) {
+        RLOG(DEBUG) << "[Extension <" << m_id << ">] " << msg;
+    } else if (level == LogLevel::Trace) {
+        RLOG(TRACE) << "[Extension <" << m_id << ">] " << msg;
+    } else if (level == LogLevel::Verbose) {
+        RVLOG(vlevel) << "[Extension <" << m_id << ">] " << msg;
+    }
+#else
+    (void) msg;
+    (void) level;
+    (void) vlevel;
 #endif
 }

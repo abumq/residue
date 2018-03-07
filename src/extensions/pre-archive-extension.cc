@@ -1,5 +1,5 @@
 //
-//  log-extension.cc
+//  pre-archive-extension.cc
 //  Residue
 //
 //  Copyright 2017-present Muflihun Labs
@@ -19,16 +19,17 @@
 //  limitations under the License.
 //
 
-#include "extensions/log-extension.h"
+#include "extensions/pre-archive-extension.h"
 
 using namespace residue;
 
-LogExtension::LogExtension(const std::string& id)
-    : Extension(1, id)
+PreArchiveExtension::PreArchiveExtension(const std::string& id)
+    : Extension(2, id)
 {
+
 }
 
-Extension::Result LogExtension::executeWrapper(void* d)
+Extension::Result PreArchiveExtension::executeWrapper(void* d)
 {
-    return execute(static_cast<LogExtension::Data*>(d));
+    return execute(static_cast<PreArchiveExtension::Data*>(d));
 }

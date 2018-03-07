@@ -158,9 +158,6 @@ protected:
                               ],
                               "known_loggers_endpoint": "http://localhost:3000/known-loggers",
                               "known_clients_endpoint": "http://localhost:3000/known-clients",
-                              "extensions": {
-                                  "log_extensions": ["basic"]
-                              },
                               "loggers_blacklist": [
                                   "bracket",
                                   "truli"
@@ -210,11 +207,6 @@ TEST_F(ConfigurationTest, CheckValues)
     ASSERT_EQ(conf->keySize("client-for-test"), 128);
     ASSERT_EQ(conf->keySize("client-for-test2"), 256);
     ASSERT_EQ(conf->getConfigurationFile("muflihun"), "muflihun-logger.conf");
-#ifdef RESIDUE_HAS_EXTENSIONS
-    ASSERT_EQ(conf->logExtensions().size(), 1);
-#else
-    ASSERT_EQ(conf->logExtensions().size(), 0);
-#endif
 
     ASSERT_EQ(conf->knownLoggersEndpoint(), "http://localhost:3000/known-loggers");
     ASSERT_EQ(conf->knownClientsEndpoint(), "http://localhost:3000/known-clients");
@@ -252,6 +244,8 @@ TEST_F(ConfigurationTest, Save)
     ASSERT_EQ(conf2->keySize("client-for-test"), 128);
     ASSERT_EQ(conf2->keySize("client-for-test2"), 256);
     ASSERT_EQ(conf2->logExtensions().size(), conf->logExtensions().size());
+    ASSERT_EQ(conf2->preArchiveExtensions().size(), conf->preArchiveExtensions().size());
+    ASSERT_EQ(conf2->postArchiveExtensions().size(), conf->postArchiveExtensions().size());
     ASSERT_EQ(conf2->getConfigurationFile("muflihun"), "muflihun-logger.conf");
     ASSERT_EQ(conf2->getConfigurationFile("unknownlogger"), "");
 }

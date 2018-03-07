@@ -23,18 +23,106 @@
 #define LogExtension_h
 
 #include <string>
-#include "logging/log.h"
 #include "extensions/extension.h"
 
 namespace residue {
 
-class LogExtension final : public Extension
+///
+/// \brief Base class for any extension that needs to execute a code
+/// with every dispatch of user logs
+///
+/// Data is well defined and contains all the necessary information about
+/// the log message
+///
+class LogExtension : public Extension
 {
 public:
-    explicit LogExtension(const std::string& module);
+    ///
+    /// \brief With each execution pointer to this data is passed in
+    /// to take advantage of it
+    ///
+    struct Data
+    {
+        ///
+        /// \brief Logging level
+        ///
+        unsigned int level;
 
-    bool call(const el::LogDispatchData*,
-              const std::string& logLine);
+        ///
+        /// \brief Application ID if specified
+        ///
+        std::string app;
+
+        ///
+        /// \brief Thread ID where log message was generated from
+        ///
+        std::string thread;
+
+        ///
+        /// \brief Source file of the log message
+        ///
+        std::string file;
+
+        ///
+        /// \brief Source line of the log message
+        ///
+        unsigned long int line;
+
+        ///
+        /// \brief Source function of the log message
+        ///
+        std::string func;
+
+        ///
+        /// \brief Verbose level if applicable
+        ///
+        unsigned short verboseLevel;
+
+        ///
+        /// \brief Logger ID for the log message
+        ///
+        std::string loggerId;
+
+        ///
+        /// \brief Client ID for the log message
+        ///
+        std::string clientId;
+
+        ///
+        /// \brief IP address where log request was sent from
+        ///
+        std::string ipAddr;
+
+        ///
+        /// \brief Session by which server received this log request
+        ///
+        std::string sessionId;
+
+        ///
+        /// \brief Log message without any format
+        ///
+        std::string message;
+
+        ///
+        /// \brief Full formatted message (this is the message that was appended to the log file)
+        ///
+        std::string formattedMessage;
+    };
+
+    explicit LogExtension(const std::string& id);
+    virtual ~LogExtension() = default;
+
+    ///
+    /// \brief The pure virtual function that must be implemented by the extension
+    ///
+    /// \param data The data is passed in as constant pointer. Residue extension API does not
+    /// control the 'delete' over this pointer. No one should ever delete this data as other
+    /// extensions may need it
+    ///
+    virtual Extension::Result execute(const Data* const data) = 0;
+
+private:
+    virtual Extension::Result executeWrapper(void* d) override;
 };
 }
 

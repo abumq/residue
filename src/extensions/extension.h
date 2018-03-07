@@ -23,44 +23,134 @@
 #define Extension_h
 
 #include <atomic>
-#include <thread>
 #include <mutex>
-#include <queue>
 #include <string>
+
+#include "core/json-doc.h"
+
+#ifdef RESIDUE_EXTENSION_WIN
+#   ifdef  RESIDUE_EXTENSION_LIB
+#      define RESIDUE_EXTENSION_API __declspec(dllexport)
+#   else
+#      define RESIDUE_EXTENSION_API __declspec(dllimport)
+#   endif
+#else
+#   define RESIDUE_EXTENSION_API
+#endif
 
 namespace residue {
 
-class Extension
+///
+/// \brief Abstract extension
+/// Please extend one of the base classes.
+///
+/// \note All the extensions derived from any of the base class should be unique and definitive. Any conflicting name loaded on server
+/// may crash the server. e.g, a <code>PostArchiveExtension</code> may be extended to a class called <code>SendToS3BucketExtension</code>
+///
+class RESIDUE_EXTENSION_API Extension
 {
-    static std::mutex s_extensionMutex;
 public:
-    Extension(const std::string& module, const std::string& func);
-
-    virtual ~Extension();
-
-    inline std::string module() const
+    ///
+    /// \brief Result of extension execution
+    ///
+    struct Result
     {
-        return m_module;
+        ///
+        /// \brief Status code of the execution
+        ///
+        int statusCode;
+
+        ///
+        /// \brief Whether process related to the execution should continue or not
+        ///
+        /// Some extensions do not honour this depending upon their type
+        ///
+        bool continueProcess;
+    };
+
+    ///
+    /// \brief Initialze extension by type and ID
+    /// \param id ID should be unique for each loaded extension.
+    ///
+    explicit Extension(unsigned int type, const std::string& id);
+
+    virtual ~Extension() = default;
+
+    Extension(const Extension&) = delete;
+    Extension(Extension&&) = delete;
+    Extension& operator=(const Extension&) = delete;
+    Extension& operator=(Extension&&) = delete;
+
+protected:
+
+    ///
+    /// \brief Constant access to configurations for this extension
+    ///
+    inline const JsonDoc& conf() const
+    {
+        return m_config;
     }
 
-    inline std::string func() const
+    ///
+    /// \brief Wrapper for Easylogging++ Level
+    ///
+    enum class LogLevel
     {
-        return m_func;
-    }
+        Trace = 2,
+        Debug = 4,
+        Error = 16,
+        Warning = 32,
+        Info = 128,
+        Verbose = 64
+    };
+
+    ///
+    /// \brief Write log using 'residue' logger
+    /// \param msg The log message
+    /// \param level Logging level
+    /// \param vlevel Verbose level if logging level is VERBOSE
+    ///
+    void writeLog(const std::string& msg, LogLevel level = LogLevel::Info, unsigned short vlevel = 0) const;
 
 private:
-    std::string m_module;
-    std::string m_func;
+    unsigned int m_type;
+    std::string m_id;
     std::atomic<bool> m_running;
-    std::thread m_worker;
     std::mutex m_mutex;
-    std::queue<std::string> m_scripts;
-protected:
-    void escape(std::string& str) const;
-    void executeScript(const std::string& script);
-    void work();
+    JsonDoc m_config;
+
+    friend class ResidueLogDispatcher;
+    friend class LogRotator;
+    friend class Configuration;
+
+    Result trigger(void*);
+
+    inline void setConfig(JsonDoc::Value&& j)
+    {
+        m_config.set(j);
+    }
+
+    ///
+    /// \brief Used internally to load the extension using libdl
+    ///
+    static Extension* load(const char*);
+
+    ///
+    /// \brief Used internally. You will override one of the base classes' execute function
+    ///
+    virtual Result executeWrapper(void*) = 0;
 };
+
 }
 
+///
+/// \brief Every extension must use this macro in source file
+///
+#define RESIDUE_EXTENSION(Name, Version)\
+    extern "C" RESIDUE_EXTENSION_API Name* create_extension()\
+    {\
+        static Name singl;\
+        return &singl;\
+    }
 
 #endif /* Extension_h */

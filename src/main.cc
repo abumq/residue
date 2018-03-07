@@ -44,7 +44,6 @@
 #include "core/residue-exception.h"
 #include "crash-handlers.h"
 #include "crypto/base64.h"
-#include "extensions/python.h"
 #include "logging/log-request-handler.h"
 #include "logging/log.h"
 #include "logging/residue-log-dispatcher.h"
@@ -153,7 +152,7 @@ void printVersion(bool addSpaces = false)
     std::cout << "-debug";
 #endif
 #ifdef RESIDUE_HAS_EXTENSIONS
-    std::cout << " (with extension support) [Python " << RESIDUE_PYTHON_VERSION << "]";
+    std::cout << " (with extension support)";
 #endif
     std::cout << "\n" << (addSpaces ? "  " : "") << "Built on "
               << __DATE__ << ", " << __TIME__ << std::endl;

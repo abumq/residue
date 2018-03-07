@@ -97,6 +97,8 @@ void Configuration::loadFromInput(std::string&& jsonStr)
     m_knownLoggerUserMap.clear();
     m_knownClientDefaultLogger.clear();
     m_logExtensions.clear();
+    m_preArchiveExtensions.clear();
+    m_postArchiveExtensions.clear();
     m_isMalformedJson = false;
     m_isValid = true;
 
@@ -111,7 +113,7 @@ void Configuration::loadFromInput(std::string&& jsonStr)
     }
     m_adminPort = m_jsonDoc.get<int>("admin_port", 8776);
     m_connectPort = m_jsonDoc.get<int>("connect_port", 8777);
-    m_loggingPort = m_jsonDoc.get<int>("logging_port", 8779);
+    m_loggingPort = m_jsonDoc.get<int>("logging_port", 8778);
     m_isValid = m_adminPort > 0 && m_connectPort > 0 && m_loggingPort > 0;
 
 
@@ -322,13 +324,8 @@ void Configuration::loadFromInput(std::string&& jsonStr)
 
 
  #ifdef RESIDUE_HAS_EXTENSIONS
-    JsonDoc::Value jExtensionsVal = m_jsonDoc.get<JsonDoc::Value>("extensions", JsonDoc::Value());
-    if (jExtensionsVal.isObject()) {
-        JsonDoc jExtensions(jExtensionsVal);
-        JsonDoc::Value jLogExtensions = jExtensions.get<JsonDoc::Value>("log_extensions", JsonDoc::Value());
-        if (jLogExtensions.isArray()) {
-            loadExtensions<LogExtension>(jLogExtensions, errorStream, &m_logExtensions);
-        }
+    if (m_jsonDoc.hasKey("extensions")) {
+        loadExtensions(m_jsonDoc.get<JsonDoc::Value>("extensions", JsonDoc::Value()), errorStream);
     }
  #endif
 
@@ -786,4 +783,75 @@ Configuration::RotationFrequency Configuration::getRotationFrequency(const std::
         return m_rotationFrequencies.at(loggerId);
     }
     return RotationFrequency::NEVER;
+}
+
+void Configuration::loadExtensions(const JsonDoc::Value& json, std::stringstream& errorStream)
+{
+
+    std::vector<std::string> ext;
+
+    for (const auto& extension : json) {
+        JsonDoc j(extension);
+
+        std::string name = j.get<std::string>("name", "");
+        if (name.empty()) {
+            errorStream << "  Must provide extension name" << std::endl;
+            continue;
+        }
+
+        std::string module = j.get<std::string>("module", "");
+        if (module.empty()) {
+            errorStream << "  Module path not provided" << std::endl;
+            continue;
+        }
+
+        RLOG(INFO) << "Loading [Extension<" << name << ">]";
+        Extension* e = Extension::load(module.c_str());
+        if (e == nullptr) {
+            RLOG(ERROR) << "Extension [" << module << "] failed to load: " << strerror(errno);
+            continue;
+        }
+
+        ExtensionType type = static_cast<ExtensionType>(e->m_type);
+        std::string typeName;
+        std::vector<Extension*>* list;
+        switch (type) {
+        case ExtensionType::LOG:
+            list = &m_logExtensions;
+            typeName = "LOG";
+            break;
+        case ExtensionType::PRE_ARCHIVE:
+            list = &m_preArchiveExtensions;
+            typeName = "PRE_ARCHIVE";
+            break;
+        case ExtensionType::POST_ARCHIVE:
+            list = &m_postArchiveExtensions;
+            typeName = "POST_ARCHIVE";
+            break;
+        default:
+            typeName = "UNKNOWN";
+            list = nullptr;
+        }
+        if (list == nullptr) {
+            errorStream << "  Unable to determine extension [" << name << "] type [" << type << "]";
+            continue;
+        }
+        std::string uniqName = std::to_string(e->m_type) + "/" + name;
+        if (std::find(ext.begin(), ext.end(), uniqName) != ext.end()) {
+            errorStream << "  Duplicate extension could not be loaded: " << name;
+        } else {
+            ext.push_back(uniqName);
+            if (j.hasKey("config")) {
+                JsonDoc::Value jextConfig = j.get<JsonDoc::Value>("config", JsonDoc::Value());
+                e->setConfig(std::move(jextConfig));
+            }
+
+            RLOG(INFO) << "Loaded [" << typeName << "::Extension<" << name << ">] loaded @ " << e;
+
+            list->push_back(e);
+        }
+    }
+
+    RLOG_IF(m_logExtensions.size() > 2, WARNING) << "You have " << m_logExtensions.size() << " log extensions enabled. "
+                                                    "This may slow down the server's log processing depending upon the time it takes to execute the extension.";
 }

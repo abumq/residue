@@ -41,7 +41,7 @@ void ReloadConfig::execute(std::vector<std::string>&& params, std::ostringstream
     } else if (hasParam(params, "--logger-id")) {
         const std::string loggerId = getParamValue(params, "--logger-id");
         if (loggerId.empty()) {
-            result << "Logger ID not provided";
+            result << "Logger ID not provided\n";
         } else {
             reloadLoggerConfig(loggerId, result);
         }
@@ -53,7 +53,7 @@ void ReloadConfig::reloadServerConfig(std::ostringstream& result) const
 {
     Configuration tmpConf(registry()->configuration()->configurationFile());
     if (tmpConf.isValid()) {
-        result << "Reloading configurations...";
+        result << "Reloading configurations...\n";
         registry()->reloadConfig();
     } else {
         result << "FAILED to reload configuration. There are errors in configuration file" << std::endl << tmpConf.errors();
@@ -64,15 +64,14 @@ void ReloadConfig::reloadLoggerConfig(const std::string& loggerId, std::ostrings
 {
     el::Logger* logger = el::Loggers::getLogger(loggerId, false);
     if (logger == nullptr) {
-        result << "Logger [" << loggerId << "] not yet registered";
+        result << "Logger [" << loggerId << "] not yet registered\n";
     } else {
         // we need to reload server config as logger config may have updated
         reloadServerConfig(result);
-        result << "\n";
         std::string confFile = registry()->configuration()->getConfigurationFile(loggerId);
         result << "Loading logger configuration...\n";
         el::Configurations config(confFile);
-        result << "Reconfiguring logger...";
+        result << "Reconfiguring logger...\n";
         el::Loggers::reconfigureLogger(logger, config);
         result << "Done!";
     }
