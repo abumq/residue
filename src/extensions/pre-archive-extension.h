@@ -48,7 +48,12 @@ public:
 
     explicit PreArchiveExtension(const std::string& id);
 
-    virtual Extension::Result execute(void*) override = 0;
+    virtual Extension::Result execute(Data*) = 0;
+private:
+    virtual Extension::Result executeWrapper(void* d) override
+    {
+        return execute(static_cast<Data*>(d));
+    }
 };
 }
 

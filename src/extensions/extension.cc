@@ -49,7 +49,7 @@ Extension::Result Extension::trigger(void* data)
     m_running = true;
     std::lock_guard<std::mutex> lock_(m_mutex);
     (void) lock_;
-    auto result = execute(data);
+    auto result = executeWrapper(data);
     m_running = false;
     return result;
 #else

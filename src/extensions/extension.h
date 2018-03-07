@@ -77,12 +77,6 @@ public:
     virtual ~Extension() = default;
 
 protected:
-    ///
-    /// \brief You will override this function for actual work
-    ///
-    /// Do not forget to use both 'virtual' and 'override' modifiers
-    ///
-    virtual Result execute(void*) = 0;
 
     ///
     /// \brief Constant access to configurations for this extension
@@ -131,7 +125,15 @@ private:
         m_config.set(j);
     }
 
+    ///
+    /// \brief Used internally to load the extension using libdl
+    ///
     static Extension* load(const char*);
+
+    ///
+    /// \brief Used internally. You will override one of the base classes' execute function
+    ///
+    virtual Result executeWrapper(void*) = 0;
 };
 
 }
