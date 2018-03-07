@@ -72,15 +72,21 @@ Extension* Extension::load(const char* path)
 
 #   pragma GCC diagnostic push
 #   pragma GCC diagnostic ignored "-Wpedantic"
+
     CreateExtensionFn create = reinterpret_cast<CreateExtensionFn>(dlsym(handle, "create_extension"));
+
 #   pragma GCC diagnostic pop
 
+    if (create == nullptr) {
+        RLOG(ERROR) << "Extension failed [" << path << "]. Missing RESIDUE_EXTENSION.";
+        return nullptr;
+    }
     Extension* e = create();
 
     const char* dlsymError = dlerror();
 
     if (dlsymError) {
-        RLOG(ERROR) << "Could not create extension. Did you forget to RESIDUE_EXTENSION(..., ...)? " << dlsymError;
+        RLOG(ERROR) << "Extension failed [" << path << "]. Hint: did you forget to RESIDUE_EXTENSION? " << dlsymError;
         return nullptr;
     }
     return e;
