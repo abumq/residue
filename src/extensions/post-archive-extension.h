@@ -34,9 +34,20 @@ namespace residue {
 class PostArchiveExtension : public Extension
 {
 public:
+    ///
+    /// \brief With each execution pointer to this data is passed in
+    /// to take advantage of it
+    ///
     struct Data
     {
+        ///
+        /// \brief Logger ID for which archive was created
+        ///
         std::string loggerId;
+
+        ///
+        /// \brief Full path to created archive
+        ///
         std::string archiveFilename;
     };
 
@@ -44,10 +55,7 @@ public:
 
     virtual Extension::Result execute(const Data* const) = 0;
 private:
-    virtual Extension::Result executeWrapper(void* d) override
-    {
-        return execute(static_cast<Data*>(d));
-    }
+    virtual Extension::Result executeWrapper(void* d) override;
 };
 }
 

@@ -27,3 +27,8 @@ LogExtension::LogExtension(const std::string& id)
     : Extension(1, id)
 {
 }
+
+Extension::Result LogExtension::executeWrapper(void* d)
+{
+    return execute(static_cast<LogExtension::Data*>(d));
+}

@@ -28,3 +28,8 @@ PostArchiveExtension::PostArchiveExtension(const std::string& id)
 {
 
 }
+
+Extension::Result PostArchiveExtension::executeWrapper(void* d)
+{
+    return execute(static_cast<PostArchiveExtension::Data*>(d));
+}

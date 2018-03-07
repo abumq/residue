@@ -28,3 +28,8 @@ PreArchiveExtension::PreArchiveExtension(const std::string& id)
 {
 
 }
+
+Extension::Result PreArchiveExtension::executeWrapper(void* d)
+{
+    return execute(static_cast<PreArchiveExtension::Data*>(d));
+}

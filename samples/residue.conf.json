@@ -67,6 +67,11 @@
             "config": {
                 "key": "abcd"
             }
+        },
+        {
+            "name": "sample-pre",
+            "module": "samples/extensions/pre-archive/simple.dylib",
+            "description": "A sample pre archive extension to show you how it works"
         }
     ]
 }
