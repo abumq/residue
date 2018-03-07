@@ -154,7 +154,7 @@ LogRotator::RotateTarget LogRotator::createRotateTarget(const std::string& logge
 
         std::unordered_set<std::string> fileByLevel;
 
-        std::map<std::string, std::set<std::string>> levelsInFilename;
+        std::unordered_map<std::string, std::set<std::string>> levelsInFilename;
 
         std::lock_guard<std::recursive_mutex> l(logger->lock());
 
@@ -248,7 +248,7 @@ void LogRotator::rotate(const std::string& loggerId)
 
     const RotateTarget rotateTarget = createRotateTarget(loggerId);
 
-    std::map<std::string, std::string> files;
+    std::unordered_map<std::string, std::string> files;
     el::Logger* logger = el::Loggers::getLogger(loggerId, false);
 
     if (logger != nullptr) {
@@ -320,7 +320,7 @@ void LogRotator::rotate(const std::string& loggerId)
     m_archiveItems.push_back({loggerId, rotateTarget.destinationDir + el::base::consts::kFilePathSeperator + rotateTarget.archiveFilename, files});
 }
 
-void LogRotator::archiveAndCompress(const std::string& loggerId, const std::string& archiveFilename, const std::map<std::string, std::string>& files) {
+void LogRotator::archiveAndCompress(const std::string& loggerId, const std::string& archiveFilename, const std::unordered_map<std::string, std::string>& files) {
     if (files.empty()) {
         RLOG(INFO) << "No file to archive for [" << loggerId << "]";
         return;
@@ -449,7 +449,7 @@ types::Time DailyLogRotator::calculateRoundOff(types::Time now) const
 types::Time WeeklyLogRotator::calculateRoundOff(types::Time now) const
 {
 
-    const std::map<std::string, int> WEEK_DAYS_MAP = {
+    const std::unordered_map<std::string, int> WEEK_DAYS_MAP = {
         { "Mon", 1 },
         { "Tue", 2 },
         { "Wed", 3 },
@@ -478,7 +478,7 @@ types::Time WeeklyLogRotator::calculateRoundOff(types::Time now) const
 types::Time MonthlyLogRotator::calculateRoundOff(types::Time now) const
 {
     const int year = atoi(Utils::formatTime(now, "%Y").c_str());
-    const std::map<int, int> LAST_DAY_OF_MONTH_MAP = {
+    const std::unordered_map<int, int> LAST_DAY_OF_MONTH_MAP = {
         { 1, 31 },
         { 2, year % 4 == 0 ? 29 : 28 },
         { 3, 31 },
@@ -517,7 +517,7 @@ types::Time MonthlyLogRotator::calculateRoundOff(types::Time now) const
 types::Time YearlyLogRotator::calculateRoundOff(types::Time now) const
 {
     const int year = atoi(Utils::formatTime(now, "%Y").c_str());
-    const std::map<int, int> LAST_DAY_OF_MONTH_MAP = {
+    const std::unordered_map<int, int> LAST_DAY_OF_MONTH_MAP = {
         { 1, 31 },
         { 2, year % 4 == 0 ? 29 : 28 },
         { 3, 31 },

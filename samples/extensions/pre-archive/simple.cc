@@ -12,7 +12,7 @@ Extension::Result SimplePre::execute(const PreArchiveExtension::Data* const data
         return {1, true};
     }
 	std::cout << "About to archive for logger: " << data->loggerId 
-                << "- number of files: " << data->files.size() 
+                << " number of files: " << data->files.size() 
                 << " to file " << data->archiveFilename << std::endl;
     if (data->files.size() > 0) {
         for (auto f : data->files) {

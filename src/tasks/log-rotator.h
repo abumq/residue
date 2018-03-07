@@ -22,7 +22,6 @@
 #ifndef LogRotator_h
 #define LogRotator_h
 
-#include <map>
 #include <vector>
 #include <unordered_map>
 #include <unordered_set>
@@ -43,7 +42,7 @@ public:
     {
         std::string loggerId;
         std::string archiveFilename;
-        std::map<std::string, std::string> files;
+        std::unordered_map<std::string, std::string> files;
     };
 
     struct BackupItem
@@ -84,7 +83,7 @@ private:
 
     void archiveAndCompress(const std::string&,
                             const std::string&,
-                            const std::map<std::string, std::string>&);
+                            const std::unordered_map<std::string, std::string>&);
 };
 
 #define DECL_LOG_ROTATOR(ID, NAME, FREQ)\

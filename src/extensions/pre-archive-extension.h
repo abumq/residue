@@ -23,7 +23,7 @@
 #define PreArchiveExtension_h
 
 #include <string>
-#include <map>
+#include <unordered_map>
 #include "extensions/extension.h"
 
 namespace residue {
@@ -59,7 +59,9 @@ public:
         ///
         /// \brief Map of files in the archive
         ///
-        std::map<std::string, std::string> files;
+        /// The map is full destination path with filename => destination filename
+        ///
+        std::unordered_map<std::string, std::string> files;
     };
 
     explicit PreArchiveExtension(const std::string& id);
