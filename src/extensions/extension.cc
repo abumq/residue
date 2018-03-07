@@ -21,11 +21,9 @@
 
 #include "extensions/extension.h"
 
-#ifndef RESIDUE_EXTENSION_LIB
-#   ifdef RESIDUE_HAS_EXTENSIONS
-#      include <dlfcn.h>
-#      include "logging/log.h"
-#   endif
+#if (!defined(RESIDUE_EXTENSION_LIB) && defined(RESIDUE_HAS_EXTENSIONS))
+#   include <dlfcn.h>
+#   include "logging/log.h"
 #endif
 
 using namespace residue;
@@ -40,30 +38,30 @@ Extension::Extension(unsigned int type, const std::string& id) :
 
 Extension::Result Extension::trigger(void* data)
 {
+#if (!defined(RESIDUE_EXTENSION_LIB) && defined(RESIDUE_HAS_EXTENSIONS))
     if (m_running) {
-#ifndef RESIDUE_EXTENSION_LIB
 #   ifdef RESIDUE_DEBUG
         DRVLOG(RV_WARNING) << "Extension [" << m_type << "/" << m_id << "] already running";
 #   endif
-#endif
-        return {1, true};
+        return {0, true};
     }
-#ifndef RESIDUE_EXTENSION_LIB
     RVLOG(RV_INFO) << "Executing extension [" << m_type << "/" << m_id << "]";
-#endif
     m_running = true;
     std::lock_guard<std::mutex> lock_(m_mutex);
     (void) lock_;
     auto result = execute(data);
     m_running = false;
     return result;
+#else
+    (void) data;
+    return {0, true};
+#endif
 }
 
 
 Extension* Extension::load(const char* path)
 {
-#ifndef RESIDUE_EXTENSION_LIB
-#   ifdef RESIDUE_HAS_EXTENSIONS
+#if (!defined(RESIDUE_EXTENSION_LIB) && defined(RESIDUE_HAS_EXTENSIONS))
     void* handle = dlopen(path, RTLD_LAZY);
 
     if (handle == nullptr) {
@@ -86,10 +84,6 @@ Extension* Extension::load(const char* path)
         return nullptr;
     }
     return e;
-#   else
-    (void) path;
-    return nullptr
-#   endif
 #else
     (void) path;
     return nullptr;
@@ -98,7 +92,7 @@ Extension* Extension::load(const char* path)
 
 void Extension::writeLog(const std::string& msg, LogLevel level, unsigned short vlevel) const
 {
-#ifndef RESIDUE_EXTENSION_LIB
+#if (!defined(RESIDUE_EXTENSION_LIB) && defined(RESIDUE_HAS_EXTENSIONS))
     if (level == LogLevel::Info) {
         RLOG(INFO) << "[Extension <" << m_id << ">] " << msg;
     } else if (level == LogLevel::Error) {
