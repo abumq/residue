@@ -61,17 +61,12 @@
     ],
     "extensions": [
         {
-            "name": "sample",
-            "module": "samples/extensions/log-extension/simple.dylib",
-            "description": "A simple sample for logging",
+            "name": "log-analyzer",
+            "module": "samples/extensions/log-analyzer/log-analyzer.dylib",
+            "description": "Analyzes the log and executes specific commands based on level",
             "config": {
-                "key": "abcd"
+                "error": "logger <msg>"
             }
-        },
-        {
-            "name": "sample-pre",
-            "module": "samples/extensions/pre-archive/simple.dylib",
-            "description": "A sample pre archive extension to show you how it works"
         }
     ]
 }
