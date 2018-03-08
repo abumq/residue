@@ -74,11 +74,13 @@ cd residue-2.1.0-darwin-x86_64/
 ```
 ## For linux
 $ sudo npm install -g residue-linux@latest
+sudo ln -s `which residue-linux` /usr/local/bin/residue
 ```
 
 ```
 ## For macOS
 $ sudo npm install -g residue-darwin@latest
+sudo ln -s `which residue-darwin` /usr/local/bin/residue
 ```
 
 ## Start Server
