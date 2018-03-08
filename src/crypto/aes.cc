@@ -52,7 +52,7 @@ std::string AES::decrypt(std::string& raw, const std::string& key, std::string& 
 
 std::string AES::encrypt(const std::string& plain, const std::string& key, const std::string& iv)
 {
-#ifdef RESIDUE_USE_MINE_DO_NOT_USE_BROKEN
+#ifdef RESIDUE_USE_MINE_DO_NOT_USE_BROKEN // see https://github.com/muflihun/mine/issues/11
     try {
         RLOG(INFO) << "Encrypting... " << plain;
         std::string ivCopy(iv);
