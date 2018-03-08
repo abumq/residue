@@ -22,6 +22,10 @@
 #include "extensions/extension.h"
 
 #if (!defined(RESIDUE_EXTENSION_LIB) && defined(RESIDUE_HAS_EXTENSIONS))
+#define RESIDUE_CORE_EXTENSION_ENABLED
+#endif
+
+#ifdef RESIDUE_CORE_EXTENSION_ENABLED
 #   include <dlfcn.h>
 #   include "logging/log.h"
 #endif
@@ -33,11 +37,14 @@ Extension::Extension(unsigned int type, const std::string& id) :
     m_id(id),
     m_running(false)
 {
+#ifdef RESIDUE_CORE_EXTENSION_ENABLED
+    RVLOG(RV_DEBUG_2) << "Initialized extension [" << m_type << "/" << m_id << "]";
+#endif
 }
 
 Extension::~Extension()
 {
-#if (!defined(RESIDUE_EXTENSION_LIB) && defined(RESIDUE_HAS_EXTENSIONS))
+#ifdef RESIDUE_CORE_EXTENSION_ENABLED
     if (m_running) {
         RVLOG(RV_WARNING) << "Extension [" << m_type << "/" << m_id << "] was running when it was terminated";
     }
@@ -48,7 +55,7 @@ Extension::~Extension()
 
 Extension::Result Extension::trigger(void* data)
 {
-#if (!defined(RESIDUE_EXTENSION_LIB) && defined(RESIDUE_HAS_EXTENSIONS))
+#ifdef RESIDUE_CORE_EXTENSION_ENABLED
     if (m_running) {
 #   ifdef RESIDUE_DEBUG
         DRVLOG(RV_WARNING) << "Extension [" << m_type << "/" << m_id << "] already running";
@@ -72,7 +79,7 @@ Extension::Result Extension::trigger(void* data)
 
 Extension* Extension::load(const char* path)
 {
-#if (!defined(RESIDUE_EXTENSION_LIB) && defined(RESIDUE_HAS_EXTENSIONS))
+#ifdef RESIDUE_CORE_EXTENSION_ENABLED
     void* handle = dlopen(path, RTLD_LAZY);
 
     if (handle == nullptr) {
@@ -111,7 +118,7 @@ Extension* Extension::load(const char* path)
 
 void Extension::writeLog(const std::string& msg, LogLevel level, unsigned short vlevel) const
 {
-#if (!defined(RESIDUE_EXTENSION_LIB) && defined(RESIDUE_HAS_EXTENSIONS))
+#ifdef RESIDUE_CORE_EXTENSION_ENABLED
     if (level == LogLevel::Info) {
         RLOG(INFO) << "[Extension <" << m_id << ">] " << msg;
     } else if (level == LogLevel::Error) {
@@ -131,3 +138,5 @@ void Extension::writeLog(const std::string& msg, LogLevel level, unsigned short 
     (void) vlevel;
 #endif
 }
+
+#undef RESIDUE_CORE_EXTENSION_ENABLED
