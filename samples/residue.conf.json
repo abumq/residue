@@ -63,9 +63,9 @@
         {
             "name": "log-analyzer",
             "module": "samples/extensions/log-analyzer/log-analyzer.dylib",
-            "description": "Analyzes the log and executes specific commands based on level",
+            "description": "Analyzes the log and executes specific commands based on logging level",
             "config": {
-                "error": "logger <msg>"
+                "error": "logger %msg"
             }
         }
     ]

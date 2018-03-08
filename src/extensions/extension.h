@@ -74,7 +74,7 @@ public:
     ///
     explicit Extension(unsigned int type, const std::string& id);
 
-    virtual ~Extension() = default;
+    virtual ~Extension();
 
     Extension(const Extension&) = delete;
     Extension(Extension&&) = delete;

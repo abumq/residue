@@ -35,6 +35,16 @@ Extension::Extension(unsigned int type, const std::string& id) :
 {
 }
 
+Extension::~Extension()
+{
+#if (!defined(RESIDUE_EXTENSION_LIB) && defined(RESIDUE_HAS_EXTENSIONS))
+    if (m_running) {
+        RVLOG(RV_WARNING) << "Extension [" << m_type << "/" << m_id << "] was running when it was terminated";
+    }
+    RVLOG(RV_DEBUG_2) << "Terminating extension [" << m_type << "/" << m_id << "]";
+#endif
+}
+
 
 Extension::Result Extension::trigger(void* data)
 {
@@ -45,12 +55,12 @@ Extension::Result Extension::trigger(void* data)
 #   endif
         return {0, true};
     }
-    RVLOG(RV_INFO) << "Executing extension [" << m_type << "/" << m_id << "]";
+    RVLOG(RV_DEBUG_2) << "Executing extension [" << m_type << "/" << m_id << "]";
     m_running = true;
     std::lock_guard<std::mutex> lock_(m_mutex);
     (void) lock_;
     auto result = executeWrapper(data);
-    RVLOG(RV_INFO) << "Finished execution of extension [" << m_type << "/" << m_id << "]";
+    RVLOG(RV_DEBUG_2) << "Finished execution of extension [" << m_type << "/" << m_id << "]";
     m_running = false;
     return result;
 #else
@@ -66,6 +76,8 @@ Extension* Extension::load(const char* path)
     void* handle = dlopen(path, RTLD_LAZY);
 
     if (handle == nullptr) {
+        const char* dlsymError = dlerror();
+        RLOG(ERROR) << "Cannot load extension [" << path << "]: " << (dlsymError ? dlsymError : "Unable to extract the error");
         return nullptr;
     }
 
@@ -79,7 +91,7 @@ Extension* Extension::load(const char* path)
 #   pragma GCC diagnostic pop
 
     if (create == nullptr) {
-        RLOG(ERROR) << "Extension failed [" << path << "]. Missing RESIDUE_EXTENSION.";
+        RLOG(ERROR) << "Extension failed [" << path << "]. Missing [RESIDUE_EXTENSION] from the extension.";
         return nullptr;
     }
     Extension* e = create();
