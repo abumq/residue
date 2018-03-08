@@ -13,11 +13,13 @@ You can download binary from [releases](https://github.com/muflihun/residue/rele
 ```
 ## For linux
 $ sudo npm install -g residue-linux@latest
+sudo ln -s `which residue-linux` /usr/local/bin/residue
 ```
 
 ```
 ## For macOS
 $ sudo npm install -g residue-darwin@latest
+sudo ln -s `which residue-darwin` /usr/local/bin/residue
 ```
 
 ## Direct
@@ -54,7 +56,7 @@ We set `RESIDUE_HOME` environment variable as they are needed by sample server c
 ```
 export RESIDUE_HOME=/usr/local/lib/node_modules/residue-linux/config/
 ## Following will line will set environment variable for node
-sudo RESIDUE_HOME=$RESIDUE_HOME residue-linux $RESIDUE_HOME/server.conf
+sudo RESIDUE_HOME=$RESIDUE_HOME residue $RESIDUE_HOME/server.conf
 ```
 
 ### Direct
