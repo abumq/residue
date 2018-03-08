@@ -26,6 +26,7 @@
 
 #ifdef RESIDUE_USE_MINE
 #   include "mine/mine.h"
+#   include "ripe/Ripe.h" // Mine encrypt is broken :(
 #else
 #   include "ripe/Ripe.h"
 #endif
@@ -51,8 +52,9 @@ std::string AES::decrypt(std::string& raw, const std::string& key, std::string& 
 
 std::string AES::encrypt(const std::string& plain, const std::string& key, const std::string& iv)
 {
-#ifdef RESIDUE_USE_MINE
+#ifdef RESIDUE_USE_MINE_DO_NOT_USE_BROKEN
     try {
+        RLOG(INFO) << "Encrypting... " << plain;
         std::string ivCopy(iv);
         mine::AES aes;
         std::string ciphertext = aes.encrypt(plain, key, ivCopy, mine::MineCommon::Encoding::Raw, mine::MineCommon::Encoding::Base64);
