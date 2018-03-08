@@ -106,6 +106,7 @@ void Configuration::loadFromInput(std::string&& jsonStr)
     std::stringstream errorStream;
 
     m_jsonDoc.parse(jsonStr);
+
     if (!m_jsonDoc.isValid()) {
         m_isMalformedJson = true;
         m_isValid = false;
@@ -180,12 +181,14 @@ void Configuration::loadFromInput(std::string&& jsonStr)
                                     (std::istreambuf_iterator<char>()));
                 rsaPublicKeyStream.close();
 
+                auto prikey = RSA::loadPrivateKey(rsaPrivateKey, rsaPrivateKeySecret);
+                auto pubkey = RSA::loadPublicKey(rsaPublicKey);
 
-                if (!RSA::verifyKeyPair(RSA::loadPrivateKey(rsaPrivateKey, rsaPrivateKeySecret), RSA::loadPublicKey(rsaPublicKey), rsaPrivateKeySecret)) {
+                if (!RSA::verifyKeyPair(prikey, pubkey, rsaPrivateKeySecret)) {
                     errorStream << "  Verify server key: Invalid RSA key pair.";
                 } else {
-                    m_serverRSAKey.privateKey = RSA::loadPrivateKey(rsaPrivateKey, rsaPrivateKeySecret);
-                    m_serverRSAKey.publicKey = RSA::loadPublicKey(rsaPublicKey);
+                    m_serverRSAKey.privateKey = prikey;
+                    m_serverRSAKey.publicKey = pubkey;
                     m_serverRSASecret = rsaPrivateKeySecret;
                 }
             }
@@ -788,7 +791,6 @@ Configuration::RotationFrequency Configuration::getRotationFrequency(const std::
 
 void Configuration::loadExtensions(const JsonDoc::Value& json, std::stringstream& errorStream)
 {
-
     std::vector<std::string> ext;
 
     for (const auto& extension : json) {
