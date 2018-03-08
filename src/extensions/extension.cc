@@ -21,8 +21,9 @@
 
 #include "extensions/extension.h"
 
+
 #if (!defined(RESIDUE_EXTENSION_LIB) && defined(RESIDUE_HAS_EXTENSIONS))
-#define RESIDUE_CORE_EXTENSION_ENABLED
+#   define RESIDUE_CORE_EXTENSION_ENABLED
 #endif
 
 #ifdef RESIDUE_CORE_EXTENSION_ENABLED
@@ -37,16 +38,14 @@ Extension::Extension(unsigned int type, const std::string& id) :
     m_id(id),
     m_running(false)
 {
-#ifdef RESIDUE_CORE_EXTENSION_ENABLED
-    RVLOG(RV_DEBUG_2) << "Initialized extension [" << m_type << "/" << m_id << "]";
-#endif
+    // note: does not log anything here
 }
 
 Extension::~Extension()
 {
 #ifdef RESIDUE_CORE_EXTENSION_ENABLED
     if (m_running) {
-        RVLOG(RV_WARNING) << "Extension [" << m_type << "/" << m_id << "] was running when it was terminated";
+        RVLOG(RV_DEBUG_2) << "Extension [" << m_type << "/" << m_id << "] was running when it was terminated";
     }
     RVLOG(RV_DEBUG_2) << "Terminating extension [" << m_type << "/" << m_id << "]";
 #endif
@@ -101,6 +100,8 @@ Extension* Extension::load(const char* path)
         RLOG(ERROR) << "Extension failed [" << path << "]. Missing [RESIDUE_EXTENSION] from the extension.";
         return nullptr;
     }
+
+    DRLOG(TRACE) << "Creating extension...";
     Extension* e = create();
 
     const char* dlsymError = dlerror();

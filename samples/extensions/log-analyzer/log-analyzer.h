@@ -12,7 +12,9 @@ public:
 	static const std::string kFormattedMsgFormatSpecifier;
 
 	LogAnalyzer() : LogExtension("log-analyzer") 
-	{}
+	{
+		
+	}
 	
 	virtual ~LogAnalyzer() = default;
 

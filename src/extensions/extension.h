@@ -22,12 +22,6 @@
 #ifndef Extension_h
 #define Extension_h
 
-#include <atomic>
-#include <mutex>
-#include <string>
-
-#include "core/json-doc.h"
-
 #ifdef RESIDUE_EXTENSION_WIN
 #   ifdef  RESIDUE_EXTENSION_LIB
 #      define RESIDUE_EXTENSION_API __declspec(dllexport)
@@ -37,6 +31,12 @@
 #else
 #   define RESIDUE_EXTENSION_API
 #endif
+
+#include <atomic>
+#include <mutex>
+#include <string>
+
+#include "core/json-doc.h"
 
 namespace residue {
 
