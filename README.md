@@ -31,11 +31,6 @@ Residue is fully configurable and supports high-level security, compression and 
 You can choose to integrate similar solutions like [`rsyslog`](https://github.com/rsyslog/rsyslog) however residue has a lot of other built-in features that other solutions may lack, like built-in log rotation, bulk message forwarding etc. See [Features](#features) section for details. 
 
 # Features
-This above diagram in [Overview](#overview) section only shows a very high-level picture of what residue server does. There are details around each area for example:
-
- * `Send Log` is sent as JSON packet, residue takes care of formatting it, processing the batch of requests (aka bulk request)
- * `Scheduled Backups` can be configured so that residue can act as auto-log-rotator, for example you can [set the format](/docs/CONFIGURATION.md#archived_log_compressed_filename) in a way that logs get rotated weekly and each day in that week has it's own backup.
- 
 Some of the notable features are listed below
 
  * Lightweight: Residue is very light on CPU and RAM. On start-up it will only take approx 2mb of RAM and while running it will keep the memory as clean as possible using as low CPU as possible.
@@ -50,99 +45,7 @@ Some of the notable features are listed below
  * There are many more features available. Please feel free to download your copy of residue binary and give it a try.
 
 # Getting Started
-## Download Binary
-
-### Direct
-[Download latest release](https://github.com/muflihun/residue/releases/latest) for your platform
-
-```
-## For linux
-wget https://github.com/muflihun/residue/releases/download/v2.1.0/residue-2.1.0-linux-x86_64.tar.gz
-tar -xf residue-2.1.0-linux-x86_64.tar.gz
-cd residue-2.1.0-linux-x86_64/
-```
-
-```
-## For macOS
-wget https://github.com/muflihun/residue/releases/download/v2.1.0/residue-2.1.0-darwin-x86_64.tar.gz
-tar -xf residue-2.1.0-darwin-x86_64.tar.gz
-cd residue-2.1.0-darwin-x86_64/
-```
-
-### Using NPM
-
-```
-## For linux
-$ sudo npm install -g residue-linux@latest
-sudo ln -s `which residue-linux` /usr/local/bin/residue
-```
-
-```
-## For macOS
-$ sudo npm install -g residue-darwin@latest
-sudo ln -s `which residue-darwin` /usr/local/bin/residue
-```
-
-## Start Server
-### Direct
-Start server using this configuration
-
-```
-pwd # check current working directory to set RESIDUE_HOME
-export RESIDUE_HOME=`pwd`
-sudo ./residue config/server.conf
-```
-
-### Using NPM
-If you downloaded Residue binary using NPM, you can use following lines to start server with sample configs.
-
-You will need to find out where global packages for NPM are installed (use `npm root -g`)
-
-If you are using residue extensions you will also need to update `LD_LIBRARY_PATH` environment variable where libresidue-extension is located.
-
-```
-export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:/usr/local/lib/node_modules/residue-linux/
-```
-
-We set `RESIDUE_HOME` environment variable as they are needed by sample server config. `RESIDUE_HOME` is usually the root for residue configurations.
-
-```
-export RESIDUE_HOME=/usr/local/lib/node_modules/residue-linux/config/
-## Following will line will set environment variable for node
-sudo RESIDUE_HOME=$RESIDUE_HOME residue-linux $RESIDUE_HOME/server.conf
-```
-
-## Send Logs
-Open another terminal and start sending log requests using sample client logger
-
-```
-wget https://github.com/muflihun/muflihun.github.io/raw/master/downloads/sample-logger.tar.gz
-tar -xf sample-logger.tar.gz
-./sample-logger/linux/residue-logger --conf=sample-logger/conf.json
-```
-
-This sample sends using `default` logger. Source code for this sample client logger can be found @ [Residue C++ samples](https://github.com/muflihun/residue-cpp/blob/master/samples/minimal/main.cc)
-
-## View Logs
-You can tail your logs using
-
-```
-tail -f /tmp/logs/residue.log
-``` 
-# Supported Platforms
-Residue binaries are tested on the following platforms. 
-
- * Ubuntu 14.04 or higher (64-bit)
- * macOS 10.11 (El Capitan) or higher (64-bit)
- * Amazon Linux AMI 2017.03 or higher
- * Fedora 24 or higher (64-bit)
- * Fedora 19 or higher (64-bit)
- * CentOS 7 or higher (64-bit)
- 
-Other distributions that _should_ work (but have not yet been tested)
- * Oracle Linux
- * RHEL 7 or higher (64-bit)
- * Amazon Linux AMI 2016.03
+Please see [INSTALL.md](/docs/INSTALL.md#download-binary) to get started now.
 
 # Compatibility And Integration
 No matter what language is your application written in, residue is compatible and can be used as central logging server. All you need is client library. You can either write your own using [CLIENT_DEVELOPMENT.md](/docs/CLIENT_DEVELOPMENT.md) guidelines or use [one of the existing ones](https://github.com/search?q=topic%3Aresidue-client+org%3Amuflihun&type=Repositories).
