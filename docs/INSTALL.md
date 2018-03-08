@@ -6,14 +6,14 @@
 Residue can be installed either by building from the source or by downloading the binaries from respective releases.
 
 # Supported Platforms
-Residue has been tested on following platforms and should work on other major distributions (that are not listed here)
+Residue **has been tested** on the following platforms and should work on other major distributions (that are not listed here) especially the higher versions of listed platforms
 
 ## Linux
- * Ubuntu 14.04 or higher (64-bit)
- * Amazon Linux AMI 2017.03 or higher
- * Fedora 24 or higher (64-bit)
- * Fedora 19 or higher (64-bit)
- * CentOS 7 or higher (64-bit)
+ * Ubuntu 14.04 (64-bit)
+ * Amazon Linux AMI 2017.03
+ * Fedora 19 (64-bit)
+ * Fedora 24 (64-bit)
+ * CentOS 7 (64-bit)
  
 Other distributions that _should_ work (but have not yet been tested)
  * Oracle Linux
@@ -23,7 +23,7 @@ Other distributions that _should_ work (but have not yet been tested)
 ## macOS
  * macOS 10.13 (High Sierra) (64-bit)
  
-Other distributions that _should_ work (but have not yet been tested)
+Other distributions that _should_ work (but have not yet been tested) - you may need to rebuild from source
  * macOS 10.11 (El Capitan) (64-bit)
  * macOS 10.12 (Sierra) (64-bit)
 
