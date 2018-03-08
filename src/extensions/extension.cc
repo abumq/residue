@@ -101,7 +101,6 @@ Extension* Extension::load(const char* path)
         return nullptr;
     }
 
-    DRLOG(TRACE) << "Creating extension...";
     Extension* e = create();
 
     const char* dlsymError = dlerror();
