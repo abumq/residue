@@ -50,6 +50,7 @@ Extension::Result Extension::trigger(void* data)
     std::lock_guard<std::mutex> lock_(m_mutex);
     (void) lock_;
     auto result = executeWrapper(data);
+    RVLOG(RV_INFO) << "Finished execution of extension [" << m_type << "/" << m_id << "]";
     m_running = false;
     return result;
 #else
