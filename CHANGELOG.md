@@ -4,8 +4,9 @@
 ### Extensions API
 - Added `LogExtension::Level` enum for readability of `LogExtension::Data::level`
 
-### Extensions Updates
+### Core Updates
 - Log message when execution of extension finished
+- Updated invalid ports message
 
 ## [2.1.0] - 07-03-2018
 ### Fixed

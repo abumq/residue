@@ -119,7 +119,7 @@ void Configuration::loadFromInput(std::string&& jsonStr)
 
 
     if (!m_isValid) {
-        errorStream  << "  Invalid port(s). Please choose all 4 valid ports." << std::endl;
+        errorStream  << "  Invalid port(s). Please choose all 3 valid ports." << std::endl;
     }
 
     if (m_jsonDoc.get<bool>("enable_cli", true)) {
