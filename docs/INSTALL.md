@@ -5,33 +5,55 @@
 # Overview
 Residue can be installed either by building from the source or by downloading the binaries from respective releases.
 
+# Supported Platforms
+Residue has been tested on following platforms and should work on other major distributions (that are not listed here)
+
+## Linux
+ * Ubuntu 14.04 or higher (64-bit)
+ * Amazon Linux AMI 2017.03 or higher
+ * Fedora 24 or higher (64-bit)
+ * Fedora 19 or higher (64-bit)
+ * CentOS 7 or higher (64-bit)
+ 
+Other distributions that _should_ work (but have not yet been tested)
+ * Oracle Linux
+ * RHEL 7 or higher (64-bit)
+ * Amazon Linux AMI 2016.03
+
+## macOS
+ * macOS 10.13 (High Sierra) (64-bit)
+ 
+Other distributions that _should_ work (but have not yet been tested)
+ * macOS 10.11 (El Capitan) (64-bit)
+ * macOS 10.12 (Sierra) (64-bit)
+
 # Download Binary
 You can download binary from [releases](https://github.com/muflihun/residue/releases) page for your platform. They are standalone binaries but they require some external libraries installed that are mentioned with each release notes. Most of these external libraries come with respective operating system distributions.
 
-## Using NPM
+## Via NPM
 
+### Linux
 ```
-## For linux
 $ sudo npm install -g residue-linux@latest
 sudo ln -s `which residue-linux` /usr/local/bin/residue
 ```
 
+### macOS
 ```
-## For macOS
 $ sudo npm install -g residue-darwin@latest
 sudo ln -s `which residue-darwin` /usr/local/bin/residue
 ```
 
 ## Direct
+### Linux
 ```
-## For linux
 wget https://github.com/muflihun/residue/releases/download/v2.1.0/residue-2.1.0-linux-x86_64.tar.gz
 tar -xf residue-2.1.0-linux-x86_64.tar.gz
 cd residue-2.1.0-linux-x86_64/
 ```
 
+### macOS
 ```
-## For macOS
 wget https://github.com/muflihun/residue/releases/download/v2.1.0/residue-2.1.0-darwin-x86_64.tar.gz
 tar -xf residue-2.1.0-darwin-x86_64.tar.gz
 cd residue-2.1.0-darwin-x86_64/
@@ -39,9 +61,8 @@ cd residue-2.1.0-darwin-x86_64/
 
 ## Start Server
 
-### Using NPM
+### Via NPM
 If you downloaded Residue binary using NPM, you can use following lines to start server with sample configs.
-
 
 You will need to find out where global packages for NPM are installed (use `npm root -g`)
 
@@ -74,6 +95,35 @@ If you are using residue extensions you will also need to update `LD_LIBRARY_PAT
 ```
 sudo ./residue config/server.conf
 ```
+## Sample Client
+## Download
+Open another terminal and start sending log requests using sample client logger
+
+```
+wget https://github.com/muflihun/muflihun.github.io/raw/master/downloads/sample-logger.tar.gz
+tar -xf sample-logger.tar.gz
+```
+
+## Send Logs
+
+### Linux
+```
+./sample-logger/linux/residue-logger --conf=sample-logger/conf.json
+```
+
+### macOS
+```
+./sample-logger/darwin/residue-logger --conf=sample-logger/conf.json
+```
+
+This sample sends using `default` logger. Source code for this sample client logger can be found @ [Residue C++ samples](https://github.com/muflihun/residue-cpp/blob/master/samples/minimal/main.cc)
+
+## View Logs
+You can tail your logs using
+
+```
+tail -f /tmp/logs/residue.log
+``` 
 
 # Building From Source
 You can follow steps below to build and install residue server on your machine.
