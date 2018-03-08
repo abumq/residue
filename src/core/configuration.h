@@ -32,7 +32,6 @@
 #include "core/client.h"
 #include "core/json-doc.h"
 #include "crypto/rsa.h"
-#include "extensions/log-extension.h"
 #include "non-copyable.h"
 
 namespace residue {
@@ -40,6 +39,7 @@ namespace residue {
 class AdminRequestHandler;
 class UserLogBuilder;
 class LogRequest;
+class Extension;
 
 ///
 /// \brief Residue server configuration

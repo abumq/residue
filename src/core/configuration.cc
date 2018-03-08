@@ -37,6 +37,7 @@
 #include "crypto/aes.h"
 #include "crypto/base16.h"
 #include "crypto/rsa.h"
+#include "extensions/extension.h"
 #include "logging/log-request.h"
 #include "logging/log.h"
 #include "net/http-client.h"
