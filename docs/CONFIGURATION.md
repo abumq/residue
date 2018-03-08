@@ -72,10 +72,14 @@ Default: `8776`
 
 Default: `8777`
 
+[Learn more...](/docs/configurations/connect_port.md)
+
 ### `logging_port`
 [Integer] Port that logging server listens to. This is where all the log requests are sent.
 
 Default: `8778`
+
+[Learn more...](/docs/configurations/logging_port.md)
 
 ### `default_key_size`
 [Integer] Default symmetric key size (`128`, `192` or `256`) for clients that do not specify key size. See [`key_size`](#known_clientskey_size)
