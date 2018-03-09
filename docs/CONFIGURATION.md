@@ -87,8 +87,6 @@ Default: `8778`
 
 Default: `256`
 
-[Learn more...](/docs/configurations/default_key_size.md)
-
 ### `server_key`
 [String] A 256-bit server key that is used for admin services. See [`admin_port`](#admin_port)
 
@@ -302,14 +300,10 @@ This is useful when client libraries connecting cannot handle bigger sizes, e.g,
 
 See [`default_key_size`](#default_key_size)
 
-[Learn more...](/docs/configurations/known_clients/key_size.md)
-
 #### `known_clients`::`loggers`
 [Optional, Array] Object of logger IDs that must be present in [`known_loggers`](#known_loggers) array.
 
 This is to map the client with multiple loggers. Remember, client is not validated against the logger using this array, this is only for extra information.
-
-[Learn more...](/docs/configurations/known_clients/loggers.md)
 
 #### `known_clients`::`default_logger`
 [String] Default logger for the client. This is useful when logging using unknown logger but connected as known client. The configurations from this logger is used.
@@ -317,8 +311,6 @@ This is to map the client with multiple loggers. Remember, client is not validat
 Default: `default`
 
 See [`known_clients::loggers`](#known_clientsloggers)
-
-[Learn more...](/docs/configurations/known_clients/default_logger.md)
 
 #### `known_clients`::`user`
 [String] Linux / macOS user. All the log files associated to the corresponding loggers will belong to this user with `RW-R-----` permissions (subject to `file_mode` config)
