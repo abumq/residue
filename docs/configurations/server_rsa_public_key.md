@@ -10,7 +10,7 @@
 Once you have generated the private key, you can extract public key from it using following OpenSSL commands:
 
 ```
-openssl rsa -in private.pem -outform PEM -pubout -out public.pem
+openssl rsa -in server-priv.pem -outform PEM -pubout -out server.pem
 ```
 
 ## `RESIDUE_HOME`
