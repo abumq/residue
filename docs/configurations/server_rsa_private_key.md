@@ -33,5 +33,9 @@ ripe -g --rsa --length 8192 --out-public server-priv.pem --out-private server-pr
 ## Note
 You should have big enough key to cover for unknown clients. Remember, unknown clients will need to send their public key in initial request, which makes request quite bigger.
 
+## See Also
+ * [`server_rsa_public_key`](/docs/CONFIGURATION.md#server_rsa_public_key)
+ * [`server_rsa_secret`](/docs/CONFIGURATION.md#server_rsa_secret)
+
 [🏠 Configurations](/docs/CONFIGURATION.md)
 
