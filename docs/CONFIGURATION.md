@@ -230,14 +230,14 @@ Default: It must be provided by the user
 
 Default: It must be provided by the user
 
-[Learn more...](/docs/configurations/archived_log_directory.md)
+[Learn more...](/docs/configurations/archived_log_filename.md)
 
 ### `archived_log_compressed_filename`
 [String] Filename for compressed archived log files. It should not contain `/` or `\` characters.
 
 Default: It must be provided by the user
 
-[Learn more...](/docs/configurations/known_clients/#known_clients)
+[Learn more...](/docs/configurations/archived_log_compressed_filename.md)
 
 ### `known_clients`
 [Array] Object of client that are known to the server. These clients will have allocated RSA public key that will be used to transfer the symmetric key.
