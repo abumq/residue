@@ -158,6 +158,10 @@ void Configuration::loadFromInput(std::string&& jsonStr)
         RLOG(WARNING) << "You have disabled 'requires_timestamp'. Your server is prone to replay attack.";
     }
 
+    if (m_jsonDoc.get<bool>("enable_dynamic_buffer", false)) {
+        addFlag(Configuration::Flag::ENABLE_DYNAMIC_BUFFER);
+    }
+
     m_serverKey = m_jsonDoc.get<std::string>("server_key", AES::generateKey(256));
 
     if (m_serverKey.size() != 64) {

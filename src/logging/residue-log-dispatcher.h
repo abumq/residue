@@ -26,6 +26,7 @@
 #include <mutex>
 #include <unordered_map>
 
+#include "core/configuration.h"
 #include "extensions/log-extension.h"
 #include "extensions/dispatch-error-extension.h"
 #include "logging/log.h"
@@ -50,8 +51,7 @@ public:
     using FailedLogs = std::vector<std::string>;
 
     ResidueLogDispatcher() :
-        m_configuration(nullptr),
-        m_enableDynamicBuffer(true)
+        m_configuration(nullptr)
     {
     }
 
@@ -94,7 +94,7 @@ public:
                                 RLOG_IF(logger->id() != RESIDUE_LOGGER_ID, INFO)
                                         << "Failed to access file [ " << fn << "]! " << std::strerror(errno);
 
-                                if (m_enableDynamicBuffer) {
+                                if (m_configuration->hasFlag(Configuration::ENABLE_DYNAMIC_BUFFER)) {
                                     std::lock_guard<std::mutex> lock(m_dynamicBufferLock);
                                     if (m_dynamicBuffer.find(fn) == m_dynamicBuffer.end()) {
                                         m_dynamicBuffer.insert(std::make_pair(fn, FailedLogs()));
@@ -117,7 +117,7 @@ public:
                                     << "Failed to create file [" << fn << "] [Logger: "
                                     << logger->id() << "] " << std::strerror(errno);
 
-                            if (m_enableDynamicBuffer) {
+                            if (m_configuration->hasFlag(Configuration::ENABLE_DYNAMIC_BUFFER)) {
                                 std::lock_guard<std::mutex> lock(m_dynamicBufferLock);
                                 if (m_dynamicBuffer.find(fn) == m_dynamicBuffer.end()) {
                                     m_dynamicBuffer.insert(std::make_pair(fn, FailedLogs()));
@@ -142,7 +142,7 @@ public:
                                 << "Failed to write to file [" << fn << "] [Logger: "
                                 << logger->id() << "] " << std::strerror(errno);
 
-                        if (m_enableDynamicBuffer) {
+                        if (m_configuration->hasFlag(Configuration::ENABLE_DYNAMIC_BUFFER)) {
                             std::lock_guard<std::mutex> lock(m_dynamicBufferLock);
                             if (m_dynamicBuffer.find(fn) == m_dynamicBuffer.end()) {
                                 m_dynamicBuffer.insert(std::make_pair(fn, FailedLogs()));
@@ -201,7 +201,6 @@ public:
 
 private:
     Configuration* m_configuration;
-    bool m_enableDynamicBuffer;
     // map of filename -> FailedLogLine
     std::unordered_map<std::string, FailedLogs> m_dynamicBuffer;
     std::mutex m_dynamicBufferLock;

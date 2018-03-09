@@ -59,6 +59,7 @@ public:
         COMPRESSION = 256,
         ENABLE_CLI = 512,
         REQUIRES_TIMESTAMP = 1024,
+        ENABLE_DYNAMIC_BUFFER = 2048,
     };
 
     enum RotationFrequency : types::Time
