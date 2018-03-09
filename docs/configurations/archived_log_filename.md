@@ -2,7 +2,7 @@
    ﷽
 </p>
 
-[🏠 Configurations](/docs/CONFIGURATION.md)
+[← Configurations](/docs/CONFIGURATION.md)
 
 # archived_log_filename
 [String] Default filename for archived log files.
@@ -25,5 +25,5 @@ Default: It must be provided by the user
 
 Example: `%level-%hour-%min-%day-%month-%year.log`
 
-[🏠 Configurations](/docs/CONFIGURATION.md)
+[← Configurations](/docs/CONFIGURATION.md)
 

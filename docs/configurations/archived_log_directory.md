@@ -2,7 +2,7 @@
    ﷽
 </p>
 
-[🏠 Configurations](/docs/CONFIGURATION.md)
+[← Configurations](/docs/CONFIGURATION.md)
 
 # archived_log_directory
 [String] Default destination for archived logs files
@@ -24,5 +24,5 @@ Default: It must be provided by the user
 
 Example: `%original/backups/%logger/`
 
-[🏠 Configurations](/docs/CONFIGURATION.md)
+[← Configurations](/docs/CONFIGURATION.md)
 

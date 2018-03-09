@@ -2,7 +2,7 @@
    ﷽
 </p>
 
-[🏠 Configurations](/docs/CONFIGURATION.md)
+[← Configurations](/docs/CONFIGURATION.md)
 
 # known_clients ↴
 ## client_id

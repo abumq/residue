@@ -2,7 +2,7 @@
    ﷽
 </p>
 
-[🏠 Configurations](/docs/CONFIGURATION.md)
+[← Configurations](/docs/CONFIGURATION.md)
 
 # connect_port
 [Integer] Port that connection server listens to. All the connection requests are sent to this port and handled accordingly. This is the port that all the clients libraries initially connect to.
@@ -22,5 +22,5 @@ This server is responsible for following tasks
 ## Summary
 In summary, this port / server is responsible for keeping the connection between client and the residue core healthy. 
 
-[🏠 Configurations](/docs/CONFIGURATION.md)
+[← Configurations](/docs/CONFIGURATION.md)
 

@@ -2,7 +2,7 @@
    ﷽
 </p>
 
-[🏠 Configurations](/docs/CONFIGURATION.md)
+[← Configurations](/docs/CONFIGURATION.md)
 
 # server_rsa_public_key
 [String] Corresponding public key for `server_rsa_private_key`. You can use `$RESIDUE_HOME` environment variable in this file path.
@@ -19,5 +19,5 @@ openssl rsa -in server-priv.pem -outform PEM -pubout -out server.pem
 ## See Also
  * [`server_rsa_private_key`](/docs/CONFIGURATION.md#server_rsa_private_key)
 
-[🏠 Configurations](/docs/CONFIGURATION.md)
+[← Configurations](/docs/CONFIGURATION.md)
 

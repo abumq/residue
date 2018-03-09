@@ -2,7 +2,7 @@
    ﷽
 </p>
 
-[🏠 Configurations](/docs/CONFIGURATION.md)
+[← Configurations](/docs/CONFIGURATION.md)
 
 # server_rsa_secret
 [String] If private key is encrypted, this is the secret (passphrase) to decrypt it. **THIS SHOULD BE HEX ENCODED**
@@ -42,5 +42,5 @@ If you use hexdump, make sure you do not include last byte (it's a null-characte
 ## See Also
  * [`server_rsa_private_key`](/docs/CONFIGURATION.md#server_rsa_private_key)
 
-[🏠 Configurations](/docs/CONFIGURATION.md)
+[← Configurations](/docs/CONFIGURATION.md)
 

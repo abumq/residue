@@ -2,7 +2,7 @@
    ﷽
 </p>
 
-[🏠 Configurations](/docs/CONFIGURATION.md)
+[← Configurations](/docs/CONFIGURATION.md)
 
 # compression
 [Boolean] Specifies whether compression is enabled or not.
@@ -28,5 +28,5 @@ This is because lossless-compression is done on similar bytes. If you wish to kn
 ## See Also
  * [`allow_bulk_log_request`](/docs/CONFIGURATION.md#allow_bulk_log_request)
 
-[🏠 Configurations](/docs/CONFIGURATION.md)
+[← Configurations](/docs/CONFIGURATION.md)
 

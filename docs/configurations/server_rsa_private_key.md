@@ -2,7 +2,7 @@
    ﷽
 </p>
 
-[🏠 Configurations](/docs/CONFIGURATION.md)
+[← Configurations](/docs/CONFIGURATION.md)
 
 # server_rsa_private_key
 [Optional, String] RSA private key (PEM format file path). You can use `$RESIDUE_HOME` environment variable in this file path. If provided, it is used to read initial requests for extra security.
@@ -37,5 +37,5 @@ You should have big enough key to cover for unknown clients. Remember, unknown c
  * [`server_rsa_public_key`](/docs/CONFIGURATION.md#server_rsa_public_key)
  * [`server_rsa_secret`](/docs/CONFIGURATION.md#server_rsa_secret)
 
-[🏠 Configurations](/docs/CONFIGURATION.md)
+[← Configurations](/docs/CONFIGURATION.md)
 

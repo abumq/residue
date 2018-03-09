@@ -2,7 +2,7 @@
    ﷽
 </p>
 
-[🏠 Configurations](/docs/CONFIGURATION.md)
+[← Configurations](/docs/CONFIGURATION.md)
 
 # archived_log_compressed_filename
 [String] Filename for compressed archived log files. It should not contain `/` or `\` characters.
@@ -23,5 +23,5 @@ Default: It must be provided by the user
 
 Example: `%hour-%min-%day-%month-%year.tar.gz`
 
-[🏠 Configurations](/docs/CONFIGURATION.md)
+[← Configurations](/docs/CONFIGURATION.md)
 

@@ -2,7 +2,7 @@
    ﷽
 </p>
 
-[🏠 Configurations](/docs/CONFIGURATION.md)
+[← Configurations](/docs/CONFIGURATION.md)
 
 # file_mode
 [Integer] File mode is default permissions for log file.
@@ -37,5 +37,5 @@ You must have:
 ## See Also
  * [ArchLinux Documentation](https://wiki.archlinux.org/index.php/File_permissions_and_attributes)
 
-[🏠 Configurations](/docs/CONFIGURATION.md)
+[← Configurations](/docs/CONFIGURATION.md)
 

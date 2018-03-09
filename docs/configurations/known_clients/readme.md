@@ -2,7 +2,7 @@
    ﷽
 </p>
 
-[🏠 Configurations](/docs/CONFIGURATION.md)
+[← Configurations](/docs/CONFIGURATION.md)
 
 # known_clients
 [Array] Known clients are managed clients that server already knows some information about. This speeds up connection, makes it secure and most of all helps to personalize your log files. Known clients can be rest assured that no one else can have access to their logs or their keys etc.
@@ -39,5 +39,5 @@ This is a complete known client (i.e, all the necessary as well as optional fiel
  * [`default_key_size`](/docs/CONFIGURATION.md#default_key_size)
  * [`known_loggers`](/docs/CONFIGURATION.md#known_loggers)
 
-[🏠 Configurations](/docs/CONFIGURATION.md)
+[← Configurations](/docs/CONFIGURATION.md)
 
