@@ -87,6 +87,8 @@ Default: `8778`
 
 Default: `256`
 
+[Learn more...](/docs/configurations/default_key_size.md)
+
 ### `server_key`
 [String] A 256-bit server key that is used for admin services. See [`admin_port`](#admin_port)
 
@@ -95,17 +97,7 @@ Default: Randomly generated and residue outputs it in start-up
 ### `server_rsa_private_key`
 [Optional, String] RSA private key (PEM format file path). You can use `$RESIDUE_HOME` environment variable in this file path. If provided, it is used to read initial requests for extra security.
 
-Note: You should have big enough key to cover for unknown clients. Remember, unknown clients will need to send their public key in initial request, which makes request quite bigger.
-
-You can use following ripe command to generate the key (this will generate 8192-bit key which can encrypt 1013 bytes to data)
-
-```
-ripe -g --rsa --length 8192 --out-public server-public.pem --out-private server-private.pem
-```
-
-Alternatively, you can use openssl command-line tool.
-
-See [Ripe](https://github.com/muflihun/ripe#readme) for more details.
+[Learn more...](/docs/configurations/server_rsa_private_key.md)
 
 ### `server_rsa_public_key`
 [String] Corresponding public key for [`server_rsa_private_key`](#server_rsa_private_key). You can use `$RESIDUE_HOME` environment variable in this file path.
