@@ -293,13 +293,19 @@ Example: `%hour-%min-%day-%month-%year.tar.gz`
 ### `known_clients`
 [Array] Object of client that are known to the server. These clients will have allocated RSA public key that will be used to transfer the symmetric key.
 
+[Learn more...](/docs/configurations/known_clients/#known_clients)
+
 #### `known_clients`::`client_id`
-[String] The client ID (should be alpha-numeric and can include `-`, `_`, `@` and `#` symbols)
+[String] The client ID (should be alpha-numeric and can include `-`, `_`, `@`, `.` and `#` symbols)
+
+[Learn more...](/docs/configurations/known_clients/client_id.md)
 
 #### `known_clients`::`public_key`
 [String] Path to RSA public key file for associated client ID. This key must be present and readable at the time of starting the server.
 
 You can use `$RESIDUE_HOME` environment variable in this file path.
+
+[Learn more...](/docs/configurations/known_clients/public_key.md)
 
 #### `known_clients`::`key_size`
 [Optional, Integer] Integer value of `128`, `192` or `256` to specify key size for this client.
@@ -308,10 +314,14 @@ This is useful when client libraries connecting cannot handle bigger sizes, e.g,
 
 See [`default_key_size`](#default_key_size)
 
+[Learn more...](/docs/configurations/known_clients/key_size.md)
+
 #### `known_clients`::`loggers`
 [Optional, Array] Object of logger IDs that must be present in [`known_loggers`](#known_loggers) array.
 
 This is to map the client with multiple loggers. Remember, client is not validated against the logger using this array, this is only for extra information.
+
+[Learn more...](/docs/configurations/known_clients/loggers.md)
 
 #### `known_clients`::`default_logger`
 [String] Default logger for the client. This is useful when logging using unknown logger but connected as known client. The configurations from this logger is used.
@@ -320,10 +330,14 @@ Default: `default`
 
 See [`known_clients::loggers`](#known_clientsloggers)
 
+[Learn more...](/docs/configurations/known_clients/default_logger.md)
+
 #### `known_clients`::`user`
 [String] Linux / mac user assigned to known clients. All the log files associated to the corresponding loggers will belong to this user with `RW-R-----` permissions
 
 Default: Current process user
+
+[Learn more...](/docs/configurations/known_clients/user.md)
 
 ### `known_clients_endpoint`
 [String] This is URL where we can pull *more* known clients from. The endpoint should return JSON with object [`known_clients`](#known_clients), e.g,
