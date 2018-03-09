@@ -339,7 +339,7 @@ See [`known_clients::loggers`](#known_clientsloggers)
 [Learn more...](/docs/configurations/known_clients/default_logger.md)
 
 #### `known_clients`::`user`
-[String] Linux / macOS user. All the log files associated to the corresponding loggers will belong to this user with `RW-R-----` permissions
+[String] Linux / macOS user. All the log files associated to the corresponding loggers will belong to this user with `RW-R-----` permissions (subject to `file_mode` config)
 
 Default: Current process user
 
