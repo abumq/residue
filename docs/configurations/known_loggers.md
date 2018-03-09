@@ -2,10 +2,10 @@
    ﷽
 </p>
 
-[← Configurations](/docs/CONFIGURATION.md)
+[🏠 Configurations](/docs/CONFIGURATION.md)
 
 # known_loggers
 
 
-[← Configurations](/docs/CONFIGURATION.md)
+[🏠 Configurations](/docs/CONFIGURATION.md)
 

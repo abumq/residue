@@ -2,10 +2,10 @@
    ﷽
 </p>
 
-[← Configurations](/docs/CONFIGURATION.md)
+[🏠 Configurations](/docs/CONFIGURATION.md)
 
 # default_key_size
 
 
-[← Configurations](/docs/CONFIGURATION.md)
+[🏠 Configurations](/docs/CONFIGURATION.md)
 

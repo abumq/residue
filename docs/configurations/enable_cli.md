@@ -2,10 +2,10 @@
    ﷽
 </p>
 
-[← Configurations](/docs/CONFIGURATION.md)
+[🏠 Configurations](/docs/CONFIGURATION.md)
 
 # enable_cli
 
 
-[← Configurations](/docs/CONFIGURATION.md)
+[🏠 Configurations](/docs/CONFIGURATION.md)
 

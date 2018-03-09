@@ -2,10 +2,10 @@
    ﷽
 </p>
 
-[← Configurations](/docs/CONFIGURATION.md)
+[🏠 Configurations](/docs/CONFIGURATION.md)
 
 # immediate_flush
 
 
-[← Configurations](/docs/CONFIGURATION.md)
+[🏠 Configurations](/docs/CONFIGURATION.md)
 

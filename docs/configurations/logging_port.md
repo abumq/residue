@@ -2,7 +2,7 @@
    ﷽
 </p>
 
-[← Configurations](/docs/CONFIGURATION.md)
+[🏠 Configurations](/docs/CONFIGURATION.md)
 
 # logging_port
 [Integer] Port that logging server listens to. This is where all the log requests are sent.
@@ -28,5 +28,5 @@ Once this server receives the log request it:
 
 The response looks like `{"r":0}`
 
-[← Configurations](/docs/CONFIGURATION.md)
+[🏠 Configurations](/docs/CONFIGURATION.md)
 
