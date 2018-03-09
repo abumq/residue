@@ -82,6 +82,11 @@ public:
                             if (fs->fail() || !fs->is_open()) {
                                 RLOG_IF(logger->id() != RESIDUE_LOGGER_ID, INFO)
                                         << "Failed to access file [ " << fn << "]! " << std::strerror(errno);
+
+                                execDispatchErrorExtensions(logger->id(),
+                                                            fn,
+                                                            el::LevelHelper::castToInt(level),
+                                                            errno);
                                 return;
                             }
                         } else {
