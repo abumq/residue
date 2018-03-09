@@ -38,3 +38,16 @@ You're not allowed to use following configurations in your configuration file as
  * `Max_Log_File_Size`
  * `To_Standard_Output`
  * `Log_Flush_Threshold`
+ 
+ ### Sample
+ A configuration file may look like
+ ```
+ * GLOBAL:
+    FORMAT                  =   "%datetime{%H:%m:%s,%g} [%thread] [%level] %msg"
+    FILENAME                =   "/var/log/residue/default.log"
+    ENABLED                 =   true
+* VERBOSE:
+    FORMAT                  =   "%datetime{%H:%m:%s,%g} [%thread] [%vnamelevel] [%fbase:%line] %msg"
+* DEBUG:
+    ENABLED                 =   true
+ ```
