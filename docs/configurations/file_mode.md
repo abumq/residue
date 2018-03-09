@@ -30,8 +30,9 @@ You cannot have:
  * `W` (Other)
  * `X` (Other)
  
-You must have `R` (User) or `R` (Group) or both
-You must have `W` (User)
+You must have:
+ * `R` (User)
+ * `W` (User)
 
 ## See Also
  * [ArchLinux Documentation](https://wiki.archlinux.org/index.php/File_permissions_and_attributes)
