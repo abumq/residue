@@ -22,6 +22,7 @@
 #ifndef ResidueLogDispatcher_h
 #define ResidueLogDispatcher_h
 
+#include <algorithm>
 #include <unordered_map>
 
 #include "extensions/log-extension.h"
@@ -49,6 +50,7 @@ public:
 
     ResidueLogDispatcher() :
         m_configuration(nullptr),
+        m_enableDynamicBuffer(true),
         m_dynamicBufferLocked(false)
     {
     }
@@ -92,6 +94,16 @@ public:
                                 RLOG_IF(logger->id() != RESIDUE_LOGGER_ID, INFO)
                                         << "Failed to access file [ " << fn << "]! " << std::strerror(errno);
 
+                                if (m_enableDynamicBuffer) {
+                                    if (m_dynamicBuffer.find(fn) == m_dynamicBuffer.end()) {
+                                        m_dynamicBuffer.insert(std::make_pair(fn, FailedLogs()));
+                                    }
+                                    if (std::find(m_dynamicBuffer[fn].begin(), m_dynamicBuffer[fn].end(), logLine)
+                                            == m_dynamicBuffer[fn].end()) {
+                                        m_dynamicBuffer[fn].push_back(logLine);
+                                    }
+                                }
+
                                 execDispatchErrorExtensions(logger->id(),
                                                             fn,
                                                             logLine,
@@ -103,6 +115,17 @@ public:
                             RLOG_IF(logger->id() != RESIDUE_LOGGER_ID, ERROR)
                                     << "Failed to create file [" << fn << "] [Logger: "
                                     << logger->id() << "] " << std::strerror(errno);
+
+                            if (m_enableDynamicBuffer) {
+                                if (m_dynamicBuffer.find(fn) == m_dynamicBuffer.end()) {
+                                    m_dynamicBuffer.insert(std::make_pair(fn, FailedLogs()));
+                                }
+                                if (std::find(m_dynamicBuffer[fn].begin(), m_dynamicBuffer[fn].end(), logLine)
+                                        == m_dynamicBuffer[fn].end()) {
+                                    m_dynamicBuffer[fn].push_back(logLine);
+                                }
+                            }
+
                             execDispatchErrorExtensions(logger->id(),
                                                         fn,
                                                         logLine,
@@ -117,10 +140,15 @@ public:
                                 << "Failed to write to file [" << fn << "] [Logger: "
                                 << logger->id() << "] " << std::strerror(errno);
 
-                        if (m_dynamicBuffer.find(fn) == m_dynamicBuffer.end()) {
-                            m_dynamicBuffer.insert(std::make_pair(fn, FailedLogs()));
+                        if (m_enableDynamicBuffer) {
+                            if (m_dynamicBuffer.find(fn) == m_dynamicBuffer.end()) {
+                                m_dynamicBuffer.insert(std::make_pair(fn, FailedLogs()));
+                            }
+                            if (std::find(m_dynamicBuffer[fn].begin(), m_dynamicBuffer[fn].end(), logLine)
+                                    == m_dynamicBuffer[fn].end()) {
+                                m_dynamicBuffer[fn].push_back(logLine);
+                            }
                         }
-                        m_dynamicBuffer[fn].push_back(logLine);
 
                         execDispatchErrorExtensions(logger->id(),
                                                     fn,
@@ -171,6 +199,7 @@ public:
 
 private:
     Configuration* m_configuration;
+    bool m_enableDynamicBuffer;
     // map of filename -> FailedLogLine
     std::unordered_map<std::string, FailedLogs> m_dynamicBuffer;
     std::atomic<bool> m_dynamicBufferLocked;
