@@ -39,5 +39,8 @@ echo abc123 | hexdump
 
 If you use hexdump, make sure you do not include last byte (it's a null-character)
 
+## See Also
+ * [`server_rsa_private_key`](/docs/CONFIGURATION.md#server_rsa_private_key)
+
 [🏠 Configurations](/docs/CONFIGURATION.md)
 
