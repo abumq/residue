@@ -54,9 +54,8 @@ public:
         el::LogDispatchCallback::handle(data);
         el::base::threading::ScopedLock scopedLock(fileHandle(data));
 
-        m_data = data;
         try {
-            if (m_data == nullptr) {
+            if (data == nullptr) {
                 // don't log anything here
                 // if you do, add a check for residue logger
                 std::cout << "Log dispatch data is unexpectedly null" << std::endl;
@@ -137,7 +136,6 @@ public:
     }
 
 private:
-    const el::LogDispatchData* m_data;
     Configuration* m_configuration;
 
     void execLogExtensions(const el::LogDispatchData* data,
