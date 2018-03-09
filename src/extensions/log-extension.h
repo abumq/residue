@@ -107,6 +107,11 @@ public:
         /// \brief Full formatted message (this is the message that was appended to the log file)
         ///
         std::string formattedMessage;
+
+        ///
+        /// \brief True if log was dispatched to the file without any error
+        ///
+        bool successfullyWritten;
     };
 
     ///

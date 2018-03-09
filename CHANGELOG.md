@@ -5,6 +5,7 @@
 - Added `LogExtension::Level` enum for readability of `LogExtension::Data::level`
 - Added new extension `DispatchErrorExtension`
 - Made `Extension::type` typesafe with enum class
+- Added `successfullyWritten` in `LogExtension`
 
 ### Core Updates
 - Log message when execution of extension finished
@@ -13,6 +14,9 @@
 
 ### Core Fixes
 - Standard response code has quotes around the key
+
+### New Feature
+- Dynamic buffer to prevent loss of any message in case of failures
 
 ## [2.1.0] - 07-03-2018
 ### Fixed

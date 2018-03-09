@@ -22,6 +22,8 @@
 #ifndef ResidueLogDispatcher_h
 #define ResidueLogDispatcher_h
 
+#include <unordered_map>
+
 #include "extensions/log-extension.h"
 #include "extensions/dispatch-error-extension.h"
 #include "logging/log.h"
@@ -39,7 +41,15 @@ class Configuration;
 class ResidueLogDispatcher final : public el::LogDispatchCallback, NonCopyable
 {
 public:
-    ResidueLogDispatcher() : m_configuration(nullptr)
+    ///
+    /// \brief FailedLog is used to locally store the log message
+    /// in case of errors so we do not lose any data
+    ///
+    using FailedLogs = std::vector<std::string>;
+
+    ResidueLogDispatcher() :
+        m_configuration(nullptr),
+        m_dynamicBufferLocked(false)
     {
     }
 
@@ -62,7 +72,7 @@ public:
                 return;
             }
             std::string logLine(data->logMessage()->logger()->logBuilder()->build(data->logMessage(), true));
-
+            bool successfullyWritten = false;
             el::Logger* logger = data->logMessage()->logger();
             el::base::TypedConfigurations* conf = logger->typedConfigurations();
             el::Level level = data->logMessage()->level();
@@ -107,6 +117,11 @@ public:
                                 << "Failed to write to file [" << fn << "] [Logger: "
                                 << logger->id() << "] " << std::strerror(errno);
 
+                        if (m_dynamicBuffer.find(fn) == m_dynamicBuffer.end()) {
+                            m_dynamicBuffer.insert(std::make_pair(fn, FailedLogs()));
+                        }
+                        m_dynamicBuffer[fn].push_back(logLine);
+
                         execDispatchErrorExtensions(logger->id(),
                                                     fn,
                                                     logLine,
@@ -115,6 +130,25 @@ public:
                     } else {
                         if (ELPP->hasFlag(el::LoggingFlag::ImmediateFlush) || (logger->isFlushNeeded(level))) {
                             logger->flush(level, fs);
+                        }
+                        successfullyWritten = true;
+
+                        if (m_dynamicBufferLocked == false && m_dynamicBuffer.find(fn) != m_dynamicBuffer.end()) {
+                            RLOG_IF(logger->id() != RESIDUE_LOGGER_ID, ERROR)
+                                    << "This logger [" << logger->id() << "] has some data in dynamic buffer [" << fn << "]"
+                                    << " Flushing all the messages first";
+                            m_dynamicBufferLocked = true;
+                            FailedLogs* list = &m_dynamicBuffer.find(fn)->second;
+                            for (auto& line : *list) {
+                                // process all items
+                                fs->write(line.c_str(), line.size());
+                                if (fs->fail()) {
+                                    RLOG_IF(logger->id() != RESIDUE_LOGGER_ID, ERROR) << "Dynamic buffer dispatch failed [" << fn << "]"
+                                                                                      << std::strerror(errno);
+                                }
+                            }
+                            m_dynamicBuffer.erase(fn);
+                            m_dynamicBufferLocked = false;
                         }
                     }
                 } else {
@@ -127,7 +161,7 @@ public:
             }
 #ifdef RESIDUE_HAS_EXTENSIONS
             if (data->logMessage()->logger()->id() != RESIDUE_LOGGER_ID) {
-                execLogExtensions(data, logLine);
+                execLogExtensions(data, logLine, successfullyWritten);
             }
 #endif
         } catch (const std::exception& e) {
@@ -137,9 +171,13 @@ public:
 
 private:
     Configuration* m_configuration;
+    // map of filename -> FailedLogLine
+    std::unordered_map<std::string, FailedLogs> m_dynamicBuffer;
+    std::atomic<bool> m_dynamicBufferLocked;
 
     void execLogExtensions(const el::LogDispatchData* data,
-                        const el::base::type::string_t& logLine)
+                           const el::base::type::string_t& logLine,
+                           bool successfullyWritten)
     {
         if (m_configuration->logExtensions().empty()) {
             return;
@@ -158,7 +196,8 @@ private:
             logMessage->request()->ipAddr(),
             logMessage->request()->sessionId(),
             logMessage->request()->msg(),
-            logLine
+            logLine,
+            successfullyWritten
         };
         for (auto& ext : m_configuration->logExtensions()) {
             ext->trigger(&d);
