@@ -221,62 +221,23 @@ Turn off delay: `0` (not recommended)
 ### `archived_log_directory`
 [String] Default destination for archived logs files
 
-Possible format specifiers:
-
-|   Format specifier    |   Description   |
-|-----------------------|-----------------|
-| `%original` | Path to original log file |
-| `%logger` | Logger ID |
-| `%hour` | 24-hours zero padded hour (`09`, `13`, `14`, ...) |
-| `%wday` | Day of the week (`sun`, `mon`, ...) |
-| `%day` | Day of month (`1`, `2`, ...) |
-| `%month` | Month name (`jan`, `feb`, ...) |
-| `%quarter` | Month quarter (`Q1`, `Q2`, `Q3`, `Q4`) |
-| `%year` | Year (`2016`, `2017`, `2018`, ...) |
-
 Default: It must be provided by the user
 
-Example: `%original/backups/%logger/`
+[Learn more...](/docs/configurations/archived_log_directory.md)
 
 ### `archived_log_filename`
 [String] Default filename for archived log files.
 
-Possible format specifiers:
-
-|   Format specifier    |   Description   |
-|-----------------------|-----------------|
-| `%logger`| Logger ID |
-| `%min`| Zero padded hour (`09`, `13`, `14`, ...) - the time when log rotator actually ran |
-| `%hour`| 24-hours zero padded hour (`09`, `13`, `14`, ...) |
-| `%wday`| Day of the week (`sun`, `mon`, ...) |
-| `%day`| Day of month (`1`, `2`, ...) |
-| `%month`| Month name (`jan`, `feb`, ...) |
-| `%quarter`| Month quarter (`Q1`, `Q2`, `Q3`, `Q4`) |
-| `%year`| Year (`2017`, ...) |
-| `%level`| log level (`info`, `error`, ...) |
-
 Default: It must be provided by the user
 
-Example: `%level-%hour-%min-%day-%month-%year.log`
+[Learn more...](/docs/configurations/archived_log_directory.md)
 
 ### `archived_log_compressed_filename`
 [String] Filename for compressed archived log files. It should not contain `/` or `\` characters.
 
-Possible format specifiers:
-
-|   Format specifier    |   Description   |
-|-----------------------|-----------------|
-| `%logger` | Logger ID |
-| `%hour` | 24-hours zero padded hour (`09`, `13`, `14`, ...) |
-| `%wday` | Day of the week (`sun`, `mon`, ...) |
-| `%day` | Day of month (`1`, `2`, ...) |
-| `%month` | Month name (`jan`, `feb`, ...) |
-| `%quarter` | Month quarter (`Q1`, `Q2`, `Q3`, `Q4`) |
-| `%year` | Year (`2017`, ...) |
-
 Default: It must be provided by the user
 
-Example: `%hour-%min-%day-%month-%year.tar.gz`
+[Learn more...](/docs/configurations/known_clients/#known_clients)
 
 ### `known_clients`
 [Array] Object of client that are known to the server. These clients will have allocated RSA public key that will be used to transfer the symmetric key.
@@ -353,60 +314,22 @@ You need to make sure that [`configuration_file`](#configuration_file) exists on
 
 #### `known_loggers`::`configuration_file`
 [String] Path to [Easylogging++ configuration file](https://github.com/muflihun/easyloggingpp#using-configuration-file). You can use `$RESIDUE_HOME` environment variable in this file path. When the new logger is registered, it's configured using this configuration.
-
-Residue supports following [custom format specifiers](https://github.com/muflihun/easyloggingpp#custom-format-specifiers):
-
-| Format Specifier | Description |
-| ---------------- | ----------- |
-| `%client_id`     | Print client ID with specified log format / level |
-| `%ip`     | IP address of the request |
-| `%session_id`     | Current session ID |
-| `%vnamelevel`     | Verbose level name (instead of number) |
-
-Verbose level names are:
-
-| Verbose Level | Name |
-| ---------------- | ----------- |
-| 9 | `vCRAZY` |
-| 8 | `vTRACE` |
-| 7 | `vDEBUG2` |
-| 6 | `vDEBUG` |
-| 5 | `vDETAILS` |
-| 4 | `vERROR` |
-| 3 | `vWARNING` |
-| 2 | `vNOTICE` |
-| 1 | `vINFO` |
-
-##### Configuration Errors
-***
-
-You're not allowed to use following configurations in your configuration file as residue handles these configurations differently and ignore your configurations. Residue will not start until these configuration lines are removed. This is so that user does not expect anything from these configuration items.
-
- * `Max_Log_File_Size`
- * `To_Standard_Output`
- * `Log_Flush_Threshold`
+ 
+[Learn more...](/docs/configurations/known_loggers/configuration_file.md)
 
 #### `known_loggers`::`rotation_freq`
 [String] One of [`never`, `hourly`, `six_hours`, `twelve_hours`, `daily`, `weekly`, `monthly`, `yearly`] to specify rotation frequency for corresponding log files. This is rotated regardless of file size.
 
-Log rotation rounds off to the nearest denominator. To get better understanding of this round off, consider following table.
-
-|   Frequency        |       Next Schedule                                      |
-|--------------------|----------------------------------------------------------|
-| `hourly`           | Last second of hour i.e, `<hour>:59:59`                  |
-| `six_hours`        | Every 6 hours i.e, at `06:00`, `12:00`, `18:00`, `00:00` |
-| `twelve_hours`     | Every 12 hours, i.e, at `12:00`, `00:00`                 |
-| `daily`            | Last second of the day i.e, `23:59:59`                   |
-| `weekly`           | Each sunday at `23:59:59`                                |
-| `monthly`          | Last day of each month at `23:59:59`                     |
-| `yearly`           | Last day of the each year at `23:59:59`                  |
-
 Default: `never`
 
+[Learn more...](/docs/configurations/known_loggers/rotation_freq.md)
+
 #### `known_loggers`::`user`
-[String] Linux / mac user assigned to known logger. All the log files associated to the corresponding logger will belong to this user with `RW-R-----` permissions
+[String] Linux / mac user assigned to known logger. All the log files associated to the corresponding logger will belong to this user with `RW-R-----` permissions (subject to `file_mode`)
 
 Default: Current process user
+
+[Learn more...](/docs/configurations/known_clients/user.md)
 
 #### `known_loggers`::`archived_log_filename`
 [String] Filename for rotated or archived log file
