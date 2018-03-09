@@ -201,7 +201,7 @@ public:
 
 private:
     Configuration* m_configuration;
-    // map of filename -> FailedLogLine
+    // map of filename -> FailedLogs
     std::unordered_map<std::string, FailedLogs> m_dynamicBuffer;
     std::mutex m_dynamicBufferLock;
 
