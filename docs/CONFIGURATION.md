@@ -102,8 +102,12 @@ Default: Randomly generated and residue outputs it in start-up
 ### `server_rsa_public_key`
 [String] Corresponding public key for [`server_rsa_private_key`](#server_rsa_private_key). You can use `$RESIDUE_HOME` environment variable in this file path.
 
+[Learn more...](/docs/configurations/server_rsa_public_key.md)
+
 ### `server_rsa_secret`
 [String] If private key is encrypted, this is the secret (passphrase) to decrypt it. **THIS SHOULD BE HEX ENCODED**.
+
+[Learn more...](/docs/configurations/server_rsa_secret.md)
 
 ### `enable_cli`
 [Boolean] Whether CLI is enabled on server or not. See [CLI_COMMANDS.md](/docs/CLI_COMMANDS.md) for possible input commands.
