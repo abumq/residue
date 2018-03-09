@@ -27,6 +27,7 @@ You can use [Server Config Tool](https://muflihun.github.io/residue/create-serve
 * [immediate_flush](#immediate_flush)
 * [requires_timestamp](#requires_timestamp)
 * [compression](#compression)
+* [file_mode](#file_mode)
 * [allow_bulk_log_request](#allow_bulk_log_request)
 * [max_items_in_bulk](#max_items_in_bulk)
 * [timestamp_validity](#timestamp_validity)
@@ -166,6 +167,11 @@ It always has very good performance when you have [`compression`](#compression) 
 This is because lossless-compression is done on similar bytes. If you wish to know more about compression algorithm see [gzlib algorithm](www.gzip.org/algorithm.txt).
 
 Default: `true`
+
+### `file_mode`
+[Integer] Default file mode for the log files
+
+[Learn more...](/docs/configurations/file_mode.md)
 
 ### `allow_bulk_log_request`
 [Boolean] Specifies whether clients can send bulk log requests or not.
