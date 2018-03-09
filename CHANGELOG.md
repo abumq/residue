@@ -7,6 +7,7 @@
 ### Core Updates
 - Log message when execution of extension finished
 - Updated invalid ports message
+- User must have READ permission in `file_mode`
 
 ### Core Fixes
 - Standard response code has quotes around the key

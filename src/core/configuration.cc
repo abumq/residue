@@ -231,8 +231,10 @@ void Configuration::loadFromInput(std::string&& jsonStr)
     m_fileMode = m_jsonDoc.get<unsigned int>("file_mode", static_cast<unsigned int>(S_IRUSR | S_IWUSR | S_IRGRP));
     if (hasFileMode(static_cast<unsigned int>(S_IWOTH)) || hasFileMode(static_cast<unsigned int>(S_IXOTH))) {
         errorStream << "  File mode too open [" << m_fileMode << "]. You should at least not allow others to write to the file." << std::endl;
-    } else if (!hasFileMode(static_cast<unsigned int>(S_IRUSR)) && !hasFileMode(static_cast<unsigned int>(S_IRGRP))) {
-        errorStream << "  File mode invalid [" << m_fileMode << "]. Either user or group should be able to read the log files" << std::endl;
+    } else if (!hasFileMode(static_cast<unsigned int>(S_IRUSR))) {
+        errorStream << "  File mode invalid [" << m_fileMode << "]. User must be able to read files" << std::endl;
+    } else if (!hasFileMode(static_cast<unsigned int>(S_IWUSR))) {
+        errorStream << "  File mode invalid [" << m_fileMode << "]. User must be able to write files" << std::endl;
     }
     m_nonAcknowledgedClientAge = m_jsonDoc.get<unsigned int>("non_acknowledged_client_age", 300);
     if (m_nonAcknowledgedClientAge < 120) {
