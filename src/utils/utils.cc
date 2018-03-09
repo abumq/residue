@@ -188,7 +188,7 @@ void Utils::updateFilePermissions(const char* path, const el::Logger* logger, co
         gid_t groupId = userDetails->pw_gid;
         endpwent();
         if (chown(path, userId, groupId) == -1) {
-            RLOG(ERROR) << "Failed to change ownership for " << path << ". Error: " << strerror(errno);
+            RLOG(ERROR) << "Failed to change ownership for " << path << ". Error: " << std::strerror(errno);
         }
     } else {
         RVLOG(RV_INFO) << "No config user found for [" << path << "]; logger ["

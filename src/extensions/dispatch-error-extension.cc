@@ -1,5 +1,5 @@
 //
-//  post-archive-extension.cc
+//  dispatch-error-extension.cc
 //  Residue
 //
 //  Copyright 2017-present Muflihun Labs
@@ -19,17 +19,16 @@
 //  limitations under the License.
 //
 
-#include "extensions/post-archive-extension.h"
+#include "extensions/dispatch-error-extension.h"
 
 using namespace residue;
 
-PostArchiveExtension::PostArchiveExtension(const std::string& id)
-    : Extension(Extension::Type::PostArchive, id)
+DispatchErrorExtension::DispatchErrorExtension(const std::string& id)
+    : Extension(Extension::Type::DispatchError, id)
 {
-
 }
 
-Extension::Result PostArchiveExtension::executeWrapper(void* d)
+Extension::Result DispatchErrorExtension::DispatchErrorExtension(void* d)
 {
-    return execute(static_cast<PostArchiveExtension::Data*>(d));
+    return execute(static_cast<DispatchErrorExtension::Data*>(d));
 }

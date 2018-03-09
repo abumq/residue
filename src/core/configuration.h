@@ -48,16 +48,6 @@ class Configuration final : NonCopyable
 {
 public:
 
-    ///
-    /// \brief For processor thread ID
-    ///
-    static const std::string UNKNOWN_CLIENT_ID;
-
-    ///
-    /// \brief Maximum numbers of blacklist loggers possible
-    ///
-    static const int MAX_BLACKLIST_LOGGERS;
-
     enum Flag : unsigned int
     {
         NONE = 0,
@@ -83,12 +73,15 @@ public:
         YEARLY = RotationFrequency::MONTHLY * 12
     };
 
-    enum ExtensionType : unsigned int
-    {
-        LOG = 1,
-        PRE_ARCHIVE = 2,
-        POST_ARCHIVE = 3,
-    };
+    ///
+    /// \brief For processor thread ID
+    ///
+    static const std::string UNKNOWN_CLIENT_ID;
+
+    ///
+    /// \brief Maximum numbers of blacklist loggers possible
+    ///
+    static const int MAX_BLACKLIST_LOGGERS;
 
     Configuration();
     explicit Configuration(const std::string& configurationFile);
@@ -240,6 +233,11 @@ public:
         return m_postArchiveExtensions;
     }
 
+    inline std::vector<Extension*>& dispatchErrorExtensions()
+    {
+        return m_dispatchErrorExtensions;
+    }
+
     inline const std::unordered_map<std::string, std::pair<std::string, std::string>>& knownClientsKeys() const
     {
         return m_knownClientsKeys;
@@ -325,6 +323,7 @@ private:
     std::vector<Extension*> m_logExtensions;
     std::vector<Extension*> m_preArchiveExtensions;
     std::vector<Extension*> m_postArchiveExtensions;
+    std::vector<Extension*> m_dispatchErrorExtensions;
 
     std::unordered_map<std::string, std::pair<std::string, std::string>> m_knownClientsKeys;
     std::unordered_map<std::string, std::unordered_set<std::string>> m_knownClientsLoggers;

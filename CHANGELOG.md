@@ -3,6 +3,7 @@
 ## [Unreleased]
 ### Extensions API
 - Added `LogExtension::Level` enum for readability of `LogExtension::Data::level`
+- Added new extension `DispatchErrorExtension`
 
 ### Core Updates
 - Log message when execution of extension finished

@@ -23,6 +23,7 @@
 #define ResidueLogDispatcher_h
 
 #include "extensions/log-extension.h"
+#include "extensions/dispatch-error-extension.h"
 #include "logging/log.h"
 #include "logging/user-message.h"
 #include "non-copyable.h"
@@ -80,13 +81,17 @@ public:
                             Utils::updateFilePermissions(fn.data(), logger, m_configuration);
                             if (fs->fail() || !fs->is_open()) {
                                 RLOG_IF(logger->id() != RESIDUE_LOGGER_ID, INFO)
-                                        << "Failed to access file [ " << fn << "]! " << strerror(errno);
+                                        << "Failed to access file [ " << fn << "]! " << std::strerror(errno);
                                 return;
                             }
                         } else {
                             RLOG_IF(logger->id() != RESIDUE_LOGGER_ID, ERROR)
                                     << "Failed to create file [" << fn << "] [Logger: "
-                                    << logger->id() << "] " << strerror(errno);
+                                    << logger->id() << "] " << std::strerror(errno);
+                            execDispatchErrorExtensions(logger->id(),
+                                                        fn,
+                                                        el::LevelHelper::castToInt(level),
+                                                        errno);
                             return;
                         }
                     }
@@ -94,7 +99,12 @@ public:
                     if (fs->fail()) {
                         RLOG_IF(logger->id() != RESIDUE_LOGGER_ID, ERROR)
                                 << "Failed to write to file [" << fn << "] [Logger: "
-                                << logger->id() << "] " << strerror(errno);
+                                << logger->id() << "] " << std::strerror(errno);
+
+                        execDispatchErrorExtensions(logger->id(),
+                                                    fn,
+                                                    el::LevelHelper::castToInt(level),
+                                                    errno);
                     } else {
                         if (ELPP->hasFlag(el::LoggingFlag::ImmediateFlush) || (logger->isFlushNeeded(level))) {
                             logger->flush(level, fs);
@@ -110,7 +120,7 @@ public:
             }
 #ifdef RESIDUE_HAS_EXTENSIONS
             if (data->logMessage()->logger()->id() != RESIDUE_LOGGER_ID) {
-                callExtensions(data, logLine);
+                execLogExtensions(data, logLine);
             }
 #endif
         } catch (const std::exception& e) {
@@ -122,7 +132,7 @@ private:
     const el::LogDispatchData* m_data;
     Configuration* m_configuration;
 
-    void callExtensions(const el::LogDispatchData* data,
+    void execLogExtensions(const el::LogDispatchData* data,
                         const el::base::type::string_t& logLine)
     {
         if (m_configuration->logExtensions().empty()) {
@@ -144,8 +154,27 @@ private:
             logMessage->request()->msg(),
             logLine
         };
-        for (auto& logExtension : m_configuration->logExtensions()) {
-            logExtension->trigger(&d);
+        for (auto& ext : m_configuration->logExtensions()) {
+            ext->trigger(&d);
+        }
+    }
+
+    void execDispatchErrorExtensions(const std::string& loggerId,
+                                     const std::string& filename,
+                                     unsigned int level,
+                                     int errorNo)
+    {
+        if (m_configuration->dispatchErrorExtensions().empty()) {
+            return;
+        }
+        DispatchErrorExtension::Data d {
+            loggerId,
+            filename,
+            level,
+            errorNo
+        };
+        for (auto& ext : m_configuration->dispatchErrorExtensions()) {
+            ext->trigger(&d);
         }
     }
   };

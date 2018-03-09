@@ -50,6 +50,18 @@ namespace residue {
 class RESIDUE_EXTENSION_API Extension
 {
 public:
+
+    ///
+    /// \brief Enum of different types of extensions
+    ///
+    enum class Type : unsigned int
+    {
+        Log = 1,
+        PreArchive = 2,
+        PostArchive = 3,
+        DispatchError = 4,
+    };
+
     ///
     /// \brief Result of extension execution
     ///
@@ -72,7 +84,7 @@ public:
     /// \brief Initialze extension by type and ID
     /// \param id ID should be unique for each loaded extension.
     ///
-    explicit Extension(unsigned int type, const std::string& id);
+    explicit Extension(Type type, const std::string& id);
 
     virtual ~Extension();
 
@@ -113,7 +125,7 @@ protected:
     void writeLog(const std::string& msg, LogLevel level = LogLevel::Info, unsigned short vlevel = 0) const;
 
 private:
-    unsigned int m_type;
+    Type m_type;
     std::string m_id;
     std::atomic<bool> m_running;
     std::mutex m_mutex;

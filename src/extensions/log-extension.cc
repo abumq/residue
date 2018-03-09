@@ -24,7 +24,7 @@
 using namespace residue;
 
 LogExtension::LogExtension(const std::string& id)
-    : Extension(1, id)
+    : Extension(Extension::Type::Log, id)
 {
 }
 

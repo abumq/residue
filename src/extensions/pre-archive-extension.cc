@@ -24,7 +24,7 @@
 using namespace residue;
 
 PreArchiveExtension::PreArchiveExtension(const std::string& id)
-    : Extension(2, id)
+    : Extension(Extension::Type::PreArchive, id)
 {
 
 }

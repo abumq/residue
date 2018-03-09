@@ -48,6 +48,13 @@ using namespace residue;
 const std::string Configuration::UNKNOWN_CLIENT_ID = "unknown";
 const int Configuration::MAX_BLACKLIST_LOGGERS = 10000;
 
+struct ExtensionMap
+{
+    Extension::Type type;
+    std::string name;
+    std::vector<Extension*>* data;
+};
+
 Configuration::Configuration(const std::string& configurationFile) :
     m_configurationFile(configurationFile),
     m_flag(0x0),
@@ -100,6 +107,7 @@ void Configuration::loadFromInput(std::string&& jsonStr)
     m_logExtensions.clear();
     m_preArchiveExtensions.clear();
     m_postArchiveExtensions.clear();
+    m_dispatchErrorExtensions.clear();
     m_isMalformedJson = false;
     m_isValid = true;
 
@@ -793,6 +801,13 @@ Configuration::RotationFrequency Configuration::getRotationFrequency(const std::
 
 void Configuration::loadExtensions(const JsonDoc::Value& json, std::stringstream& errorStream)
 {
+    const std::vector<ExtensionMap> REGISTERED_EXTENSIONS = {
+        { Extension::Type::Log, "LOG", &m_logExtensions },
+        { Extension::Type::PreArchive, "PRE_ARCHIVE", &m_preArchiveExtensions },
+        { Extension::Type::PostArchive, "POST_ARCHIVE", &m_postArchiveExtensions },
+        { Extension::Type::DispatchError, "DISPATCH_ERROR", &m_dispatchErrorExtensions }
+    };
+
     std::vector<std::string> ext;
 
     for (const auto& extension : json) {
@@ -813,35 +828,22 @@ void Configuration::loadExtensions(const JsonDoc::Value& json, std::stringstream
         RLOG(INFO) << "Loading [Extension<" << name << ">]";
         Extension* e = Extension::load(module.c_str());
         if (e == nullptr) {
-            RLOG(ERROR) << "Extension [" << module << "] failed to load: " << strerror(errno);
+            RLOG(ERROR) << "Extension [" << module << "] failed to load: " << std::strerror(errno);
             continue;
         }
 
-        ExtensionType type = static_cast<ExtensionType>(e->m_type);
-        std::string typeName;
-        std::vector<Extension*>* list;
-        switch (type) {
-        case ExtensionType::LOG:
-            list = &m_logExtensions;
-            typeName = "LOG";
-            break;
-        case ExtensionType::PRE_ARCHIVE:
-            list = &m_preArchiveExtensions;
-            typeName = "PRE_ARCHIVE";
-            break;
-        case ExtensionType::POST_ARCHIVE:
-            list = &m_postArchiveExtensions;
-            typeName = "POST_ARCHIVE";
-            break;
-        default:
-            typeName = "UNKNOWN";
-            list = nullptr;
+        const ExtensionMap* mapItem = nullptr;
+        for (auto& regExt : REGISTERED_EXTENSIONS) {
+            if (regExt.type == e->m_type) {
+                mapItem = &regExt;
+            }
         }
-        if (list == nullptr) {
-            errorStream << "  Unable to determine extension [" << name << "] type [" << type << "]";
+        if (mapItem == nullptr) {
+            errorStream << "  Unable to determine extension [" << name << "] type ["
+                        << static_cast<unsigned int>(e->m_type) << "]";
             continue;
         }
-        std::string uniqName = std::to_string(e->m_type) + "/" + name;
+        std::string uniqName = std::to_string(static_cast<int>(e->m_type)) + "/" + name;
         if (std::find(ext.begin(), ext.end(), uniqName) != ext.end()) {
             errorStream << "  Duplicate extension could not be loaded: " << name;
         } else {
@@ -851,9 +853,9 @@ void Configuration::loadExtensions(const JsonDoc::Value& json, std::stringstream
                 e->setConfig(std::move(jextConfig));
             }
 
-            RLOG(INFO) << "Loaded [" << typeName << "::Extension<" << name << ">] loaded @ " << e;
+            RLOG(INFO) << "Loaded [" << mapItem->name << "::Extension<" << name << ">] loaded @ " << e;
 
-            list->push_back(e);
+            mapItem->data->push_back(e);
         }
     }
 

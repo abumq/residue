@@ -33,7 +33,7 @@
 
 using namespace residue;
 
-Extension::Extension(unsigned int type, const std::string& id) :
+Extension::Extension(Type type, const std::string& id) :
     m_type(type),
     m_id(id),
     m_running(false)
@@ -45,9 +45,11 @@ Extension::~Extension()
 {
 #ifdef RESIDUE_CORE_EXTENSION_ENABLED
     if (m_running) {
-        RVLOG(RV_DEBUG_2) << "Extension [" << m_type << "/" << m_id << "] was running when it was terminated";
+        RVLOG(RV_DEBUG_2) << "Extension [" << static_cast<unsigned int>(m_type) << "/" << m_id
+                          << "] was running when it was terminated";
     }
-    RVLOG(RV_DEBUG_2) << "Terminating extension [" << m_type << "/" << m_id << "]";
+    RVLOG(RV_DEBUG_2) << "Terminating extension [" << static_cast<unsigned int>(m_type)
+                      << "/" << m_id << "]";
 #endif
 }
 
@@ -57,16 +59,16 @@ Extension::Result Extension::trigger(void* data)
 #ifdef RESIDUE_CORE_EXTENSION_ENABLED
     if (m_running) {
 #   ifdef RESIDUE_DEBUG
-        DRVLOG(RV_WARNING) << "Extension [" << m_type << "/" << m_id << "] already running";
+        DRVLOG(RV_WARNING) << "Extension [" << static_cast<unsigned int>(m_type) << "/" << m_id << "] already running";
 #   endif
         return {0, true};
     }
-    RVLOG(RV_DEBUG_2) << "Executing extension [" << m_type << "/" << m_id << "]";
+    RVLOG(RV_DEBUG_2) << "Executing extension [" << static_cast<unsigned int>(m_type) << "/" << m_id << "]";
     m_running = true;
     std::lock_guard<std::mutex> lock_(m_mutex);
     (void) lock_;
     auto result = executeWrapper(data);
-    RVLOG(RV_DEBUG_2) << "Finished execution of extension [" << m_type << "/" << m_id << "]";
+    RVLOG(RV_DEBUG_2) << "Finished execution of extension [" << static_cast<unsigned int>(m_type) << "/" << m_id << "]";
     m_running = false;
     return result;
 #else
