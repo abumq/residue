@@ -8,6 +8,9 @@
 - Log message when execution of extension finished
 - Updated invalid ports message
 
+### Core Fixes
+- Standard response code has quotes around the key
+
 ## [2.1.0] - 07-03-2018
 ### Fixed
 - Prevent duplicate default loggers when logger is specified for one of the clients (admin)
