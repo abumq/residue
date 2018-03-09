@@ -1,5 +1,4 @@
 #include "log-analyzer.h"
-#include <iostream>
 
 RESIDUE_EXTENSION(LogAnalyzer, "1.0.0")
 
