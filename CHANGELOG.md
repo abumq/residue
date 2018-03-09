@@ -14,6 +14,7 @@
 
 ### Core Fixes
 - Standard response code has quotes around the key
+- Reopen files after `rconfig --logger-id`
 
 ### New Feature
 - Dynamic buffer to prevent loss of any message in case of failures
