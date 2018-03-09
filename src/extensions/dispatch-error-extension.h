@@ -51,6 +51,11 @@ public:
         std::string filename;
 
         ///
+        /// \brief Log line that was being dispatched
+        ///
+        std::string logLine;
+
+        ///
         /// \brief Logging level
         ///
         unsigned int level;

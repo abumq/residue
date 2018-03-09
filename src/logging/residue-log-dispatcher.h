@@ -85,6 +85,7 @@ public:
 
                                 execDispatchErrorExtensions(logger->id(),
                                                             fn,
+                                                            logLine,
                                                             el::LevelHelper::castToInt(level),
                                                             errno);
                                 return;
@@ -95,6 +96,7 @@ public:
                                     << logger->id() << "] " << std::strerror(errno);
                             execDispatchErrorExtensions(logger->id(),
                                                         fn,
+                                                        logLine,
                                                         el::LevelHelper::castToInt(level),
                                                         errno);
                             return;
@@ -108,6 +110,7 @@ public:
 
                         execDispatchErrorExtensions(logger->id(),
                                                     fn,
+                                                    logLine,
                                                     el::LevelHelper::castToInt(level),
                                                     errno);
                     } else {
@@ -166,6 +169,7 @@ private:
 
     void execDispatchErrorExtensions(const std::string& loggerId,
                                      const std::string& filename,
+                                     const el::base::type::string_t& logLine,
                                      unsigned int level,
                                      int errorNo)
     {
@@ -175,6 +179,7 @@ private:
         DispatchErrorExtension::Data d {
             loggerId,
             filename,
+            logLine,
             level,
             errorNo
         };
