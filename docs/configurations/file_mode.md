@@ -25,6 +25,14 @@ In order to build a correct value, you can either use [Create Config](https://mu
 
 For `RW-R----` you will just do a bitwise OR `256 | 128 | 32` i.e, `416`
 
+## Exceptions
+You cannot have:
+ * `W` (Other)
+ * `X` (Other)
+ 
+You must have `R` (User) or `R` (Group) or both
+You must have `W` (User)
+
 ## See Also
  * [ArchLinux Documentation](https://wiki.archlinux.org/index.php/File_permissions_and_attributes)
 
