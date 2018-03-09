@@ -1,4 +1,4 @@
-//
+﻿//
 //  residue-log-dispatcher.h
 //  Residue
 //
@@ -23,6 +23,7 @@
 #define ResidueLogDispatcher_h
 
 #include <algorithm>
+#include <mutex>
 #include <unordered_map>
 
 #include "extensions/log-extension.h"
@@ -50,8 +51,7 @@ public:
 
     ResidueLogDispatcher() :
         m_configuration(nullptr),
-        m_enableDynamicBuffer(true),
-        m_dynamicBufferLocked(false)
+        m_enableDynamicBuffer(true)
     {
     }
 
@@ -95,6 +95,7 @@ public:
                                         << "Failed to access file [ " << fn << "]! " << std::strerror(errno);
 
                                 if (m_enableDynamicBuffer) {
+                                    std::lock_guard<std::mutex> lock(m_dynamicBufferLock);
                                     if (m_dynamicBuffer.find(fn) == m_dynamicBuffer.end()) {
                                         m_dynamicBuffer.insert(std::make_pair(fn, FailedLogs()));
                                     }
@@ -117,6 +118,7 @@ public:
                                     << logger->id() << "] " << std::strerror(errno);
 
                             if (m_enableDynamicBuffer) {
+                                std::lock_guard<std::mutex> lock(m_dynamicBufferLock);
                                 if (m_dynamicBuffer.find(fn) == m_dynamicBuffer.end()) {
                                     m_dynamicBuffer.insert(std::make_pair(fn, FailedLogs()));
                                 }
@@ -141,6 +143,7 @@ public:
                                 << logger->id() << "] " << std::strerror(errno);
 
                         if (m_enableDynamicBuffer) {
+                            std::lock_guard<std::mutex> lock(m_dynamicBufferLock);
                             if (m_dynamicBuffer.find(fn) == m_dynamicBuffer.end()) {
                                 m_dynamicBuffer.insert(std::make_pair(fn, FailedLogs()));
                             }
@@ -161,11 +164,11 @@ public:
                         }
                         successfullyWritten = true;
 
-                        if (m_dynamicBufferLocked == false && m_dynamicBuffer.find(fn) != m_dynamicBuffer.end()) {
+                        if (m_dynamicBuffer.find(fn) != m_dynamicBuffer.end()) {
+                            std::lock_guard<std::mutex> lock(m_dynamicBufferLock);
                             RLOG_IF(logger->id() != RESIDUE_LOGGER_ID, ERROR)
                                     << "This logger [" << logger->id() << "] has some data in dynamic buffer [" << fn << "]"
                                     << " Flushing all the messages first";
-                            m_dynamicBufferLocked = true;
                             FailedLogs* list = &m_dynamicBuffer.find(fn)->second;
                             for (auto& line : *list) {
                                 // process all items
@@ -176,7 +179,6 @@ public:
                                 }
                             }
                             m_dynamicBuffer.erase(fn);
-                            m_dynamicBufferLocked = false;
                         }
                     }
                 } else {
@@ -202,7 +204,7 @@ private:
     bool m_enableDynamicBuffer;
     // map of filename -> FailedLogLine
     std::unordered_map<std::string, FailedLogs> m_dynamicBuffer;
-    std::atomic<bool> m_dynamicBufferLocked;
+    std::mutex m_dynamicBufferLock;
 
     void execLogExtensions(const el::LogDispatchData* data,
                            const el::base::type::string_t& logLine,
