@@ -87,6 +87,8 @@ Default: `8778`
 
 Default: `256`
 
+[Learn more...](/docs/configurations/default_key_size.md)
+
 ### `server_key`
 [String] A 256-bit server key that is used for admin services. See [`admin_port`](#admin_port)
 
