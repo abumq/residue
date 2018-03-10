@@ -283,12 +283,12 @@ void Configuration::loadFromInput(std::string&& jsonStr)
     // that will be cross-checked with loggers list
 
     if (m_jsonDoc.hasKey("known_loggers")) {
-        loadKnownLoggers(m_jsonDoc.get<JsonDoc::Value>("known_loggers", JsonDoc::Value()), errorStream, false);
+        loadKnownLoggers(m_jsonDoc.getArr("known_loggers"), errorStream, false);
     }
 
     auto queryEndpoint = [&](const std::string& endpoint,
             const std::string& keyName,
-            const std::function<void(const JsonDoc::Value&)>& cb) {
+            const std::function<void(const JsonDoc&)>& cb) {
 
         RVLOG(RV_INFO) << "Querying [" << endpoint << "]...";
         std::string contents;
@@ -300,7 +300,7 @@ void Configuration::loadFromInput(std::string&& jsonStr)
                 JsonDoc j(contents);
                 if (j.isValid()) {
                     if (j.hasKey(keyName.c_str())) {
-                        cb(j.get<JsonDoc::Value>(keyName.c_str(), JsonDoc::Value()));
+                        cb(j.getObj(keyName.c_str()));
                     } else {
                         errorStream << endpoint << " does not contain " << keyName << std::endl;
                     }
@@ -316,26 +316,26 @@ void Configuration::loadFromInput(std::string&& jsonStr)
     if (m_jsonDoc.hasKey("known_loggers_endpoint")) {
         m_knownLoggersEndpoint = m_jsonDoc.get<std::string>("known_loggers_endpoint", "");
         if (!m_knownLoggersEndpoint.empty()) {
-            queryEndpoint(m_knownLoggersEndpoint, "known_loggers", [&](const JsonDoc::Value& json) {
+            queryEndpoint(m_knownLoggersEndpoint, "known_loggers", [&](const JsonDoc& json) {
                 loadKnownLoggers(json, errorStream, true);
             });
         }
     }
 
     if (m_jsonDoc.hasKey("known_clients")) {
-        loadKnownClients(m_jsonDoc.get<JsonDoc::Value>("known_clients", JsonDoc::Value()), errorStream, false);
+        loadKnownClients(m_jsonDoc.getArr("known_clients"), errorStream, false);
     }
 
     if (m_jsonDoc.hasKey("known_clients_endpoint")) {
         m_knownClientsEndpoint = m_jsonDoc.get<std::string>("known_clients_endpoint", "");
         if (!m_knownClientsEndpoint.empty()) {
-            queryEndpoint(m_knownClientsEndpoint, "known_clients", [&](const JsonDoc::Value& json) {
+            queryEndpoint(m_knownClientsEndpoint, "known_clients", [&](const JsonDoc& json) {
                 loadKnownClients(json, errorStream, true);
             });
         }
     }
 
-    JsonDoc::Value jLoggersBlacklist = m_jsonDoc.get<JsonDoc::Value>("loggers_blacklist", JsonDoc::Value());
+    JsonDoc jLoggersBlacklist(m_jsonDoc.getArr("loggers_blacklist"));
     if (jLoggersBlacklist.isArray()) {
         loadLoggersBlacklist(jLoggersBlacklist, errorStream);
     }
@@ -343,7 +343,7 @@ void Configuration::loadFromInput(std::string&& jsonStr)
 
  #ifdef RESIDUE_HAS_EXTENSIONS
     if (m_jsonDoc.hasKey("extensions")) {
-        loadExtensions(m_jsonDoc.get<JsonDoc::Value>("extensions", JsonDoc::Value()), errorStream);
+        loadExtensions(m_jsonDoc.getArr("extensions"), errorStream);
     }
  #endif
 
@@ -363,7 +363,7 @@ void Configuration::loadFromInput(std::string&& jsonStr)
 }
 
 
-void Configuration::loadKnownLoggers(const JsonDoc::Value& json, std::stringstream& errorStream, bool viaUrl)
+void Configuration::loadKnownLoggers(const JsonDoc& json, std::stringstream& errorStream, bool viaUrl)
 {
     for (const auto& logger : json) {
         JsonDoc j(logger);
@@ -473,7 +473,7 @@ void Configuration::loadKnownLoggers(const JsonDoc::Value& json, std::stringstre
     }
 }
 
-void Configuration::loadKnownClients(const JsonDoc::Value& json, std::stringstream& errorStream, bool viaUrl)
+void Configuration::loadKnownClients(const JsonDoc& json, std::stringstream& errorStream, bool viaUrl)
 {
     for (const auto& knownClientPair : json) {
         JsonDoc j(knownClientPair);
@@ -529,7 +529,7 @@ void Configuration::loadKnownClients(const JsonDoc::Value& json, std::stringstre
             }
         }
 
-        JsonDoc::Value loggers = j.get<JsonDoc::Value>("loggers", JsonDoc::Value());
+        JsonDoc loggers(j.getArr("loggers"));
 
         if (loggers.isArray()) {
             std::unordered_set<std::string> loggerIds;
@@ -588,7 +588,7 @@ void Configuration::loadKnownClients(const JsonDoc::Value& json, std::stringstre
     }
 }
 
-void Configuration::loadLoggersBlacklist(const JsonDoc::Value& json, std::stringstream& errorStream)
+void Configuration::loadLoggersBlacklist(const JsonDoc& json, std::stringstream& errorStream)
 {
     for (const auto& loggerId : json) {
         JsonDoc j(loggerId);
@@ -803,7 +803,7 @@ Configuration::RotationFrequency Configuration::getRotationFrequency(const std::
     return RotationFrequency::NEVER;
 }
 
-void Configuration::loadExtensions(const JsonDoc::Value& json, std::stringstream& errorStream)
+void Configuration::loadExtensions(const JsonDoc& json, std::stringstream& errorStream)
 {
     const std::vector<ExtensionMap> REGISTERED_EXTENSIONS = {
         { Extension::Type::Log, "LOG", &m_logExtensions },
@@ -853,7 +853,7 @@ void Configuration::loadExtensions(const JsonDoc::Value& json, std::stringstream
         } else {
             ext.push_back(uniqName);
             if (j.hasKey("config")) {
-                JsonDoc::Value jextConfig = j.get<JsonDoc::Value>("config", JsonDoc::Value());
+                JsonDoc jextConfig(j.getObj("config"));
                 e->setConfig(std::move(jextConfig));
             }
 

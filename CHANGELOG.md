@@ -6,6 +6,7 @@
 - Added new extension `DispatchErrorExtension`
 - Made `Extension::type` typesafe with enum class
 - Added `successfullyWritten` in `LogExtension`
+- Added `JsonDoc::getObj` and `JsonDoc::getArr` for simple access
 
 ### Core Updates
 - Log message when execution of extension finished

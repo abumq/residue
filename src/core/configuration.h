@@ -376,11 +376,11 @@ private:
         return m_knownClientsKeys.find(clientId) != m_knownClientsKeys.end();
     }
 
-    void loadKnownLoggers(const JsonDoc::Value& json, std::stringstream& errorStream, bool viaUrl);
-    void loadKnownClients(const JsonDoc::Value& json, std::stringstream& errorStream, bool viaUrl);
-    void loadLoggersBlacklist(const JsonDoc::Value& json, std::stringstream& errorStream);
+    void loadKnownLoggers(const JsonDoc& json, std::stringstream& errorStream, bool viaUrl);
+    void loadKnownClients(const JsonDoc& json, std::stringstream& errorStream, bool viaUrl);
+    void loadLoggersBlacklist(const JsonDoc& json, std::stringstream& errorStream);
 
-    void loadExtensions(const JsonDoc::Value& json, std::stringstream& errorStream);
+    void loadExtensions(const JsonDoc& json, std::stringstream& errorStream);
 };
 }
 #endif /* Configuration_h */

@@ -137,9 +137,9 @@ private:
 
     Result trigger(void*);
 
-    inline void setConfig(JsonDoc::Value&& j)
+    inline void setConfig(JsonDoc&& j)
     {
-        m_config.set(j);
+        m_config.set(j.value());
     }
 
     ///

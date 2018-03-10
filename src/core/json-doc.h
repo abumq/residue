@@ -67,9 +67,9 @@ public:
     }
 
     ///
-    /// \brief Construct document by value
+    /// \brief Construct document by value (implicit constructor)
     ///
-    explicit JsonDoc(const Value& v)
+    JsonDoc(const Value& v)
         : JsonDoc()
     {
         set(v);
@@ -170,9 +170,36 @@ public:
     }
 
     ///
+    /// \brief Get JSON obj. Use it to create JsonDoc
+    /// e.g, <pre>
+    ///    JsonDoc jNew(j.getObj("blah"));
+    /// </pre>
+    ///
+    inline JsonDoc::Value getObj(const char* key) const
+    {
+        return get<JsonDoc::Value>(key, JsonDoc::Value());
+    }
+
+    ///
+    /// \brief Get JSON array. Use it to create JsonDoc
+    /// e.g, <pre>
+    ///    JsonDoc jNew(j.getArr("blah"));
+    /// </pre>
+    ///
+    inline JsonDoc::Value getArr(const char* key) const
+    {
+        return getObj(key);
+    }
+
+    ///
     /// \brief Dumps JSON document as string with specific indentation
     ///
     std::string dump(int indent = -1) const;
+
+    inline Value value()
+    {
+        return m_val;
+    }
 private:
     Status m_status;
     Value m_val;
