@@ -32,5 +32,5 @@ openssl rsa -in private.pem -outform PEM -pubout -out public.pem
 
 You must upload this `public.pem` to residue server and provide path to readable uploaded file as `public_key`
 
-## See also
+## See Also
  * [`RESIDUE_HOME`](https://github.com/muflihun/residue/blob/develop/docs/INSTALL.md#residue_home)
