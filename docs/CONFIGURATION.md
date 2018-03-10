@@ -116,7 +116,7 @@ Default: Randomly generated and residue outputs it in start-up
 Default: `true`
 
 ### `enable_dynamic_buffer`
-[Boolean] Dynamic buffer is feature that allows failed logs (logs that were failed to be written to file) to be clogged up in an internal buffer. Once logs can be written to the file all the logs from this dynamic buffer will be flushed to the file so no logs are lost.
+[Boolean] Dynamic buffer is a feature that allows failed logs (logs that were failed to be written to file) to be clogged up in an internal buffer. Once logs can be written to the file all the logs from this dynamic buffer will be flushed to the file so no logs are lost.
 
 You can turn this feature on or off with this flag.
 
