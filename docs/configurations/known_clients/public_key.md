@@ -32,5 +32,5 @@ openssl rsa -in private.pem -outform PEM -pubout -out public.pem
 
 You must upload this `public.pem` to residue server and provide path to readable uploaded file as `public_key`
 
-## `RESIDUE_HOME`
-`RESIDUE_HOME` is environment variable that is resolved at runtime if provided with in the value. E.g, if `RESIDUE_HOME` is exported to `/opt/residue/config` and you have public key `$RESIDUE_HOME/public/mykey.pem` the final file that will be read will be `/opt/residue/config/public/mykey.pem`
+## See also
+ * [`RESIDUE_HOME`](https://github.com/muflihun/residue/blob/develop/docs/INSTALL.md#residue_home)
