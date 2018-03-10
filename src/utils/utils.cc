@@ -211,13 +211,13 @@ std::string Utils::generateRandomFromArray(const char* list,
     return s;
 }
 
-std::string Utils::resolveResidueHomeEnvVar(std::string& str)
+std::string Utils::resolveResidueHomeEnvVar(std::string& str, const std::string& overrideEnvVar)
 {
     auto pos = str.find_first_of("$RESIDUE_HOME");
     if (pos != std::string::npos) {
-        std::string val = el::base::utils::OS::getEnvironmentVariable("RESIDUE_HOME",
-                                                                      "",
-                                                                      "echo $RESIDUE_HOME");
+        std::string val = overrideEnvVar.empty() ?
+                    el::base::utils::OS::getEnvironmentVariable("RESIDUE_HOME", "", "echo $RESIDUE_HOME") :
+                    overrideEnvVar;
         if (val.empty()) {
             RLOG(WARNING) << "Environment variable RESIDUE_HOME not set";
         } else {

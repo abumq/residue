@@ -300,6 +300,11 @@ public:
         return m_fileMode;
     }
 
+    inline void setHomePath(const std::string& homePath)
+    {
+        m_homePath = homePath;
+    }
+
 private:
     friend class Clients;
     JsonDoc m_jsonDoc;
@@ -359,6 +364,8 @@ private:
     bool m_isMalformedJson;
 
     std::mutex m_mutex;
+
+    std::string m_homePath;
 
     bool addKnownClient(const std::string& clientId, const std::string& publicKey);
     bool verifyKnownClient(const std::string& clientId, const std::string& signature) const;

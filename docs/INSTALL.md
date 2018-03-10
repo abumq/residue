@@ -218,7 +218,14 @@ sudo make install
 # Run as `root`
 You will need to run residue as root user. This is because residue needs to change the ownership of the files to the relevant users and yet need to write to those files.
 
-If you are just need to test the residue before you run it in production (in production you should always run it as root) you can use `--force-without-root` command-line argument.
+If you are just need to test the residue before you run it in production (in production you should always run it as root) you can use `--force-without-root` command-line argument. [NOT RECOMMENDED]
+
+# `RESIDUE_HOME`
+`RESIDUE_HOME` is environment variable that is resolved at runtime if provided with, in the value. (Only applicable to some configurations)
+
+E.g, if `RESIDUE_HOME` is exported to `/opt/residue/config` and you have public key `$RESIDUE_HOME/server-priv.pem` the final file that will be read will be `/opt/residue/config/server-priv.pem`
+
+If you provide `--home-path=<path>` when starting the server, `RESIDUE_HOME` environment variable will be overridden by the value provided at startup.
 
 # Verbose Options
 You can turn on verbose logging using `--v=<level>`. `-v` is equivalent to `--v=9`

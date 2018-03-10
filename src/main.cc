@@ -212,7 +212,11 @@ int main(int argc, char* argv[])
 
     printVersion(true);
 
-    Configuration config(argv[1]);
+    Configuration config;
+    if (el::Helpers::commandLineArgs()->hasParamWithValue("--home-path")) {
+        config.setHomePath(el::Helpers::commandLineArgs()->getParamValue("--home-path"));
+    }
+    config.load(argv[1]);
 
     if (!config.isValid()) {
         RLOG(ERROR) << "FAILED: There are errors in configuration file" << std::endl << config.errors();

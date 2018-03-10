@@ -178,8 +178,8 @@ void Configuration::loadFromInput(std::string&& jsonStr)
         if (m_serverRSAPublicKeyFile.empty()) {
             errorStream << "  Both RSA private and public keys must be provided if provided at all" << std::endl;
         } else {
-            Utils::resolveResidueHomeEnvVar(m_serverRSAPrivateKeyFile);
-            Utils::resolveResidueHomeEnvVar(m_serverRSAPublicKeyFile);
+            Utils::resolveResidueHomeEnvVar(m_serverRSAPrivateKeyFile, m_homePath);
+            Utils::resolveResidueHomeEnvVar(m_serverRSAPublicKeyFile, m_homePath);
 
             if (!Utils::fileExists(m_serverRSAPrivateKeyFile.c_str()) || !Utils::fileExists(m_serverRSAPublicKeyFile.c_str())) {
                 errorStream << "  RSA private key or public key does not exist" << std::endl;
@@ -379,7 +379,7 @@ void Configuration::loadKnownLoggers(const JsonDoc::Value& json, std::stringstre
         }
         std::string easyloggingConfigFile = j.get<std::string>("configuration_file", "");
         if (!easyloggingConfigFile.empty()) {
-            Utils::resolveResidueHomeEnvVar(easyloggingConfigFile);
+            Utils::resolveResidueHomeEnvVar(easyloggingConfigFile, m_homePath);
             if (!Utils::fileExists(easyloggingConfigFile.c_str())) {
                 errorStream << "  File [" << easyloggingConfigFile << "] does not exist" << std::endl;
                 continue;
@@ -495,7 +495,7 @@ void Configuration::loadKnownClients(const JsonDoc::Value& json, std::stringstre
             errorStream << "  RSA public key not provided in known_clients for [" << clientId << "]" << std::endl;
             continue;
         }
-        Utils::resolveResidueHomeEnvVar(publicKey);
+        Utils::resolveResidueHomeEnvVar(publicKey, m_homePath);
         if (m_knownClientsKeys.find(clientId) != m_knownClientsKeys.end()) {
             errorStream << "  Duplicate client ID in known_clients [" << clientId << "]" << std::endl;
             continue;
