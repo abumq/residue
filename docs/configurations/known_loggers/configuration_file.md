@@ -52,5 +52,5 @@ You're not allowed to use following configurations in your configuration file as
     ENABLED                 =   true
  ```
  
- ## See also
+ ## See Also
  * [`RESIDUE_HOME`](https://github.com/muflihun/residue/blob/develop/docs/INSTALL.md#residue_home)
