@@ -26,7 +26,7 @@ Extension::Result FailureNotify::execute(const DispatchErrorExtension::Data* con
 
 void FailureNotify::notifyRecipients(const DispatchErrorExtension::Data* const data)
 {
-    JsonDoc recipients(conf().getArr("recipients");
+    JsonDoc recipients(conf().getArr("recipients"));
     if (recipients.isArray()) {
         std::stringstream ss;
         for (const auto& recipientNode : recipients) {
