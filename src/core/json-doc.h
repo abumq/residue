@@ -196,7 +196,7 @@ public:
     ///
     std::string dump(int indent = -1) const;
 
-    inline Value value()
+    inline Value underlyingVal()
     {
         return m_val;
     }

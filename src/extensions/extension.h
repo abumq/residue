@@ -139,7 +139,7 @@ private:
 
     inline void setConfig(JsonDoc&& j)
     {
-        m_config.set(j.value());
+        m_config.set(j.underlyingVal());
     }
 
     ///
