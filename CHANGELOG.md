@@ -19,7 +19,7 @@
 
 ### New Feature
 - Dynamic buffer to prevent loss of any message in case of failures
-- Added option `--home-path` to override environment variable `RESIDUE_HOME`
+- Added option `--residue-home` to override environment variable `RESIDUE_HOME`
 
 ## [2.1.0] - 07-03-2018
 ### Fixed
