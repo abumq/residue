@@ -21,6 +21,7 @@ You can use [Server Config Tool](https://muflihun.github.io/residue/create-serve
 * [server_rsa_public_key](#server_rsa_public_key)
 * [server_rsa_secret](#server_rsa_secret)
 * [enable_cli](#enable_cli)
+* [enable_dynamic_buffer](#enable_dynamic_buffer)
 * [allow_insecure_connection](#allow_insecure_connection)
 * [allow_unknown_loggers](#allow_unknown_loggers)
 * [allow_unknown_clients](#allow_unknown_clients)
@@ -113,6 +114,15 @@ Default: Randomly generated and residue outputs it in start-up
 [Boolean] Whether CLI is enabled on server or not. See [CLI_COMMANDS.md](/docs/CLI_COMMANDS.md) for possible input commands.
 
 Default: `true`
+
+### `enable_dynamic_buffer`
+[Boolean] Dynamic buffer is feature that allows failed logs (logs that were failed to be written to file) to be clogged up in an internal buffer. Once logs can be written to the file all the logs from this dynamic buffer will be flushed to the file so no logs are lost.
+
+You can turn this feature on or off with this flag.
+
+**NOTE** This is an experimental feature introduced in v2.1.1 and should not be used in production at this point.
+
+Default: `false`
 
 ### `allow_insecure_connection`
 [Boolean] Specifies whether plain connections to the server are allowed or not. Either this should be true or server key pair must be provided (or both)
