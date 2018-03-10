@@ -122,17 +122,17 @@ void Extension::writeLog(const std::string& msg, LogLevel level, unsigned short 
 {
 #ifdef RESIDUE_CORE_EXTENSION_ENABLED
     if (level == LogLevel::Info) {
-        RLOG(INFO) << "[Extension <" << m_id << ">] " << msg;
+        RLOG(INFO) << "[Extension<" << m_id << ">] " << msg;
     } else if (level == LogLevel::Error) {
-        RLOG(ERROR) << "[Extension <" << m_id << ">] " << msg;
+        RLOG(ERROR) << "[Extension<" << m_id << ">] " << msg;
     } else if (level == LogLevel::Warning) {
-        RLOG(WARNING) << "[Extension <" << m_id << ">] " << msg;
+        RLOG(WARNING) << "[Extension<" << m_id << ">] " << msg;
     } else if (level == LogLevel::Debug) {
-        RLOG(DEBUG) << "[Extension <" << m_id << ">] " << msg;
+        RLOG(DEBUG) << "[Extension<" << m_id << ">] " << msg;
     } else if (level == LogLevel::Trace) {
-        RLOG(TRACE) << "[Extension <" << m_id << ">] " << msg;
+        RLOG(TRACE) << "[Extension<" << m_id << ">] " << msg;
     } else if (level == LogLevel::Verbose) {
-        RVLOG(vlevel) << "[Extension <" << m_id << ">] " << msg;
+        RVLOG(vlevel) << "[Extension<" << m_id << ">] " << msg;
     }
 #else
     (void) msg;
