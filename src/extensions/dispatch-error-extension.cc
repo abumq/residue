@@ -28,7 +28,7 @@ DispatchErrorExtension::DispatchErrorExtension(const std::string& id)
 {
 }
 
-Extension::Result DispatchErrorExtension::DispatchErrorExtension(void* d)
+Extension::Result DispatchErrorExtension::executeWrapper(void* d)
 {
     return execute(static_cast<DispatchErrorExtension::Data*>(d));
 }

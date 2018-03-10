@@ -230,6 +230,7 @@ if (enable_extensions)
     set (EXTENSION_FILES
         src/extensions/extension.cc
         src/extensions/log-extension.cc
+        src/extensions/dispatch-error-extension.cc
         src/extensions/pre-archive-extension.cc
         src/extensions/post-archive-extension.cc
         src/core/json-doc.cc
