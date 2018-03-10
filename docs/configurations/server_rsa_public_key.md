@@ -13,11 +13,9 @@ Once you have generated the private key, you can extract public key from it usin
 openssl rsa -in server-priv.pem -outform PEM -pubout -out server.pem
 ```
 
-## `RESIDUE_HOME`
-`RESIDUE_HOME` is environment variable that is resolved at runtime if provided with, in the value. E.g, if `RESIDUE_HOME` is exported to `/opt/residue/config` and you have public key `$RESIDUE_HOME/server.pem` the final file that will be read will be `/opt/residue/config/server.pem`
-
 ## See Also
  * [`server_rsa_private_key`](/docs/CONFIGURATION.md#server_rsa_private_key)
+ * [`RESIDUE_HOME`](https://github.com/muflihun/residue/blob/develop/docs/INSTALL.md#residue_home)
 
 [← Configurations](/docs/CONFIGURATION.md)
 
