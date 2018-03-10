@@ -164,10 +164,10 @@ public:
                         successfullyWritten = true;
 
                         if (m_dynamicBuffer.find(fn) != m_dynamicBuffer.end()) {
-                            std::lock_guard<std::recursive_mutex> lock(m_dynamicBufferLock);
                             RLOG_IF(logger->id() != RESIDUE_LOGGER_ID, ERROR)
                                     << "This logger [" << logger->id() << "] has some data in dynamic buffer [" << fn << "]"
                                     << " Flushing all the messages first";
+                            std::lock_guard<std::recursive_mutex> lock(m_dynamicBufferLock);
                             std::vector<std::string>* list = &m_dynamicBuffer[fn].lines;
                             if (!list->empty()) {
                                 // lock the logger
@@ -176,7 +176,7 @@ public:
                                 fs->close();
                                 fs->open(fn, std::ios::out | std::ios::app);
 
-                                *fs << "=== " << list->size() << " logs from dynamic buffer ===\n";
+                                *fs << "=== [residue] ==> " << list->size() << " log" << (list->size() > 1 ? "s" : "") << " from dynamic buffer ===\n";
                                 for (auto& line : *list) {
                                     // process all items
                                     fs->write(line.c_str(), line.size());
@@ -188,6 +188,7 @@ public:
                                         fs->clear();
                                     }
                                 }
+                                *fs << "=== [residue] ==> dynamic buffer cleared ===\n";
                                 fs->flush();
                             }
                             m_dynamicBuffer.erase(fn);
