@@ -225,7 +225,7 @@ If you are just need to test the residue before you run it in production (in pro
 
 E.g, if `RESIDUE_HOME` is exported to `/opt/residue/config` and you have public key `$RESIDUE_HOME/server-priv.pem` the final file that will be read will be `/opt/residue/config/server-priv.pem`
 
-If you provide `--home-path=<path>` when starting the server, `RESIDUE_HOME` environment variable will be overridden by the value provided at startup.
+If you provide `--residue-home=<path>` when starting the server, `RESIDUE_HOME` environment variable will be overridden by the value provided at startup.
 
 # Verbose Options
 You can turn on verbose logging using `--v=<level>`. `-v` is equivalent to `--v=9`

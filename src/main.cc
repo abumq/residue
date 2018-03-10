@@ -175,7 +175,7 @@ int main(int argc, char* argv[])
     }
 
     if (argc < 2) {
-        std::cerr << "USAGE: residue <residue_config_file> [--force-without-root] [--v=<verbose-level>]" << std::endl;
+        std::cerr << "USAGE: residue <residue_config_file> [--force-without-root] [--v=<verbose-level>] [--residue-home=<new-RESIDUE_HOME>]" << std::endl;
         return 1;
     }
 
@@ -213,8 +213,8 @@ int main(int argc, char* argv[])
     printVersion(true);
 
     Configuration config;
-    if (el::Helpers::commandLineArgs()->hasParamWithValue("--home-path")) {
-        config.setHomePath(el::Helpers::commandLineArgs()->getParamValue("--home-path"));
+    if (el::Helpers::commandLineArgs()->hasParamWithValue("--residue-home")) {
+        config.setHomePath(el::Helpers::commandLineArgs()->getParamValue("--residue-home"));
     }
     config.load(argv[1]);
 
