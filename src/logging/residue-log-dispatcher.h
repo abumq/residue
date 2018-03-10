@@ -86,24 +86,6 @@ public:
                 const std::string& fn = conf->filename(level);
                 el::base::type::fstream_t* fs = conf->fileStream(level);
                 if (fs != nullptr) {
-                    auto addToDynamicBuffer = [&]() -> void {
-                        if (m_configuration->hasFlag(Configuration::ENABLE_DYNAMIC_BUFFER)
-                                && logger->id() != RESIDUE_LOGGER_ID) {
-                            // never add logs to dynamic buffer for residue logger as dynamic
-                            // buffer may be locked
-                            std::lock_guard<std::recursive_mutex> lock(m_dynamicBufferLock);
-                            if (m_dynamicBuffer.find(fn) == m_dynamicBuffer.end()) {
-                                m_dynamicBuffer.insert(std::make_pair(fn, FailedLogs {
-                                                                          logger,
-                                                                          std::vector<std::string>()
-                                                                      }));
-                            }
-                            if (std::find(m_dynamicBuffer[fn].lines.begin(), m_dynamicBuffer[fn].lines.end(), logLine)
-                                    == m_dynamicBuffer[fn].lines.end()) {
-                                m_dynamicBuffer[fn].lines.push_back(logLine);
-                            }
-                        }
-                    };
                     if (!Utils::fileExists(fn.c_str())) {
                         RLOG_IF(logger->id() != RESIDUE_LOGGER_ID, ERROR)
                                 << "File not found [" << fn << "] [Logger: " << logger->id() << "]. Creating...";
@@ -116,7 +98,7 @@ public:
                                 RLOG_IF(logger->id() != RESIDUE_LOGGER_ID, INFO)
                                         << "Failed to access file [ " << fn << "]! " << std::strerror(errno);
 
-                                addToDynamicBuffer();
+                                addToDynamicBuffer(logger, fn, logLine);
 
                                 fs->clear();
 
@@ -132,7 +114,7 @@ public:
                                     << "Failed to create file [" << fn << "] [Logger: "
                                     << logger->id() << "] " << std::strerror(errno);
 
-                            addToDynamicBuffer();
+                            addToDynamicBuffer(logger, fn, logLine);
 
                             execDispatchErrorExtensions(logger->id(),
                                                         fn,
@@ -148,7 +130,7 @@ public:
                                 << "Failed to write to file [" << fn << "] [Logger: "
                                 << logger->id() << "] " << std::strerror(errno);
 
-                        addToDynamicBuffer();
+                        addToDynamicBuffer(logger, fn, logLine);
 
                         fs->clear();
 
@@ -265,6 +247,26 @@ private:
         };
         for (auto& ext : m_configuration->dispatchErrorExtensions()) {
             ext->trigger(&d);
+        }
+    }
+
+    void addToDynamicBuffer(el::Logger* logger, const std::string& filename, const std::string& logLine)
+    {
+        if (m_configuration->hasFlag(Configuration::ENABLE_DYNAMIC_BUFFER)
+                && logger->id() != RESIDUE_LOGGER_ID) {
+            // never add logs to dynamic buffer for residue logger as dynamic
+            // buffer may be locked
+            std::lock_guard<std::recursive_mutex> lock(m_dynamicBufferLock);
+            if (m_dynamicBuffer.find(filename) == m_dynamicBuffer.end()) {
+                m_dynamicBuffer.insert(std::make_pair(filename, FailedLogs {
+                                                          logger,
+                                                          std::vector<std::string>()
+                                                      }));
+            }
+            if (std::find(m_dynamicBuffer[filename].lines.begin(), m_dynamicBuffer[filename].lines.end(), logLine)
+                    == m_dynamicBuffer[filename].lines.end()) {
+                m_dynamicBuffer[filename].lines.push_back(logLine);
+            }
         }
     }
   };
