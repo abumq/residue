@@ -26,16 +26,13 @@ Alternatively, you can use following [Ripe](https://github.com/muflihun/ripe#rea
 ripe -g --rsa --length 8192 --out-public server-priv.pem --out-private server-priv.pem
 ```
 
-
-## `RESIDUE_HOME`
-`RESIDUE_HOME` is environment variable that is resolved at runtime if provided with, in the value. E.g, if `RESIDUE_HOME` is exported to `/opt/residue/config` and you have public key `$RESIDUE_HOME/server-priv.pem` the final file that will be read will be `/opt/residue/config/server-priv.pem`
-
 ## Note
 You should have big enough key to cover for unknown clients. Remember, unknown clients will need to send their public key in initial request, which makes request quite bigger.
 
 ## See Also
  * [`server_rsa_public_key`](/docs/CONFIGURATION.md#server_rsa_public_key)
  * [`server_rsa_secret`](/docs/CONFIGURATION.md#server_rsa_secret)
+ * [`RESIDUE_HOME`](https://github.com/muflihun/residue/blob/develop/docs/INSTALL.md#residue_home)
 
 [← Configurations](/docs/CONFIGURATION.md)
 
