@@ -49,6 +49,7 @@
 #include "logging/residue-log-dispatcher.h"
 #include "logging/user-log-builder.h"
 #include "net/server.h"
+#include "setup.h"
 #include "tasks/auto-updater.h"
 #include "tasks/client-integrity-task.h"
 #include "tasks/log-rotator.h"
@@ -61,8 +62,6 @@ using namespace residue;
 using net::ip::tcp;
 
 INITIALIZE_EASYLOGGINGPP
-
-extern int setup();
 
 extern bool s_exitOnInterrupt;
 
@@ -194,7 +193,7 @@ int main(int argc, char* argv[])
         std::cout << "Please go to https://github.com/muflihun/residue/blob/master/docs/ for help" << std::endl;
         return 0;
     } else if (strcmp(argv[1], "--setup") == 0) {
-        return setup();
+        return Setup::setup();
     }
 
     if (!el::Helpers::commandLineArgs()->hasParam("--force-without-root") && el::base::utils::OS::getBashOutput("whoami") != "root") {

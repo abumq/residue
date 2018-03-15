@@ -967,6 +967,8 @@ std::string Configuration::exportAsString()
     }
 
     j.startArray("known_loggers");
+
+
     for (auto c : m_configurations) {
         std::string loggerId = c.first;
         if (m_remoteKnownLoggers.find(loggerId) != m_remoteKnownLoggers.end()) {

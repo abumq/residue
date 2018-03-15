@@ -307,7 +307,6 @@ public:
     }
 
 private:
-    friend class Clients;
     JsonDoc m_jsonDoc;
     std::string m_configurationFile;
 
@@ -367,6 +366,9 @@ private:
     std::mutex m_mutex;
 
     std::string m_homePath;
+
+    friend class Clients;
+    friend class Setup;
 
     bool addKnownClient(const std::string& clientId, const std::string& publicKey);
     bool verifyKnownClient(const std::string& clientId, const std::string& signature) const;
