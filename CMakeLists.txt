@@ -136,6 +136,7 @@ set (DEPS_SRC
 )
 
 set (SOURCE_FILES
+    src/setup.cc
 
     src/connect/connection-request.cc
     src/connect/connection-request-handler.cc

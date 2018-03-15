@@ -88,6 +88,7 @@ public:
     explicit Configuration(const std::string& configurationFile);
 
     bool save(const std::string& outputFile);
+    std::string exportAsString();
     void load(const std::string& configurationFile);
     void loadFromInput(std::string&& jsonStr);
     bool validateConfigFile(const std::string& filename) const;

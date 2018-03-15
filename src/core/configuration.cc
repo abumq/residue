@@ -867,3 +867,169 @@ void Configuration::loadExtensions(const JsonDoc& json, std::stringstream& error
     RLOG_IF(m_logExtensions.size() > 2, WARNING) << "You have " << m_logExtensions.size() << " log extensions enabled. "
                                                     "This may slow down the server's log processing depending upon the time it takes to execute the extension.";
 }
+
+std::string Configuration::exportAsString()
+{
+    const std::size_t capacity = 4096;
+    char source[capacity];
+
+    JsonBuilder j(source, capacity);
+    DRVLOG(RV_DEBUG_2) << "Starting JSON serialization with [" << capacity << "] bytes";
+
+    j.startObject();
+    j.addValue("admin_port", adminPort());
+    j.addValue("connect_port", connectPort());
+    j.addValue("logging_port", loggingPort());
+    j.addValue("server_key", serverKey());
+    if (!m_serverRSAPrivateKeyFile.empty()) {
+        j.addValue("server_rsa_private_key", m_serverRSAPrivateKeyFile);
+    }
+    if (!m_serverRSAPublicKeyFile.empty()) {
+        j.addValue("server_rsa_public_key", m_serverRSAPublicKeyFile);
+    }
+    if (!serverRSASecret().empty()) {
+        j.addValue("server_rsa_secret", serverRSASecret());
+    }
+    j.addValue("default_key_size", defaultKeySize());
+    j.addValue("file_mode", fileMode());
+    j.addValue("enable_cli", hasFlag(Configuration::Flag::ENABLE_CLI));
+    j.addValue("allow_insecure_connection", hasFlag(Configuration::Flag::ALLOW_INSECURE_CONNECTION));
+    j.addValue("allow_unknown_loggers", hasFlag(Configuration::Flag::ALLOW_UNKNOWN_LOGGERS));
+    j.addValue("allow_unknown_clients", hasFlag(Configuration::Flag::ALLOW_UNKNOWN_CLIENTS));
+    j.addValue("immediate_flush", hasFlag(Configuration::Flag::IMMEDIATE_FLUSH));
+    j.addValue("requires_timestamp", hasFlag(Configuration::Flag::REQUIRES_TIMESTAMP));
+    j.addValue("compression", hasFlag(Configuration::Flag::COMPRESSION));
+    j.addValue("allow_bulk_log_request", hasFlag(Configuration::Flag::ALLOW_BULK_LOG_REQUEST));
+    j.addValue("max_items_in_bulk", maxItemsInBulk());
+    j.addValue("timestamp_validity", timestampValidity());
+    j.addValue("client_age", clientAge());
+    j.addValue("non_acknowledged_client_age", nonAcknowledgedClientAge());
+    j.addValue("client_integrity_task_interval", clientIntegrityTaskInterval());
+    j.addValue("dispatch_delay", dispatchDelay());
+    j.addValue("archived_log_directory", m_archivedLogDirectory);
+    j.addValue("archived_log_filename", m_archivedLogFilename);
+    j.addValue("archived_log_compressed_filename", m_archivedLogCompressedFilename);
+/*
+    if (!m_logExtensions.empty()) {
+        j.startObject("extensions");
+        j.startArray("log_extensions");
+        for (auto& e : m_logExtensions) {
+            j.addValue(e->module());
+        }
+
+        j.endArray();
+        j.endObject();
+    }
+*/
+
+    j.startArray("loggers_blacklist");
+    for (auto& e : m_blacklist) {
+        j.addValue(e);
+    }
+    j.endArray(); // loggers_blacklist
+
+    j.startArray("known_clients");
+    for (auto c : m_knownClientsKeys) {
+        if (m_remoteKnownClients.find(c.first) != m_remoteKnownClients.end()) {
+            // do not save known clients fetched by URL
+            continue;
+        }
+        j.startObject();
+
+        j.addValue("client_id", c.first);
+        j.addValue("public_key", c.second.first); // .first = filename | .second = file contents
+        if (m_keySizes.find(c.first) != m_keySizes.end()) {
+            j.addValue("key_size", m_keySizes.at(c.first));
+        }
+        if (m_knownClientsLoggers.find(c.first) != m_knownClientsLoggers.end()) {
+            const auto& list = m_knownClientsLoggers.at(c.first);
+            if (!list.empty()) {
+                j.startArray("loggers");
+                for (const auto& loggerId : list) {
+                    j.addValue(loggerId);
+                }
+                j.endArray();
+            }
+        }
+/*
+        if (m_knownClientUserMap.find(c.first) != m_knownClientUserMap.end()) {
+            j.addValue("user", m_knownClientUserMap.at(c.first));
+        }*/
+        if (m_knownClientDefaultLogger.find(c.first) != m_knownClientDefaultLogger.end()) {
+            j.addValue("default_logger", m_knownClientDefaultLogger.at(c.first));
+        }
+        j.endObject();
+    }
+    j.endArray(); // known_clients
+
+    if (!m_knownClientsEndpoint.empty()) {
+        j.addValue("known_clients_endpoint", m_knownClientsEndpoint);
+    }
+
+    j.startArray("known_loggers");
+    for (auto c : m_configurations) {
+        std::string loggerId = c.first;
+        if (m_remoteKnownLoggers.find(loggerId) != m_remoteKnownLoggers.end()) {
+            // do not save known loggers fetched by URL
+            continue;
+        }
+        j.startObject();
+        j.addValue("logger_id", loggerId);
+        j.addValue("configuration_file", c.second);
+
+        std::string frequencyStr;
+        if (m_rotationFrequencies.find(loggerId) != m_rotationFrequencies.end()
+                && m_rotationFrequencies.at(loggerId) != Configuration::RotationFrequency::NEVER) {
+            switch (m_rotationFrequencies.at(loggerId)) {
+            case HOURLY:
+                frequencyStr = "HOURLY";
+                break;
+            case DAILY:
+                frequencyStr = "DAILY";
+                break;
+            case WEEKLY:
+                frequencyStr = "WEEKLY";
+                break;
+            case MONTHLY:
+                frequencyStr = "MONTHLY";
+                break;
+            case YEARLY:
+                frequencyStr = "YEARLY";
+                break;
+            default:
+                frequencyStr = "NEVER";
+            }
+            j.addValue("rotation_freq", frequencyStr);
+        }
+
+        if (m_archivedLogsFilenames.find(loggerId) != m_archivedLogsFilenames.end()) {
+            j.addValue("archived_log_filename", m_archivedLogsFilenames.at(loggerId).substr(std::string("%logger-").size()));
+        }
+
+        if (m_archivedLogsCompressedFilenames.find(loggerId) != m_archivedLogsCompressedFilenames.end()) {
+            j.addValue("archived_log_compressed_filename", m_archivedLogsCompressedFilenames.at(loggerId));
+        }
+
+        if (m_archivedLogsDirectories.find(loggerId) != m_archivedLogsDirectories.end()) {
+            j.addValue("archived_log_directory", m_archivedLogsDirectories.at(loggerId));
+        }
+
+        if (m_knownLoggerUserMap.find(loggerId) != m_knownLoggerUserMap.end()) {
+            j.addValue("user", m_knownLoggerUserMap.at(loggerId));
+        }
+
+        j.endObject();
+    }
+    j.endArray(); // known_loggers
+    if (!m_knownLoggersEndpoint.empty()) {
+        j.addValue("known_loggers_endpoint", m_knownLoggersEndpoint);
+    }
+    j.endObject();
+
+    JsonDoc jdoc(source);
+
+    if (!jdoc.isValid()) {
+        return "Failed to validate exported config";
+    }
+    return jdoc.dump(4);
+}

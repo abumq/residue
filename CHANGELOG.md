@@ -12,6 +12,7 @@
 - Log message when execution of extension finished
 - Updated invalid ports message
 - User must have READ permission in `file_mode`
+- Configure residue using `--setup` flag
 
 ### Core Fixes
 - Standard response code has quotes around the key

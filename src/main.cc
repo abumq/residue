@@ -62,6 +62,8 @@ using net::ip::tcp;
 
 INITIALIZE_EASYLOGGINGPP
 
+extern int setup();
+
 extern bool s_exitOnInterrupt;
 
 static const std::unordered_map<el::base::type::VerboseLevel, std::string> VERBOSE_SEVERITY_MAP
@@ -191,6 +193,8 @@ int main(int argc, char* argv[])
         std::cout << std::endl;
         std::cout << "Please go to https://github.com/muflihun/residue/blob/master/docs/ for help" << std::endl;
         return 0;
+    } else if (strcmp(argv[1], "--setup") == 0) {
+        return setup();
     }
 
     if (!el::Helpers::commandLineArgs()->hasParam("--force-without-root") && el::base::utils::OS::getBashOutput("whoami") != "root") {
