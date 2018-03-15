@@ -26,6 +26,10 @@
 #include "ripe/Ripe.h"
 
 #include "core/configuration.h"
+#include "extensions/log-extension.h"
+#include "extensions/pre-archive-extension.h"
+#include "extensions/post-archive-extension.h"
+#include "extensions/dispatch-error-extension.h"
 #include "logging/log.h"
 #include "utils/utils.h"
 
@@ -50,6 +54,19 @@ const std::string Setup::kResidueLoggerConf = std::string(R"(* GLOBAL:
   PERFORMANCE_TRACKING    =   false
 * VERBOSE:
   FORMAT                  =   "%datetime [%logger] %level-%vlevel %msg")");
+
+template <typename T>
+class ExtensionTemplateForSetup : public T {
+public:
+    explicit ExtensionTemplateForSetup(const std::string& id) : T(id)
+    {
+    }
+
+    virtual Extension::Result execute(const typename T::Data* const) override
+    {
+        return { 0, true};
+    }
+};
 
 int Setup::setup()
 {
@@ -164,6 +181,13 @@ int Setup::setup()
     config.m_archivedLogDirectory = "%original/archives/";
     config.m_archivedLogCompressedFilename = "%logger.%wday.tar.gz";
     config.m_archivedLogFilename = "%logger.%wday.log";
+
+    // log extensions @ setup time
+    ExtensionTemplateForSetup<LogExtension> e("test");
+    e.m_modulePath = "the/path/so.so";
+    e.m_description = "desc";
+    e.m_config.parse("{\"id\":2}");
+    config.m_logExtensions.push_back(&e);
 
     RLOG(INFO) << ">> Writing " << outputDir << "residue.json.conf";
 

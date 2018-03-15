@@ -852,6 +852,8 @@ void Configuration::loadExtensions(const JsonDoc& json, std::stringstream& error
         if (std::find(ext.begin(), ext.end(), uniqName) != ext.end()) {
             errorStream << "  Duplicate extension could not be loaded: " << name;
         } else {
+            e->m_description = j.get<std::string>("description", "");
+            e->m_modulePath = module;
             ext.push_back(uniqName);
             if (j.hasKey("config")) {
                 JsonDoc jextConfig(j.getObj("config"));
@@ -1026,8 +1028,41 @@ std::string Configuration::exportAsString()
     if (!m_knownLoggersEndpoint.empty()) {
         j.addValue("known_loggers_endpoint", m_knownLoggersEndpoint);
     }
-    j.endObject();
 
+    j.startArray("extensions");
+
+    auto createObjectForExtension = [&](const std::vector<Extension*>& list) {
+        for (auto& e : list) {
+            j.startObject();
+            j.addValue("name", e->m_id);
+            j.addValue("module", e->m_modulePath);
+            j.addValue("description", e->m_description);
+            std::string cfg = e->m_config.dump();
+            if (cfg.size() > 2 /* i.e, not {} */ && cfg != "null") {
+                j.startObject("config");
+                // we get cfg = "config":{"{"id":2}"}}
+                /*cfg[0] = ' ';
+                cfg[2] = ' ';
+                cfg[cfg.size() - 1] = ' ';
+                cfg[cfg.size() - 2] = ' ';
+                */
+                j.addValue(cfg);
+                j.endObject();
+            }
+            j.endObject();
+        }
+    };
+
+    createObjectForExtension(m_logExtensions);
+    createObjectForExtension(m_preArchiveExtensions);
+    createObjectForExtension(m_postArchiveExtensions);
+    createObjectForExtension(m_dispatchErrorExtensions);
+
+    j.endArray(); // extensions
+
+    j.endObject(); // end of root
+
+    std::cout << source << std::endl;
     JsonDoc jdoc(source);
 
     if (!jdoc.isValid()) {
