@@ -182,13 +182,14 @@ int Setup::setup()
     config.m_archivedLogCompressedFilename = "%logger.%wday.tar.gz";
     config.m_archivedLogFilename = "%logger.%wday.log";
 
+#if 0
     // log extensions @ setup time
     ExtensionTemplateForSetup<LogExtension> e("test");
     e.m_modulePath = "the/path/so.so";
     e.m_description = "desc";
     e.m_config.parse("{\"id\":2}");
     config.m_logExtensions.push_back(&e);
-
+#endif
     RLOG(INFO) << ">> Writing " << outputDir << "residue.json.conf";
 
     std::fstream fconfig(outputDir + "residue.json.conf", std::ios::out);

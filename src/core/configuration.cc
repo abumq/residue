@@ -1039,15 +1039,7 @@ std::string Configuration::exportAsString()
             j.addValue("description", e->m_description);
             std::string cfg = e->m_config.dump();
             if (cfg.size() > 2 /* i.e, not {} */ && cfg != "null") {
-                j.startObject("config");
-                // we get cfg = "config":{"{"id":2}"}}
-                /*cfg[0] = ' ';
-                cfg[2] = ' ';
-                cfg[cfg.size() - 1] = ' ';
-                cfg[cfg.size() - 2] = ' ';
-                */
-                j.addValue(cfg);
-                j.endObject();
+                j.addValue("config", "-==-" + cfg + "<-==-");
             }
             j.endObject();
         }
@@ -1062,8 +1054,12 @@ std::string Configuration::exportAsString()
 
     j.endObject(); // end of root
 
-    std::cout << source << std::endl;
-    JsonDoc jdoc(source);
+    // workaround for extension config
+    std::string src(source);
+    Utils::replaceAll(src, "\"config\":\"-==-", "\"config\":");
+    Utils::replaceAll(src, "<-==-\"", "");
+
+    JsonDoc jdoc(src);
 
     if (!jdoc.isValid()) {
         return "Failed to validate exported config";
