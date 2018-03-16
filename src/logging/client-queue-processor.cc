@@ -182,9 +182,9 @@ void ClientQueueProcessor::processRequestQueue()
         RVLOG(RV_DEBUG) << "Starting client integrity task after queue is processed.";
         // trigger client integrity task as it was run while this queue was being processed
         if (!m_registry->clientIntegrityTask()->isExecuting()) {
-            if (m_clientId != Configuration::UNKNOWN_CLIENT_ID) {
-                // Unknown clients are special case as CLIENT ID is not real ID
-                // so we execute whole task at next schedule (provided no other unknown client)
+            if (m_clientId != Configuration::UNMANAGED_CLIENT_ID) {
+                // Unmanaged clients are special case as CLIENT ID is not real ID
+                // so we execute whole task at next schedule (provided no other unmanaged client)
                 // add more logs to the queue in which case it will be paused again
             } else {
                 m_registry->clientIntegrityTask()->performCleanup(m_clientId);
@@ -241,16 +241,16 @@ bool ClientQueueProcessor::processRequest(LogRequest* request, Client** clientRe
     }
 
     if (!bypassChecks && client->isKnown()) {
-        // take this opportunity to update the user for unknown logger
+        // take this opportunity to update the user for unmanaged logger
 
-        // unknown loggers cannot be updated to specific user
+        // unmanaged loggers cannot be updated to specific user
         // without having a known client parent
 
         // make sure the current logger is unknown
         // otherwise we already know the user either from client or from logger itself
-        if (m_registry->configuration()->hasFlag(Configuration::Flag::ALLOW_UNKNOWN_LOGGERS) // cannot be unknown logger unless server supports it
+        if (m_registry->configuration()->hasFlag(Configuration::Flag::ALLOW_UNMANAGED_LOGGERS) // cannot be unmanaged logger unless server supports it
                 && !m_registry->configuration()->isKnownLogger(request->loggerId())) {
-            m_registry->configuration()->updateUnknownLoggerUserFromRequest(request->loggerId(), request);
+            m_registry->configuration()->updateUnmanagedLoggerUserFromRequest(request->loggerId(), request);
         }
     }
 
@@ -290,9 +290,9 @@ bool ClientQueueProcessor::isRequestAllowed(const LogRequest* request) const
         return false;
     }
     // Ensure flag is on
-    bool allowed = m_registry->configuration()->hasFlag(Configuration::Flag::ALLOW_UNKNOWN_LOGGERS);
+    bool allowed = m_registry->configuration()->hasFlag(Configuration::Flag::ALLOW_UNMANAGED_LOGGERS);
     if (!allowed) {
-        // we're not allowed to use unknown loggers. we make sure the current logger is actually known.
+        // we're not allowed to use unmanaged loggers. we make sure the current logger is actually known.
         allowed = m_registry->configuration()->isKnownLogger(request->loggerId());
     }
     if (allowed) {
@@ -307,7 +307,7 @@ bool ClientQueueProcessor::isRequestAllowed(const LogRequest* request) const
             && m_registry->configuration()->isKnownLogger(request->loggerId())
             && request->loggerId() != "default") {
         allowed = false;
-        DRVLOG(RV_WARNING) << "Unknown client trying to use known logger is no longer allowed";
+        DRVLOG(RV_WARNING) << "Unmanaged client trying to use known logger is no longer allowed";
     }
     return allowed;
 }

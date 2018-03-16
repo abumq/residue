@@ -69,9 +69,9 @@ void ListLoggingFiles::execute(std::vector<std::string>&& params, std::ostringst
         }
         listMap.insert(std::make_pair(loggerId, std::set<std::string>()));
     } else {
-        if (registry()->configuration()->knownClientsLoggers().find(clientId) !=
-                registry()->configuration()->knownClientsLoggers().end()) {
-            auto setOfLoggerIds = registry()->configuration()->knownClientsLoggers().at(clientId);
+        if (registry()->configuration()->managedClientsLoggers().find(clientId) !=
+                registry()->configuration()->managedClientsLoggers().end()) {
+            auto setOfLoggerIds = registry()->configuration()->managedClientsLoggers().at(clientId);
             for (std::string loggerId : setOfLoggerIds) {
                 listMap.insert(std::make_pair(loggerId, std::set<std::string>()));
             }

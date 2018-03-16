@@ -14,6 +14,12 @@
 - User must have READ permission in `file_mode`
 - Configure residue using `--setup` flag
 
+### Config Changes
+- Unknown clients have been renamed to unmanaged clients
+- Known clients have been renamed to managed clients
+- Unknown loggers have been renamed to unmanaged loggers
+- Known loggers have been renamed to known loggers
+
 ### Core Fixes
 - Standard response code has quotes around the key
 - Reopen files after `rconfig --logger-id`

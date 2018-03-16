@@ -79,8 +79,8 @@ void ConnectionRequestHandler::handle(RawRequest&& rawRequest)
 
     if (request.type() == ConnectionRequest::Type::CONNECT && knownClient) {
         // Find public key for known client
-        const auto& iter = m_registry->configuration()->knownClientsKeys().find(request.clientId());
-        if (iter == m_registry->configuration()->knownClientsKeys().end()) {
+        const auto& iter = m_registry->configuration()->managedClientsKeys().find(request.clientId());
+        if (iter == m_registry->configuration()->managedClientsKeys().end()) {
             RLOG(ERROR) << "Client is unknown.";
             respondErr("Client is unknown");
             return;
@@ -89,9 +89,9 @@ void ConnectionRequestHandler::handle(RawRequest&& rawRequest)
         request.setRsaPublicKey(iter->second.second);
     } else if (request.type() == ConnectionRequest::Type::CONNECT
                && !knownClient
-               && !m_registry->configuration()->hasFlag(Configuration::ALLOW_UNKNOWN_CLIENTS)) {
-        RLOG(ERROR) << "Unknown clients are not allowed";
-        respondErr("Unknown clients are not allowed by this server");
+               && !m_registry->configuration()->hasFlag(Configuration::ALLOW_UNMANAGED_CLIENTS)) {
+        RLOG(ERROR) << "Unmanaged clients are not allowed";
+        respondErr("Unmanaged clients are not allowed by this server");
         return;
     }
 
@@ -171,7 +171,7 @@ void ConnectionRequestHandler::acknowledge(const ConnectionRequest* request, con
         session->write(output);
         return;
     } else if (!existingClient->isKnown() && existingClient->acknowledged()) {
-        ConnectionResponse response(Response::StatusCode::BAD_REQUEST, "Cannot re-acknowledge unknown clients. Please TOUCH to refresh it.");
+        ConnectionResponse response(Response::StatusCode::BAD_REQUEST, "Cannot re-acknowledge unmanaged clients. Please TOUCH to refresh it.");
         std::string output;
         response.serialize(output);
         session->write(output.c_str(), output.size(), existingClient->rsaPublicKey().c_str());

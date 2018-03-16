@@ -49,9 +49,9 @@ void LogRequestHandler::addMissingClientProcessors()
         }
     };
 
-    add(Configuration::UNKNOWN_CLIENT_ID);
+    add(Configuration::UNMANAGED_CLIENT_ID);
 
-    for (auto& knownClientPair : m_registry->configuration()->knownClientsKeys()) {
+    for (auto& knownClientPair : m_registry->configuration()->managedClientsKeys()) {
         add(knownClientPair.first);
     }
 
@@ -61,15 +61,15 @@ void LogRequestHandler::addMissingClientProcessors()
         processorPair.second->start();
     }
 
-    if (m_queueProcessor.size() - 1 /* unknown */ > m_registry->configuration()->knownClientsKeys().size()) {
+    if (m_queueProcessor.size() - 1 /* unknown */ > m_registry->configuration()->managedClientsKeys().size()) {
         // stop previously removed clients if available
         for (auto& processorPair : m_queueProcessor) {
-            if (processorPair.first == Configuration::UNKNOWN_CLIENT_ID) {
-                // we never stop processor for unknown clients
+            if (processorPair.first == Configuration::UNMANAGED_CLIENT_ID) {
+                // we never stop processor for unmanaged clients
                 continue;
             }
-            if (m_registry->configuration()->knownClientsKeys().find(processorPair.first)
-                    == m_registry->configuration()->knownClientsKeys().end()) {
+            if (m_registry->configuration()->managedClientsKeys().find(processorPair.first)
+                    == m_registry->configuration()->managedClientsKeys().end()) {
                 // This client processor was removed between first time it was added and now
                 // so we stop accepting new requests for this processor
                 // but we keep it in memory
@@ -102,7 +102,7 @@ void LogRequestHandler::handle(RawRequest&& rawRequest)
         // with all the copy constructors and move constructors.
         // Processors run on different thread so it's OK to decrypt it second time
         if (!request.client()->isKnown()) {
-            m_queueProcessor.find(Configuration::UNKNOWN_CLIENT_ID)->second->handle(std::move(rawRequest));
+            m_queueProcessor.find(Configuration::UNMANAGED_CLIENT_ID)->second->handle(std::move(rawRequest));
         } else {
             m_queueProcessor.find(request.client()->id())->second->handle(std::move(rawRequest));
         }

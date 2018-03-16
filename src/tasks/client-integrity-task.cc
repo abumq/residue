@@ -69,13 +69,13 @@ void ClientIntegrityTask::execute()
             auto pos = m_pausedClients.find(client->id());
             if (pos == m_pausedClients.end()) {
 
-                // here we check for unknown clients
-                // we may be removing a "paused" unknown client
-                // as m_pausedClients for unknown client will be "unknown"
-                if (!client->isKnown() && m_pausedClients.find(Configuration::UNKNOWN_CLIENT_ID) != m_pausedClients.end()) {
-                    // yes we are surely removing a paused unknown client
+                // here we check for unmanaged clients
+                // we may be removing a "paused" unmanaged client
+                // as m_pausedClients for unmanaged client will be "unknown"
+                if (!client->isKnown() && m_pausedClients.find(Configuration::UNMANAGED_CLIENT_ID) != m_pausedClients.end()) {
+                    // yes we are surely removing a paused unmanaged client
                     // that we shouldn't do
-                    RLOG(INFO) << "Unknown client [" << client->id() << "] expired - Paused removal";
+                    RLOG(INFO) << "Unmanaged client [" << client->id() << "] expired - Paused removal";
                     ++clientIter; // skip and move on
                 } else {
                     RLOG(INFO) << "Client [" << client->id() << "] expired";

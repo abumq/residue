@@ -23,8 +23,8 @@ You can use [Server Config Tool](https://muflihun.github.io/residue/create-serve
 * [enable_cli](#enable_cli)
 * [enable_dynamic_buffer](#enable_dynamic_buffer)
 * [allow_insecure_connection](#allow_insecure_connection)
-* [allow_unknown_loggers](#allow_unknown_loggers)
-* [allow_unknown_clients](#allow_unknown_clients)
+* [allow_unmanaged_loggers](#allow_unmanaged_loggers)
+* [allow_unmanaged_clients](#allow_unmanaged_clients)
 * [immediate_flush](#immediate_flush)
 * [requires_timestamp](#requires_timestamp)
 * [compression](#compression)
@@ -39,23 +39,23 @@ You can use [Server Config Tool](https://muflihun.github.io/residue/create-serve
 * [archived_log_directory](#archived_log_directory)
 * [archived_log_filename](#archived_log_filename)
 * [archived_log_compressed_filename](#archived_log_compressed_filename)
-* [known_clients](#known_clients)
-   * [client_id](#known_clientsclient_id)
-   * [public_key](#known_clientspublic_key)
-   * [key_size](#known_clientskey_size)
-   * [loggers](#known_clientsloggers)
-   * [default_logger](#known_clientsdefault_logger)
-   * [user](#known_clientsuser)
-* [known_clients_endpoint](#known_clients_endpoint)
-* [known_loggers](#known_loggers)
-   * [logger_id](#known_loggerslogger_id)
-   * [configuration_file](#known_loggersconfiguration_file)
-   * [rotation_freq](#known_loggersrotation_freq)
-   * [user](#known_loggersuser)
-   * [archived_log_filename](#known_loggersarchived_log_filename)
-   * [archived_log_compressed_filename](#known_loggersarchived_log_compressed_filename)
-   * [archived_log_directory](#known_loggersarchived_log_directory)
-* [known_loggers_endpoint](#known_loggers_endpoint)
+* [managed_clients](#managed_clients)
+   * [client_id](#managed_clientsclient_id)
+   * [public_key](#managed_clientspublic_key)
+   * [key_size](#managed_clientskey_size)
+   * [loggers](#managed_clientsloggers)
+   * [default_logger](#managed_clientsdefault_logger)
+   * [user](#managed_clientsuser)
+* [managed_clients_endpoint](#managed_clients_endpoint)
+* [managed_loggers](#managed_loggers)
+   * [logger_id](#managed_loggerslogger_id)
+   * [configuration_file](#managed_loggersconfiguration_file)
+   * [rotation_freq](#managed_loggersrotation_freq)
+   * [user](#managed_loggersuser)
+   * [archived_log_filename](#managed_loggersarchived_log_filename)
+   * [archived_log_compressed_filename](#managed_loggersarchived_log_compressed_filename)
+   * [archived_log_directory](#managed_loggersarchived_log_directory)
+* [managed_loggers_endpoint](#managed_loggers_endpoint)
 * [extensions](#extensions)
 * [loggers_blacklist](#loggers_blacklist)
 * [Comments](#comments)
@@ -84,7 +84,7 @@ Default: `8778`
 [Learn more...](/docs/configurations/logging_port.md)
 
 ### `default_key_size`
-[Integer] Default symmetric key size (`128`, `192` or `256`) for clients that do not specify key size. See [`key_size`](#known_clientskey_size)
+[Integer] Default symmetric key size (`128`, `192` or `256`) for clients that do not specify key size. See [`key_size`](#managed_clientskey_size)
 
 Default: `256`
 
@@ -129,13 +129,13 @@ Default: `false`
 
 Default: `true`
 
-### `allow_unknown_loggers`
-[Boolean] Specifies whether loggers other than the ones in [`known_loggers`](#known_loggers) list are allowed or ignored / rejected.
+### `allow_unmanaged_loggers`
+[Boolean] Specifies whether loggers other than the ones in [`managed_loggers`](#managed_loggers) list are allowed or ignored / rejected.
 
 Default: `true`
 
-### `allow_unknown_clients`
-[Boolean] Specifies whether clients other than the ones in [`known_clients`](#known_clients) list are allowed or ignored / rejected.
+### `allow_unmanaged_clients`
+[Boolean] Specifies whether clients other than the ones in [`managed_clients`](#managed_clients) list are allowed or ignored / rejected.
 
 Default: `true`
 
@@ -249,57 +249,57 @@ Default: It must be provided by the user
 
 [Learn more...](/docs/configurations/archived_log_compressed_filename.md)
 
-### `known_clients`
-[Array] Object of client that are known to the server. These clients will have allocated RSA public key that will be used to transfer the symmetric key.
+### `managed_clients`
+[Array] Object of client that are managed to the server. These clients will have allocated RSA public key that will be used to transfer the symmetric key.
 
-[Learn more...](/docs/configurations/known_clients/#known_clients)
+[Learn more...](/docs/configurations/managed_clients/#managed_clients)
 
-#### `known_clients`::`client_id`
+#### `managed_clients`::`client_id`
 [String] The client ID (should be alpha-numeric and can include `-`, `_`, `@`, `.` and `#` symbols)
 
-[Learn more...](/docs/configurations/known_clients/client_id.md)
+[Learn more...](/docs/configurations/managed_clients/client_id.md)
 
-#### `known_clients`::`public_key`
+#### `managed_clients`::`public_key`
 [String] Path to RSA public key file for associated client ID. This key must be present and readable at the time of starting the server.
 
 You can use `$RESIDUE_HOME` environment variable in this file path.
 
-[Learn more...](/docs/configurations/known_clients/public_key.md)
+[Learn more...](/docs/configurations/managed_clients/public_key.md)
 
-#### `known_clients`::`key_size`
+#### `managed_clients`::`key_size`
 [Optional, Integer] Integer value of `128`, `192` or `256` to specify key size for this client.
 
 This is useful when client libraries connecting cannot handle bigger sizes, e.g, java clients without JCE Policy Files.
 
 See [`default_key_size`](#default_key_size)
 
-#### `known_clients`::`loggers`
-[Optional, Array] Object of logger IDs that must be present in [`known_loggers`](#known_loggers) array.
+#### `managed_clients`::`loggers`
+[Optional, Array] Object of logger IDs that must be present in [`managed_loggers`](#managed_loggers) array.
 
 This is to map the client with multiple loggers. Remember, client is not validated against the logger using this array, this is only for extra information.
 
-#### `known_clients`::`default_logger`
-[String] Default logger for the client. This is useful when logging using unknown logger but connected as known client. The configurations from this logger is used.
+#### `managed_clients`::`default_logger`
+[String] Default logger for the client. This is useful when logging using unmanaged logger but connected as managed client. The configurations from this logger is used.
 
 Default: `default`
 
-See [`known_clients::loggers`](#known_clientsloggers)
+See [`managed_clients::loggers`](#managed_clientsloggers)
 
-#### `known_clients`::`user`
+#### `managed_clients`::`user`
 [String] Linux / macOS user. All the log files associated to the corresponding loggers will belong to this user with `RW-R-----` permissions (subject to `file_mode` config)
 
 Default: Current process user
 
-[Learn more...](/docs/configurations/known_clients/user.md)
+[Learn more...](/docs/configurations/managed_clients/user.md)
 
-### `known_clients_endpoint`
-[String] This is URL where we can pull *more* known clients from. The endpoint should return JSON with object [`known_clients`](#known_clients), e.g,
+### `managed_clients_endpoint`
+[String] This is URL where we can pull *more* managed clients from. The endpoint should return JSON with object [`managed_clients`](#managed_clients), e.g,
 
 ```
 <?php
 header('Content-Type: application/json');
 $list = array(
-    "known_loggers" => array(
+    "managed_loggers" => array(
         array(
             "logger_id" => "another",
             "configuration_file" => "samples/configurations/blah.conf"
@@ -316,48 +316,48 @@ Endpoint URL is `http://localhost:8000/localConfig.php`
 
 You need to make sure that [`configuration_file`](#configuration_file) exists on the server.
 
-### `known_loggers`
-[Array] Object of loggers that are known to the server. 
+### `managed_loggers`
+[Array] Object of loggers that are managed to the server. 
 
-#### `known_loggers`::`logger_id`
+#### `managed_loggers`::`logger_id`
 [String] The logger ID
 
-#### `known_loggers`::`configuration_file`
+#### `managed_loggers`::`configuration_file`
 [String] Path to [Easylogging++ configuration file](https://github.com/muflihun/easyloggingpp#using-configuration-file). You can use `$RESIDUE_HOME` environment variable in this file path. When the new logger is registered, it's configured using this configuration.
  
-[Learn more...](/docs/configurations/known_loggers/configuration_file.md)
+[Learn more...](/docs/configurations/managed_loggers/configuration_file.md)
 
-#### `known_loggers`::`rotation_freq`
+#### `managed_loggers`::`rotation_freq`
 [String] One of [`never`, `hourly`, `six_hours`, `twelve_hours`, `daily`, `weekly`, `monthly`, `yearly`] to specify rotation frequency for corresponding log files. This is rotated regardless of file size.
 
 Default: `never`
 
-[Learn more...](/docs/configurations/known_loggers/rotation_freq.md)
+[Learn more...](/docs/configurations/managed_loggers/rotation_freq.md)
 
-#### `known_loggers`::`user`
-[String] Linux / mac user assigned to known logger. All the log files associated to the corresponding logger will belong to this user with `RW-R-----` permissions (subject to `file_mode`)
+#### `managed_loggers`::`user`
+[String] Linux / mac user assigned to managed logger. All the log files associated to the corresponding logger will belong to this user with `RW-R-----` permissions (subject to `file_mode`)
 
 Default: Current process user
 
-[Learn more...](/docs/configurations/known_clients/user.md)
+[Learn more...](/docs/configurations/managed_clients/user.md)
 
-#### `known_loggers`::`archived_log_filename`
+#### `managed_loggers`::`archived_log_filename`
 [String] Filename for rotated or archived log file
 
 See [archived_log_filename](#archived_log_filename)
 
-#### `known_loggers`::`archived_log_compressed_filename`
+#### `managed_loggers`::`archived_log_compressed_filename`
 [String] Filename for rotated or archived log file in compressed form (ideally ending with `.tar.gz`)
 
 See [archived_log_compressed_filename](#archived_log_compressed_filename)
 
-#### `known_loggers`::`archived_log_directory`
+#### `managed_loggers`::`archived_log_directory`
 [String] Overrides default [`archived_log_directory`](#archived_log_directory) to logger specific directory.
 
 See [archived_log_directory](#archived_log_directory)
 
-### `known_loggers_endpoint`
-[String] This is URL same as [`known_clients_endpoint`](#known_clients_endpoint) with JSON object containing same properties as [`known_loggers`](#known_loggers)
+### `managed_loggers_endpoint`
+[String] This is URL same as [`managed_clients_endpoint`](#managed_clients_endpoint) with JSON object containing same properties as [`managed_loggers`](#managed_loggers)
 
 ### `extensions`
 [Array] Contains various types of extensions. You can specify each type of extension's array shared library modules.
@@ -382,7 +382,7 @@ Because Residue configuration is in JSON format, comments are not supported as t
     "archived_log_filename": "%hour-%min-%day-%month-%year.log",
     "comment", "another comment",
     "archived_log_compressed_filename": "%hour-%min-%day-%month-%year.tar.gz",
-    "known_clients": [
+    "managed_clients": [
 ...
 ```
 
@@ -398,7 +398,7 @@ Please note, this is not preferred way as parsing may get slower with increasing
     "archived_log_filename": "%hour-%min-%day-%month-%year.log",
     // another comment
     "archived_log_compressed_filename": "%hour-%min-%day-%month-%year.tar.gz",
-    "known_clients": [
+    "managed_clients": [
 ...
 ```
 

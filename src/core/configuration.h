@@ -51,10 +51,10 @@ public:
     enum Flag : unsigned int
     {
         NONE = 0,
-        ALLOW_UNKNOWN_LOGGERS = 1,
+        ALLOW_UNMANAGED_LOGGERS = 1,
         ALLOW_BULK_LOG_REQUEST = 16,
         IMMEDIATE_FLUSH = 32,
-        ALLOW_UNKNOWN_CLIENTS = 64,
+        ALLOW_UNMANAGED_CLIENTS = 64,
         ALLOW_INSECURE_CONNECTION = 128,
         COMPRESSION = 256,
         ENABLE_CLI = 512,
@@ -77,7 +77,7 @@ public:
     ///
     /// \brief For processor thread ID
     ///
-    static const std::string UNKNOWN_CLIENT_ID;
+    static const std::string UNMANAGED_CLIENT_ID;
 
     ///
     /// \brief Maximum numbers of blacklist loggers possible
@@ -201,8 +201,8 @@ public:
 
     inline bool isKnownLoggerForClient(const std::string& clientId, const std::string& loggerId) const
     {
-        return m_knownClientsLoggers.find(clientId) != m_knownClientsLoggers.end() &&
-                m_knownClientsLoggers.at(clientId).find(loggerId) != m_knownClientsLoggers.at(clientId).end();
+        return m_managedClientsLoggers.find(clientId) != m_managedClientsLoggers.end() &&
+                m_managedClientsLoggers.at(clientId).find(loggerId) != m_managedClientsLoggers.at(clientId).end();
     }
 
     inline const std::unordered_map<std::string, unsigned int>& keySizes() const
@@ -210,9 +210,9 @@ public:
         return m_keySizes;
     }
 
-    inline const std::unordered_map<std::string, std::unordered_set<std::string>>& knownClientsLoggers() const
+    inline const std::unordered_map<std::string, std::unordered_set<std::string>>& managedClientsLoggers() const
     {
-        return m_knownClientsLoggers;
+        return m_managedClientsLoggers;
     }
 
     inline const std::unordered_map<std::string, std::string>& knownClientDefaultLogger() const
@@ -240,9 +240,9 @@ public:
         return m_dispatchErrorExtensions;
     }
 
-    inline const std::unordered_map<std::string, std::pair<std::string, std::string>>& knownClientsKeys() const
+    inline const std::unordered_map<std::string, std::pair<std::string, std::string>>& managedClientsKeys() const
     {
-        return m_knownClientsKeys;
+        return m_managedClientsKeys;
     }
 
     inline bool isBlacklisted(const std::string& loggerId) const
@@ -275,7 +275,7 @@ public:
 
     std::string getConfigurationFile(const std::string&) const;
 
-    void updateUnknownLoggerUserFromRequest(const std::string& loggerId, const LogRequest* request = nullptr);
+    void updateUnmanagedLoggerUserFromRequest(const std::string& loggerId, const LogRequest* request = nullptr);
 
     std::string getArchivedLogDirectory(const std::string&) const;
     std::string getArchivedLogFilename(const std::string&) const;
@@ -284,14 +284,14 @@ public:
 
     bool hasLoggerFlag(const std::string& loggerId, Flag flag) const;
 
-    inline std::string knownLoggersEndpoint() const
+    inline std::string managedLoggersEndpoint() const
     {
-        return m_knownLoggersEndpoint;
+        return m_managedLoggersEndpoint;
     }
 
-    inline std::string knownClientsEndpoint() const
+    inline std::string managedClientsEndpoint() const
     {
-        return m_knownClientsEndpoint;
+        return m_managedClientsEndpoint;
     }
 
     std::string findLoggerUser(const std::string& loggerId) const;
@@ -324,17 +324,17 @@ private:
     std::unordered_map<std::string, Flag> m_loggerFlags;
     std::unordered_map<std::string, unsigned int> m_keySizes;
     std::unordered_set<std::string> m_blacklist;
-    std::unordered_set<std::string> m_remoteKnownClients;
+    std::unordered_set<std::string> m_remoteManagedClients;
     std::unordered_set<std::string> m_remoteKnownLoggers;
     std::vector<Extension*> m_logExtensions;
     std::vector<Extension*> m_preArchiveExtensions;
     std::vector<Extension*> m_postArchiveExtensions;
     std::vector<Extension*> m_dispatchErrorExtensions;
 
-    std::unordered_map<std::string, std::pair<std::string, std::string>> m_knownClientsKeys;
-    std::unordered_map<std::string, std::unordered_set<std::string>> m_knownClientsLoggers;
+    std::unordered_map<std::string, std::pair<std::string, std::string>> m_managedClientsKeys;
+    std::unordered_map<std::string, std::unordered_set<std::string>> m_managedClientsLoggers;
     std::unordered_map<std::string, std::string> m_knownLoggerUserMap;
-    std::unordered_map<std::string, std::string> m_unknownLoggerUserMap;
+    std::unordered_map<std::string, std::string> m_unmanagedLoggerUserMap;
     std::unordered_map<std::string, std::string> m_knownClientDefaultLogger;
 
     unsigned int m_nonAcknowledgedClientAge;
@@ -356,8 +356,8 @@ private:
     std::string m_serverRSAPublicKeyFile;
     std::string m_serverRSAPrivateKeyFile;
     std::string m_serverRSASecret;
-    std::string m_knownLoggersEndpoint;
-    std::string m_knownClientsEndpoint;
+    std::string m_managedLoggersEndpoint;
+    std::string m_managedClientsEndpoint;
 
     std::string m_errors;
     bool m_isValid;
@@ -376,11 +376,11 @@ private:
 
     inline bool isKnownClient(const std::string& clientId) const
     {
-        return m_knownClientsKeys.find(clientId) != m_knownClientsKeys.end();
+        return m_managedClientsKeys.find(clientId) != m_managedClientsKeys.end();
     }
 
-    void loadKnownLoggers(const JsonDoc& json, std::stringstream& errorStream, bool viaUrl);
-    void loadKnownClients(const JsonDoc& json, std::stringstream& errorStream, bool viaUrl);
+    void loadManagedLoggers(const JsonDoc& json, std::stringstream& errorStream, bool viaUrl);
+    void loadManagedClients(const JsonDoc& json, std::stringstream& errorStream, bool viaUrl);
     void loadLoggersBlacklist(const JsonDoc& json, std::stringstream& errorStream);
 
     void loadExtensions(const JsonDoc& json, std::stringstream& errorStream);

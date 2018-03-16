@@ -226,8 +226,8 @@ int main(int argc, char* argv[])
         return 1;
     }
 
-    if (!config.hasFlag(Configuration::Flag::ALLOW_UNKNOWN_LOGGERS)) {
-        RVLOG(RV_NOTICE) << "Unknown loggers are not be allowed";
+    if (!config.hasFlag(Configuration::Flag::ALLOW_UNMANAGED_LOGGERS)) {
+        RVLOG(RV_NOTICE) << "Unmanaged loggers are not be allowed";
     }
 
     el::LogBuilder* logBuilder = configureLogging(&config);

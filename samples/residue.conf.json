@@ -10,8 +10,8 @@
     "enable_cli": true,
     "enable_dynamic_buffer": true,
     "allow_insecure_connection": true,
-    "allow_unknown_loggers": true,
-    "allow_unknown_clients": true,
+    "allow_unmanaged_loggers": true,
+    "allow_unmanaged_clients": true,
     "immediate_flush": false,
     "compression": true,
     "allow_bulk_log_request": true,
@@ -26,7 +26,7 @@
     "archived_log_directory": "%original/backups/%logger/",
     "archived_log_filename": "%level-%hour-%min-%day-%month-%year.log",
     "archived_log_compressed_filename": "%hour-%min-%day-%month-%year.tar.gz",
-    "known_clients": [
+    "managed_clients": [
         {
             "client_id": "muflihun00102030",
             "public_key": "$RESIDUE_HOME/samples/keys/client-256-public.pem",
@@ -40,7 +40,7 @@
             "loggers": ["residue"]
         }
     ],
-    "known_loggers": [
+    "managed_loggers": [
         {
             "logger_id": "residue",
             "configuration_file": "$RESIDUE_HOME/samples/configurations/residue-Logger.conf",
