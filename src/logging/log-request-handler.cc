@@ -61,7 +61,7 @@ void LogRequestHandler::addMissingClientProcessors()
         processorPair.second->start();
     }
 
-    if (m_queueProcessor.size() - 1 /* unknown */ > m_registry->configuration()->managedClientsKeys().size()) {
+    if (m_queueProcessor.size() - 1 /* unmanaged */ > m_registry->configuration()->managedClientsKeys().size()) {
         // stop previously removed clients if available
         for (auto& processorPair : m_queueProcessor) {
             if (processorPair.first == Configuration::UNMANAGED_CLIENT_ID) {
