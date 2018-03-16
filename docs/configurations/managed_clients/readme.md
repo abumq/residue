@@ -5,7 +5,7 @@
 [← Configurations](/docs/CONFIGURATION.md)
 
 # managed_clients
-[Array] Known clients are managed clients that server already knows some information about. This speeds up connection, makes it secure and most of all helps to personalize your log files. Known clients can be rest assured that no one else can have access to their logs or their keys etc.
+[Array] Managed clients are clients that server already knows some information about. This speeds up connection, makes it secure and most of all helps to personalize your log files. Managed clients can be rest assured that no one else can have access to their logs or their keys etc.
 
 Setting up managed clients can be very handy in many situations and is highly recommended. For example, consider following managed client object
 

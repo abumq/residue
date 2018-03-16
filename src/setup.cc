@@ -142,7 +142,7 @@ int Setup::setup()
                                                     std::istreambuf_iterator<char>());
         fs.close();
 
-        config.m_knownClientsKeys.insert(std::make_pair(clientId,
+        config.m_managedClientsKeys.insert(std::make_pair(clientId,
                                                         std::make_pair("$RESIDUE_HOME/keys/clients/" + clientId + ".pub", publicKeyContents)));
     }
 
@@ -166,8 +166,8 @@ int Setup::setup()
     config.m_defaultKeySize = 256;
     config.addFlag(Configuration::ENABLE_CLI);
     config.addFlag(Configuration::ALLOW_INSECURE_CONNECTION);
-    config.addFlag(Configuration::ALLOW_UNKNOWN_LOGGERS);
-    config.addFlag(Configuration::ALLOW_UNKNOWN_CLIENTS);
+    config.addFlag(Configuration::ALLOW_UNMANAGED_LOGGERS);
+    config.addFlag(Configuration::ALLOW_UNMANAGED_CLIENTS);
     config.addFlag(Configuration::REQUIRES_TIMESTAMP);
     config.addFlag(Configuration::COMPRESSION);
     config.addFlag(Configuration::ALLOW_BULK_LOG_REQUEST);

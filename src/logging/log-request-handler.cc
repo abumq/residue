@@ -51,8 +51,8 @@ void LogRequestHandler::addMissingClientProcessors()
 
     add(Configuration::UNMANAGED_CLIENT_ID);
 
-    for (auto& knownClientPair : m_registry->configuration()->managedClientsKeys()) {
-        add(knownClientPair.first);
+    for (auto& managedClientPair : m_registry->configuration()->managedClientsKeys()) {
+        add(managedClientPair.first);
     }
 
     // start all the processors
@@ -101,7 +101,7 @@ void LogRequestHandler::handle(RawRequest&& rawRequest)
         // we do not queue up decrypted request here as it gets messy
         // with all the copy constructors and move constructors.
         // Processors run on different thread so it's OK to decrypt it second time
-        if (!request.client()->isKnown()) {
+        if (!request.client()->isManaged()) {
             m_queueProcessor.find(Configuration::UNMANAGED_CLIENT_ID)->second->handle(std::move(rawRequest));
         } else {
             m_queueProcessor.find(request.client()->id())->second->handle(std::move(rawRequest));

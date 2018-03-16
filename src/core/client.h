@@ -117,14 +117,14 @@ public:
         m_acknowledged = acknowledged;
     }
 
-    inline void setIsKnown(bool isKnown)
+    inline void setIsManaged(bool isManaged)
     {
-        m_isKnown = isKnown;
+        m_isManaged = isManaged;
     }
 
-    inline bool isKnown() const
+    inline bool isManaged() const
     {
-        return m_isKnown;
+        return m_isManaged;
     }
 
     inline void setKeySize(int keySize)
@@ -153,7 +153,7 @@ private:
     int m_keySize;
 
     bool m_acknowledged;
-    bool m_isKnown;
+    bool m_isManaged;
 
     // a backup key is previously set key with potentially different key size
     // see https://github.com/muflihun/residue/issues/75

@@ -72,7 +72,7 @@ void ClientIntegrityTask::execute()
                 // here we check for unmanaged clients
                 // we may be removing a "paused" unmanaged client
                 // as m_pausedClients for unmanaged client will be "unknown"
-                if (!client->isKnown() && m_pausedClients.find(Configuration::UNMANAGED_CLIENT_ID) != m_pausedClients.end()) {
+                if (!client->isManaged() && m_pausedClients.find(Configuration::UNMANAGED_CLIENT_ID) != m_pausedClients.end()) {
                     // yes we are surely removing a paused unmanaged client
                     // that we shouldn't do
                     RLOG(INFO) << "Unmanaged client [" << client->id() << "] expired - Paused removal";

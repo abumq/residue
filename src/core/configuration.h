@@ -194,12 +194,12 @@ public:
         return m_errors;
     }
 
-    inline bool isKnownLogger(const std::string& loggerId) const
+    inline bool isManagedLogger(const std::string& loggerId) const
     {
         return m_configurations.find(loggerId) != m_configurations.end();
     }
 
-    inline bool isKnownLoggerForClient(const std::string& clientId, const std::string& loggerId) const
+    inline bool isManagedLoggerForClient(const std::string& clientId, const std::string& loggerId) const
     {
         return m_managedClientsLoggers.find(clientId) != m_managedClientsLoggers.end() &&
                 m_managedClientsLoggers.at(clientId).find(loggerId) != m_managedClientsLoggers.at(clientId).end();
@@ -215,9 +215,9 @@ public:
         return m_managedClientsLoggers;
     }
 
-    inline const std::unordered_map<std::string, std::string>& knownClientDefaultLogger() const
+    inline const std::unordered_map<std::string, std::string>& managedClientDefaultLogger() const
     {
-        return m_knownClientDefaultLogger;
+        return m_managedClientDefaultLogger;
     }
 
     inline std::vector<Extension*>& logExtensions()
@@ -325,7 +325,7 @@ private:
     std::unordered_map<std::string, unsigned int> m_keySizes;
     std::unordered_set<std::string> m_blacklist;
     std::unordered_set<std::string> m_remoteManagedClients;
-    std::unordered_set<std::string> m_remoteKnownLoggers;
+    std::unordered_set<std::string> m_remoteManagedLoggers;
     std::vector<Extension*> m_logExtensions;
     std::vector<Extension*> m_preArchiveExtensions;
     std::vector<Extension*> m_postArchiveExtensions;
@@ -333,9 +333,9 @@ private:
 
     std::unordered_map<std::string, std::pair<std::string, std::string>> m_managedClientsKeys;
     std::unordered_map<std::string, std::unordered_set<std::string>> m_managedClientsLoggers;
-    std::unordered_map<std::string, std::string> m_knownLoggerUserMap;
+    std::unordered_map<std::string, std::string> m_managedLoggerUserMap;
     std::unordered_map<std::string, std::string> m_unmanagedLoggerUserMap;
-    std::unordered_map<std::string, std::string> m_knownClientDefaultLogger;
+    std::unordered_map<std::string, std::string> m_managedClientDefaultLogger;
 
     unsigned int m_nonAcknowledgedClientAge;
     unsigned int m_clientAge;
@@ -370,11 +370,11 @@ private:
     friend class Clients;
     friend class Setup;
 
-    bool addKnownClient(const std::string& clientId, const std::string& publicKey);
-    bool verifyKnownClient(const std::string& clientId, const std::string& signature) const;
-    void removeKnownClient(const std::string& clientId);
+    bool addManagedClient(const std::string& clientId, const std::string& publicKey);
+    bool verifyManagedClient(const std::string& clientId, const std::string& signature) const;
+    void removeManagedClient(const std::string& clientId);
 
-    inline bool isKnownClient(const std::string& clientId) const
+    inline bool isManagedClient(const std::string& clientId) const
     {
         return m_managedClientsKeys.find(clientId) != m_managedClientsKeys.end();
     }

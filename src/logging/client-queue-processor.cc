@@ -240,7 +240,7 @@ bool ClientQueueProcessor::processRequest(LogRequest* request, Client** clientRe
         session->setClient(client);
     }
 
-    if (!bypassChecks && client->isKnown()) {
+    if (!bypassChecks && client->isManaged()) {
         // take this opportunity to update the user for unmanaged logger
 
         // unmanaged loggers cannot be updated to specific user
@@ -249,7 +249,7 @@ bool ClientQueueProcessor::processRequest(LogRequest* request, Client** clientRe
         // make sure the current logger is unknown
         // otherwise we already know the user either from client or from logger itself
         if (m_registry->configuration()->hasFlag(Configuration::Flag::ALLOW_UNMANAGED_LOGGERS) // cannot be unmanaged logger unless server supports it
-                && !m_registry->configuration()->isKnownLogger(request->loggerId())) {
+                && !m_registry->configuration()->isManagedLogger(request->loggerId())) {
             m_registry->configuration()->updateUnmanagedLoggerUserFromRequest(request->loggerId(), request);
         }
     }
@@ -293,7 +293,7 @@ bool ClientQueueProcessor::isRequestAllowed(const LogRequest* request) const
     bool allowed = m_registry->configuration()->hasFlag(Configuration::Flag::ALLOW_UNMANAGED_LOGGERS);
     if (!allowed) {
         // we're not allowed to use unmanaged loggers. we make sure the current logger is actually known.
-        allowed = m_registry->configuration()->isKnownLogger(request->loggerId());
+        allowed = m_registry->configuration()->isManagedLogger(request->loggerId());
     }
     if (allowed) {
          // We do not allow users to log using residue internal logger
@@ -303,11 +303,11 @@ bool ClientQueueProcessor::isRequestAllowed(const LogRequest* request) const
          // Logger is blacklisted
         allowed = !m_registry->configuration()->isBlacklisted(request->loggerId());
     }
-    if (allowed && !client->isKnown()
-            && m_registry->configuration()->isKnownLogger(request->loggerId())
+    if (allowed && !client->isManaged()
+            && m_registry->configuration()->isManagedLogger(request->loggerId())
             && request->loggerId() != "default") {
         allowed = false;
-        DRVLOG(RV_WARNING) << "Unmanaged client trying to use known logger is no longer allowed";
+        DRVLOG(RV_WARNING) << "Unmanaged client trying to use managed logger is no longer allowed";
     }
     return allowed;
 }

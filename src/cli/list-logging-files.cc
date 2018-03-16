@@ -63,7 +63,7 @@ void ListLoggingFiles::execute(std::vector<std::string>&& params, std::ostringst
     std::map<std::string, std::set<std::string>> listMap;
 
     if (!loggerId.empty()) {
-        if (!registry()->configuration()->isKnownLoggerForClient(clientId, loggerId)) {
+        if (!registry()->configuration()->isManagedLoggerForClient(clientId, loggerId)) {
             result << "Logger not mapped to client";
             return;
         }
@@ -119,7 +119,7 @@ void ListLoggingFiles::execute(std::vector<std::string>&& params, std::ostringst
 }
 
 std::string ListLoggingFiles::getFile(const std::string& loggerId, const std::string& levelStr) const {
-    if (!registry()->configuration()->isKnownLogger(loggerId)) {
+    if (!registry()->configuration()->isManagedLogger(loggerId)) {
         return "";
     }
     el::Level level = el::LevelHelper::convertFromString(levelStr.c_str());
