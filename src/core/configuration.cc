@@ -45,7 +45,7 @@
 
 using namespace residue;
 
-const std::string Configuration::UNKNOWN_CLIENT_ID = "unknown";
+const std::string Configuration::UNMANAGED_CLIENT_ID = "unmanaged";
 const int Configuration::MAX_BLACKLIST_LOGGERS = 10000;
 
 struct ExtensionMap
@@ -86,12 +86,12 @@ void Configuration::loadFromInput(std::string&& jsonStr)
     m_rotationFrequencies.clear();
     m_loggerFlags.clear();
     m_blacklist.clear();
-    m_knownClientsEndpoint.clear();
-    m_knownClientsKeys.clear();
-    m_knownClientsLoggers.clear();
-    m_knownLoggersEndpoint.clear();
-    m_remoteKnownClients.clear();
-    m_remoteKnownLoggers.clear();
+    m_managedClientsEndpoint.clear();
+    m_managedClientsKeys.clear();
+    m_managedClientsLoggers.clear();
+    m_managedLoggersEndpoint.clear();
+    m_remoteManagedClients.clear();
+    m_remoteManagedLoggers.clear();
     m_serverRSASecret.clear();
     m_serverRSAPrivateKeyFile.clear();
     m_serverRSAPublicKeyFile.clear();
@@ -102,8 +102,8 @@ void Configuration::loadFromInput(std::string&& jsonStr)
     m_serverRSAKey.privateKey.clear();
     m_serverRSAKey.publicKey.clear();
  #endif
-    m_knownLoggerUserMap.clear();
-    m_knownClientDefaultLogger.clear();
+    m_managedLoggerUserMap.clear();
+    m_managedClientDefaultLogger.clear();
     m_logExtensions.clear();
     m_preArchiveExtensions.clear();
     m_postArchiveExtensions.clear();
@@ -134,8 +134,8 @@ void Configuration::loadFromInput(std::string&& jsonStr)
     if (m_jsonDoc.get<bool>("enable_cli", true)) {
         addFlag(Configuration::Flag::ENABLE_CLI);
     }
-    if (m_jsonDoc.get<bool>("allow_unknown_loggers", true)) {
-        addFlag(Configuration::Flag::ALLOW_UNKNOWN_LOGGERS);
+    if (m_jsonDoc.get<bool>("allow_unmanaged_loggers", true)) {
+        addFlag(Configuration::Flag::ALLOW_UNMANAGED_LOGGERS);
     }
     if (m_jsonDoc.get<bool>("allow_insecure_connection", true)) {
         addFlag(Configuration::ALLOW_INSECURE_CONNECTION);
@@ -143,8 +143,8 @@ void Configuration::loadFromInput(std::string&& jsonStr)
     if (m_jsonDoc.get<bool>("compression", true)) {
         addFlag(Configuration::COMPRESSION);
     }
-    if (m_jsonDoc.get<bool>("allow_unknown_clients", true)) {
-        addFlag(Configuration::Flag::ALLOW_UNKNOWN_CLIENTS);
+    if (m_jsonDoc.get<bool>("allow_unmanaged_clients", true)) {
+        addFlag(Configuration::Flag::ALLOW_UNMANAGED_CLIENTS);
     }
     if (m_jsonDoc.get<bool>("allow_bulk_log_request", true)) {
         addFlag(Configuration::Flag::ALLOW_BULK_LOG_REQUEST);
@@ -160,6 +160,7 @@ void Configuration::loadFromInput(std::string&& jsonStr)
 
     if (m_jsonDoc.get<bool>("enable_dynamic_buffer", false)) {
         addFlag(Configuration::Flag::ENABLE_DYNAMIC_BUFFER);
+        RVLOG(RV_INFO) << "Dyanmic buffer enabled";
     }
 
     m_serverKey = m_jsonDoc.get<std::string>("server_key", AES::generateKey(256));
@@ -278,12 +279,12 @@ void Configuration::loadFromInput(std::string&& jsonStr)
     }
 
 
-    // We load known loggers before known clients because
-    // known clients may have "loggers" array
+    // We load managed loggers before managed clients because
+    // managed clients may have "loggers" array
     // that will be cross-checked with loggers list
 
-    if (m_jsonDoc.hasKey("known_loggers")) {
-        loadKnownLoggers(m_jsonDoc.getArr("known_loggers"), errorStream, false);
+    if (m_jsonDoc.hasKey("managed_loggers")) {
+        loadManagedLoggers(m_jsonDoc.getArr("managed_loggers"), errorStream, false);
     }
 
     auto queryEndpoint = [&](const std::string& endpoint,
@@ -313,24 +314,24 @@ void Configuration::loadFromInput(std::string&& jsonStr)
         }
     };
 
-    if (m_jsonDoc.hasKey("known_loggers_endpoint")) {
-        m_knownLoggersEndpoint = m_jsonDoc.get<std::string>("known_loggers_endpoint", "");
-        if (!m_knownLoggersEndpoint.empty()) {
-            queryEndpoint(m_knownLoggersEndpoint, "known_loggers", [&](const JsonDoc& json) {
-                loadKnownLoggers(json, errorStream, true);
+    if (m_jsonDoc.hasKey("managed_loggers_endpoint")) {
+        m_managedLoggersEndpoint = m_jsonDoc.get<std::string>("managed_loggers_endpoint", "");
+        if (!m_managedLoggersEndpoint.empty()) {
+            queryEndpoint(m_managedLoggersEndpoint, "managed_loggers", [&](const JsonDoc& json) {
+                loadManagedLoggers(json, errorStream, true);
             });
         }
     }
 
-    if (m_jsonDoc.hasKey("known_clients")) {
-        loadKnownClients(m_jsonDoc.getArr("known_clients"), errorStream, false);
+    if (m_jsonDoc.hasKey("managed_clients")) {
+        loadManagedClients(m_jsonDoc.getArr("managed_clients"), errorStream, false);
     }
 
-    if (m_jsonDoc.hasKey("known_clients_endpoint")) {
-        m_knownClientsEndpoint = m_jsonDoc.get<std::string>("known_clients_endpoint", "");
-        if (!m_knownClientsEndpoint.empty()) {
-            queryEndpoint(m_knownClientsEndpoint, "known_clients", [&](const JsonDoc& json) {
-                loadKnownClients(json, errorStream, true);
+    if (m_jsonDoc.hasKey("managed_clients_endpoint")) {
+        m_managedClientsEndpoint = m_jsonDoc.get<std::string>("managed_clients_endpoint", "");
+        if (!m_managedClientsEndpoint.empty()) {
+            queryEndpoint(m_managedClientsEndpoint, "managed_clients", [&](const JsonDoc& json) {
+                loadManagedClients(json, errorStream, true);
             });
         }
     }
@@ -348,7 +349,7 @@ void Configuration::loadFromInput(std::string&& jsonStr)
  #endif
 
  #ifndef RESIDUE_HAS_CURL
-    if (!m_knownClientsEndpoint.empty() || !m_knownLoggersEndpoint.empty()) {
+    if (!m_managedClientsEndpoint.empty() || !m_managedLoggersEndpoint.empty()) {
         RLOG(WARNING) << "This residue build does not support HTTPS endpoint urls";
     }
  #endif
@@ -363,18 +364,18 @@ void Configuration::loadFromInput(std::string&& jsonStr)
 }
 
 
-void Configuration::loadKnownLoggers(const JsonDoc& json, std::stringstream& errorStream, bool viaUrl)
+void Configuration::loadManagedLoggers(const JsonDoc& json, std::stringstream& errorStream, bool viaUrl)
 {
     for (const auto& logger : json) {
         JsonDoc j(logger);
 
         std::string loggerId = j.get<std::string>("logger_id", "");
         if (loggerId.empty()) {
-            errorStream << "  Logger ID not provided in known_loggers" << std::endl;
+            errorStream << "  Logger ID not provided in managed_loggers" << std::endl;
             continue;
         }
         if (m_configurations.find(loggerId) != m_configurations.end()) {
-            errorStream << "  Duplicate logger in known_loggers [" << loggerId << "]" << std::endl;
+            errorStream << "  Duplicate logger in managed_loggers [" << loggerId << "]" << std::endl;
             continue;
         }
         std::string easyloggingConfigFile = j.get<std::string>("configuration_file", "");
@@ -392,7 +393,7 @@ void Configuration::loadKnownLoggers(const JsonDoc& json, std::stringstream& err
             }
             m_configurations.insert(std::make_pair(loggerId, easyloggingConfigFile));
             if (viaUrl) {
-                m_remoteKnownLoggers.insert(loggerId);
+                m_remoteManagedLoggers.insert(loggerId);
             }
 
             // load users before configuring
@@ -406,7 +407,7 @@ void Configuration::loadKnownLoggers(const JsonDoc& json, std::stringstream& err
                     continue;
                 }
                 endpwent();
-                m_knownLoggerUserMap.insert(std::make_pair(loggerId, loggerUser));
+                m_managedLoggerUserMap.insert(std::make_pair(loggerId, loggerUser));
             }
 
             // load logger and configure
@@ -473,31 +474,31 @@ void Configuration::loadKnownLoggers(const JsonDoc& json, std::stringstream& err
     }
 }
 
-void Configuration::loadKnownClients(const JsonDoc& json, std::stringstream& errorStream, bool viaUrl)
+void Configuration::loadManagedClients(const JsonDoc& json, std::stringstream& errorStream, bool viaUrl)
 {
-    for (const auto& knownClientPair : json) {
-        JsonDoc j(knownClientPair);
+    for (const auto& managedClientPair : json) {
+        JsonDoc j(managedClientPair);
         std::string clientId = j.get<std::string>("client_id", "");
         if (clientId.empty()) {
-            errorStream << "  Client ID not provided in known_clients" << std::endl;
+            errorStream << "  Client ID not provided in managed_clients" << std::endl;
             continue;
         }
         if (!Utils::isAlphaNumeric(clientId, "-_@#.")) {
             errorStream << "  Invalid character in client ID, should be alpha-numeric (can also include these characters excluding square brackets: [_@-#.])" << std::endl;
             continue;
         }
-        if (clientId == UNKNOWN_CLIENT_ID) {
-            errorStream << "  " << UNKNOWN_CLIENT_ID << " is invalid name for client" << std::endl;
+        if (clientId == UNMANAGED_CLIENT_ID) {
+            errorStream << "  " << UNMANAGED_CLIENT_ID << " is invalid name for client" << std::endl;
             continue;
         }
         std::string publicKey = j.get<std::string>("public_key", "");
         if (publicKey.empty()) {
-            errorStream << "  RSA public key not provided in known_clients for [" << clientId << "]" << std::endl;
+            errorStream << "  RSA public key not provided in managed_clients for [" << clientId << "]" << std::endl;
             continue;
         }
         Utils::resolveResidueHomeEnvVar(publicKey, m_homePath);
-        if (m_knownClientsKeys.find(clientId) != m_knownClientsKeys.end()) {
-            errorStream << "  Duplicate client ID in known_clients [" << clientId << "]" << std::endl;
+        if (m_managedClientsKeys.find(clientId) != m_managedClientsKeys.end()) {
+            errorStream << "  Duplicate client ID in managed_clients [" << clientId << "]" << std::endl;
             continue;
         }
         if (!Utils::fileExists(publicKey.c_str())) {
@@ -513,10 +514,10 @@ void Configuration::loadKnownClients(const JsonDoc& json, std::stringstream& err
         std::string publicKeyContents = std::string(std::istreambuf_iterator<char>(fs),
                                                     std::istreambuf_iterator<char>());
 
-        m_knownClientsKeys.insert(std::make_pair(clientId, std::make_pair(publicKey, publicKeyContents)));
+        m_managedClientsKeys.insert(std::make_pair(clientId, std::make_pair(publicKey, publicKeyContents)));
 
         if (viaUrl) {
-            m_remoteKnownClients.insert(clientId);
+            m_remoteManagedClients.insert(clientId);
         }
 
         unsigned int keySize = j.get<unsigned int>("key_size", 0);
@@ -539,18 +540,18 @@ void Configuration::loadKnownClients(const JsonDoc& json, std::stringstream& err
                 if (loggerId.empty()) {
                     continue;
                 }
-                if (!isKnownLogger(loggerId)) {
-                    errorStream << "  Logger [" << loggerId << "] for client [" << clientId << "] is unknown" << std::endl;
+                if (!isManagedLogger(loggerId)) {
+                    errorStream << "  Logger [" << loggerId << "] for client [" << clientId << "] is unmanaged" << std::endl;
                     continue;
                 }
                 loggerIds.insert(loggerId);
             }
-            m_knownClientsLoggers.insert(std::make_pair(clientId, loggerIds));
+            m_managedClientsLoggers.insert(std::make_pair(clientId, loggerIds));
 
             std::string defaultLogger = j.get<std::string>("default_logger", "");
             if (!defaultLogger.empty()) {
                 if (loggerIds.find(defaultLogger) != loggerIds.end()) {
-                    m_knownClientDefaultLogger.insert(std::make_pair(clientId, defaultLogger));
+                    m_managedClientDefaultLogger.insert(std::make_pair(clientId, defaultLogger));
                 } else {
                     errorStream << "  Default logger ["  << defaultLogger << "] for client [" << clientId << "] is not part of [loggers] array";
                 }
@@ -566,11 +567,11 @@ void Configuration::loadKnownClients(const JsonDoc& json, std::stringstream& err
                 }
                 endpwent();
                 for (std::string loggerId : loggerIds) {
-                    if (m_knownLoggerUserMap.find(loggerId) == m_knownLoggerUserMap.end()) {
-                        m_knownLoggerUserMap.insert(std::make_pair(loggerId, loggerUser));
+                    if (m_managedLoggerUserMap.find(loggerId) == m_managedLoggerUserMap.end()) {
+                        m_managedLoggerUserMap.insert(std::make_pair(loggerId, loggerUser));
                     } else {
                         // for same user ignore, for different user this is a config warning
-                        std::string existingAssignedUser = m_knownLoggerUserMap.at(loggerId);
+                        std::string existingAssignedUser = m_managedLoggerUserMap.at(loggerId);
                         if (existingAssignedUser != loggerUser) {
                             RLOG(WARNING) << "  User for logger [" << loggerId << "] has explicit user [" << existingAssignedUser << "]";
                         }
@@ -582,7 +583,7 @@ void Configuration::loadKnownClients(const JsonDoc& json, std::stringstream& err
             // no loggers array
             std::string defaultLogger = j.get<std::string>("default_logger", "");
             if (!defaultLogger.empty()) {
-                errorStream << "  Default logger ["  << defaultLogger << "] for client [" << clientId << "] is not part of [loggers] array. Please see https://github.com/muflihun/residue/blob/master/docs/CONFIGURATION.md#known_clientsloggers";
+                errorStream << "  Default logger ["  << defaultLogger << "] for client [" << clientId << "] is not part of [loggers] array. Please see https://github.com/muflihun/residue/blob/master/docs/CONFIGURATION.md#managed_clientsloggers";
             }
         }
     }
@@ -596,12 +597,12 @@ void Configuration::loadLoggersBlacklist(const JsonDoc& json, std::stringstream&
         if (loggerIdStr.empty()) {
             continue;
         }
-        if (isKnownLogger(loggerIdStr)) {
-            errorStream << "  Cannot blacklist [" << loggerId << "] logger. Remove it from 'known_loggers' first." << std::endl;
+        if (isManagedLogger(loggerIdStr)) {
+            errorStream << "  Cannot blacklist [" << loggerId << "] logger. Remove it from 'managed_loggers' first." << std::endl;
             continue;
         }
         if (m_blacklist.size() >= MAX_BLACKLIST_LOGGERS) {
-            errorStream << "  You have added maximum number of blacklisted loggers. Please consider using 'allow_unknown_loggers' instead." << std::endl;
+            errorStream << "  You have added maximum number of blacklisted loggers. Please consider using 'allow_unmanaged_loggers' instead." << std::endl;
             continue;
         }
         if (std::find(m_blacklist.begin(), m_blacklist.end(), loggerIdStr) == m_blacklist.end()) {
@@ -679,11 +680,11 @@ bool Configuration::hasLoggerFlag(const std::string& loggerId,
     return false;
 }
 
-bool Configuration::addKnownClient(const std::string& clientId,
+bool Configuration::addManagedClient(const std::string& clientId,
                                    const std::string& publicKey)
 {
     std::lock_guard<std::mutex> lock(m_mutex);
-    if (m_knownClientsKeys.find(clientId) != m_knownClientsKeys.end()) {
+    if (m_managedClientsKeys.find(clientId) != m_managedClientsKeys.end()) {
         RLOG(ERROR) << "Known client already exists";
         return false;
     }
@@ -695,25 +696,25 @@ bool Configuration::addKnownClient(const std::string& clientId,
     }
     std::string publicKeyContents = std::string(std::istreambuf_iterator<char>(fs), std::istreambuf_iterator<char>());
 
-    m_knownClientsKeys.insert(std::make_pair(clientId, std::make_pair(publicKey, publicKeyContents)));
+    m_managedClientsKeys.insert(std::make_pair(clientId, std::make_pair(publicKey, publicKeyContents)));
     return true;
 }
 
-void Configuration::removeKnownClient(const std::string& clientId)
+void Configuration::removeManagedClient(const std::string& clientId)
 {
     std::lock_guard<std::mutex> lock(m_mutex);
-    auto pos = m_knownClientsKeys.find(clientId);
-    if (pos != m_knownClientsKeys.end()) {
-        m_knownClientsKeys.erase(pos);
+    auto pos = m_managedClientsKeys.find(clientId);
+    if (pos != m_managedClientsKeys.end()) {
+        m_managedClientsKeys.erase(pos);
     }
 }
 
-bool Configuration::verifyKnownClient(const std::string& clientId, const std::string& signature) const
+bool Configuration::verifyManagedClient(const std::string& clientId, const std::string& signature) const
 {
-    if (!isKnownClient(clientId)) {
+    if (!isManagedClient(clientId)) {
         return false;
     }
-    RSA::PublicKey rsaPublicKey = RSA::loadPublicKey(m_knownClientsKeys.at(clientId).second); // second = public key contents
+    RSA::PublicKey rsaPublicKey = RSA::loadPublicKey(m_managedClientsKeys.at(clientId).second); // second = public key contents
     try {
         return RSA::verify(clientId, signature, rsaPublicKey);
     } catch (std::exception& e) {
@@ -743,19 +744,19 @@ std::string Configuration::getConfigurationFile(const std::string& loggerId) con
     return "";
 }
 
-void Configuration::updateUnknownLoggerUserFromRequest(const std::string& loggerId, const LogRequest* request)
+void Configuration::updateUnmanagedLoggerUserFromRequest(const std::string& loggerId, const LogRequest* request)
 {
-    if (m_unknownLoggerUserMap.find(loggerId) != m_unknownLoggerUserMap.end()) {
+    if (m_unmanagedLoggerUserMap.find(loggerId) != m_unmanagedLoggerUserMap.end()) {
         return; // already set
     }
     // get conf of client's default logger
     if (request != nullptr) {
-        RVLOG(RV_INFO) << "Updating user for unknown logger [" << loggerId << "] using client [" << request->clientId() << "]";
-        if (m_knownClientDefaultLogger.find(request->clientId()) != m_knownClientDefaultLogger.end()) {
-            std::string defaultLoggerForClient = m_knownClientDefaultLogger.at(request->clientId());
+        RVLOG(RV_INFO) << "Updating user for unmanaged logger [" << loggerId << "] using client [" << request->clientId() << "]";
+        if (m_managedClientDefaultLogger.find(request->clientId()) != m_managedClientDefaultLogger.end()) {
+            std::string defaultLoggerForClient = m_managedClientDefaultLogger.at(request->clientId());
             std::string user = findLoggerUser(defaultLoggerForClient);
-            RVLOG(RV_INFO) << "Found user for unknown logger [" << loggerId << "] => [" << user << "]";
-            m_unknownLoggerUserMap.insert(std::make_pair(loggerId, user));
+            RVLOG(RV_INFO) << "Found user for unmanaged logger [" << loggerId << "] => [" << user << "]";
+            m_unmanagedLoggerUserMap.insert(std::make_pair(loggerId, user));
         }
     }
 }
@@ -786,11 +787,11 @@ std::string Configuration::getArchivedLogCompressedFilename(const std::string& l
 
 std::string Configuration::findLoggerUser(const std::string& loggerId) const
 {
-    if (m_knownLoggerUserMap.find(loggerId) != m_knownLoggerUserMap.end()) {
-        return m_knownLoggerUserMap.at(loggerId);
+    if (m_managedLoggerUserMap.find(loggerId) != m_managedLoggerUserMap.end()) {
+        return m_managedLoggerUserMap.at(loggerId);
     }
-    if (m_unknownLoggerUserMap.find(loggerId) != m_unknownLoggerUserMap.end()) {
-        return m_unknownLoggerUserMap.at(loggerId);
+    if (m_unmanagedLoggerUserMap.find(loggerId) != m_unmanagedLoggerUserMap.end()) {
+        return m_unmanagedLoggerUserMap.at(loggerId);
     }
     return "";
 }
@@ -851,6 +852,8 @@ void Configuration::loadExtensions(const JsonDoc& json, std::stringstream& error
         if (std::find(ext.begin(), ext.end(), uniqName) != ext.end()) {
             errorStream << "  Duplicate extension could not be loaded: " << name;
         } else {
+            e->m_description = j.get<std::string>("description", "");
+            e->m_modulePath = module;
             ext.push_back(uniqName);
             if (j.hasKey("config")) {
                 JsonDoc jextConfig(j.getObj("config"));
@@ -865,4 +868,201 @@ void Configuration::loadExtensions(const JsonDoc& json, std::stringstream& error
 
     RLOG_IF(m_logExtensions.size() > 2, WARNING) << "You have " << m_logExtensions.size() << " log extensions enabled. "
                                                     "This may slow down the server's log processing depending upon the time it takes to execute the extension.";
+}
+
+std::string Configuration::exportAsString()
+{
+    const std::size_t capacity = 4096;
+    char source[capacity];
+
+    JsonBuilder j(source, capacity);
+    DRVLOG(RV_DEBUG_2) << "Starting JSON serialization with [" << capacity << "] bytes";
+
+    j.startObject();
+    j.addValue("admin_port", adminPort());
+    j.addValue("connect_port", connectPort());
+    j.addValue("logging_port", loggingPort());
+    j.addValue("server_key", serverKey());
+    if (!m_serverRSAPrivateKeyFile.empty()) {
+        j.addValue("server_rsa_private_key", m_serverRSAPrivateKeyFile);
+    }
+    if (!m_serverRSAPublicKeyFile.empty()) {
+        j.addValue("server_rsa_public_key", m_serverRSAPublicKeyFile);
+    }
+    if (!serverRSASecret().empty()) {
+        j.addValue("server_rsa_secret", serverRSASecret());
+    }
+    j.addValue("default_key_size", defaultKeySize());
+    j.addValue("file_mode", fileMode());
+    j.addValue("enable_cli", hasFlag(Configuration::Flag::ENABLE_CLI));
+    j.addValue("allow_insecure_connection", hasFlag(Configuration::Flag::ALLOW_INSECURE_CONNECTION));
+    j.addValue("allow_unmanaged_loggers", hasFlag(Configuration::Flag::ALLOW_UNMANAGED_LOGGERS));
+    j.addValue("allow_unmanaged_clients", hasFlag(Configuration::Flag::ALLOW_UNMANAGED_CLIENTS));
+    j.addValue("immediate_flush", hasFlag(Configuration::Flag::IMMEDIATE_FLUSH));
+    j.addValue("requires_timestamp", hasFlag(Configuration::Flag::REQUIRES_TIMESTAMP));
+    j.addValue("compression", hasFlag(Configuration::Flag::COMPRESSION));
+    j.addValue("allow_bulk_log_request", hasFlag(Configuration::Flag::ALLOW_BULK_LOG_REQUEST));
+    j.addValue("max_items_in_bulk", maxItemsInBulk());
+    j.addValue("timestamp_validity", timestampValidity());
+    j.addValue("client_age", clientAge());
+    j.addValue("non_acknowledged_client_age", nonAcknowledgedClientAge());
+    j.addValue("client_integrity_task_interval", clientIntegrityTaskInterval());
+    j.addValue("dispatch_delay", dispatchDelay());
+    j.addValue("archived_log_directory", m_archivedLogDirectory);
+    j.addValue("archived_log_filename", m_archivedLogFilename);
+    j.addValue("archived_log_compressed_filename", m_archivedLogCompressedFilename);
+/*
+    if (!m_logExtensions.empty()) {
+        j.startObject("extensions");
+        j.startArray("log_extensions");
+        for (auto& e : m_logExtensions) {
+            j.addValue(e->module());
+        }
+
+        j.endArray();
+        j.endObject();
+    }
+*/
+
+    j.startArray("loggers_blacklist");
+    for (auto& e : m_blacklist) {
+        j.addValue(e);
+    }
+    j.endArray(); // loggers_blacklist
+
+    j.startArray("managed_clients");
+    for (auto c : m_managedClientsKeys) {
+        if (m_remoteManagedClients.find(c.first) != m_remoteManagedClients.end()) {
+            // do not save known clients fetched by URL
+            continue;
+        }
+        j.startObject();
+
+        j.addValue("client_id", c.first);
+        j.addValue("public_key", c.second.first); // .first = filename | .second = file contents
+        if (m_keySizes.find(c.first) != m_keySizes.end()) {
+            j.addValue("key_size", m_keySizes.at(c.first));
+        }
+        if (m_managedClientsLoggers.find(c.first) != m_managedClientsLoggers.end()) {
+            const auto& list = m_managedClientsLoggers.at(c.first);
+            if (!list.empty()) {
+                j.startArray("loggers");
+                for (const auto& loggerId : list) {
+                    j.addValue(loggerId);
+                }
+                j.endArray();
+            }
+        }
+/*
+        if (m_managedClientUserMap.find(c.first) != m_managedClientUserMap.end()) {
+            j.addValue("user", m_managedClientUserMap.at(c.first));
+        }*/
+        if (m_managedClientDefaultLogger.find(c.first) != m_managedClientDefaultLogger.end()) {
+            j.addValue("default_logger", m_managedClientDefaultLogger.at(c.first));
+        }
+        j.endObject();
+    }
+    j.endArray(); // managed_clients
+
+    if (!m_managedClientsEndpoint.empty()) {
+        j.addValue("managed_clients_endpoint", m_managedClientsEndpoint);
+    }
+
+    j.startArray("managed_loggers");
+
+
+    for (auto c : m_configurations) {
+        std::string loggerId = c.first;
+        if (m_remoteManagedLoggers.find(loggerId) != m_remoteManagedLoggers.end()) {
+            // do not save known loggers fetched by URL
+            continue;
+        }
+        j.startObject();
+        j.addValue("logger_id", loggerId);
+        j.addValue("configuration_file", c.second);
+
+        std::string frequencyStr;
+        if (m_rotationFrequencies.find(loggerId) != m_rotationFrequencies.end()
+                && m_rotationFrequencies.at(loggerId) != Configuration::RotationFrequency::NEVER) {
+            switch (m_rotationFrequencies.at(loggerId)) {
+            case HOURLY:
+                frequencyStr = "HOURLY";
+                break;
+            case DAILY:
+                frequencyStr = "DAILY";
+                break;
+            case WEEKLY:
+                frequencyStr = "WEEKLY";
+                break;
+            case MONTHLY:
+                frequencyStr = "MONTHLY";
+                break;
+            case YEARLY:
+                frequencyStr = "YEARLY";
+                break;
+            default:
+                frequencyStr = "NEVER";
+            }
+            j.addValue("rotation_freq", frequencyStr);
+        }
+
+        if (m_archivedLogsFilenames.find(loggerId) != m_archivedLogsFilenames.end()) {
+            j.addValue("archived_log_filename", m_archivedLogsFilenames.at(loggerId).substr(std::string("%logger-").size()));
+        }
+
+        if (m_archivedLogsCompressedFilenames.find(loggerId) != m_archivedLogsCompressedFilenames.end()) {
+            j.addValue("archived_log_compressed_filename", m_archivedLogsCompressedFilenames.at(loggerId));
+        }
+
+        if (m_archivedLogsDirectories.find(loggerId) != m_archivedLogsDirectories.end()) {
+            j.addValue("archived_log_directory", m_archivedLogsDirectories.at(loggerId));
+        }
+
+        if (m_managedLoggerUserMap.find(loggerId) != m_managedLoggerUserMap.end()) {
+            j.addValue("user", m_managedLoggerUserMap.at(loggerId));
+        }
+
+        j.endObject();
+    }
+    j.endArray(); // managed_loggers
+    if (!m_managedLoggersEndpoint.empty()) {
+        j.addValue("managed_loggers_endpoint", m_managedLoggersEndpoint);
+    }
+
+    j.startArray("extensions");
+
+    auto createObjectForExtension = [&](const std::vector<Extension*>& list) {
+        for (auto& e : list) {
+            j.startObject();
+            j.addValue("name", e->m_id);
+            j.addValue("module", e->m_modulePath);
+            j.addValue("description", e->m_description);
+            std::string cfg = e->m_config.dump();
+            if (cfg.size() > 2 /* i.e, not {} */ && cfg != "null") {
+                j.addValue("config", "-==-" + cfg + "<-==-");
+            }
+            j.endObject();
+        }
+    };
+
+    createObjectForExtension(m_logExtensions);
+    createObjectForExtension(m_preArchiveExtensions);
+    createObjectForExtension(m_postArchiveExtensions);
+    createObjectForExtension(m_dispatchErrorExtensions);
+
+    j.endArray(); // extensions
+
+    j.endObject(); // end of root
+
+    // workaround for extension config
+    std::string src(source);
+    Utils::replaceAll(src, "\"config\":\"-==-", "\"config\":");
+    Utils::replaceAll(src, "<-==-\"", "");
+
+    JsonDoc jdoc(src);
+
+    if (!jdoc.isValid()) {
+        return "Failed to validate exported config";
+    }
+    return jdoc.dump(4);
 }

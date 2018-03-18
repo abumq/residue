@@ -49,6 +49,7 @@
 #include "logging/residue-log-dispatcher.h"
 #include "logging/user-log-builder.h"
 #include "net/server.h"
+#include "setup.h"
 #include "tasks/auto-updater.h"
 #include "tasks/client-integrity-task.h"
 #include "tasks/log-rotator.h"
@@ -191,6 +192,8 @@ int main(int argc, char* argv[])
         std::cout << std::endl;
         std::cout << "Please go to https://github.com/muflihun/residue/blob/master/docs/ for help" << std::endl;
         return 0;
+    } else if (strcmp(argv[1], "--setup") == 0) {
+        return Setup::setup();
     }
 
     if (!el::Helpers::commandLineArgs()->hasParam("--force-without-root") && el::base::utils::OS::getBashOutput("whoami") != "root") {
@@ -223,8 +226,8 @@ int main(int argc, char* argv[])
         return 1;
     }
 
-    if (!config.hasFlag(Configuration::Flag::ALLOW_UNKNOWN_LOGGERS)) {
-        RVLOG(RV_NOTICE) << "Unknown loggers are not be allowed";
+    if (!config.hasFlag(Configuration::Flag::ALLOW_UNMANAGED_LOGGERS)) {
+        RVLOG(RV_NOTICE) << "Unmanaged loggers are not be allowed";
     }
 
     el::LogBuilder* logBuilder = configureLogging(&config);

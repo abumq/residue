@@ -57,9 +57,9 @@ void ConnectionRequestHandler::handle(RawRequest&& rawRequest)
         return;
     }
 
-    bool knownClient = !request.clientId().empty();
+    bool managedClient = !request.clientId().empty();
 
-    if (request.type() == ConnectionRequest::Type::CONNECT && !knownClient) {
+    if (request.type() == ConnectionRequest::Type::CONNECT && !managedClient) {
         // Initialize random client ID
         request.setClientId(Utils::generateRandomString(16));
     }
@@ -77,10 +77,10 @@ void ConnectionRequestHandler::handle(RawRequest&& rawRequest)
         return;
     }
 
-    if (request.type() == ConnectionRequest::Type::CONNECT && knownClient) {
+    if (request.type() == ConnectionRequest::Type::CONNECT && managedClient) {
         // Find public key for known client
-        const auto& iter = m_registry->configuration()->knownClientsKeys().find(request.clientId());
-        if (iter == m_registry->configuration()->knownClientsKeys().end()) {
+        const auto& iter = m_registry->configuration()->managedClientsKeys().find(request.clientId());
+        if (iter == m_registry->configuration()->managedClientsKeys().end()) {
             RLOG(ERROR) << "Client is unknown.";
             respondErr("Client is unknown");
             return;
@@ -88,16 +88,16 @@ void ConnectionRequestHandler::handle(RawRequest&& rawRequest)
          // iter->second.first = file, iter->second.second = contents
         request.setRsaPublicKey(iter->second.second);
     } else if (request.type() == ConnectionRequest::Type::CONNECT
-               && !knownClient
-               && !m_registry->configuration()->hasFlag(Configuration::ALLOW_UNKNOWN_CLIENTS)) {
-        RLOG(ERROR) << "Unknown clients are not allowed";
-        respondErr("Unknown clients are not allowed by this server");
+               && !managedClient
+               && !m_registry->configuration()->hasFlag(Configuration::ALLOW_UNMANAGED_CLIENTS)) {
+        RLOG(ERROR) << "Unmanaged clients are not allowed";
+        respondErr("Unmanaged clients are not allowed by this server");
         return;
     }
 
     switch (request.type()) {
     case ConnectionRequest::Type::CONNECT:
-        connect(&request, session, knownClient);
+        connect(&request, session, managedClient);
         break;
     case ConnectionRequest::Type::ACKNOWLEDGE:
         acknowledge(&request, session);
@@ -110,14 +110,14 @@ void ConnectionRequestHandler::handle(RawRequest&& rawRequest)
     }
 }
 
-void ConnectionRequestHandler::connect(ConnectionRequest* request, const std::shared_ptr<Session>& session, bool isKnownClient) const
+void ConnectionRequestHandler::connect(ConnectionRequest* request, const std::shared_ptr<Session>& session, bool isManagedClient) const
 {
     int attempts = 0;
-    while (!isKnownClient && m_registry->clientExists(request->clientId()) && attempts++ < 100) {
+    while (!isManagedClient && m_registry->clientExists(request->clientId()) && attempts++ < 100) {
         // Re-generate a new client ID for this one already exists
         request->setClientId(Utils::generateRandomString(16));
     }
-    if (isKnownClient && m_registry->clientExists(request->clientId())) {
+    if (isManagedClient && m_registry->clientExists(request->clientId())) {
         // Already connected known client, just respond with key
         Client* client = m_registry->findClient(request->clientId());
         if (!client->isAlive()) {
@@ -141,7 +141,7 @@ void ConnectionRequestHandler::connect(ConnectionRequest* request, const std::sh
         session->write(output.c_str(), output.size(), client->rsaPublicKey().c_str());
     } else {
         Client client(request);
-        client.setIsKnown(isKnownClient);
+        client.setIsManaged(isManagedClient);
         client.setAge(m_registry->configuration()->nonAcknowledgedClientAge());
         if (m_registry->addClient(client)) {
             RVLOG(RV_DETAILS) << "Connected client [" << client.id() << "]";
@@ -170,8 +170,8 @@ void ConnectionRequestHandler::acknowledge(const ConnectionRequest* request, con
         response.serialize(output);
         session->write(output);
         return;
-    } else if (!existingClient->isKnown() && existingClient->acknowledged()) {
-        ConnectionResponse response(Response::StatusCode::BAD_REQUEST, "Cannot re-acknowledge unknown clients. Please TOUCH to refresh it.");
+    } else if (!existingClient->isManaged() && existingClient->acknowledged()) {
+        ConnectionResponse response(Response::StatusCode::BAD_REQUEST, "Cannot re-acknowledge unmanaged clients. Please TOUCH to refresh it.");
         std::string output;
         response.serialize(output);
         session->write(output.c_str(), output.size(), existingClient->rsaPublicKey().c_str());

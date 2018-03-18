@@ -59,6 +59,13 @@ tar -xf residue-2.1.0-darwin-x86_64.tar.gz
 cd residue-2.1.0-darwin-x86_64/
 ```
 
+## Setup
+You can generate configuration for your residue server using `setup` command
+
+```
+residue --setup --clients=3 --output-dir=residue.conf.json
+```
+
 ## Start Server
 
 ### Via NPM

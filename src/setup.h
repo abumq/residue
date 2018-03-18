@@ -1,5 +1,5 @@
 //
-//  connection-request-handler.h
+//  setup.h
 //  Residue
 //
 //  Copyright 2017-present Muflihun Labs
@@ -19,28 +19,17 @@
 //  limitations under the License.
 //
 
-#ifndef ConnectionRequestHandler_h
-#define ConnectionRequestHandler_h
-
-#include "core/request-handler.h"
+#include <string>
 
 namespace residue {
-class ConnectionRequest;
 
-///
-/// \brief Handle incoming ConnectRequest
-/// \see ConnectionRequest
-///
-class ConnectionRequestHandler : public RequestHandler
-{
+// We do it as class instead of single fn because
+// we need to access private members of Configuration
+class Setup final {
 public:
-    explicit ConnectionRequestHandler(Registry*);
-    virtual void handle(RawRequest&&);
+    static int setup();
 private:
-    void connect(ConnectionRequest*, const std::shared_ptr<Session>&, bool isManagedClient) const;
-    void acknowledge(const ConnectionRequest*, const std::shared_ptr<Session>&) const;
-    void touch(const ConnectionRequest*, const std::shared_ptr<Session>&) const;
+    static const std::string kDefaultLoggerConf;
+    static const std::string kResidueLoggerConf;
 };
 }
-
-#endif /* ConnectionRequestHandler_h */

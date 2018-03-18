@@ -127,6 +127,8 @@ protected:
 private:
     Type m_type;
     std::string m_id;
+    std::string m_description;
+    std::string m_modulePath;
     std::atomic<bool> m_running;
     std::mutex m_mutex;
     JsonDoc m_config;
@@ -134,6 +136,7 @@ private:
     friend class ResidueLogDispatcher;
     friend class LogRotator;
     friend class Configuration;
+    friend class Setup;
 
     Result trigger(void*);
 
