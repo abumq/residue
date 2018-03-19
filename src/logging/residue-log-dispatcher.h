@@ -230,7 +230,7 @@ private:
                     // process all items
                     fs->write(line.c_str(), line.size());
                     if (fs->fail()) {
-                        RLOG_IF(logger->id() != RESIDUE_LOGGER_ID, ERROR) << "Dynamic buffer dispatch failed [" << fn << "]"
+                        RLOG_IF(logger->id() != RESIDUE_LOGGER_ID, ERROR) << "Dynamic buffer dispatch failed [" << fn << "] "
                                                                           << std::strerror(errno);
 
                     }
