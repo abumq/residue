@@ -190,7 +190,7 @@ What do we mean by that? this is where "seamless" comes in, it will check for:
  * Whether client is about to die and can be _retouched_ (See `shouldTouch()` and `touch()` on [Java](https://github.com/muflihun/residue-java/blob/master/src/com/muflihun/residue/Residue.java) and see the usages)
  * Create bulk request if your library and server supports it (see [`allow_bulk_log_request`](/docs/CONFIGURATION.md#allow_bulk_log_request))
  * Compress the data if your library and server supports it (see [`compression`](/docs/CONFIGURATION.md#compression) and search for `Flag.COMPRESSION.isSet()` in [Java](https://github.com/muflihun/residue-java/blob/master/src/com/muflihun/residue/Residue.java) library for example)
- * Encrypt the JSON object if needed. Otherwise, if developer prefers plain log request and server supports it, you can ignore encryption. (see [`allow_plain_log_request`](/docs/CONFIGURATION.md#allow_plain_log_request) and search for `Flag.ALLOW_PLAIN_LOG_REQUEST.isSet()` in [Java](https://github.com/muflihun/residue-java/blob/master/src/com/muflihun/residue/Residue.java) library for example)
+ * Encrypt the JSON object if needed.
 
 Remember, all of this happens behind the scenes and developer does not have to know these details.
 
