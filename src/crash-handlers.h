@@ -40,7 +40,7 @@ void generalTerminateHandler(int sig, bool showMsg)
 {
     if (showMsg) {
         std::cerr << "Application abnormally terminated." << std::endl;
-        std::cerr << "Please report it to us on https://github.com/muflihun/residue/issues" << std::endl;
+        std::cerr << "Please report it to us on https://github.com/muflihun/residue/issues/ " << std::endl;
     }
     el::Helpers::logCrashReason(sig, true, el::Level::Fatal, RESIDUE_LOGGER_ID);
     el::Helpers::crashAbort(sig);
