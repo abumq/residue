@@ -1,7 +1,7 @@
 PROJECT_NAME="Residue Extensions API"
 PROJECT_BRIEF="Extend residue server functionality"
 OUTPUT_DIRECTORY=build/doc
-INPUT=tools/doxygen/README_DOXYGEN.md src/extensions/extension.h src/extensions/log-extension.h src/extensions/pre-archive-extension.h src/extensions/post-archive-extension.h src/core/json-doc.h
+INPUT=tools/doxygen/README_DOXYGEN.md src/extensions/extension.h src/extensions/log-extension.h src/extensions/pre-archive-extension.h src/extensions/post-archive-extension.h src/extensions/dispatch-error-extension.h src/core/json-doc.h
 USE_MDFILE_AS_MAINPAGE=tools/doxygen/README_DOXYGEN.md
 HTML_EXTRA_STYLESHEET=tools/doxygen/customdoxygen.css
 LAYOUT_FILE=tools/doxygen/DoxygenLayout.xml
