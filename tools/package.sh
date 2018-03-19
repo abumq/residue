@@ -74,9 +74,7 @@ if [ "$EXTENSIONS" = "ON" ];then
     cp libresidue-extension.so.$VERSION $PACK_EXT/
     cp ../include/extensions.h $PACK_EXT/include/residue/
     cp ../src/extensions/extension.h $PACK_EXT/include/residue/extensions/
-    cp ../src/extensions/log-extension.h $PACK_EXT/include/residue/extensions/
-    cp ../src/extensions/pre-archive-extension.h $PACK_EXT/include/residue/extensions/
-    cp ../src/extensions/post-archive-extension.h $PACK_EXT/include/residue/extensions/
+    cp ../src/extensions/*-extension.h $PACK_EXT/include/residue/extensions/
     cp ../src/core/json-doc.h $PACK_EXT/include/residue/core/
     cp ../deps/gason/gason.h $PACK_EXT/include/residue/gason/
 
