@@ -48,7 +48,7 @@ if [ "$EXTENSIONS" = "ON" ];then
 fi
 
 
-cmake -DCMAKE_BUILD_TYPE=Release -Duse_mine=OFF -Denable_extensions=$EXTENSIONS -Ddebug=$DEBUG_VERSION -Dprofiling=OFF -Dproduction=ON ..
+cmake -DCMAKE_BUILD_TYPE=Release -Duse_mine=OFF -Denable_extensions=$EXTENSIONS -Ddebug=$DEBUG_VERSION -Dprofiling=$DEBUG_VERSION -Dproduction=ON ..
 make -j4
 
 echo "Creating $PACK.tar.gz ..."

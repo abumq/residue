@@ -21,6 +21,8 @@
 
 #include "cli/stats.h"
 
+#include <iomanip>
+
 #include "core/client.h"
 #include "core/registry.h"
 #include "logging/log-request-handler.h"
@@ -31,8 +33,8 @@ using namespace residue;
 
 Stats::Stats(Registry* registry) :
     Command("stats",
-            "Displays current session details e.g, active sessions etc",
-            "stats [list] [--client-id <client_id>]",
+            "Displays current session details e.g, active sessions, queue and buffer info etc",
+            "stats [list] [dyn] [queue] [--client-id <client_id>]",
             registry)
 {
 }
@@ -92,18 +94,42 @@ void Stats::execute(std::vector<std::string>&& params, std::ostringstream& resul
             result << "Could not extract dispatcher";
         }
     } else if (hasParam(params, "queue")) {
-        std::string clientId = getParamValue(params, "--client-id");
-        if (clientId.empty()) {
-            result << "ERR: Client ID not specified";
-        } else {
+        auto displayQueueStat = [&](const std::string& clientId) {
             auto pos = registry()->logRequestHandler()->m_queueProcessor.find(clientId);
             if (pos == registry()->logRequestHandler()->m_queueProcessor.end()) {
                 result << "ERR: Client not registered in processor";
             } else {
                 const ClientQueueProcessor* processor = registry()->logRequestHandler()->m_queueProcessor.at(clientId).get();
-                result << "Processing Queue: " << processor->m_queue.size() << "\t";
-                result << "Backlog:          " << processor->m_queue.backlogSize() << "\n";
+                result << "Queue For: " << std::setw(20) << std::left << clientId << " ";
+                result << "Active:" << std::setw(6) << std::right << processor->m_queue.size() << " ";
+                result << "Backlog:" << std::setw(6) << std::right << processor->m_queue.backlogSize();
+                if (hasParam(params, "sampling")) {
+                    std::string sampleCount = getParamValue(params, "sampling");
+                    if (sampleCount.empty()) {
+                        sampleCount = "3";
+                    }
+                    int sc = atoi(sampleCount.c_str());
+                    if (sc < 1 || sc > 10) {
+                        sc = 3;
+                    }
+                    auto size = processor->m_queue.size();
+                    if (size > 0) {
+                        std::this_thread::sleep_for(std::chrono::seconds(sc));
+                        auto newSize = processor->m_queue.size();
+                        result << " Speed:" << std::setw(3) << std::right << (size - newSize) / sc << " items/s (incl. bulk)";
+                    }
+                }
+                result << "\n";
             }
+        };
+        std::string clientId = getParamValue(params, "--client-id");
+        if (clientId.empty()) {
+            for (auto& pair : registry()->logRequestHandler()->m_queueProcessor) {
+                clientId = pair.first;
+                displayQueueStat(clientId);
+            }
+        } else {
+            displayQueueStat(clientId);
         }
     }
 }

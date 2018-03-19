@@ -204,8 +204,12 @@ void ClientQueueProcessor::processRequestQueue()
     float timeTakenInSec = static_cast<float>(m_timeTaken / 1000.0f);
     RLOG_IF(total > 0, DEBUG) << "Took " << timeTakenInSec << "s to process the queue of "
                                    << total << " items (" << totalRequests << " requests). Average: "
-                                   << (static_cast<float>(m_timeTaken) / static_cast<float>(total)) << "ms/item ["
-                                   << (static_cast<float>(m_timeTaken) / static_cast<float>(totalRequests)) << "ms/request]";
+                                   << (static_cast<float>(m_timeTaken) / static_cast<float>(total)) << "ms/item ≈ "
+                                   << (timeTakenInSec > 0 ? std::ceil(static_cast<float>(total) / timeTakenInSec) : -1) << " items/s "
+                                   << "[" << (static_cast<float>(m_timeTaken) / static_cast<float>(totalRequests)) << "ms/req"
+                                   << " ≈ " << (timeTakenInSec > 0 ? std::ceil(static_cast<float>(totalRequests) / timeTakenInSec) : -1)
+                                   << " req/s"
+                                   << "]";
  #endif
 
     m_queue.switchContext();
