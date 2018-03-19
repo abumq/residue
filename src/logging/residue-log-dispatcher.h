@@ -101,8 +101,6 @@ public:
 
                         addToDynamicBuffer(logger, fn, logLine);
 
-                        //fs->clear();
-
                         execDispatchErrorExtensions(logger->id(),
                                                     fn,
                                                     logLine,
@@ -235,8 +233,6 @@ private:
                         RLOG_IF(logger->id() != RESIDUE_LOGGER_ID, ERROR) << "Dynamic buffer dispatch failed [" << fn << "]"
                                                                           << std::strerror(errno);
 
-
-                        fs->clear();
                     }
                 }
                 *fs << "=== [residue] ==> dynamic buffer cleared ===\n";

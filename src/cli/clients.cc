@@ -54,15 +54,19 @@ void Clients::execute(std::vector<std::string>&& params, std::ostringstream& res
             registry()->clientIntegrityTask()->kickOff();
             result << "\nFinished client integrity task" << std::endl;
         }
-    } else if (hasParam(params, "check-dyn")) {
+    } else if (hasParam(params, "checkdyn")) {
         // check dynamic buffer
         ResidueLogDispatcher* dispatcher = el::Helpers::logDispatchCallback<ResidueLogDispatcher>("ResidueLogDispatcher");
         if (dispatcher != nullptr) {
-            result << "Dynamic buffer information:\n";
-            for (auto& pair : dispatcher->m_dynamicBuffer) {
-                result << "Logger: " << pair.second.logger->id() << "\t";
-                result << "Filename: " << pair.first << "\t";
-                result << "Items: " << pair.second.lines.size() << "\n";
+            if (dispatcher->m_dynamicBuffer.empty()) {
+                result << "Dynamic buffer is empty";
+            } else {
+                result << "Dynamic buffer information:\n";
+                for (auto& pair : dispatcher->m_dynamicBuffer) {
+                    result << "Logger: " << pair.second.logger->id() << "\t";
+                    result << "Filename: " << pair.first << "\t";
+                    result << "Items: " << pair.second.lines.size() << "\n";
+                }
             }
         } else {
             result << "Could not extract dispatcher";
