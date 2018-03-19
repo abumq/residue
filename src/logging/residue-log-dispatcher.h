@@ -101,7 +101,7 @@ public:
 
                         addToDynamicBuffer(logger, fn, logLine);
 
-                        fs->clear();
+                        //fs->clear();
 
                         execDispatchErrorExtensions(logger->id(),
                                                     fn,
