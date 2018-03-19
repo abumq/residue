@@ -1,6 +1,6 @@
 # Change Log
 
-## [Unreleased]
+## [2.1.1] - 19-03-2018
 ### Extensions API
 - Added `LogExtension::Level` enum for readability of `LogExtension::Data::level`
 - Added new extension `DispatchErrorExtension`
