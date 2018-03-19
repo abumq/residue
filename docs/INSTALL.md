@@ -47,16 +47,16 @@ sudo ln -s `which residue-darwin` /usr/local/bin/residue
 ## Direct
 ### Linux
 ```
-wget https://github.com/muflihun/residue/releases/download/v2.1.1/residue-2.1.1-linux-x86_64.tar.gz
-tar -xf residue-2.1.1-linux-x86_64.tar.gz
-cd residue-2.1.1-linux-x86_64/
+wget https://github.com/muflihun/residue/releases/download/v2.2.1/residue-2.2.1-linux-x86_64.tar.gz
+tar -xf residue-2.2.1-linux-x86_64.tar.gz
+cd residue-2.2.1-linux-x86_64/
 ```
 
 ### macOS
 ```
-wget https://github.com/muflihun/residue/releases/download/v2.1.1/residue-2.1.0-darwin-x86_64.tar.gz
-tar -xf residue-2.1.1-darwin-x86_64.tar.gz
-cd residue-2.1.1-darwin-x86_64/
+wget https://github.com/muflihun/residue/releases/download/v2.2.1/residue-2.1.0-darwin-x86_64.tar.gz
+tar -xf residue-2.2.1-darwin-x86_64.tar.gz
+cd residue-2.2.1-darwin-x86_64/
 ```
 
 ## Setup
