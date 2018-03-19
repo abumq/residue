@@ -30,6 +30,7 @@
 #include "extensions/log-extension.h"
 #include "extensions/dispatch-error-extension.h"
 #include "logging/log.h"
+#include "logging/log-request.h"
 #include "logging/user-message.h"
 #include "non-copyable.h"
 #include "utils/utils.h"
@@ -64,7 +65,6 @@ public:
         m_configuration = configuration;
     }
 
-public:
     void handle(const el::LogDispatchData* data) override
     {
         el::LogDispatchCallback::handle(data);
@@ -139,6 +139,8 @@ private:
     // map of filename -> FailedLogs
     std::unordered_map<std::string, FailedLogs> m_dynamicBuffer;
     std::recursive_mutex m_dynamicBufferLock;
+
+    friend class Clients;
 
     void execLogExtensions(const el::LogDispatchData* data,
                            const el::base::type::string_t& logLine,
@@ -215,7 +217,7 @@ private:
         if (m_dynamicBuffer.find(fn) != m_dynamicBuffer.end()) {
             RLOG_IF(logger->id() != RESIDUE_LOGGER_ID, ERROR)
                     << "This logger [" << logger->id() << "] has some data in dynamic buffer [" << fn << "]"
-                    << " Flushing all the messages first";
+                    << " Flushing all the messages first [" << m_dynamicBuffer[fn].lines.size() << " items]";
             std::lock_guard<std::recursive_mutex> lock(m_dynamicBufferLock);
             std::vector<std::string>* list = &m_dynamicBuffer[fn].lines;
             if (!list->empty()) {
