@@ -160,7 +160,7 @@ void Configuration::loadFromInput(std::string&& jsonStr)
 
     if (m_jsonDoc.get<bool>("enable_dynamic_buffer", false)) {
         addFlag(Configuration::Flag::ENABLE_DYNAMIC_BUFFER);
-        RVLOG(RV_INFO) << "Dyanmic buffer enabled";
+        RVLOG(RV_INFO) << "Dynamic buffer enabled";
     }
 
     m_serverKey = m_jsonDoc.get<std::string>("server_key", AES::generateKey(256));
