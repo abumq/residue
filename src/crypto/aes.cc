@@ -53,6 +53,7 @@ std::string AES::encrypt(const std::string& plain, const std::string& key, const
 {
 #ifdef RESIDUE_USE_MINE
     try {
+        RLOG(INFO) << "Encrypting... " << plain;
         std::string ivCopy(iv);
         mine::AES aes;
         std::string ciphertext = aes.encrypt(plain, key, ivCopy, mine::MineCommon::Encoding::Raw, mine::MineCommon::Encoding::Base64);

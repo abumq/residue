@@ -1,5 +1,33 @@
 # Change Log
 
+## [2.1.1] - 19-03-2018
+### Extensions API
+- Added `LogExtension::Level` enum for readability of `LogExtension::Data::level`
+- Added new extension `DispatchErrorExtension`
+- Made `Extension::type` typesafe with enum class
+- Added `successfullyWritten` in `LogExtension`
+- Added `JsonDoc::getObj` and `JsonDoc::getArr` for simple access
+
+### Core Updates
+- Log message when execution of extension finished
+- Updated invalid ports message
+- User must have READ permission in `file_mode`
+- Configure residue using `--setup` flag
+
+### Config Changes
+- Unknown clients have been renamed to unmanaged clients
+- Known clients have been renamed to managed clients
+- Unknown loggers have been renamed to unmanaged loggers
+- Known loggers have been renamed to known loggers
+
+### Core Fixes
+- Standard response code has quotes around the key
+- Reopen files after `rconfig --logger-id`
+
+### New Feature
+- Dynamic buffer to prevent loss of any message in case of failures
+- Added option `--residue-home` to override environment variable `RESIDUE_HOME`
+
 ## [2.1.0] - 07-03-2018
 ### Fixed
 - Prevent duplicate default loggers when logger is specified for one of the clients (admin)

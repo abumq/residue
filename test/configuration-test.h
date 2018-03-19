@@ -109,8 +109,8 @@ protected:
                               "connect_port": 87771,
                               "logging_port": 87791,
                               "server_key": "048CB7050312DB329788CE1533C294A1F248F8A1BD6F611D7516803EDE271C65",
-                              "allow_unknown_loggers": true,
-                              "allow_unknown_clients": false,
+                              "allow_unmanaged_loggers": true,
+                              "allow_unmanaged_clients": false,
                               "enable_cli": false,
                               "allow_insecure_connection": true,
                               "immediate_flush": true,
@@ -123,7 +123,7 @@ protected:
                               "archived_log_directory": "%original",
                               "archived_log_filename": "mylogs-%hour-00-%wday-%level.log",
                               "archived_log_compressed_filename": "mylogs-%hour-00-%wday.tar.gz",
-                              "known_clients": [
+                              "managed_clients": [
                                   {
                                       "client_id": "client-for-test",
                                       "public_key": "public-key-for-test.pem",
@@ -137,7 +137,7 @@ protected:
                                       "loggers": ["muflihun"]
                                   }
                               ],
-                              "known_loggers": [
+                              "managed_loggers": [
                                   {
                                       "logger_id": "residue",
                                       "configuration_file": "residue-logger.conf",
@@ -156,8 +156,8 @@ protected:
                                       "archived_log_directory": "/tmp/logs-backup/custom-location-for-%logger"
                                   }
                               ],
-                              "known_loggers_endpoint": "http://localhost:3000/known-loggers",
-                              "known_clients_endpoint": "http://localhost:3000/known-clients",
+                              "managed_loggers_endpoint": "http://localhost:3000/managed-loggers",
+                              "managed_clients_endpoint": "http://localhost:3000/managed-clients",
                               "loggers_blacklist": [
                                   "bracket",
                                   "truli"
@@ -195,21 +195,21 @@ TEST_F(ConfigurationTest, CheckValues)
     ASSERT_EQ(conf->nonAcknowledgedClientAge(), 400);
     ASSERT_EQ(conf->clientIntegrityTaskInterval(), 500);
     ASSERT_FALSE(conf->hasFlag(Configuration::Flag::ENABLE_CLI));
-    ASSERT_TRUE(conf->hasFlag(Configuration::Flag::ALLOW_UNKNOWN_LOGGERS));
-    ASSERT_FALSE(conf->hasFlag(Configuration::Flag::ALLOW_UNKNOWN_CLIENTS));
+    ASSERT_TRUE(conf->hasFlag(Configuration::Flag::ALLOW_UNMANAGED_LOGGERS));
+    ASSERT_FALSE(conf->hasFlag(Configuration::Flag::ALLOW_UNMANAGED_CLIENTS));
     ASSERT_FALSE(conf->hasFlag(Configuration::Flag::COMPRESSION));
     ASSERT_TRUE(conf->hasFlag(Configuration::Flag::ALLOW_INSECURE_CONNECTION));
-    ASSERT_FALSE(conf->isKnownLoggerForClient("missing-client", "muflihun"));
-    ASSERT_FALSE(conf->isKnownLoggerForClient("client-for-test", "missing-logger"));
-    ASSERT_TRUE(conf->isKnownLoggerForClient("client-for-test", "muflihun"));
-    ASSERT_FALSE(conf->isKnownLoggerForClient("client-for-test", "default"));
-    ASSERT_EQ(conf->knownClientsKeys().size(), 2);
+    ASSERT_FALSE(conf->isManagedLoggerForClient("missing-client", "muflihun"));
+    ASSERT_FALSE(conf->isManagedLoggerForClient("client-for-test", "missing-logger"));
+    ASSERT_TRUE(conf->isManagedLoggerForClient("client-for-test", "muflihun"));
+    ASSERT_FALSE(conf->isManagedLoggerForClient("client-for-test", "default"));
+    ASSERT_EQ(conf->managedClientsKeys().size(), 2);
     ASSERT_EQ(conf->keySize("client-for-test"), 128);
     ASSERT_EQ(conf->keySize("client-for-test2"), 256);
     ASSERT_EQ(conf->getConfigurationFile("muflihun"), "muflihun-logger.conf");
 
-    ASSERT_EQ(conf->knownLoggersEndpoint(), "http://localhost:3000/known-loggers");
-    ASSERT_EQ(conf->knownClientsEndpoint(), "http://localhost:3000/known-clients");
+    ASSERT_EQ(conf->managedLoggersEndpoint(), "http://localhost:3000/managed-loggers");
+    ASSERT_EQ(conf->managedClientsEndpoint(), "http://localhost:3000/managed-clients");
 }
 
 TEST_F(ConfigurationTest, Load)
@@ -230,28 +230,28 @@ TEST_F(ConfigurationTest, Save)
     ASSERT_EQ(conf2->loggingPort(), conf->loggingPort());
     ASSERT_EQ(conf2->serverKey(), conf->serverKey());
     ASSERT_EQ(conf2->clientAge(), conf->clientAge());
-    ASSERT_EQ(conf2->knownClientsKeys().size(), conf->knownClientsKeys().size());
+    ASSERT_EQ(conf2->managedClientsKeys().size(), conf->managedClientsKeys().size());
     ASSERT_EQ(conf2->nonAcknowledgedClientAge(), conf->nonAcknowledgedClientAge());
     ASSERT_EQ(conf2->clientIntegrityTaskInterval(), conf->clientIntegrityTaskInterval());
     ASSERT_EQ(conf2->hasFlag(Configuration::Flag::ENABLE_CLI), conf->hasFlag(Configuration::Flag::ENABLE_CLI));
-    ASSERT_EQ(conf2->hasFlag(Configuration::Flag::ALLOW_UNKNOWN_LOGGERS), conf->hasFlag(Configuration::Flag::ALLOW_UNKNOWN_LOGGERS));
-    ASSERT_EQ(conf2->hasFlag(Configuration::Flag::ALLOW_UNKNOWN_CLIENTS), conf->hasFlag(Configuration::Flag::ALLOW_UNKNOWN_CLIENTS));
-    ASSERT_FALSE(conf2->isKnownLoggerForClient("missing-client", "muflihun"));
-    ASSERT_FALSE(conf2->isKnownLoggerForClient("client-for-test", "missing-logger"));
-    ASSERT_TRUE(conf2->isKnownLoggerForClient("client-for-test", "muflihun"));
-    ASSERT_FALSE(conf2->isKnownLoggerForClient("client-for-test", "default"));
-    ASSERT_EQ(conf2->knownClientsKeys().size(), 2);
+    ASSERT_EQ(conf2->hasFlag(Configuration::Flag::ALLOW_UNMANAGED_LOGGERS), conf->hasFlag(Configuration::Flag::ALLOW_UNMANAGED_LOGGERS));
+    ASSERT_EQ(conf2->hasFlag(Configuration::Flag::ALLOW_UNMANAGED_CLIENTS), conf->hasFlag(Configuration::Flag::ALLOW_UNMANAGED_CLIENTS));
+    ASSERT_FALSE(conf2->isManagedLoggerForClient("missing-client", "muflihun"));
+    ASSERT_FALSE(conf2->isManagedLoggerForClient("client-for-test", "missing-logger"));
+    ASSERT_TRUE(conf2->isManagedLoggerForClient("client-for-test", "muflihun"));
+    ASSERT_FALSE(conf2->isManagedLoggerForClient("client-for-test", "default"));
+    ASSERT_EQ(conf2->managedClientsKeys().size(), 2);
     ASSERT_EQ(conf2->keySize("client-for-test"), 128);
     ASSERT_EQ(conf2->keySize("client-for-test2"), 256);
     ASSERT_EQ(conf2->logExtensions().size(), conf->logExtensions().size());
     ASSERT_EQ(conf2->preArchiveExtensions().size(), conf->preArchiveExtensions().size());
     ASSERT_EQ(conf2->postArchiveExtensions().size(), conf->postArchiveExtensions().size());
     ASSERT_EQ(conf2->getConfigurationFile("muflihun"), "muflihun-logger.conf");
-    ASSERT_EQ(conf2->getConfigurationFile("unknownlogger"), "");
+    ASSERT_EQ(conf2->getConfigurationFile("unmanagedlogger"), "");
 }
 
 
-TEST_F(ConfigurationTest, KnownLoggersRequestAllowed)
+TEST_F(ConfigurationTest, ManagedLoggersRequestAllowed)
 {
 
     // Setup basic request
@@ -270,14 +270,14 @@ TEST_F(ConfigurationTest, KnownLoggersRequestAllowed)
     connectionReq.setDateReceived(1000);
     connectionReq.deserialize(std::move(connectionRequestStr));
     Client client(&connectionReq);
-    client.setIsKnown(true);
+    client.setIsManaged(true);
     ASSERT_EQ(client.keySize(), 32);
     registry.addClient(client);
 
-    Client unknownClient(&connectionReq);
-    unknownClient.setIsKnown(false);
-    ASSERT_EQ(unknownClient.keySize(), 32);
-    registry.addClient(unknownClient);
+    Client unmanagedClient(&connectionReq);
+    unmanagedClient.setIsManaged(false);
+    ASSERT_EQ(unmanagedClient.keySize(), 32);
+    registry.addClient(unmanagedClient);
 
     auto createLogRequest = [](const std::string& loggerId) -> std::string {
         return std::string(R"(
@@ -310,24 +310,24 @@ TEST_F(ConfigurationTest, KnownLoggersRequestAllowed)
         { "default", &client, true },
         { "residue", &client, false }, // residue is not allowed in any case
         { "test", &client, true },
-        { "muflihun", &unknownClient, false },
-        { "default", &unknownClient, true },
-        { "residue", &unknownClient, false },
-        { "test", &unknownClient, true }
+        { "muflihun", &unmanagedClient, false },
+        { "default", &unmanagedClient, true },
+        { "residue", &unmanagedClient, false },
+        { "test", &unmanagedClient, true }
     };
     runTests(testCases);
 
-    conf->removeFlag(Configuration::ALLOW_UNKNOWN_LOGGERS);
+    conf->removeFlag(Configuration::ALLOW_UNMANAGED_LOGGERS);
 
     TestData<std::string, Client*, bool> testCases2 = {
         { "muflihun", &client, true },
         { "default", &client, true },
         { "residue", &client, false }, // residue is not allowed in any case
-        { "test", &client, false }, // unknown
-        { "muflihun", &unknownClient, false },
-        { "default", &unknownClient, true },
-        { "residue", &unknownClient, false },
-        { "test", &unknownClient, false }
+        { "test", &client, false }, // unmanaged
+        { "muflihun", &unmanagedClient, false },
+        { "default", &unmanagedClient, true },
+        { "residue", &unmanagedClient, false },
+        { "test", &unmanagedClient, false }
     };
     runTests(testCases2);
 

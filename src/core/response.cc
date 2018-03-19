@@ -26,8 +26,8 @@
 using namespace residue;
 
 const std::unordered_map<unsigned short, std::string> Response::STANDARD_RESPONSES = {
-    { static_cast<unsigned short>(Response::StatusCode::OK), "{r:0}\r\n\r\n" },
-    { static_cast<unsigned short>(Response::StatusCode::CONTINUE), "{r:0}\r\n\r\n" },
-    { static_cast<unsigned short>(Response::StatusCode::BAD_REQUEST), "{r:1}\r\n\r\n" },
-    { static_cast<unsigned short>(Response::StatusCode::INVALID_CLIENT), "{r:2}\r\n\r\n" },
+    { static_cast<unsigned short>(Response::StatusCode::OK), "{\"r\":0}\r\n\r\n" },
+    { static_cast<unsigned short>(Response::StatusCode::CONTINUE), "{\"r\":0}\r\n\r\n" },
+    { static_cast<unsigned short>(Response::StatusCode::BAD_REQUEST), "{\"r\":1}\r\n\r\n" },
+    { static_cast<unsigned short>(Response::StatusCode::INVALID_CLIENT), "{\"r\":2}\r\n\r\n" },
 };

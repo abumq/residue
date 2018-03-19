@@ -22,6 +22,7 @@
 #ifndef RESIDUE_EXTENSIONS_BASE_H
 #define RESIDUE_EXTENSIONS_BASE_H
 #include <residue/extensions/log-extension.h>
+#include <residue/extensions/dispatch-error-extension.h>
 #include <residue/extensions/pre-archive-extension.h>
 #include <residue/extensions/post-archive-extension.h>
 #endif /* RESIDUE_EXTENSIONS_BASE_H */

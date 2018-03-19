@@ -32,7 +32,6 @@
 #include "core/client.h"
 #include "core/json-doc.h"
 #include "crypto/rsa.h"
-#include "extensions/log-extension.h"
 #include "non-copyable.h"
 
 namespace residue {
@@ -40,6 +39,7 @@ namespace residue {
 class AdminRequestHandler;
 class UserLogBuilder;
 class LogRequest;
+class Extension;
 
 ///
 /// \brief Residue server configuration
@@ -48,27 +48,18 @@ class Configuration final : NonCopyable
 {
 public:
 
-    ///
-    /// \brief For processor thread ID
-    ///
-    static const std::string UNKNOWN_CLIENT_ID;
-
-    ///
-    /// \brief Maximum numbers of blacklist loggers possible
-    ///
-    static const int MAX_BLACKLIST_LOGGERS;
-
     enum Flag : unsigned int
     {
         NONE = 0,
-        ALLOW_UNKNOWN_LOGGERS = 1,
+        ALLOW_UNMANAGED_LOGGERS = 1,
         ALLOW_BULK_LOG_REQUEST = 16,
         IMMEDIATE_FLUSH = 32,
-        ALLOW_UNKNOWN_CLIENTS = 64,
+        ALLOW_UNMANAGED_CLIENTS = 64,
         ALLOW_INSECURE_CONNECTION = 128,
         COMPRESSION = 256,
         ENABLE_CLI = 512,
         REQUIRES_TIMESTAMP = 1024,
+        ENABLE_DYNAMIC_BUFFER = 2048,
     };
 
     enum RotationFrequency : types::Time
@@ -83,17 +74,21 @@ public:
         YEARLY = RotationFrequency::MONTHLY * 12
     };
 
-    enum ExtensionType : unsigned int
-    {
-        LOG = 1,
-        PRE_ARCHIVE = 2,
-        POST_ARCHIVE = 3,
-    };
+    ///
+    /// \brief For processor thread ID
+    ///
+    static const std::string UNMANAGED_CLIENT_ID;
+
+    ///
+    /// \brief Maximum numbers of blacklist loggers possible
+    ///
+    static const int MAX_BLACKLIST_LOGGERS;
 
     Configuration();
     explicit Configuration(const std::string& configurationFile);
 
     bool save(const std::string& outputFile);
+    std::string exportAsString();
     void load(const std::string& configurationFile);
     void loadFromInput(std::string&& jsonStr);
     bool validateConfigFile(const std::string& filename) const;
@@ -199,15 +194,15 @@ public:
         return m_errors;
     }
 
-    inline bool isKnownLogger(const std::string& loggerId) const
+    inline bool isManagedLogger(const std::string& loggerId) const
     {
         return m_configurations.find(loggerId) != m_configurations.end();
     }
 
-    inline bool isKnownLoggerForClient(const std::string& clientId, const std::string& loggerId) const
+    inline bool isManagedLoggerForClient(const std::string& clientId, const std::string& loggerId) const
     {
-        return m_knownClientsLoggers.find(clientId) != m_knownClientsLoggers.end() &&
-                m_knownClientsLoggers.at(clientId).find(loggerId) != m_knownClientsLoggers.at(clientId).end();
+        return m_managedClientsLoggers.find(clientId) != m_managedClientsLoggers.end() &&
+                m_managedClientsLoggers.at(clientId).find(loggerId) != m_managedClientsLoggers.at(clientId).end();
     }
 
     inline const std::unordered_map<std::string, unsigned int>& keySizes() const
@@ -215,14 +210,14 @@ public:
         return m_keySizes;
     }
 
-    inline const std::unordered_map<std::string, std::unordered_set<std::string>>& knownClientsLoggers() const
+    inline const std::unordered_map<std::string, std::unordered_set<std::string>>& managedClientsLoggers() const
     {
-        return m_knownClientsLoggers;
+        return m_managedClientsLoggers;
     }
 
-    inline const std::unordered_map<std::string, std::string>& knownClientDefaultLogger() const
+    inline const std::unordered_map<std::string, std::string>& managedClientDefaultLogger() const
     {
-        return m_knownClientDefaultLogger;
+        return m_managedClientDefaultLogger;
     }
 
     inline std::vector<Extension*>& logExtensions()
@@ -240,9 +235,14 @@ public:
         return m_postArchiveExtensions;
     }
 
-    inline const std::unordered_map<std::string, std::pair<std::string, std::string>>& knownClientsKeys() const
+    inline std::vector<Extension*>& dispatchErrorExtensions()
     {
-        return m_knownClientsKeys;
+        return m_dispatchErrorExtensions;
+    }
+
+    inline const std::unordered_map<std::string, std::pair<std::string, std::string>>& managedClientsKeys() const
+    {
+        return m_managedClientsKeys;
     }
 
     inline bool isBlacklisted(const std::string& loggerId) const
@@ -275,7 +275,7 @@ public:
 
     std::string getConfigurationFile(const std::string&) const;
 
-    void updateUnknownLoggerUserFromRequest(const std::string& loggerId, const LogRequest* request = nullptr);
+    void updateUnmanagedLoggerUserFromRequest(const std::string& loggerId, const LogRequest* request = nullptr);
 
     std::string getArchivedLogDirectory(const std::string&) const;
     std::string getArchivedLogFilename(const std::string&) const;
@@ -284,14 +284,14 @@ public:
 
     bool hasLoggerFlag(const std::string& loggerId, Flag flag) const;
 
-    inline std::string knownLoggersEndpoint() const
+    inline std::string managedLoggersEndpoint() const
     {
-        return m_knownLoggersEndpoint;
+        return m_managedLoggersEndpoint;
     }
 
-    inline std::string knownClientsEndpoint() const
+    inline std::string managedClientsEndpoint() const
     {
-        return m_knownClientsEndpoint;
+        return m_managedClientsEndpoint;
     }
 
     std::string findLoggerUser(const std::string& loggerId) const;
@@ -301,8 +301,12 @@ public:
         return m_fileMode;
     }
 
+    inline void setHomePath(const std::string& homePath)
+    {
+        m_homePath = homePath;
+    }
+
 private:
-    friend class Clients;
     JsonDoc m_jsonDoc;
     std::string m_configurationFile;
 
@@ -320,17 +324,18 @@ private:
     std::unordered_map<std::string, Flag> m_loggerFlags;
     std::unordered_map<std::string, unsigned int> m_keySizes;
     std::unordered_set<std::string> m_blacklist;
-    std::unordered_set<std::string> m_remoteKnownClients;
-    std::unordered_set<std::string> m_remoteKnownLoggers;
+    std::unordered_set<std::string> m_remoteManagedClients;
+    std::unordered_set<std::string> m_remoteManagedLoggers;
     std::vector<Extension*> m_logExtensions;
     std::vector<Extension*> m_preArchiveExtensions;
     std::vector<Extension*> m_postArchiveExtensions;
+    std::vector<Extension*> m_dispatchErrorExtensions;
 
-    std::unordered_map<std::string, std::pair<std::string, std::string>> m_knownClientsKeys;
-    std::unordered_map<std::string, std::unordered_set<std::string>> m_knownClientsLoggers;
-    std::unordered_map<std::string, std::string> m_knownLoggerUserMap;
-    std::unordered_map<std::string, std::string> m_unknownLoggerUserMap;
-    std::unordered_map<std::string, std::string> m_knownClientDefaultLogger;
+    std::unordered_map<std::string, std::pair<std::string, std::string>> m_managedClientsKeys;
+    std::unordered_map<std::string, std::unordered_set<std::string>> m_managedClientsLoggers;
+    std::unordered_map<std::string, std::string> m_managedLoggerUserMap;
+    std::unordered_map<std::string, std::string> m_unmanagedLoggerUserMap;
+    std::unordered_map<std::string, std::string> m_managedClientDefaultLogger;
 
     unsigned int m_nonAcknowledgedClientAge;
     unsigned int m_clientAge;
@@ -351,8 +356,8 @@ private:
     std::string m_serverRSAPublicKeyFile;
     std::string m_serverRSAPrivateKeyFile;
     std::string m_serverRSASecret;
-    std::string m_knownLoggersEndpoint;
-    std::string m_knownClientsEndpoint;
+    std::string m_managedLoggersEndpoint;
+    std::string m_managedClientsEndpoint;
 
     std::string m_errors;
     bool m_isValid;
@@ -360,20 +365,25 @@ private:
 
     std::mutex m_mutex;
 
-    bool addKnownClient(const std::string& clientId, const std::string& publicKey);
-    bool verifyKnownClient(const std::string& clientId, const std::string& signature) const;
-    void removeKnownClient(const std::string& clientId);
+    std::string m_homePath;
 
-    inline bool isKnownClient(const std::string& clientId) const
+    friend class Clients;
+    friend class Setup;
+
+    bool addManagedClient(const std::string& clientId, const std::string& publicKey);
+    bool verifyManagedClient(const std::string& clientId, const std::string& signature) const;
+    void removeManagedClient(const std::string& clientId);
+
+    inline bool isManagedClient(const std::string& clientId) const
     {
-        return m_knownClientsKeys.find(clientId) != m_knownClientsKeys.end();
+        return m_managedClientsKeys.find(clientId) != m_managedClientsKeys.end();
     }
 
-    void loadKnownLoggers(const JsonDoc::Value& json, std::stringstream& errorStream, bool viaUrl);
-    void loadKnownClients(const JsonDoc::Value& json, std::stringstream& errorStream, bool viaUrl);
-    void loadLoggersBlacklist(const JsonDoc::Value& json, std::stringstream& errorStream);
+    void loadManagedLoggers(const JsonDoc& json, std::stringstream& errorStream, bool viaUrl);
+    void loadManagedClients(const JsonDoc& json, std::stringstream& errorStream, bool viaUrl);
+    void loadLoggersBlacklist(const JsonDoc& json, std::stringstream& errorStream);
 
-    void loadExtensions(const JsonDoc::Value& json, std::stringstream& errorStream);
+    void loadExtensions(const JsonDoc& json, std::stringstream& errorStream);
 };
 }
 #endif /* Configuration_h */

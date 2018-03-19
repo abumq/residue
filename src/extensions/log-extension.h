@@ -107,6 +107,26 @@ public:
         /// \brief Full formatted message (this is the message that was appended to the log file)
         ///
         std::string formattedMessage;
+
+        ///
+        /// \brief True if log was dispatched to the file without any error
+        ///
+        bool successfullyWritten;
+    };
+
+    ///
+    /// \brief Represents typed level. Statically cast Data::level to this
+    /// for readibility purposes
+    ///
+    enum class Level : unsigned int
+    {
+        Trace = 2,
+        Debug = 4,
+        Fatal = 8,
+        Error = 16,
+        Warning = 32,
+        Verbose = 64,
+        Info = 128
     };
 
     explicit LogExtension(const std::string& id);

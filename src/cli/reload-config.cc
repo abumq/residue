@@ -73,6 +73,19 @@ void ReloadConfig::reloadLoggerConfig(const std::string& loggerId, std::ostrings
         el::Configurations config(confFile);
         result << "Reconfiguring logger...\n";
         el::Loggers::reconfigureLogger(logger, config);
+
+        result << "Re-opening the files...\n";
+        el::base::type::EnumType lIndex = el::LevelHelper::kMinValid;
+        el::LevelHelper::forEachLevel(&lIndex, [&](void) -> bool {
+            auto fn = logger->typedConfigurations()->filename(el::LevelHelper::castFromInt(lIndex));
+            auto stream = logger->typedConfigurations()->fileStream(el::LevelHelper::castFromInt(lIndex));
+            if (stream != nullptr) {
+                stream->clear();
+                stream->close();
+                stream->open(fn, std::ios::out | std::ios::app);
+            }
+            return false;
+        });
         result << "Done!";
     }
 

@@ -12,7 +12,7 @@ option (old_toolchain "Is old toolchain" OFF)
 
 set (RESIDUE_MAJOR "2")
 set (RESIDUE_MINOR "1")
-set (RESIDUE_PATCH "0")
+set (RESIDUE_PATCH "1")
 set (RESIDUE_VERSION "${RESIDUE_MAJOR}.${RESIDUE_MINOR}.${RESIDUE_PATCH}")
 set (RESIDUE_NAME "Residue")
 
@@ -136,6 +136,7 @@ set (DEPS_SRC
 )
 
 set (SOURCE_FILES
+    src/setup.cc
 
     src/connect/connection-request.cc
     src/connect/connection-request-handler.cc
@@ -230,6 +231,7 @@ if (enable_extensions)
     set (EXTENSION_FILES
         src/extensions/extension.cc
         src/extensions/log-extension.cc
+        src/extensions/dispatch-error-extension.cc
         src/extensions/pre-archive-extension.cc
         src/extensions/post-archive-extension.cc
         src/core/json-doc.cc

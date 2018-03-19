@@ -26,7 +26,7 @@ Quits the server gracefully
 Reloads configurations from same file as initially loaded
 
 ##### `--logger-id <logger_id>`
-Reloads server configuraion and reconfigure logger
+Reloads server configuration and reconfigure loggers
 
 ### `reset`
 Resets the server with following things (be careful in doing this as it may affect connected clients)
@@ -39,18 +39,10 @@ Resets the server with following things (be careful in doing this as it may affe
 Display history of valid commands (default maximum = 5)
 
 ### `clients`
-Number of connected clients (dead or alive)
+Number of connected clients (dead or alive) that have not yet been removed from the server
 
 ##### `clean`
 Runs client integrity task and cleans all the dead clients
-
-##### `remove --client-id <client_id>`
-Removes the existing client. Please be careful with this command. If client has unprocessed requests it may crash.
-
-##### `add --client-id <client_id> --rsa-public-key-file <rsa_key>`
-Adds new client with specific id and public key.
-
-The public key should exist on the server
 
 ##### `list`
 Lists all the connected clients (and `DEAD` status if they're dead)

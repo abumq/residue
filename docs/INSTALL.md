@@ -5,41 +5,71 @@
 # Overview
 Residue can be installed either by building from the source or by downloading the binaries from respective releases.
 
+# Supported Platforms
+Residue **has been tested** on the following platforms and should work on other major distributions (that are not listed here) especially the higher versions of listed platforms
+
+## Linux
+ * Ubuntu 14.04 (64-bit)
+ * Amazon Linux AMI 2017.03
+ * Fedora 19 (64-bit)
+ * Fedora 24 (64-bit)
+ * CentOS 7 (64-bit)
+ 
+Other distributions that _should_ work (but have not yet been tested)
+ * Oracle Linux
+ * RHEL 7 or higher (64-bit)
+ * Amazon Linux AMI 2016.03
+
+## macOS
+ * macOS 10.13 (High Sierra) (64-bit)
+ 
+Other distributions that _should_ work (but have not yet been tested) - you may need to rebuild from source
+ * macOS 10.11 (El Capitan) (64-bit)
+ * macOS 10.12 (Sierra) (64-bit)
+
 # Download Binary
 You can download binary from [releases](https://github.com/muflihun/residue/releases) page for your platform. They are standalone binaries but they require some external libraries installed that are mentioned with each release notes. Most of these external libraries come with respective operating system distributions.
 
-## Using NPM
+## Via NPM
 
+### Linux
 ```
-## For linux
 $ sudo npm install -g residue-linux@latest
+sudo ln -s `which residue-linux` /usr/local/bin/residue
 ```
 
+### macOS
 ```
-## For macOS
 $ sudo npm install -g residue-darwin@latest
+sudo ln -s `which residue-darwin` /usr/local/bin/residue
 ```
 
 ## Direct
+### Linux
 ```
-## For linux
 wget https://github.com/muflihun/residue/releases/download/v2.1.0/residue-2.1.0-linux-x86_64.tar.gz
 tar -xf residue-2.1.0-linux-x86_64.tar.gz
 cd residue-2.1.0-linux-x86_64/
 ```
 
+### macOS
 ```
-## For macOS
 wget https://github.com/muflihun/residue/releases/download/v2.1.0/residue-2.1.0-darwin-x86_64.tar.gz
 tar -xf residue-2.1.0-darwin-x86_64.tar.gz
 cd residue-2.1.0-darwin-x86_64/
 ```
 
+## Setup
+You can generate configuration for your residue server using `setup` command
+
+```
+residue --setup --clients=3 --output-dir=residue.conf.json
+```
+
 ## Start Server
 
-### Using NPM
+### Via NPM
 If you downloaded Residue binary using NPM, you can use following lines to start server with sample configs.
-
 
 You will need to find out where global packages for NPM are installed (use `npm root -g`)
 
@@ -54,7 +84,7 @@ We set `RESIDUE_HOME` environment variable as they are needed by sample server c
 ```
 export RESIDUE_HOME=/usr/local/lib/node_modules/residue-linux/config/
 ## Following will line will set environment variable for node
-sudo RESIDUE_HOME=$RESIDUE_HOME residue-linux $RESIDUE_HOME/server.conf
+sudo RESIDUE_HOME=$RESIDUE_HOME residue $RESIDUE_HOME/server.conf
 ```
 
 ### Direct
@@ -72,6 +102,35 @@ If you are using residue extensions you will also need to update `LD_LIBRARY_PAT
 ```
 sudo ./residue config/server.conf
 ```
+## Sample Client
+## Download
+Open another terminal and start sending log requests using sample client logger
+
+```
+wget https://github.com/muflihun/muflihun.github.io/raw/master/downloads/sample-logger.tar.gz
+tar -xf sample-logger.tar.gz
+```
+
+## Send Logs
+
+### Linux
+```
+./sample-logger/linux/residue-logger --conf=sample-logger/conf.json
+```
+
+### macOS
+```
+./sample-logger/darwin/residue-logger --conf=sample-logger/conf.json
+```
+
+This sample sends using `default` logger. Source code for this sample client logger can be found @ [Residue C++ samples](https://github.com/muflihun/residue-cpp/blob/master/samples/minimal/main.cc)
+
+## View Logs
+You can tail your logs using
+
+```
+tail -f /tmp/logs/residue.log
+``` 
 
 # Building From Source
 You can follow steps below to build and install residue server on your machine.
@@ -166,7 +225,14 @@ sudo make install
 # Run as `root`
 You will need to run residue as root user. This is because residue needs to change the ownership of the files to the relevant users and yet need to write to those files.
 
-If you are just need to test the residue before you run it in production (in production you should always run it as root) you can use `--force-without-root` command-line argument.
+If you are just need to test the residue before you run it in production (in production you should always run it as root) you can use `--force-without-root` command-line argument. [NOT RECOMMENDED]
+
+# `RESIDUE_HOME`
+`RESIDUE_HOME` is environment variable that is resolved at runtime if provided with, in the value. (Only applicable to some configurations)
+
+E.g, if `RESIDUE_HOME` is exported to `/opt/residue/config` and you have public key `$RESIDUE_HOME/server-priv.pem` the final file that will be read will be `/opt/residue/config/server-priv.pem`
+
+If you provide `--residue-home=<path>` when starting the server, `RESIDUE_HOME` environment variable will be overridden by the value provided at startup.
 
 # Verbose Options
 You can turn on verbose logging using `--v=<level>`. `-v` is equivalent to `--v=9`

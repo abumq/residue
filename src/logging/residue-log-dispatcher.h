@@ -1,4 +1,4 @@
-//
+﻿//
 //  residue-log-dispatcher.h
 //  Residue
 //
@@ -22,7 +22,13 @@
 #ifndef ResidueLogDispatcher_h
 #define ResidueLogDispatcher_h
 
+#include <algorithm>
+#include <mutex>
+#include <unordered_map>
+
+#include "core/configuration.h"
 #include "extensions/log-extension.h"
+#include "extensions/dispatch-error-extension.h"
 #include "logging/log.h"
 #include "logging/user-message.h"
 #include "non-copyable.h"
@@ -38,7 +44,18 @@ class Configuration;
 class ResidueLogDispatcher final : public el::LogDispatchCallback, NonCopyable
 {
 public:
-    ResidueLogDispatcher() : m_configuration(nullptr)
+    ///
+    /// \brief FailedLog is used to locally store the log message
+    /// in case of errors so we do not lose any data
+    ///
+    struct FailedLogs
+    {
+        el::Logger* logger;
+        std::vector<std::string> lines;
+    };
+
+    ResidueLogDispatcher() :
+        m_configuration(nullptr)
     {
     }
 
@@ -53,16 +70,15 @@ public:
         el::LogDispatchCallback::handle(data);
         el::base::threading::ScopedLock scopedLock(fileHandle(data));
 
-        m_data = data;
         try {
-            if (m_data == nullptr) {
-                // don't log anything here
-                // if you do, add a check for residue logger
+            if (data == nullptr) {
+                // can't log here as we do not have logger information
+                // to add 'residue' logger check
                 std::cout << "Log dispatch data is unexpectedly null" << std::endl;
                 return;
             }
             std::string logLine(data->logMessage()->logger()->logBuilder()->build(data->logMessage(), true));
-
+            bool successfullyWritten = false;
             el::Logger* logger = data->logMessage()->logger();
             el::base::TypedConfigurations* conf = logger->typedConfigurations();
             el::Level level = data->logMessage()->level();
@@ -73,20 +89,7 @@ public:
                     if (!Utils::fileExists(fn.c_str())) {
                         RLOG_IF(logger->id() != RESIDUE_LOGGER_ID, ERROR)
                                 << "File not found [" << fn << "] [Logger: " << logger->id() << "]. Creating...";
-                        if (Utils::createPath(el::base::utils::File::extractPathFromFilename(fn).c_str())) {
-                            RLOG_IF(logger->id() != RESIDUE_LOGGER_ID, INFO) << "Accessing file...";
-                            fs->close();
-                            fs->open(fn, std::ios::out);
-                            Utils::updateFilePermissions(fn.data(), logger, m_configuration);
-                            if (fs->fail() || !fs->is_open()) {
-                                RLOG_IF(logger->id() != RESIDUE_LOGGER_ID, INFO)
-                                        << "Failed to access file [ " << fn << "]! " << strerror(errno);
-                                return;
-                            }
-                        } else {
-                            RLOG_IF(logger->id() != RESIDUE_LOGGER_ID, ERROR)
-                                    << "Failed to create file [" << fn << "] [Logger: "
-                                    << logger->id() << "] " << strerror(errno);
+                        if (!createFile(fn, fs, logger, logLine, level)) {
                             return;
                         }
                     }
@@ -94,11 +97,24 @@ public:
                     if (fs->fail()) {
                         RLOG_IF(logger->id() != RESIDUE_LOGGER_ID, ERROR)
                                 << "Failed to write to file [" << fn << "] [Logger: "
-                                << logger->id() << "] " << strerror(errno);
+                                << logger->id() << "] " << std::strerror(errno);
+
+                        addToDynamicBuffer(logger, fn, logLine);
+
+                        fs->clear();
+
+                        execDispatchErrorExtensions(logger->id(),
+                                                    fn,
+                                                    logLine,
+                                                    el::LevelHelper::castToInt(level),
+                                                    errno);
                     } else {
                         if (ELPP->hasFlag(el::LoggingFlag::ImmediateFlush) || (logger->isFlushNeeded(level))) {
                             logger->flush(level, fs);
                         }
+                        successfullyWritten = true;
+
+                        dispatchDynamicBuffer(fn, fs, logger);
                     }
                 } else {
                     RLOG_IF(logger->id() != RESIDUE_LOGGER_ID, ERROR)
@@ -110,7 +126,7 @@ public:
             }
 #ifdef RESIDUE_HAS_EXTENSIONS
             if (data->logMessage()->logger()->id() != RESIDUE_LOGGER_ID) {
-                callExtensions(data, logLine);
+                execLogExtensions(data, logLine, successfullyWritten);
             }
 #endif
         } catch (const std::exception& e) {
@@ -119,11 +135,14 @@ public:
     }
 
 private:
-    const el::LogDispatchData* m_data;
     Configuration* m_configuration;
+    // map of filename -> FailedLogs
+    std::unordered_map<std::string, FailedLogs> m_dynamicBuffer;
+    std::recursive_mutex m_dynamicBufferLock;
 
-    void callExtensions(const el::LogDispatchData* data,
-                        const el::base::type::string_t& logLine)
+    void execLogExtensions(const el::LogDispatchData* data,
+                           const el::base::type::string_t& logLine,
+                           bool successfullyWritten)
     {
         if (m_configuration->logExtensions().empty()) {
             return;
@@ -142,11 +161,130 @@ private:
             logMessage->request()->ipAddr(),
             logMessage->request()->sessionId(),
             logMessage->request()->msg(),
-            logLine
+            logLine,
+            successfullyWritten
         };
-        for (auto& logExtension : m_configuration->logExtensions()) {
-            logExtension->trigger(&d);
+        for (auto& ext : m_configuration->logExtensions()) {
+            ext->trigger(&d);
         }
+    }
+
+    void execDispatchErrorExtensions(const std::string& loggerId,
+                                     const std::string& filename,
+                                     const el::base::type::string_t& logLine,
+                                     unsigned int level,
+                                     int errorNo)
+    {
+        if (m_configuration->dispatchErrorExtensions().empty()) {
+            return;
+        }
+        DispatchErrorExtension::Data d {
+            loggerId,
+            filename,
+            logLine,
+            level,
+            errorNo
+        };
+        for (auto& ext : m_configuration->dispatchErrorExtensions()) {
+            ext->trigger(&d);
+        }
+    }
+
+    void addToDynamicBuffer(el::Logger* logger, const std::string& filename, const std::string& logLine)
+    {
+        if (m_configuration->hasFlag(Configuration::ENABLE_DYNAMIC_BUFFER)
+                && logger->id() != RESIDUE_LOGGER_ID) {
+            // never add logs to dynamic buffer for residue logger as dynamic
+            // buffer may be locked
+            std::lock_guard<std::recursive_mutex> lock(m_dynamicBufferLock);
+            if (m_dynamicBuffer.find(filename) == m_dynamicBuffer.end()) {
+                m_dynamicBuffer.insert(std::make_pair(filename, FailedLogs {
+                                                          logger,
+                                                          std::vector<std::string>()
+                                                      }));
+            }
+            if (std::find(m_dynamicBuffer[filename].lines.begin(), m_dynamicBuffer[filename].lines.end(), logLine)
+                    == m_dynamicBuffer[filename].lines.end()) {
+                m_dynamicBuffer[filename].lines.push_back(logLine);
+            }
+        }
+    }
+
+    void dispatchDynamicBuffer(const std::string& fn, el::base::type::fstream_t* fs, el::Logger* logger)
+    {
+        if (m_dynamicBuffer.find(fn) != m_dynamicBuffer.end()) {
+            RLOG_IF(logger->id() != RESIDUE_LOGGER_ID, ERROR)
+                    << "This logger [" << logger->id() << "] has some data in dynamic buffer [" << fn << "]"
+                    << " Flushing all the messages first";
+            std::lock_guard<std::recursive_mutex> lock(m_dynamicBufferLock);
+            std::vector<std::string>* list = &m_dynamicBuffer[fn].lines;
+            if (!list->empty()) {
+                // lock the logger
+                el::base::threading::ScopedLock loggerLock(m_dynamicBuffer[fn].logger->lock());
+                // close/open again
+                fs->close();
+                fs->open(fn, std::ios::out | std::ios::app);
+
+                *fs << "=== [residue] ==> " << list->size() << " log" << (list->size() > 1 ? "s" : "") << " from dynamic buffer ===\n";
+                for (auto& line : *list) {
+                    // process all items
+                    fs->write(line.c_str(), line.size());
+                    if (fs->fail()) {
+                        RLOG_IF(logger->id() != RESIDUE_LOGGER_ID, ERROR) << "Dynamic buffer dispatch failed [" << fn << "]"
+                                                                          << std::strerror(errno);
+
+
+                        fs->clear();
+                    }
+                }
+                *fs << "=== [residue] ==> dynamic buffer cleared ===\n";
+                fs->flush();
+            }
+            m_dynamicBuffer.erase(fn);
+        }
+    }
+
+    bool createFile(const std::string& fn,
+                    el::base::type::fstream_t* fs,
+                    el::Logger* logger,
+                    const std::string& logLine,
+                    el::Level level)
+    {
+        if (Utils::createPath(el::base::utils::File::extractPathFromFilename(fn).c_str())) {
+            RLOG_IF(logger->id() != RESIDUE_LOGGER_ID, INFO) << "Accessing file...";
+            fs->close();
+            fs->open(fn, std::ios::out);
+            Utils::updateFilePermissions(fn.data(), logger, m_configuration);
+            if (fs->fail() || !fs->is_open()) {
+                RLOG_IF(logger->id() != RESIDUE_LOGGER_ID, INFO)
+                        << "Failed to access file [ " << fn << "]! " << std::strerror(errno);
+
+                addToDynamicBuffer(logger, fn, logLine);
+
+                fs->clear();
+
+                execDispatchErrorExtensions(logger->id(),
+                                            fn,
+                                            logLine,
+                                            el::LevelHelper::castToInt(level),
+                                            errno);
+                return false;
+            }
+        } else {
+            RLOG_IF(logger->id() != RESIDUE_LOGGER_ID, ERROR)
+                    << "Failed to create file [" << fn << "] [Logger: "
+                    << logger->id() << "] " << std::strerror(errno);
+
+            addToDynamicBuffer(logger, fn, logLine);
+
+            execDispatchErrorExtensions(logger->id(),
+                                        fn,
+                                        logLine,
+                                        el::LevelHelper::castToInt(level),
+                                        errno);
+            return false;
+        }
+        return true;
     }
   };
 }

@@ -24,7 +24,7 @@
 using namespace residue;
 
 PostArchiveExtension::PostArchiveExtension(const std::string& id)
-    : Extension(3, id)
+    : Extension(Extension::Type::PostArchive, id)
 {
 
 }

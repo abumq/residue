@@ -63,15 +63,15 @@ void ListLoggingFiles::execute(std::vector<std::string>&& params, std::ostringst
     std::map<std::string, std::set<std::string>> listMap;
 
     if (!loggerId.empty()) {
-        if (!registry()->configuration()->isKnownLoggerForClient(clientId, loggerId)) {
+        if (!registry()->configuration()->isManagedLoggerForClient(clientId, loggerId)) {
             result << "Logger not mapped to client";
             return;
         }
         listMap.insert(std::make_pair(loggerId, std::set<std::string>()));
     } else {
-        if (registry()->configuration()->knownClientsLoggers().find(clientId) !=
-                registry()->configuration()->knownClientsLoggers().end()) {
-            auto setOfLoggerIds = registry()->configuration()->knownClientsLoggers().at(clientId);
+        if (registry()->configuration()->managedClientsLoggers().find(clientId) !=
+                registry()->configuration()->managedClientsLoggers().end()) {
+            auto setOfLoggerIds = registry()->configuration()->managedClientsLoggers().at(clientId);
             for (std::string loggerId : setOfLoggerIds) {
                 listMap.insert(std::make_pair(loggerId, std::set<std::string>()));
             }
@@ -119,7 +119,7 @@ void ListLoggingFiles::execute(std::vector<std::string>&& params, std::ostringst
 }
 
 std::string ListLoggingFiles::getFile(const std::string& loggerId, const std::string& levelStr) const {
-    if (!registry()->configuration()->isKnownLogger(loggerId)) {
+    if (!registry()->configuration()->isManagedLogger(loggerId)) {
         return "";
     }
     el::Level level = el::LevelHelper::convertFromString(levelStr.c_str());

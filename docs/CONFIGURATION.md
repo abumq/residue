@@ -21,12 +21,14 @@ You can use [Server Config Tool](https://muflihun.github.io/residue/create-serve
 * [server_rsa_public_key](#server_rsa_public_key)
 * [server_rsa_secret](#server_rsa_secret)
 * [enable_cli](#enable_cli)
+* [enable_dynamic_buffer](#enable_dynamic_buffer)
 * [allow_insecure_connection](#allow_insecure_connection)
-* [allow_unknown_loggers](#allow_unknown_loggers)
-* [allow_unknown_clients](#allow_unknown_clients)
+* [allow_unmanaged_loggers](#allow_unmanaged_loggers)
+* [allow_unmanaged_clients](#allow_unmanaged_clients)
 * [immediate_flush](#immediate_flush)
 * [requires_timestamp](#requires_timestamp)
 * [compression](#compression)
+* [file_mode](#file_mode)
 * [allow_bulk_log_request](#allow_bulk_log_request)
 * [max_items_in_bulk](#max_items_in_bulk)
 * [timestamp_validity](#timestamp_validity)
@@ -37,23 +39,23 @@ You can use [Server Config Tool](https://muflihun.github.io/residue/create-serve
 * [archived_log_directory](#archived_log_directory)
 * [archived_log_filename](#archived_log_filename)
 * [archived_log_compressed_filename](#archived_log_compressed_filename)
-* [known_clients](#known_clients)
-   * [client_id](#known_clientsclient_id)
-   * [public_key](#known_clientspublic_key)
-   * [key_size](#known_clientskey_size)
-   * [loggers](#known_clientsloggers)
-   * [default_logger](#known_clientsdefault_logger)
-   * [user](#known_clientsuser)
-* [known_clients_endpoint](#known_clients_endpoint)
-* [known_loggers](#known_loggers)
-   * [logger_id](#known_loggerslogger_id)
-   * [configuration_file](#known_loggersconfiguration_file)
-   * [rotation_freq](#known_loggersrotation_freq)
-   * [user](#known_loggersuser)
-   * [archived_log_filename](#known_loggersarchived_log_filename)
-   * [archived_log_compressed_filename](#known_loggersarchived_log_compressed_filename)
-   * [archived_log_directory](#known_loggersarchived_log_directory)
-* [known_loggers_endpoint](#known_loggers_endpoint)
+* [managed_clients](#managed_clients)
+   * [client_id](#managed_clientsclient_id)
+   * [public_key](#managed_clientspublic_key)
+   * [key_size](#managed_clientskey_size)
+   * [loggers](#managed_clientsloggers)
+   * [default_logger](#managed_clientsdefault_logger)
+   * [user](#managed_clientsuser)
+* [managed_clients_endpoint](#managed_clients_endpoint)
+* [managed_loggers](#managed_loggers)
+   * [logger_id](#managed_loggerslogger_id)
+   * [configuration_file](#managed_loggersconfiguration_file)
+   * [rotation_freq](#managed_loggersrotation_freq)
+   * [user](#managed_loggersuser)
+   * [archived_log_filename](#managed_loggersarchived_log_filename)
+   * [archived_log_compressed_filename](#managed_loggersarchived_log_compressed_filename)
+   * [archived_log_directory](#managed_loggersarchived_log_directory)
+* [managed_loggers_endpoint](#managed_loggers_endpoint)
 * [extensions](#extensions)
 * [loggers_blacklist](#loggers_blacklist)
 * [Comments](#comments)
@@ -72,15 +74,21 @@ Default: `8776`
 
 Default: `8777`
 
+[Learn more...](/docs/configurations/connect_port.md)
+
 ### `logging_port`
 [Integer] Port that logging server listens to. This is where all the log requests are sent.
 
 Default: `8778`
 
+[Learn more...](/docs/configurations/logging_port.md)
+
 ### `default_key_size`
-[Integer] Default symmetric key size (`128`, `192` or `256`) for clients that do not specify key size. See [`key_size`](#known_clientskey_size)
+[Integer] Default symmetric key size (`128`, `192` or `256`) for clients that do not specify key size. See [`key_size`](#managed_clientskey_size)
 
 Default: `256`
+
+[Learn more...](/docs/configurations/default_key_size.md)
 
 ### `server_key`
 [String] A 256-bit server key that is used for admin services. See [`admin_port`](#admin_port)
@@ -90,41 +98,44 @@ Default: Randomly generated and residue outputs it in start-up
 ### `server_rsa_private_key`
 [Optional, String] RSA private key (PEM format file path). You can use `$RESIDUE_HOME` environment variable in this file path. If provided, it is used to read initial requests for extra security.
 
-Note: You should have big enough key to cover for unknown clients. Remember, unknown clients will need to send their public key in initial request, which makes request quite bigger.
-
-You can use following ripe command to generate the key (this will generate 8192-bit key which can encrypt 1013 bytes to data)
-
-```
-ripe -g --rsa --length 8192 --out-public server-public.pem --out-private server-private.pem
-```
-
-Alternatively, you can use openssl command-line tool.
-
-See [Ripe](https://github.com/muflihun/ripe#readme) for more details.
+[Learn more...](/docs/configurations/server_rsa_private_key.md)
 
 ### `server_rsa_public_key`
 [String] Corresponding public key for [`server_rsa_private_key`](#server_rsa_private_key). You can use `$RESIDUE_HOME` environment variable in this file path.
 
+[Learn more...](/docs/configurations/server_rsa_public_key.md)
+
 ### `server_rsa_secret`
 [String] If private key is encrypted, this is the secret (passphrase) to decrypt it. **THIS SHOULD BE HEX ENCODED**.
+
+[Learn more...](/docs/configurations/server_rsa_secret.md)
 
 ### `enable_cli`
 [Boolean] Whether CLI is enabled on server or not. See [CLI_COMMANDS.md](/docs/CLI_COMMANDS.md) for possible input commands.
 
 Default: `true`
 
+### `enable_dynamic_buffer`
+[Boolean] Dynamic buffer is a feature that allows failed logs (logs that were failed to be written to file) to be clogged up in an internal buffer. Once logs can be written to the file all the logs from this dynamic buffer will be flushed to the file so no logs are lost.
+
+You can turn this feature on or off with this flag.
+
+**NOTE** This is an experimental feature introduced in v2.1.1 and should not be used in production at this point.
+
+Default: `false`
+
 ### `allow_insecure_connection`
 [Boolean] Specifies whether plain connections to the server are allowed or not. Either this should be true or server key pair must be provided (or both)
 
 Default: `true`
 
-### `allow_unknown_loggers`
-[Boolean] Specifies whether loggers other than the ones in [`known_loggers`](#known_loggers) list are allowed or ignored / rejected.
+### `allow_unmanaged_loggers`
+[Boolean] Specifies whether loggers other than the ones in [`managed_loggers`](#managed_loggers) list are allowed or ignored / rejected.
 
 Default: `true`
 
-### `allow_unknown_clients`
-[Boolean] Specifies whether clients other than the ones in [`known_clients`](#known_clients) list are allowed or ignored / rejected.
+### `allow_unmanaged_clients`
+[Boolean] Specifies whether clients other than the ones in [`managed_clients`](#managed_clients) list are allowed or ignored / rejected.
 
 Default: `true`
 
@@ -145,23 +156,14 @@ Default: `true`
 ### `compression`
 [Boolean] Specifies whether compression is enabled or not.
 
-You should note few points:
-
- * If this is enabled client libraries should take advantage of it and send compressed data. However, if it doesn't, request is still processed.
- * Only log requests should be compressed, other requests (connection, touch etc) are sent normally.
- * Outgoing data (from server) is never compressed.
-
-Compression has great affect and can save big data. We recommend you to enable compression in your server. Just to give you little bit of idea, when we run [simple example project](https://github.com/muflihun/residue-cpp/tree/master/samples/detailed-cmake) to log 1246 requests, without compression data transferred was `488669 bytes` and with compression it was `44509 bytes`. Same data transferred has same performance with high reliability.
-
-It always has very good performance when you have [`compression`](#compression) and [`allow_bulk_log_request`](#allow_bulk_log_request) both active. In one of our big test we had following result:
-
- * With compression and bulk (size: 20): `24100423 bytes`
- * Without compression and bulk (size: 20): `327100683 bytes` (more than 92.6% of less-data transferred)
- * Without compression and non-bulk request: `398001463 bytes`
-
-This is because lossless-compression is done on similar bytes. If you wish to know more about compression algorithm see [gzlib algorithm](www.gzip.org/algorithm.txt).
-
 Default: `true`
+
+[Learn more...](/docs/configurations/compression.md)
+
+### `file_mode`
+[Integer] Default file mode for the log files
+
+[Learn more...](/docs/configurations/file_mode.md)
 
 ### `allow_bulk_log_request`
 [Boolean] Specifies whether clients can send bulk log requests or not.
@@ -229,106 +231,75 @@ Turn off delay: `0` (not recommended)
 ### `archived_log_directory`
 [String] Default destination for archived logs files
 
-Possible format specifiers:
-
-|   Format specifier    |   Description   |
-|-----------------------|-----------------|
-| `%original` | Path to original log file |
-| `%logger` | Logger ID |
-| `%hour` | 24-hours zero padded hour (`09`, `13`, `14`, ...) |
-| `%wday` | Day of the week (`sun`, `mon`, ...) |
-| `%day` | Day of month (`1`, `2`, ...) |
-| `%month` | Month name (`jan`, `feb`, ...) |
-| `%quarter` | Month quarter (`Q1`, `Q2`, `Q3`, `Q4`) |
-| `%year` | Year (`2016`, `2017`, `2018`, ...) |
-
 Default: It must be provided by the user
 
-Example: `%original/backups/%logger/`
+[Learn more...](/docs/configurations/archived_log_directory.md)
 
 ### `archived_log_filename`
 [String] Default filename for archived log files.
 
-Possible format specifiers:
-
-|   Format specifier    |   Description   |
-|-----------------------|-----------------|
-| `%logger`| Logger ID |
-| `%min`| Zero padded hour (`09`, `13`, `14`, ...) - the time when log rotator actually ran |
-| `%hour`| 24-hours zero padded hour (`09`, `13`, `14`, ...) |
-| `%wday`| Day of the week (`sun`, `mon`, ...) |
-| `%day`| Day of month (`1`, `2`, ...) |
-| `%month`| Month name (`jan`, `feb`, ...) |
-| `%quarter`| Month quarter (`Q1`, `Q2`, `Q3`, `Q4`) |
-| `%year`| Year (`2017`, ...) |
-| `%level`| log level (`info`, `error`, ...) |
-
 Default: It must be provided by the user
 
-Example: `%level-%hour-%min-%day-%month-%year.log`
+[Learn more...](/docs/configurations/archived_log_filename.md)
 
 ### `archived_log_compressed_filename`
 [String] Filename for compressed archived log files. It should not contain `/` or `\` characters.
 
-Possible format specifiers:
-
-|   Format specifier    |   Description   |
-|-----------------------|-----------------|
-| `%logger` | Logger ID |
-| `%hour` | 24-hours zero padded hour (`09`, `13`, `14`, ...) |
-| `%wday` | Day of the week (`sun`, `mon`, ...) |
-| `%day` | Day of month (`1`, `2`, ...) |
-| `%month` | Month name (`jan`, `feb`, ...) |
-| `%quarter` | Month quarter (`Q1`, `Q2`, `Q3`, `Q4`) |
-| `%year` | Year (`2017`, ...) |
-
 Default: It must be provided by the user
 
-Example: `%hour-%min-%day-%month-%year.tar.gz`
+[Learn more...](/docs/configurations/archived_log_compressed_filename.md)
 
-### `known_clients`
-[Array] Object of client that are known to the server. These clients will have allocated RSA public key that will be used to transfer the symmetric key.
+### `managed_clients`
+[Array] Object of client that are managed to the server. These clients will have allocated RSA public key that will be used to transfer the symmetric key.
 
-#### `known_clients`::`client_id`
-[String] The client ID (should be alpha-numeric and can include `-`, `_`, `@` and `#` symbols)
+[Learn more...](/docs/configurations/managed_clients/#managed_clients)
 
-#### `known_clients`::`public_key`
+#### `managed_clients`::`client_id`
+[String] The client ID (should be alpha-numeric and can include `-`, `_`, `@`, `.` and `#` symbols)
+
+[Learn more...](/docs/configurations/managed_clients/client_id.md)
+
+#### `managed_clients`::`public_key`
 [String] Path to RSA public key file for associated client ID. This key must be present and readable at the time of starting the server.
 
 You can use `$RESIDUE_HOME` environment variable in this file path.
 
-#### `known_clients`::`key_size`
+[Learn more...](/docs/configurations/managed_clients/public_key.md)
+
+#### `managed_clients`::`key_size`
 [Optional, Integer] Integer value of `128`, `192` or `256` to specify key size for this client.
 
 This is useful when client libraries connecting cannot handle bigger sizes, e.g, java clients without JCE Policy Files.
 
 See [`default_key_size`](#default_key_size)
 
-#### `known_clients`::`loggers`
-[Optional, Array] Object of logger IDs that must be present in [`known_loggers`](#known_loggers) array.
+#### `managed_clients`::`loggers`
+[Optional, Array] Object of logger IDs that must be present in [`managed_loggers`](#managed_loggers) array.
 
 This is to map the client with multiple loggers. Remember, client is not validated against the logger using this array, this is only for extra information.
 
-#### `known_clients`::`default_logger`
-[String] Default logger for the client. This is useful when logging using unknown logger but connected as known client. The configurations from this logger is used.
+#### `managed_clients`::`default_logger`
+[String] Default logger for the client. This is useful when logging using unmanaged logger but connected as managed client. The configurations from this logger is used.
 
 Default: `default`
 
-See [`known_clients::loggers`](#known_clientsloggers)
+See [`managed_clients::loggers`](#managed_clientsloggers)
 
-#### `known_clients`::`user`
-[String] Linux / mac user assigned to known clients. All the log files associated to the corresponding loggers will belong to this user with `RW-R-----` permissions
+#### `managed_clients`::`user`
+[String] Linux / macOS user. All the log files associated to the corresponding loggers will belong to this user with `RW-R-----` permissions (subject to `file_mode` config)
 
 Default: Current process user
 
-### `known_clients_endpoint`
-[String] This is URL where we can pull *more* known clients from. The endpoint should return JSON with object [`known_clients`](#known_clients), e.g,
+[Learn more...](/docs/configurations/managed_clients/user.md)
+
+### `managed_clients_endpoint`
+[String] This is URL where we can pull *more* managed clients from. The endpoint should return JSON with object [`managed_clients`](#managed_clients), e.g,
 
 ```
 <?php
 header('Content-Type: application/json');
 $list = array(
-    "known_loggers" => array(
+    "managed_loggers" => array(
         array(
             "logger_id" => "another",
             "configuration_file" => "samples/configurations/blah.conf"
@@ -345,86 +316,48 @@ Endpoint URL is `http://localhost:8000/localConfig.php`
 
 You need to make sure that [`configuration_file`](#configuration_file) exists on the server.
 
-### `known_loggers`
-[Array] Object of loggers that are known to the server. 
+### `managed_loggers`
+[Array] Object of loggers that are managed to the server. 
 
-#### `known_loggers`::`logger_id`
+#### `managed_loggers`::`logger_id`
 [String] The logger ID
 
-#### `known_loggers`::`configuration_file`
+#### `managed_loggers`::`configuration_file`
 [String] Path to [Easylogging++ configuration file](https://github.com/muflihun/easyloggingpp#using-configuration-file). You can use `$RESIDUE_HOME` environment variable in this file path. When the new logger is registered, it's configured using this configuration.
+ 
+[Learn more...](/docs/configurations/managed_loggers/configuration_file.md)
 
-Residue supports following [custom format specifiers](https://github.com/muflihun/easyloggingpp#custom-format-specifiers):
-
-| Format Specifier | Description |
-| ---------------- | ----------- |
-| `%client_id`     | Print client ID with specified log format / level |
-| `%ip`     | IP address of the request |
-| `%session_id`     | Current session ID |
-| `%vnamelevel`     | Verbose level name (instead of number) |
-
-Verbose level names are:
-
-| Verbose Level | Name |
-| ---------------- | ----------- |
-| 9 | `vCRAZY` |
-| 8 | `vTRACE` |
-| 7 | `vDEBUG2` |
-| 6 | `vDEBUG` |
-| 5 | `vDETAILS` |
-| 4 | `vERROR` |
-| 3 | `vWARNING` |
-| 2 | `vNOTICE` |
-| 1 | `vINFO` |
-
-##### Configuration Errors
-***
-
-You're not allowed to use following configurations in your configuration file as residue handles these configurations differently and ignore your configurations. Residue will not start until these configuration lines are removed. This is so that user does not expect anything from these configuration items.
-
- * `Max_Log_File_Size`
- * `To_Standard_Output`
- * `Log_Flush_Threshold`
-
-#### `known_loggers`::`rotation_freq`
+#### `managed_loggers`::`rotation_freq`
 [String] One of [`never`, `hourly`, `six_hours`, `twelve_hours`, `daily`, `weekly`, `monthly`, `yearly`] to specify rotation frequency for corresponding log files. This is rotated regardless of file size.
-
-Log rotation rounds off to the nearest denominator. To get better understanding of this round off, consider following table.
-
-|   Frequency        |       Next Schedule                                      |
-|--------------------|----------------------------------------------------------|
-| `hourly`           | Last second of hour i.e, `<hour>:59:59`                  |
-| `six_hours`        | Every 6 hours i.e, at `06:00`, `12:00`, `18:00`, `00:00` |
-| `twelve_hours`     | Every 12 hours, i.e, at `12:00`, `00:00`                 |
-| `daily`            | Last second of the day i.e, `23:59:59`                   |
-| `weekly`           | Each sunday at `23:59:59`                                |
-| `monthly`          | Last day of each month at `23:59:59`                     |
-| `yearly`           | Last day of the each year at `23:59:59`                  |
 
 Default: `never`
 
-#### `known_loggers`::`user`
-[String] Linux / mac user assigned to known logger. All the log files associated to the corresponding logger will belong to this user with `RW-R-----` permissions
+[Learn more...](/docs/configurations/managed_loggers/rotation_freq.md)
+
+#### `managed_loggers`::`user`
+[String] Linux / mac user assigned to managed logger. All the log files associated to the corresponding logger will belong to this user with `RW-R-----` permissions (subject to `file_mode`)
 
 Default: Current process user
 
-#### `known_loggers`::`archived_log_filename`
+[Learn more...](/docs/configurations/managed_clients/user.md)
+
+#### `managed_loggers`::`archived_log_filename`
 [String] Filename for rotated or archived log file
 
 See [archived_log_filename](#archived_log_filename)
 
-#### `known_loggers`::`archived_log_compressed_filename`
+#### `managed_loggers`::`archived_log_compressed_filename`
 [String] Filename for rotated or archived log file in compressed form (ideally ending with `.tar.gz`)
 
 See [archived_log_compressed_filename](#archived_log_compressed_filename)
 
-#### `known_loggers`::`archived_log_directory`
+#### `managed_loggers`::`archived_log_directory`
 [String] Overrides default [`archived_log_directory`](#archived_log_directory) to logger specific directory.
 
 See [archived_log_directory](#archived_log_directory)
 
-### `known_loggers_endpoint`
-[String] This is URL same as [`known_clients_endpoint`](#known_clients_endpoint) with JSON object containing same properties as [`known_loggers`](#known_loggers)
+### `managed_loggers_endpoint`
+[String] This is URL same as [`managed_clients_endpoint`](#managed_clients_endpoint) with JSON object containing same properties as [`managed_loggers`](#managed_loggers)
 
 ### `extensions`
 [Array] Contains various types of extensions. You can specify each type of extension's array shared library modules.
@@ -449,7 +382,7 @@ Because Residue configuration is in JSON format, comments are not supported as t
     "archived_log_filename": "%hour-%min-%day-%month-%year.log",
     "comment", "another comment",
     "archived_log_compressed_filename": "%hour-%min-%day-%month-%year.tar.gz",
-    "known_clients": [
+    "managed_clients": [
 ...
 ```
 
@@ -465,7 +398,7 @@ Please note, this is not preferred way as parsing may get slower with increasing
     "archived_log_filename": "%hour-%min-%day-%month-%year.log",
     // another comment
     "archived_log_compressed_filename": "%hour-%min-%day-%month-%year.tar.gz",
-    "known_clients": [
+    "managed_clients": [
 ...
 ```
 

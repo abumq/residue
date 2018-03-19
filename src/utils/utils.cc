@@ -171,6 +171,7 @@ long Utils::fileSize(const char* filename)
 
 void Utils::updateFilePermissions(const char* path, const el::Logger* logger, const Configuration* conf)
 {
+    std::string id = (logger == nullptr ? "NULL" : logger->id());
     chmod(path, conf->fileMode());
 
     // find owner for file
@@ -178,20 +179,20 @@ void Utils::updateFilePermissions(const char* path, const el::Logger* logger, co
     if (!fileUser.empty()) {
         struct passwd* userDetails = getpwnam(fileUser.data());
         if (userDetails == nullptr) {
-            RLOG(ERROR) << "User [" << fileUser << "] does not exist. Unable to change ownership for " << path;
+            RLOG_IF(id != RESIDUE_LOGGER_ID, ERROR) << "User [" << fileUser << "] does not exist. Unable to change ownership for " << path;
             endpwent();
             return;
         } else {
-            RVLOG(RV_INFO) << "Changing ownership for [" << path << "] to [" << fileUser << "]";
+            RVLOG_IF(id != RESIDUE_LOGGER_ID, RV_INFO) << "Changing ownership for [" << path << "] to [" << fileUser << "]";
         }
         uid_t userId = userDetails->pw_uid;
         gid_t groupId = userDetails->pw_gid;
         endpwent();
         if (chown(path, userId, groupId) == -1) {
-            RLOG(ERROR) << "Failed to change ownership for " << path << ". Error: " << strerror(errno);
+            RLOG_IF(id != RESIDUE_LOGGER_ID, ERROR) << "Failed to change ownership for " << path << ". Error: " << std::strerror(errno);
         }
     } else {
-        RVLOG(RV_INFO) << "No config user found for [" << path << "]; logger ["
+        RVLOG_IF(id != RESIDUE_LOGGER_ID, RV_INFO) << "No config user found for [" << path << "]; logger ["
                        << (logger == nullptr ? "NULL" : logger->id()) << "]";
     }
 }
@@ -210,13 +211,13 @@ std::string Utils::generateRandomFromArray(const char* list,
     return s;
 }
 
-std::string Utils::resolveResidueHomeEnvVar(std::string& str)
+std::string Utils::resolveResidueHomeEnvVar(std::string& str, const std::string& overrideEnvVar)
 {
     auto pos = str.find_first_of("$RESIDUE_HOME");
     if (pos != std::string::npos) {
-        std::string val = el::base::utils::OS::getEnvironmentVariable("RESIDUE_HOME",
-                                                                      "",
-                                                                      "echo $RESIDUE_HOME");
+        std::string val = overrideEnvVar.empty() ?
+                    el::base::utils::OS::getEnvironmentVariable("RESIDUE_HOME", "", "echo $RESIDUE_HOME") :
+                    overrideEnvVar;
         if (val.empty()) {
             RLOG(WARNING) << "Environment variable RESIDUE_HOME not set";
         } else {

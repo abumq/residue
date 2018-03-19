@@ -5,6 +5,9 @@
 # Overview
 
 Following diagram is very high-level picture of how residue works.
+
+**PLEASE NOTE** Tokens are not applicable anymore. Token server was removed in v2.0.0
+
 ![overview]
 
 Following diagram shows on what happens in "Send Log" section in above diagram.
