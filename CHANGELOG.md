@@ -1,10 +1,6 @@
 # Change Log
 
-## [Unreleased]
-### Fixes
-- Do not clear failbit on failure
-
-## [2.1.1] - 19-03-2018
+## [2.2.1] - 19-03-2018
 ### Extensions API
 - Added `LogExtension::Level` enum for readability of `LogExtension::Data::level`
 - Added new extension `DispatchErrorExtension`
