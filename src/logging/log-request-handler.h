@@ -54,6 +54,8 @@ public:
     virtual void handle(RawRequest&&);
 private:
     std::unordered_map<std::string, std::unique_ptr<ClientQueueProcessor>> m_queueProcessor;
+
+    friend class Stats;
 };
 }
 #endif /* LogRequestHandler_h */

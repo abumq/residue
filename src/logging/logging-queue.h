@@ -47,22 +47,22 @@ public:
 
     RawRequest pull();
 
-    inline bool empty()
+    inline bool empty() const
     {
         return m_dispatchQueue->empty();
     }
 
-    inline std::size_t size()
+    inline std::size_t size() const
     {
         return m_dispatchQueue->size();
     }
 
-    inline bool backlogEmpty()
+    inline bool backlogEmpty() const
     {
         return m_backlogQueue->empty();
     }
 
-    inline bool backlogSize()
+    inline std::size_t backlogSize() const
     {
         return m_backlogQueue->size();
     }

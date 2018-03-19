@@ -138,7 +138,7 @@ private:
     std::unordered_map<std::string, FailedLogs> m_dynamicBuffer;
     std::recursive_mutex m_dynamicBufferLock;
 
-    friend class Clients;
+    friend class Stats;
 
     void execLogExtensions(const el::LogDispatchData* data,
                            const el::base::type::string_t& logLine,

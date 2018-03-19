@@ -81,6 +81,8 @@ private:
     std::thread m_worker;
     JsonDoc m_jsonDocForBulk;
 
+    friend class Stats;
+
     ////
     /// \brief Dispatches the request using custom user message
     ///

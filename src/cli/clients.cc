@@ -23,7 +23,6 @@
 
 #include "core/configuration.h"
 #include "core/registry.h"
-#include "logging/residue-log-dispatcher.h"
 #include "tasks/client-integrity-task.h"
 #include "utils/utils.h"
 
@@ -53,23 +52,6 @@ void Clients::execute(std::vector<std::string>&& params, std::ostringstream& res
         if (ignoreConfirmation || getConfirmation("This will run client integrity task and clean the expired clients")) {
             registry()->clientIntegrityTask()->kickOff();
             result << "\nFinished client integrity task" << std::endl;
-        }
-    } else if (hasParam(params, "checkdyn")) {
-        // check dynamic buffer
-        ResidueLogDispatcher* dispatcher = el::Helpers::logDispatchCallback<ResidueLogDispatcher>("ResidueLogDispatcher");
-        if (dispatcher != nullptr) {
-            if (dispatcher->m_dynamicBuffer.empty()) {
-                result << "Dynamic buffer is empty";
-            } else {
-                result << "Dynamic buffer information:\n";
-                for (auto& pair : dispatcher->m_dynamicBuffer) {
-                    result << "Logger: " << pair.second.logger->id() << "\t";
-                    result << "Filename: " << pair.first << "\t";
-                    result << "Items: " << pair.second.lines.size() << "\n";
-                }
-            }
-        } else {
-            result << "Could not extract dispatcher";
         }
     }
 }

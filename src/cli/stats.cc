@@ -23,6 +23,8 @@
 
 #include "core/client.h"
 #include "core/registry.h"
+#include "logging/log-request-handler.h"
+#include "logging/residue-log-dispatcher.h"
 #include "utils/utils.h"
 
 using namespace residue;
@@ -72,5 +74,36 @@ void Stats::execute(std::vector<std::string>&& params, std::ostringstream& resul
             result << ": " << registry()->activeSessions().size() << std::endl;
         }
         result << tmpR.str();
+    } else if (hasParam(params, "dyn")) {
+        // check dynamic buffer
+        ResidueLogDispatcher* dispatcher = el::Helpers::logDispatchCallback<ResidueLogDispatcher>("ResidueLogDispatcher");
+        if (dispatcher != nullptr) {
+            if (dispatcher->m_dynamicBuffer.empty()) {
+                result << "Dynamic buffer is empty";
+            } else {
+                result << "Dynamic buffer information:\n";
+                for (auto& pair : dispatcher->m_dynamicBuffer) {
+                    result << "Logger: " << pair.second.logger->id() << "\t";
+                    result << "Filename: " << pair.first << "\t";
+                    result << "Items: " << pair.second.lines.size() << "\n";
+                }
+            }
+        } else {
+            result << "Could not extract dispatcher";
+        }
+    } else if (hasParam(params, "queue")) {
+        std::string clientId = getParamValue(params, "--client-id");
+        if (clientId.empty()) {
+            result << "ERR: Client ID not specified";
+        } else {
+            auto pos = registry()->logRequestHandler()->m_queueProcessor.find(clientId);
+            if (pos == registry()->logRequestHandler()->m_queueProcessor.end()) {
+                result << "ERR: Client not registered in processor";
+            } else {
+                const ClientQueueProcessor* processor = registry()->logRequestHandler()->m_queueProcessor.at(clientId).get();
+                result << "Processing Queue: " << processor->m_queue.size() << "\t";
+                result << "Backlog:          " << processor->m_queue.backlogSize() << "\n";
+            }
+        }
     }
 }
