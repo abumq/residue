@@ -237,8 +237,9 @@ private:
                 // close/open again
                 fs->close();
                 fs->open(fn, std::ios::out | std::ios::app);
-
-                *fs << "=== [residue] ==> " << list->size() << " log" << (list->size() > 1 ? "s" : "") << " from dynamic buffer ===\n";
+                auto size = list->size();
+                auto dynamicBufferClearStart = std::chrono::high_resolution_clock::now();
+                *fs << "=== [residue] ==> " << size << " log" << (size > 1 ? "s" : "") << " from dynamic buffer ===\n";
                 for (auto& line : *list) {
                     // process all items
                     fs->write(line.c_str(), line.size());
@@ -248,7 +249,11 @@ private:
 
                     }
                 }
-                *fs << "=== [residue] ==> dynamic buffer cleared ===\n";
+                auto dynamicBufferClearEnd = std::chrono::high_resolution_clock::now();
+                *fs << "=== [residue] ==> dynamic buffer cleared (" << size << " log"
+                    << (size > 1 ? "s" : "") << " written in "
+                    << std::chrono::duration_cast<std::chrono::milliseconds>(dynamicBufferClearEnd - dynamicBufferClearStart).count()
+                    << " ms) ===\n";
                 fs->flush();
             }
             m_dynamicBuffer.erase(fn);
