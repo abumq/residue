@@ -71,8 +71,30 @@ Only check the schedule for this logger rotation
 ### `stats`
 Displays server stats and number of active sessions
 
-##### `list`
+#### `list`
 Lists for active sessions (received, sent and how long session has been active for and associated clients if registered)
+
+#### `dyn`
+List dynamic buffer status
+
+#### `queue`
+List processing queue status
+
+You can also run sampling on the queue by providing `sampling`. Thread will be stalled for the amount of seconds value you provide (valid value from 3 to 10)
+
+For example
+
+```
+stats queue sampling 6 --client-id unmanaged
+```
+
+It will list the speed of each queue, e.g,
+
+```
+Queue For: unmanaged     Active:  8376 Backlog:  7442 Speed:  5 items/s (incl. bulk)
+```
+
+Sampling is done only on a non-empty _active_ queue
 
 ##### `--client-id <client-id>`
 Filters stats for specified client. Some of the clients may not be listed as they're only registered when server receives anything from them.
