@@ -68,11 +68,23 @@
        result = std::chrono::duration_cast<std::chrono::milliseconds>( id##2 - id##1 ).count();
 #   define RESIDUE_PROFILE_CHECKPOINT(id, result, idx) std::chrono::high_resolution_clock::time_point id##3##idx = std::chrono::high_resolution_clock::now();\
        result = std::chrono::duration_cast<std::chrono::milliseconds>( id##3##idx - id##1 ).count();\
-       std::cout << idx << " checkpoint at " << result << " ms\n";
+       RLOG(DEBUG) << #id << idx << " checkpoint at " << result << " ms";
+#   define RESIDUE_PROFILE_CHECKPOINT_NS(id, result, idx) std::chrono::high_resolution_clock::time_point id##3##idx = std::chrono::high_resolution_clock::now();\
+       result = std::chrono::duration_cast<std::chrono::nanoseconds>( id##3##idx - id##1 ).count();\
+       RLOG(DEBUG) << #id << "_" << idx << " checkpoint at " << result << " nans";
+#   define RESIDUE_PROFILE_CHECKPOINT_MIS(id, result, idx) std::chrono::high_resolution_clock::time_point id##3##idx = std::chrono::high_resolution_clock::now();\
+       result = std::chrono::duration_cast<std::chrono::microseconds>( id##3##idx - id##1 ).count();\
+       RLOG(DEBUG) << #id << "_" << idx << " checkpoint at " << result << " mis";
 #else
 #   define RESIDUE_PROFILE_START(id)
 #   define RESIDUE_PROFILE_END(id, result)
 #   define RESIDUE_PROFILE_CHECKPOINT(id, result, idx)
+#   define RESIDUE_PROFILE_CHECKPOINT_MIS(id, result, idx)
+#   define RESIDUE_PROFILE_CHECKPOINT_NS(id, result, idx)
 #endif // RESIDUE_PROFILING
+
+#if defined(RESIDUE_DEV) && defined(RESIDUE_PROFILING)
+#define RESIDUE_HIGH_RESOLUTION_PROFILING
+#endif
 
 #endif // LOG_H
