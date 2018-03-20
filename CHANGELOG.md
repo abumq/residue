@@ -4,6 +4,9 @@
 ### Core Updates
 - Added `stats dyn` and `stats queue`
 
+### Core Fixes
+- Dynamic buffer recovery check fix
+
 ## [2.2.1] - 19-03-2018
 ### Extensions API
 - Added `LogExtension::Level` enum for readability of `LogExtension::Data::level`
