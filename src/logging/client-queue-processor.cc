@@ -111,14 +111,14 @@ void ClientQueueProcessor::processRequestQueue()
         // get another reference to shared pointer for session
         std::shared_ptr<Session> session = rawRequest.session;
 #ifdef RESIDUE_HIGH_RESOLUTION_PROFILING
-        RESIDUE_PROFILE_CHECKPOINT_MIS(t_process_item, m_timeTakenByItem, 1);
+        RESIDUE_PROFILE_CHECKPOINT_MIS(t_process_item, m_timeTakenByItem, 1, 1);
 #endif
 
         RequestHandler::handle(std::move(rawRequest), &request, Request::StatusCode::BAD_REQUEST,
                                false, false, compressionEnabled);
 
 #ifdef RESIDUE_HIGH_RESOLUTION_PROFILING
-        RESIDUE_PROFILE_CHECKPOINT_MIS(t_process_item, m_timeTakenByItem, 2);
+        RESIDUE_PROFILE_CHECKPOINT_MIS(t_process_item, m_timeTakenByItem, 2, 1);
 #endif
 
         if ((!request.isValid() && !request.isBulk())
@@ -159,7 +159,7 @@ void ClientQueueProcessor::processRequestQueue()
 
                     requestItem.deserialize(std::move(requestItemStr));
 #ifdef RESIDUE_HIGH_RESOLUTION_PROFILING
-                    RESIDUE_PROFILE_CHECKPOINT_MIS(t_process_bulk_item, m_timeTakenByBulkItem, 1);
+                    RESIDUE_PROFILE_CHECKPOINT_MIS(t_process_bulk_item, m_timeTakenByBulkItem, 1, 1);
 #endif
 
                     if (requestItem.isValid()) {
@@ -181,7 +181,7 @@ void ClientQueueProcessor::processRequestQueue()
                         RLOG(ERROR) << "Invalid request in bulk.";
                     }
 #ifdef RESIDUE_HIGH_RESOLUTION_PROFILING
-                    RESIDUE_PROFILE_CHECKPOINT_MIS(t_process_bulk_item, m_timeTakenByBulkItem, 2);
+                    RESIDUE_PROFILE_CHECKPOINT_MIS(t_process_bulk_item, m_timeTakenByBulkItem, 2, 1);
 #endif
                 }
             } else {
@@ -263,7 +263,7 @@ bool ClientQueueProcessor::processRequest(LogRequest* request, Client** clientRe
     }
 
 #ifdef RESIDUE_HIGH_RESOLUTION_PROFILING
-    RESIDUE_PROFILE_CHECKPOINT_NS(t_process_request, m_timeTakenProcessRequest, 1);
+    RESIDUE_PROFILE_CHECKPOINT_NS(t_process_request, m_timeTakenProcessRequest, 1, 1);
 #endif
 
     if (!bypassChecks && !client->isAlive(request->dateReceived())) {
@@ -281,7 +281,7 @@ bool ClientQueueProcessor::processRequest(LogRequest* request, Client** clientRe
     }
 
 #ifdef RESIDUE_HIGH_RESOLUTION_PROFILING
-    RESIDUE_PROFILE_CHECKPOINT_NS(t_process_request, m_timeTakenProcessRequest, 2);
+    RESIDUE_PROFILE_CHECKPOINT_NS(t_process_request, m_timeTakenProcessRequest, 2, 1);
 #endif
 
     if (!bypassChecks && client->isManaged()) {
@@ -304,13 +304,13 @@ bool ClientQueueProcessor::processRequest(LogRequest* request, Client** clientRe
             return false;
         }
 #ifdef RESIDUE_HIGH_RESOLUTION_PROFILING
-        RESIDUE_PROFILE_CHECKPOINT_NS(t_process_request, m_timeTakenProcessRequest, 3);
+        RESIDUE_PROFILE_CHECKPOINT_NS(t_process_request, m_timeTakenProcessRequest, 3, 2);
 #endif
 
         dispatch(request);
 
 #ifdef RESIDUE_HIGH_RESOLUTION_PROFILING
-        RESIDUE_PROFILE_CHECKPOINT_NS(t_process_request, m_timeTakenProcessRequest, 4);
+        RESIDUE_PROFILE_CHECKPOINT_NS(t_process_request, m_timeTakenProcessRequest, 4, 3);
 #endif
         return true;
     }

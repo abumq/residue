@@ -80,9 +80,9 @@ void Session::read()
             std::istream is(&m_streamBuffer);
             std::string buffer((std::istreambuf_iterator<char>(is)), std::istreambuf_iterator<char>());
             buffer.erase(numOfBytes - Session::PACKET_DELIMITER_SIZE);
-            //RESIDUE_PROFILE_CHECKPOINT(t_read, m_timeTaken, 1);
+            //RESIDUE_PROFILE_CHECKPOINT(t_read, m_timeTaken, 1, 1);
             sendToHandler(std::move(buffer));
-            //RESIDUE_PROFILE_CHECKPOINT(t_read, m_timeTaken, 2);
+            //RESIDUE_PROFILE_CHECKPOINT(t_read, m_timeTaken, 2, 1);
             if (m_requestHandler->registry()->configuration()->hasFlag(Configuration::ENABLE_CLI)) {
 #ifdef RESIDUE_DEV
                 DRVLOG(RV_TRACE) << "Adding bytes";
