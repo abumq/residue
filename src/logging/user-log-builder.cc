@@ -47,9 +47,7 @@ el::base::type::string_t UserLogBuilder::build(const el::LogMessage* msg,
     char buff[el::base::consts::kSourceFilenameMaxLength + el::base::consts::kSourceLineMaxLength] = "";
     const char* bufLim = buff + sizeof(buff);
 
-#ifdef RESIDUE_HIGH_RESOLUTION_PROFILING
-    RESIDUE_PROFILE_CHECKPOINT_NS(t_log_builder, m_timeTakenLogBuilder, 1, 1);
-#endif
+    RESIDUE_HIGH_PROFILE_CHECKPOINT_NS(t_log_builder, m_timeTakenLogBuilder, 1, 1);
     if (logFormat->hasFlag(el::base::FormatFlags::AppName)) {
         // App name
         el::base::utils::Str::replaceFirstWithEscape(logLine, el::base::consts::kAppNameFormatSpecifier,
@@ -108,9 +106,7 @@ el::base::type::string_t UserLogBuilder::build(const el::LogMessage* msg,
         el::base::utils::Str::replaceFirstWithEscape(logLine, el::base::consts::kMessageFormatSpecifier, logMessage->request()->msg());
     }
 
-#ifdef RESIDUE_HIGH_RESOLUTION_PROFILING
-    RESIDUE_PROFILE_CHECKPOINT_NS(t_log_builder, m_timeTakenLogBuilder, 2, 1);
-#endif
+    RESIDUE_HIGH_PROFILE_CHECKPOINT_NS(t_log_builder, m_timeTakenLogBuilder, 2, 1);
 
     el::base::utils::Str::replaceFirstWithEscape(logLine, "%client_id", logMessage->request()->clientId());
     el::base::utils::Str::replaceFirstWithEscape(logLine, "%ip", logMessage->request()->ipAddr());
@@ -124,10 +120,9 @@ el::base::type::string_t UserLogBuilder::build(const el::LogMessage* msg,
     }
 #endif  // !defined(ELPP_DISABLE_CUSTOM_FORMAT_SPECIFIERS)
 
-    if (appendNewLine) logLine += ELPP_LITERAL("\n");
-
-#ifdef RESIDUE_HIGH_RESOLUTION_PROFILING
-    RESIDUE_PROFILE_CHECKPOINT_NS(t_log_builder, m_timeTakenLogBuilder, 3, 2);
-#endif
+    if (appendNewLine) {
+        logLine += ELPP_LITERAL("\n");
+    }
+    RESIDUE_HIGH_PROFILE_CHECKPOINT_NS(t_log_builder, m_timeTakenLogBuilder, 3, 2);
     return logLine;
 }

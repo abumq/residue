@@ -110,16 +110,13 @@ void ClientQueueProcessor::processRequestQueue()
 
         // get another reference to shared pointer for session
         std::shared_ptr<Session> session = rawRequest.session;
-#ifdef RESIDUE_HIGH_RESOLUTION_PROFILING
-        RESIDUE_PROFILE_CHECKPOINT_MIS(t_process_item, m_timeTakenByItem, 1, 1);
-#endif
+
+        RESIDUE_HIGH_PROFILE_CHECKPOINT_MIS(t_process_item, m_timeTakenByItem, 1, 1);
 
         RequestHandler::handle(std::move(rawRequest), &request, Request::StatusCode::BAD_REQUEST,
                                false, false, compressionEnabled);
 
-#ifdef RESIDUE_HIGH_RESOLUTION_PROFILING
-        RESIDUE_PROFILE_CHECKPOINT_MIS(t_process_item, m_timeTakenByItem, 2, 1);
-#endif
+        RESIDUE_HIGH_PROFILE_CHECKPOINT_MIS(t_process_item, m_timeTakenByItem, 2, 1);
 
         if ((!request.isValid() && !request.isBulk())
                 || request.statusCode() != Request::StatusCode::OK) {
@@ -158,9 +155,8 @@ void ClientQueueProcessor::processRequestQueue()
                     requestItem.setDateReceived(request.dateReceived());
 
                     requestItem.deserialize(std::move(requestItemStr));
-#ifdef RESIDUE_HIGH_RESOLUTION_PROFILING
-                    RESIDUE_PROFILE_CHECKPOINT_MIS(t_process_bulk_item, m_timeTakenByBulkItem, 1, 1);
-#endif
+
+                    RESIDUE_HIGH_PROFILE_CHECKPOINT_MIS(t_process_bulk_item, m_timeTakenByBulkItem, 1, 1);
 
                     if (requestItem.isValid()) {
                         requestItem.setIpAddr(request.ipAddr());
@@ -180,9 +176,7 @@ void ClientQueueProcessor::processRequestQueue()
                     } else {
                         RLOG(ERROR) << "Invalid request in bulk.";
                     }
-#ifdef RESIDUE_HIGH_RESOLUTION_PROFILING
-                    RESIDUE_PROFILE_CHECKPOINT_MIS(t_process_bulk_item, m_timeTakenByBulkItem, 2, 1);
-#endif
+                    RESIDUE_HIGH_PROFILE_CHECKPOINT_MIS(t_process_bulk_item, m_timeTakenByBulkItem, 2, 1);
                 }
             } else {
                 RLOG(ERROR) << "Bulk requests are not allowed";
@@ -262,9 +256,7 @@ bool ClientQueueProcessor::processRequest(LogRequest* request, Client** clientRe
         return false;
     }
 
-#ifdef RESIDUE_HIGH_RESOLUTION_PROFILING
-    RESIDUE_PROFILE_CHECKPOINT_NS(t_process_request, m_timeTakenProcessRequest, 1, 1);
-#endif
+    RESIDUE_HIGH_PROFILE_CHECKPOINT_NS(t_process_request, m_timeTakenProcessRequest, 1, 1);
 
     if (!bypassChecks && !client->isAlive(request->dateReceived())) {
         RLOG(ERROR) << "Invalid request. Client is dead";
@@ -280,9 +272,7 @@ bool ClientQueueProcessor::processRequest(LogRequest* request, Client** clientRe
         session->setClient(client);
     }
 
-#ifdef RESIDUE_HIGH_RESOLUTION_PROFILING
-    RESIDUE_PROFILE_CHECKPOINT_NS(t_process_request, m_timeTakenProcessRequest, 2, 1);
-#endif
+    RESIDUE_HIGH_PROFILE_CHECKPOINT_NS(t_process_request, m_timeTakenProcessRequest, 2, 1);
 
     if (!bypassChecks && client->isManaged()) {
         // take this opportunity to update the user for unmanaged logger
@@ -303,15 +293,11 @@ bool ClientQueueProcessor::processRequest(LogRequest* request, Client** clientRe
             RLOG(WARNING) << "Ignoring log from unauthorized logger [" << request->loggerId() << "]";
             return false;
         }
-#ifdef RESIDUE_HIGH_RESOLUTION_PROFILING
-        RESIDUE_PROFILE_CHECKPOINT_NS(t_process_request, m_timeTakenProcessRequest, 3, 2);
-#endif
+        RESIDUE_HIGH_PROFILE_CHECKPOINT_NS(t_process_request, m_timeTakenProcessRequest, 3, 2);
 
         dispatch(request);
 
-#ifdef RESIDUE_HIGH_RESOLUTION_PROFILING
-        RESIDUE_PROFILE_CHECKPOINT_NS(t_process_request, m_timeTakenProcessRequest, 4, 3);
-#endif
+        RESIDUE_HIGH_PROFILE_CHECKPOINT_NS(t_process_request, m_timeTakenProcessRequest, 4, 3);
         return true;
     }
     return false;

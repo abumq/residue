@@ -67,8 +67,9 @@ void Session::read()
     net::async_read_until(m_socket, m_streamBuffer, Session::PACKET_DELIMITER,
                                   [&, this, self](residue::error_code ec, std::size_t numOfBytes) {
 
-#ifdef RESIDUE_PROFILING
+#ifdef RESIDUE_HIGH_RESOLUTION_PROFILING
         //types::Time m_timeTaken;
+        //RESIDUE_PROFILE_START(t_read);
 #endif
         if (!ec) {
             RESIDUE_PROFILE_START(t_read);
@@ -80,9 +81,9 @@ void Session::read()
             std::istream is(&m_streamBuffer);
             std::string buffer((std::istreambuf_iterator<char>(is)), std::istreambuf_iterator<char>());
             buffer.erase(numOfBytes - Session::PACKET_DELIMITER_SIZE);
-            //RESIDUE_PROFILE_CHECKPOINT(t_read, m_timeTaken, 1, 1);
+            //RESIDUE_HIGH_PROFILE_CHECKPOINT(t_read, m_timeTaken, 1, 1);
             sendToHandler(std::move(buffer));
-            //RESIDUE_PROFILE_CHECKPOINT(t_read, m_timeTaken, 2, 1);
+            //RESIDUE_HIGH_PROFILE_CHECKPOINT(t_read, m_timeTaken, 2, 1);
             if (m_requestHandler->registry()->configuration()->hasFlag(Configuration::ENABLE_CLI)) {
 #ifdef RESIDUE_DEV
                 DRVLOG(RV_TRACE) << "Adding bytes";

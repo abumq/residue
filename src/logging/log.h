@@ -77,13 +77,20 @@
 #else
 #   define RESIDUE_PROFILE_START(id)
 #   define RESIDUE_PROFILE_END(id, result)
-#   define RESIDUE_PROFILE_CHECKPOINT(id, result, idx, previdx)
-#   define RESIDUE_PROFILE_CHECKPOINT_MIS(id, result, idx, previdx)
-#   define RESIDUE_PROFILE_CHECKPOINT_NS(id, result, idx, previdx)
+#   define RESIDUE_PROFILE_CHECKPOINT(id, result, idx, refidx)
+#   define RESIDUE_PROFILE_CHECKPOINT_MIS(id, result, idx, refidx)
+#   define RESIDUE_PROFILE_CHECKPOINT_NS(id, result, idx, refidx)
 #endif // RESIDUE_PROFILING
 
 #if defined(RESIDUE_DEV) && defined(RESIDUE_PROFILING)
 #define RESIDUE_HIGH_RESOLUTION_PROFILING
+#   define RESIDUE_HIGH_PROFILE_CHECKPOINT(id, result, idx, refidx) RESIDUE_PROFILE_CHECKPOINT(id, result, idx, refidx)
+#   define RESIDUE_HIGH_PROFILE_CHECKPOINT_NS(id, result, idx, refidx) RESIDUE_PROFILE_CHECKPOINT_NS(id, result, idx, refidx)
+#   define RESIDUE_HIGH_PROFILE_CHECKPOINT_MIS(id, result, idx, refidx) RESIDUE_PROFILE_CHECKPOINT_MIS(id, result, idx, refidx)
+#else
+#   define RESIDUE_HIGH_PROFILE_CHECKPOINT(id, result, idx, refidx)
+#   define RESIDUE_HIGH_PROFILE_CHECKPOINT_NS(id, result, idx, refidx)
+#   define RESIDUE_HIGH_PROFILE_CHECKPOINT_MIS(id, result, idx, refidx)
 #endif
 
 #endif // LOG_H
