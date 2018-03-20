@@ -40,6 +40,8 @@ Some of the notable features are listed below
  * Encryption: All the incoming and outgoing data is automatically encrypted. Residue also has several layers and techniques to secure the requests and to prevent unauthorised application from logging without compromising the speed.
  * Compression: Residue server and official client libraries provide ability to compress the network packets which makes a big difference in amount of data transferred over the wire.
  * Speed is not compromised in any way and there is a lot of testing being done every day to ensure that logging server meets the speed requirements.
+ * Dynamic buffers allow logs to be queued up in the memory while there is some I/O error (e.g, disk full) and cleared as soon as disk errors are fixed
+ * Residue extensions allow certain code to be executed in case of specific events (e.g, log dispatch failure) - see [Extensions API](/docs/CONFIGURATION.md#extensions)
  * Reliability: We are actively working on making the server much more reliable from restarting from the crash to handling bad traffic.
  * Residue comes with various [tools](https://github.com/topics/residue-tools) for devops and [client libraries](https://github.com/topics/residue-client) for easy integration.
  * There are many more features available. Please feel free to download your copy of residue binary and give it a try.
