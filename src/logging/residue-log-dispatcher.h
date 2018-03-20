@@ -106,6 +106,19 @@ public:
                                                     logLine,
                                                     el::LevelHelper::castToInt(level),
                                                     errno);
+                        if (logger->id() != RESIDUE_LOGGER_ID) {
+                            // recovery check for dynamic buffer
+                            std::ofstream oftmp(fn.c_str(), std::ios::out | std::ios::app);
+                            if (oftmp.is_open()) {
+                                oftmp << "=== [residue] ==> dynamic buffer recovery check ===\n";
+                                oftmp.flush();
+                                if (!oftmp.fail()) {
+                                    fs->clear();
+                                    RLOG_IF(logger->id() != RESIDUE_LOGGER_ID, INFO) << "Dynamic buffer recovery check passed for [" << fn << "]";
+                                }
+                                oftmp.close();
+                            }
+                        }
                     } else {
                         if (ELPP->hasFlag(el::LoggingFlag::ImmediateFlush) || (logger->isFlushNeeded(level))) {
                             logger->flush(level, fs);
