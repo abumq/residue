@@ -1,12 +1,15 @@
 # Change Log
 
 ## [Unreleased]
-### Core Updates
+### Updates
 - Added `stats dyn` and `stats queue`
 - Backup keys only visible with `--with-key` parameter
 
-### Core Fixes
+### Fixes
 - Dynamic buffer recovery check fix
+
+### Core Updates
+- Abstract server and I/O service
 
 ## [2.2.1] - 19-03-2018
 ### Extensions API

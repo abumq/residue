@@ -33,7 +33,6 @@
 #include <unordered_map>
 #include <utility>
 
-#include "net/asio.h"
 #include "ripe/Ripe.h"
 
 #include "admin/admin-request-handler.h"
@@ -243,30 +242,27 @@ int main(int argc, char* argv[])
         // admin server
         threads.push_back(std::thread([&]() {
             el::Helpers::setThreadName("AdminHandler");
-            net::io_service io_service;
             AdminRequestHandler newAdminRequestHandler(&registry, &commandHandler);
-            Server svr(io_service, config.adminPort(), &newAdminRequestHandler);
-            io_service.run();
+            Server svr(config.adminPort(), &newAdminRequestHandler);
+            svr.start();
         }));
 
         // connect server
         threads.push_back(std::thread([&]() {
             el::Helpers::setThreadName("ConnectionHandler");
-            net::io_service io_service;
             ConnectionRequestHandler newConnectionRequestHandler(&registry);
-            Server svr(io_service, config.connectPort(), &newConnectionRequestHandler);
-            io_service.run();
+            Server svr(config.connectPort(), &newConnectionRequestHandler);
+            svr.start();
         }));
 
         // log server
         threads.push_back(std::thread([&]() {
             el::Helpers::setThreadName("LogHandler");
-            net::io_service io_service;
             LogRequestHandler logRequestHandler(&registry);
             logRequestHandler.start(); // Start handling incoming requests
             registry.setLogRequestHandler(&logRequestHandler);
-            Server svr(io_service, config.loggingPort(), &logRequestHandler);
-            io_service.run();
+            Server svr(config.loggingPort(), &logRequestHandler);
+            svr.start();
         }));
 
         // client integrity task

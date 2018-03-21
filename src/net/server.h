@@ -38,11 +38,15 @@ class RequestHandler;
 class Server final : NonCopyable
 {
 public:
-    Server(net::io_service& io_service, int port, RequestHandler* requestHandler);
+    Server(int port, RequestHandler* requestHandler);
     ~Server();
+
+    void start();
+
 private:
     void accept();
 
+    net::io_service m_ioService;
     tcp::acceptor m_acceptor;
     tcp::socket m_socket;
 
