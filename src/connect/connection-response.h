@@ -57,6 +57,7 @@ private:
     int m_loggingPort;
     std::string m_key;
     std::string m_clientId;
+    std::string m_clientToken;
     unsigned int m_clientAge;
     types::Time m_clientDateCreated;
     bool m_isAcknowledged;

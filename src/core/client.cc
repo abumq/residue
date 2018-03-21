@@ -44,6 +44,7 @@ Client::Client(const ConnectionRequest* request):
 {
     m_key = AES::generateKey(request->keySize());
     resetDateCreated();
+    m_token = AES::generateKey(128);
 }
 
 Client::~Client()

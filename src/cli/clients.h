@@ -39,7 +39,7 @@ public:
     virtual void execute(std::vector<std::string>&&, std::ostringstream&, bool) const override;
 
 private:
-    void list(std::ostringstream&, bool withKey) const;
+    void list(std::ostringstream&, const std::vector<std::string>*) const;
 };
 }
 

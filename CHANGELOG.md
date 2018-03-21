@@ -3,6 +3,7 @@
 ## [Unreleased]
 ### Core Updates
 - Added `stats dyn` and `stats queue`
+- Backup keys only visible with `--with-key` parameter
 
 ### Core Fixes
 - Dynamic buffer recovery check fix

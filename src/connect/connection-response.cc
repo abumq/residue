@@ -35,6 +35,7 @@ ConnectionResponse::ConnectionResponse(const Client* client, const Configuration
     m_loggingPort(0),
     m_key(client->key()),
     m_clientId(client->id()),
+    m_clientToken(client->token()),
     m_clientAge(client->age()),
     m_clientDateCreated(client->dateCreated()),
     m_isAcknowledged(client->acknowledged())
@@ -77,18 +78,21 @@ void ConnectionResponse::serialize(std::string& output) const
         doc.addValue("flags", static_cast<std::size_t>(m_configuration->flag()))
            .addValue("max_bulk_size", static_cast<std::size_t>(m_configuration->maxItemsInBulk()))
            .startObject("server_info")
-               .addValue("version", ss.str().c_str())
+               .addValue("version", ss.str())
            .endObject();
     }
 
     if (!m_errorText.empty()) {
-        doc.addValue("error_text", m_errorText.c_str());
+        doc.addValue("error_text", m_errorText);
     }
     if (!m_key.empty()) {
         doc.addValue("key", m_key.c_str());
     }
     if (!m_clientId.empty()) {
-        doc.addValue("client_id", m_clientId.c_str());
+        doc.addValue("client_id", m_clientId);
+    }
+    if (!m_clientToken.empty()) {
+        doc.addValue("token", m_clientToken);
     }
     if (m_loggingPort != 0) {
         doc.addValue("logging_port", m_loggingPort);

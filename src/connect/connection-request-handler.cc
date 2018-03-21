@@ -135,6 +135,7 @@ void ConnectionRequestHandler::connect(ConnectionRequest* request, const std::sh
         // To reduce size of the data
         clonedClient.setAge(0);
         clonedClient.setDateCreated(0);
+        clonedClient.removeToken();
         ConnectionResponse response(&clonedClient);
         std::string output;
         response.serialize(output);
