@@ -10,6 +10,7 @@
 
 ### Core Updates
 - Abstract server and I/O service
+- Use `shared_from_this` to keep reference count in the handler
 
 ## [2.2.1] - 19-03-2018
 ### Extensions API

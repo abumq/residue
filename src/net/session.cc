@@ -167,6 +167,7 @@ void Session::write(const std::string& s)
 void Session::write(const char* data,
                     std::size_t length)
 {
+    auto self(shared_from_this());
     if (m_requestHandler->registry()->configuration()->hasFlag(Configuration::ENABLE_CLI)) {
         Utils::bigAdd(m_bytesSent, std::to_string(length));
         m_requestHandler->registry()->addBytesSent(length);
@@ -176,7 +177,8 @@ void Session::write(const char* data,
     DRVLOG(RV_DEBUG_2) << "Sending " << data;
 #endif
     net::async_write(m_socket, net::buffer(data, length),
-                     [&, this](residue::error_code ec, std::size_t) {
+                     [&, this, self](residue::error_code ec, std::size_t) {
+        // for 'self' - see https://www.youtube.com/watch?v=D-lTwGJRx0o?t=40m
         if (ec) {
 #ifdef RESIDUE_DEBUG
             DRVLOG(RV_DEBUG) << "Failed to send. " << ec.message();
