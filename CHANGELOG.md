@@ -1,6 +1,9 @@
 # Change Log
 
 ## [Unreleased]
+### Extensions API
+- Added `reset` in `DispatchErrorExtension` which is called when previously failed is no longer failing
+
 ### Updates
 - Added `stats dyn` and `stats queue`
 - Backup keys only visible with `--with-key` parameter

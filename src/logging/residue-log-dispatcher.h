@@ -126,6 +126,10 @@ public:
                         successfullyWritten = true;
 
                         dispatchDynamicBuffer(fn, fs, logger);
+
+                        if (m_previouslyFailed) {
+                            resetErrorExtensions(); // this resets m_previouslyFailed as well
+                        }
                     }
                 } else {
                     RLOG_IF(logger->id() != RESIDUE_LOGGER_ID, ERROR)
@@ -150,6 +154,7 @@ private:
     // map of filename -> FailedLogs
     std::unordered_map<std::string, FailedLogs> m_dynamicBuffer;
     std::recursive_mutex m_dynamicBufferLock;
+    std::atomic<bool> m_previouslyFailed;
 
     friend class Stats;
 
@@ -201,6 +206,18 @@ private:
         for (auto& ext : m_configuration->dispatchErrorExtensions()) {
             ext->trigger(&d);
         }
+        m_previouslyFailed = true;
+    }
+
+    void resetErrorExtensions()
+    {
+        if (m_configuration->dispatchErrorExtensions().empty()) {
+            return;
+        }
+        for (auto& ext : m_configuration->dispatchErrorExtensions()) {
+            static_cast<DispatchErrorExtension*>(ext)->reset();
+        }
+        m_previouslyFailed = false;
     }
 
     void addToDynamicBuffer(el::Logger* logger, const std::string& filename, const std::string& logLine)
