@@ -4,6 +4,7 @@
 ### Updates
 - Added `stats dyn` and `stats queue`
 - Backup keys only visible with `--with-key` parameter
+- Max bulk items can be set to 5-500
 
 ### Fixes
 - Dynamic buffer recovery check fix
