@@ -127,7 +127,7 @@ public:
 
                         dispatchDynamicBuffer(fn, fs, logger);
 
-                        if (m_previouslyFailed) {
+                        if (m_previouslyFailed && logger->id() != RESIDUE_LOGGER_ID) {
                             resetErrorExtensions(); // this resets m_previouslyFailed as well
                         }
                     }
@@ -193,7 +193,8 @@ private:
                                      unsigned int level,
                                      int errorNo)
     {
-        if (m_configuration->dispatchErrorExtensions().empty()) {
+        if (m_configuration->dispatchErrorExtensions().empty()
+                || loggerId == RESIDUE_LOGGER_ID) {
             return;
         }
         DispatchErrorExtension::Data d {
