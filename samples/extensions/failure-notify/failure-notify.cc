@@ -38,7 +38,7 @@ void FailureNotify::notifyRecipients(const DispatchErrorExtension::Data* const d
             JsonDoc recipient(recipientNode);
             std::string email = recipient.as<std::string>("");
             writeLog("Notifying " + email);
-            ss << conf().getString("script", "send.sh") << " '" <<  std::strerror(data->errorNumber) << "' '" << data->filename << "' " << email;
+            ss << conf().get<std::string>("script", "send.sh") << " '" <<  std::strerror(data->errorNumber) << "' '" << data->filename << "' " << email;
             system(ss.str().c_str());
         }
     }
