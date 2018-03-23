@@ -113,7 +113,7 @@ public:
 
     static types::Time nowUtc();
 
-    static std::string formatTime(types::Time time, const char* format = "%h:%m:%s");
+    static std::string formatTime(types::Time time, const char* format = "%H:%m:%s");
 
     static std::tm timeToTm(types::Time epochInSec);
 
