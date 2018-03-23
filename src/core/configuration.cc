@@ -274,8 +274,8 @@ void Configuration::loadFromInput(std::string&& jsonStr)
         m_dispatchDelay = 1;
     }
     m_maxItemsInBulk = m_jsonDoc.get<unsigned int>("max_items_in_bulk", 5);
-    if (m_maxItemsInBulk <= 1 || m_maxItemsInBulk >= 100) {
-        errorStream << "  Invalid value for [max_items_in_bulk]. Please choose between 2-100" << std::endl;
+    if (m_maxItemsInBulk < 5 || m_maxItemsInBulk > 500) {
+        errorStream << "  Invalid value for [max_items_in_bulk]. Please choose between 5-500" << std::endl;
     }
 
 

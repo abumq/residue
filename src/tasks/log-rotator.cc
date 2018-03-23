@@ -296,9 +296,11 @@ void LogRotator::rotate(const std::string& loggerId)
             if (doneList.find(fn) != doneList.end()) {
                 return;
             }
-            fs->close();
-            fs->open(fn, std::fstream::out | std::fstream::trunc);
-            Utils::updateFilePermissions(fn.data(), logger, m_registry->configuration());
+            if (fs && fs->is_open() && !fs->fail()) {
+                fs->close();
+                fs->open(fn, std::fstream::out | std::fstream::trunc);
+                Utils::updateFilePermissions(fn.data(), logger, m_registry->configuration());
+            }
             doneList.insert(fn);
         };
 

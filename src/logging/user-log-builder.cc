@@ -29,6 +29,11 @@ using namespace residue;
 el::base::type::string_t UserLogBuilder::build(const el::LogMessage* msg,
                                                bool appendNewLine) const
 {
+
+#ifdef RESIDUE_HIGH_RESOLUTION_PROFILING
+   types::Time m_timeTakenLogBuilder;
+   RESIDUE_PROFILE_START(t_log_builder);
+#endif
     const UserMessage* logMessage = static_cast<const UserMessage*>(msg);
     el::base::TypedConfigurations* tc = logMessage->logger()->typedConfigurations();
     if (tc == nullptr || logMessage->request() == nullptr) {
@@ -36,11 +41,13 @@ el::base::type::string_t UserLogBuilder::build(const el::LogMessage* msg,
         std::cout << "Unexpectedly NULL request!, msg => [" << logMessage->message() << "]" << std::endl;
         return "";
     }
+
     const el::base::LogFormat* logFormat = &(tc->logFormat(logMessage->request()->level()));
     el::base::type::string_t logLine = logFormat->format();
     char buff[el::base::consts::kSourceFilenameMaxLength + el::base::consts::kSourceLineMaxLength] = "";
     const char* bufLim = buff + sizeof(buff);
 
+    RESIDUE_HIGH_PROFILE_CHECKPOINT_NS(t_log_builder, m_timeTakenLogBuilder, 1, 1);
     if (logFormat->hasFlag(el::base::FormatFlags::AppName)) {
         // App name
         el::base::utils::Str::replaceFirstWithEscape(logLine, el::base::consts::kAppNameFormatSpecifier,
@@ -99,6 +106,8 @@ el::base::type::string_t UserLogBuilder::build(const el::LogMessage* msg,
         el::base::utils::Str::replaceFirstWithEscape(logLine, el::base::consts::kMessageFormatSpecifier, logMessage->request()->msg());
     }
 
+    RESIDUE_HIGH_PROFILE_CHECKPOINT_NS(t_log_builder, m_timeTakenLogBuilder, 2, 1);
+
     el::base::utils::Str::replaceFirstWithEscape(logLine, "%client_id", logMessage->request()->clientId());
     el::base::utils::Str::replaceFirstWithEscape(logLine, "%ip", logMessage->request()->ipAddr());
     el::base::utils::Str::replaceFirstWithEscape(logLine, "%session_id", logMessage->request()->sessionId());
@@ -110,6 +119,10 @@ el::base::type::string_t UserLogBuilder::build(const el::LogMessage* msg,
         el::base::utils::Str::replaceFirstWithEscape(logLine, wcsFormatSpecifier, std::string(cfs.resolver()(logMessage)));
     }
 #endif  // !defined(ELPP_DISABLE_CUSTOM_FORMAT_SPECIFIERS)
-    if (appendNewLine) logLine += ELPP_LITERAL("\n");
+
+    if (appendNewLine) {
+        logLine += ELPP_LITERAL("\n");
+    }
+    RESIDUE_HIGH_PROFILE_CHECKPOINT_NS(t_log_builder, m_timeTakenLogBuilder, 3, 2);
     return logLine;
 }

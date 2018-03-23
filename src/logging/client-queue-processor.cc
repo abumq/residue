@@ -88,8 +88,15 @@ void ClientQueueProcessor::processRequestQueue()
 #endif
         m_registry->clientIntegrityTask()->pauseClient(m_clientId);
     }
-
+#ifdef RESIDUE_DEBUG
+    DRVLOG_IF(total > 0, RV_CRAZY) << "Items: " << total;
+#endif
     for (std::size_t i = 0; i < total; ++i) {
+
+#ifdef RESIDUE_HIGH_RESOLUTION_PROFILING
+   types::Time m_timeTakenByItem;
+   RESIDUE_PROFILE_START(t_process_item);
+#endif
 
         if (m_registry->configuration()->dispatchDelay() > 0) {
             std::this_thread::sleep_for(std::chrono::milliseconds(m_registry->configuration()->dispatchDelay()));
@@ -104,8 +111,12 @@ void ClientQueueProcessor::processRequestQueue()
         // get another reference to shared pointer for session
         std::shared_ptr<Session> session = rawRequest.session;
 
+        RESIDUE_HIGH_PROFILE_CHECKPOINT_MIS(t_process_item, m_timeTakenByItem, 1, 1);
+
         RequestHandler::handle(std::move(rawRequest), &request, Request::StatusCode::BAD_REQUEST,
                                false, false, compressionEnabled);
+
+        RESIDUE_HIGH_PROFILE_CHECKPOINT_MIS(t_process_item, m_timeTakenByItem, 2, 1);
 
         if ((!request.isValid() && !request.isBulk())
                 || request.statusCode() != Request::StatusCode::OK) {
@@ -126,6 +137,12 @@ void ClientQueueProcessor::processRequestQueue()
                 DRVLOG(RV_DEBUG) << "Request client: " << request.client();
  #endif
                 for (const auto& js : request.jsonObject()) {
+
+#ifdef RESIDUE_HIGH_RESOLUTION_PROFILING
+   types::Time m_timeTakenByBulkItem;
+   RESIDUE_PROFILE_START(t_process_bulk_item);
+#endif
+
                     if (itemCount == maxItemsInBulk) {
                         RLOG(ERROR) << "Maximum number of bulk requests reached. Ignoring the rest of items in bulk";
                         break;
@@ -138,6 +155,9 @@ void ClientQueueProcessor::processRequestQueue()
                     requestItem.setDateReceived(request.dateReceived());
 
                     requestItem.deserialize(std::move(requestItemStr));
+
+                    RESIDUE_HIGH_PROFILE_CHECKPOINT_MIS(t_process_bulk_item, m_timeTakenByBulkItem, 1, 1);
+
                     if (requestItem.isValid()) {
                         requestItem.setIpAddr(request.ipAddr());
                         requestItem.setSessionId(request.sessionId());
@@ -156,6 +176,7 @@ void ClientQueueProcessor::processRequestQueue()
                     } else {
                         RLOG(ERROR) << "Invalid request in bulk.";
                     }
+                    RESIDUE_HIGH_PROFILE_CHECKPOINT_MIS(t_process_bulk_item, m_timeTakenByBulkItem, 2, 1);
                 }
             } else {
                 RLOG(ERROR) << "Bulk requests are not allowed";
@@ -204,8 +225,12 @@ void ClientQueueProcessor::processRequestQueue()
     float timeTakenInSec = static_cast<float>(m_timeTaken / 1000.0f);
     RLOG_IF(total > 0, DEBUG) << "Took " << timeTakenInSec << "s to process the queue of "
                                    << total << " items (" << totalRequests << " requests). Average: "
-                                   << (static_cast<float>(m_timeTaken) / static_cast<float>(total)) << "ms/item ["
-                                   << (static_cast<float>(m_timeTaken) / static_cast<float>(totalRequests)) << "ms/request]";
+                                   << (static_cast<float>(m_timeTaken) / static_cast<float>(total)) << "ms/item ≈ "
+                                   << (timeTakenInSec > 0 ? std::ceil(static_cast<float>(total) / timeTakenInSec) : -1) << " items/s "
+                                   << "[" << (static_cast<float>(m_timeTaken) / static_cast<float>(totalRequests)) << "ms/req"
+                                   << " ≈ " << (timeTakenInSec > 0 ? std::ceil(static_cast<float>(totalRequests) / timeTakenInSec) : -1)
+                                   << " req/s"
+                                   << "]";
  #endif
 
     m_queue.switchContext();
@@ -213,6 +238,11 @@ void ClientQueueProcessor::processRequestQueue()
 
 bool ClientQueueProcessor::processRequest(LogRequest* request, Client** clientRef, bool forceCheck, Session *session)
 {
+#ifdef RESIDUE_HIGH_RESOLUTION_PROFILING
+   types::Time m_timeTakenProcessRequest;
+   RESIDUE_PROFILE_START(t_process_request);
+#endif
+
     bool bypassChecks = !forceCheck && clientRef != nullptr && *clientRef != nullptr;
  #ifdef RESIDUE_DEV
     DRVLOG(RV_DEBUG_2) << "Force check: " << forceCheck << ", clientRef: " << clientRef << ", *clientRef: "
@@ -225,6 +255,8 @@ bool ClientQueueProcessor::processRequest(LogRequest* request, Client** clientRe
         RVLOG(RV_ERROR) << "Invalid request. No client found [" << request->clientId() << "]";
         return false;
     }
+
+    RESIDUE_HIGH_PROFILE_CHECKPOINT_NS(t_process_request, m_timeTakenProcessRequest, 1, 1);
 
     if (!bypassChecks && !client->isAlive(request->dateReceived())) {
         RLOG(ERROR) << "Invalid request. Client is dead";
@@ -239,6 +271,8 @@ bool ClientQueueProcessor::processRequest(LogRequest* request, Client** clientRe
         DRVLOG(RV_DEBUG) << "Updating session client";
         session->setClient(client);
     }
+
+    RESIDUE_HIGH_PROFILE_CHECKPOINT_NS(t_process_request, m_timeTakenProcessRequest, 2, 1);
 
     if (!bypassChecks && client->isManaged()) {
         // take this opportunity to update the user for unmanaged logger
@@ -259,7 +293,11 @@ bool ClientQueueProcessor::processRequest(LogRequest* request, Client** clientRe
             RLOG(WARNING) << "Ignoring log from unauthorized logger [" << request->loggerId() << "]";
             return false;
         }
+        RESIDUE_HIGH_PROFILE_CHECKPOINT_NS(t_process_request, m_timeTakenProcessRequest, 3, 2);
+
         dispatch(request);
+
+        RESIDUE_HIGH_PROFILE_CHECKPOINT_NS(t_process_request, m_timeTakenProcessRequest, 4, 3);
         return true;
     }
     return false;

@@ -23,7 +23,6 @@
 
 #include "core/configuration.h"
 #include "core/registry.h"
-#include "logging/residue-log-dispatcher.h"
 #include "tasks/client-integrity-task.h"
 #include "utils/utils.h"
 
@@ -31,8 +30,8 @@ using namespace residue;
 
 Clients::Clients(Registry* registry) :
     Command("clients",
-            "List, add or remove clients from the server configuration",
-            "clients [list] [clean]",
+            "List clients available on the server (dead or alive)",
+            "clients [list] [clean] [--with-key] [--with-token]",
             registry)
 {
 }
@@ -43,7 +42,7 @@ void Clients::execute(std::vector<std::string>&& params, std::ostringstream& res
         result << "Clients: " << registry()->clients().size() << std::endl;
     }
     if (hasParam(params, "list")) {
-        list(result, hasParam(params, "--with-key"));
+        list(result, &params);
     } else if (hasParam(params, "clean")) {
         if (registry()->clientIntegrityTask()->isExecuting()) {
             result << "\nAlready running, please try again later" << std::endl;;
@@ -54,27 +53,10 @@ void Clients::execute(std::vector<std::string>&& params, std::ostringstream& res
             registry()->clientIntegrityTask()->kickOff();
             result << "\nFinished client integrity task" << std::endl;
         }
-    } else if (hasParam(params, "checkdyn")) {
-        // check dynamic buffer
-        ResidueLogDispatcher* dispatcher = el::Helpers::logDispatchCallback<ResidueLogDispatcher>("ResidueLogDispatcher");
-        if (dispatcher != nullptr) {
-            if (dispatcher->m_dynamicBuffer.empty()) {
-                result << "Dynamic buffer is empty";
-            } else {
-                result << "Dynamic buffer information:\n";
-                for (auto& pair : dispatcher->m_dynamicBuffer) {
-                    result << "Logger: " << pair.second.logger->id() << "\t";
-                    result << "Filename: " << pair.first << "\t";
-                    result << "Items: " << pair.second.lines.size() << "\n";
-                }
-            }
-        } else {
-            result << "Could not extract dispatcher";
-        }
     }
 }
 
-void Clients::list(std::ostringstream& result, bool withKey) const
+void Clients::list(std::ostringstream& result, const std::vector<std::string>* paramsPtr) const
 {
     int i = 1;
     for (auto& c : registry()->clients()) {
@@ -83,11 +65,15 @@ void Clients::list(std::ostringstream& result, bool withKey) const
                << ", Age: " << (Utils::now() - c.second.dateCreated()) << "s"
                << ", Status: "
                << (!c.second.isAlive() ? "DEAD" : "ALIVE " + std::to_string(c.second.age() - (Utils::now() - c.second.dateCreated())) + "s");
-        if (withKey) {
-            result << ", Key: " << c.second.key();
+        if (hasParam(*paramsPtr, "--with-token")) {
+            result << ", Token: " << c.second.token();
         }
-        if (!c.second.backupKey().empty()) {
-            result << ", Backup Key: " << c.second.backupKey();
+        if (hasParam(*paramsPtr, "--with-key")) {
+            result << ", Key: " << c.second.key();
+
+            if (!c.second.backupKey().empty()) {
+                result << ", Backup Key: " << c.second.backupKey();
+            }
         }
         result << std::endl;
     }

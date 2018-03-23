@@ -14,11 +14,16 @@ Extension::Result FailureNotify::execute(const DispatchErrorExtension::Data* con
         return {1, true};
     }
 
+    if (!(conf().get<bool>("repeat", true)) && m_sent) {
+        return {0, true};
+    }
+
     m_failureCount++;
 
     if (m_failureCount >= conf().get<unsigned long>("threshold", 200UL)) {
         notifyRecipients(data);
         m_failureCount = 0UL;
+        m_sent = true;
     }
 
     return {0, true};
@@ -33,11 +38,14 @@ void FailureNotify::notifyRecipients(const DispatchErrorExtension::Data* const d
             JsonDoc recipient(recipientNode);
             std::string email = recipient.as<std::string>("");
             writeLog("Notifying " + email);
-            
-            ss << "echo 'Residue dispatch error " 
-               << std::strerror(data->errorNumber) << ". File: " 
-               << data->filename << "' | mail -s 'residue err' " << email;
+            ss << conf().get<std::string>("script", "send.sh") << " '" <<  std::strerror(data->errorNumber) << "' '" << data->filename << "' " << email;
             system(ss.str().c_str());
         }
     }
+}
+
+void FailureNotify::reset()
+{
+    m_failureCount = 0;
+    m_sent = false;
 }

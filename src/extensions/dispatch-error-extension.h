@@ -81,6 +81,11 @@ public:
     ///
     virtual Extension::Result execute(const Data* const data) = 0;
 
+    ///
+    /// \brief Called when previously failed is no longer failing
+    ///
+    virtual void reset() {}
+
 private:
     virtual Extension::Result executeWrapper(void* d) override;
 };

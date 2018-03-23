@@ -11,8 +11,8 @@ option (use_boost "Use boost or standalone networking lib" OFF)
 option (old_toolchain "Is old toolchain" OFF)
 
 set (RESIDUE_MAJOR "2")
-set (RESIDUE_MINOR "2")
-set (RESIDUE_PATCH "1")
+set (RESIDUE_MINOR "3")
+set (RESIDUE_PATCH "0")
 set (RESIDUE_VERSION "${RESIDUE_MAJOR}.${RESIDUE_MINOR}.${RESIDUE_PATCH}")
 set (RESIDUE_NAME "Residue")
 

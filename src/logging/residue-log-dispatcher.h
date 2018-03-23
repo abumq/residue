@@ -106,6 +106,19 @@ public:
                                                     logLine,
                                                     el::LevelHelper::castToInt(level),
                                                     errno);
+                        if (logger->id() != RESIDUE_LOGGER_ID) {
+                            // recovery check for dynamic buffer
+                            std::ofstream oftmp(fn.c_str(), std::ios::out | std::ios::app);
+                            if (oftmp.is_open()) {
+                                oftmp << "=== [residue] ==> dynamic buffer recovery check ===\n";
+                                oftmp.flush();
+                                if (!oftmp.fail()) {
+                                    fs->clear();
+                                    RLOG_IF(logger->id() != RESIDUE_LOGGER_ID, INFO) << "Dynamic buffer recovery check passed for [" << fn << "]";
+                                }
+                                oftmp.close();
+                            }
+                        }
                     } else {
                         if (ELPP->hasFlag(el::LoggingFlag::ImmediateFlush) || (logger->isFlushNeeded(level))) {
                             logger->flush(level, fs);
@@ -113,6 +126,10 @@ public:
                         successfullyWritten = true;
 
                         dispatchDynamicBuffer(fn, fs, logger);
+
+                        if (m_previouslyFailed && logger->id() != RESIDUE_LOGGER_ID) {
+                            resetErrorExtensions(); // this resets m_previouslyFailed as well
+                        }
                     }
                 } else {
                     RLOG_IF(logger->id() != RESIDUE_LOGGER_ID, ERROR)
@@ -137,8 +154,9 @@ private:
     // map of filename -> FailedLogs
     std::unordered_map<std::string, FailedLogs> m_dynamicBuffer;
     std::recursive_mutex m_dynamicBufferLock;
+    std::atomic<bool> m_previouslyFailed;
 
-    friend class Clients;
+    friend class Stats;
 
     void execLogExtensions(const el::LogDispatchData* data,
                            const el::base::type::string_t& logLine,
@@ -175,7 +193,8 @@ private:
                                      unsigned int level,
                                      int errorNo)
     {
-        if (m_configuration->dispatchErrorExtensions().empty()) {
+        if (m_configuration->dispatchErrorExtensions().empty()
+                || loggerId == RESIDUE_LOGGER_ID) {
             return;
         }
         DispatchErrorExtension::Data d {
@@ -188,6 +207,18 @@ private:
         for (auto& ext : m_configuration->dispatchErrorExtensions()) {
             ext->trigger(&d);
         }
+        m_previouslyFailed = true;
+    }
+
+    void resetErrorExtensions()
+    {
+        if (m_configuration->dispatchErrorExtensions().empty()) {
+            return;
+        }
+        for (auto& ext : m_configuration->dispatchErrorExtensions()) {
+            static_cast<DispatchErrorExtension*>(ext)->reset();
+        }
+        m_previouslyFailed = false;
     }
 
     void addToDynamicBuffer(el::Logger* logger, const std::string& filename, const std::string& logLine)
@@ -224,8 +255,9 @@ private:
                 // close/open again
                 fs->close();
                 fs->open(fn, std::ios::out | std::ios::app);
-
-                *fs << "=== [residue] ==> " << list->size() << " log" << (list->size() > 1 ? "s" : "") << " from dynamic buffer ===\n";
+                auto size = list->size();
+                auto dynamicBufferClearStart = std::chrono::high_resolution_clock::now();
+                *fs << "=== [residue] ==> " << size << " log" << (size > 1 ? "s" : "") << " from dynamic buffer ===\n";
                 for (auto& line : *list) {
                     // process all items
                     fs->write(line.c_str(), line.size());
@@ -235,7 +267,11 @@ private:
 
                     }
                 }
-                *fs << "=== [residue] ==> dynamic buffer cleared ===\n";
+                auto dynamicBufferClearEnd = std::chrono::high_resolution_clock::now();
+                *fs << "=== [residue] ==> dynamic buffer cleared (" << size << " log"
+                    << (size > 1 ? "s" : "") << " written in "
+                    << std::chrono::duration_cast<std::chrono::milliseconds>(dynamicBufferClearEnd - dynamicBufferClearStart).count()
+                    << " ms) ===\n";
                 fs->flush();
             }
             m_dynamicBuffer.erase(fn);

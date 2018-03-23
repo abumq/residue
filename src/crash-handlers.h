@@ -23,6 +23,9 @@
 #define CrashHandlers_h
 
 #include "logging/log.h"
+#include "utils/utils.h"
+
+using namespace residue;
 
 static bool s_exitOnInterrupt = false;
 
@@ -39,6 +42,7 @@ void interruptHandler(int)
 void generalTerminateHandler(int sig, bool showMsg)
 {
     if (showMsg) {
+        std::cerr << Utils::formatTime(Utils::now(), "%d/%M/%Y %h:%m:%s") << " ";
         std::cerr << "Application abnormally terminated." << std::endl;
         std::cerr << "Please report it to us on https://github.com/muflihun/residue/issues/ " << std::endl;
     }

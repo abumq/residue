@@ -35,12 +35,12 @@ class Registry;
 ///
 /// \brief Single client object known to the server
 ///
-class Client
+class Client final
 {
 public:
     explicit Client(const ConnectionRequest* request);
 
-    virtual ~Client();
+    ~Client();
 
     inline bool operator==(const std::string& id) const
     {
@@ -55,6 +55,16 @@ public:
     inline const std::string& id() const
     {
         return m_id;
+    }
+
+    inline const std::string& token() const
+    {
+        return m_token;
+    }
+
+    inline void removeToken()
+    {
+        m_token = "";
     }
 
     inline bool acknowledged() const
@@ -151,6 +161,8 @@ private:
     std::string m_rsaPublicKey;
     std::string m_key;
     int m_keySize;
+
+    std::string m_token;
 
     bool m_acknowledged;
     bool m_isManaged;

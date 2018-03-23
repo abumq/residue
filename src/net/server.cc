@@ -33,9 +33,9 @@
 using namespace residue;
 using net::ip::tcp;
 
-Server::Server(net::io_service& io_service, int port, RequestHandler* requestHandler) :
-    m_acceptor(io_service, tcp::endpoint(tcp::v4(), port)),
-    m_socket(io_service),
+Server::Server(int port, RequestHandler* requestHandler) :
+    m_acceptor(m_ioService, tcp::endpoint(tcp::v4(), port)),
+    m_socket(m_ioService),
     m_requestHandler(requestHandler)
 {
     accept();
@@ -56,4 +56,9 @@ void Server::accept()
         }
         accept();
     });
+}
+
+void Server::start()
+{
+    m_ioService.run();
 }

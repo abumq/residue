@@ -36,7 +36,7 @@
         },
         {
             "client_id": "muflihun00102031",
-            "public_key": "$RESIDUE_HOME/samples/keys/encrypted-pubkey.pem",
+            "public_key": "$RESIDUE_HOME/samples/keys/epub.pem",
             "loggers": ["residue"]
         }
     ],
@@ -48,7 +48,8 @@
         },
         {
             "logger_id": "default",
-            "configuration_file": "$RESIDUE_HOME/samples/configurations/default-Logger.conf"
+            "configuration_file": "$RESIDUE_HOME/samples/configurations/default-Logger.conf",
+            "rotation_freq": "hourly"
         },
         {
             "logger_id": "sample-app",

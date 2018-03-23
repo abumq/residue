@@ -1,5 +1,22 @@
 # Change Log
 
+## [2.3.0] - 24-03-2018
+### Extensions API
+- Added `reset` in `DispatchErrorExtension` which is called when previously failed is no longer failing
+
+### Updates
+- Added `stats dyn` and `stats queue`
+- Backup keys only visible with `--with-key` parameter
+- Max bulk items can be set to 5-500
+
+### Fixes
+- Dynamic buffer recovery check fix
+- Crash when rotating an invalid file
+
+### Internal Updates
+- Abstract server and I/O service
+- Use shared pointer to keep reference for the session in the handler
+
 ## [2.2.1] - 19-03-2018
 ### Extensions API
 - Added `LogExtension::Level` enum for readability of `LogExtension::Data::level`
