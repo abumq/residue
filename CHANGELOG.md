@@ -11,6 +11,7 @@
 
 ### Fixes
 - Dynamic buffer recovery check fix
+- Crash when rotating an invalid file
 
 ### Internal Updates
 - Abstract server and I/O service
