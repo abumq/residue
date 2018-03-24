@@ -124,7 +124,7 @@ public:
                                                std::size_t size,
                                                unsigned int length);
 
-    static std::string resolveResidueHomeEnvVar(std::string& str, const std::string& overrideEnvVar = "");
+    static std::string& resolveResidueHomeEnvVar(std::string& str, const std::string& overrideEnvVar = "");
 };
 }
 #endif /* Utils_h */
