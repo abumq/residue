@@ -1,5 +1,9 @@
 # Change Log
 
+## [Unreleased]
+### Updates
+- `RESIDUE_HOME` env variable resolves to nothing if not set instead of leaving it in-place
+
 ## [2.3.0] - 24-03-2018
 ### Extensions API
 - Added `reset` in `DispatchErrorExtension` which is called when previously failed is no longer failing
