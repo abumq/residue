@@ -1,6 +1,6 @@
 {
   "name": "residue-linux",
-  "version": "2.3.0-1",
+  "version": "2.3.1",
   "description": "Residue server daemon (Linux)",
   "homepage": "https://github.com/muflihun/residue",
   "author": "Muflihun Labs <info@muflihun.com>",
@@ -13,7 +13,7 @@
   "files": [
      "residued",
      "config",
-     "libresidue-extension.so.2.3.0"
+     "libresidue-extension.so.2.3.1"
   ],
   "keywords": [
     "residue",
