@@ -3,6 +3,7 @@
 ## [2.3.1] - 24-03-2018
 ### Updates
 - `RESIDUE_HOME` env variable resolves to nothing if not set instead of leaving it in-place
+- Updated internal networking library to 1.12.0
 
 ## [2.3.0] - 24-03-2018
 ### Extensions API
