@@ -138,8 +138,8 @@ You can follow steps below to build and install residue server on your machine.
 ## Dependencies
   * C++11 compiler (or higher)
   * [Crypto++](https://www.cryptopp.com/) v5.6.5+ [with Pem Pack](https://raw.githubusercontent.com/muflihun/muflihun.github.io/master/downloads/pem_pack.zip)
-  * Static [zlib-devel](https://zlib.net/)
-  * Static [libcurl-devel](https://curl.haxx.se/libcurl/)
+  * [zlib-devel](https://zlib.net/)
+  * [libcurl-devel](https://curl.haxx.se/libcurl/)
   * [Google Testing Framework](https://github.com/google/googletest/blob/master/googletest/docs/Primer.md) (optional - for testing)
   
 ## Get The Code
