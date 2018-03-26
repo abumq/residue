@@ -47,16 +47,16 @@ sudo ln -s `which residue-darwin` /usr/local/bin/residue
 ## Direct
 ### Linux
 ```
-wget https://github.com/muflihun/residue/releases/download/v2.2.1/residue-2.2.1-linux-x86_64.tar.gz
-tar -xf residue-2.2.1-linux-x86_64.tar.gz
-cd residue-2.2.1-linux-x86_64/
+wget https://github.com/muflihun/residue/releases/download/v2.3.1/residue-2.3.1-linux-x86_64.tar.gz
+tar -xf residue-2.3.1-linux-x86_64.tar.gz
+cd residue-2.3.1-linux-x86_64/
 ```
 
 ### macOS
 ```
-wget https://github.com/muflihun/residue/releases/download/v2.2.1/residue-2.1.0-darwin-x86_64.tar.gz
-tar -xf residue-2.2.1-darwin-x86_64.tar.gz
-cd residue-2.2.1-darwin-x86_64/
+wget https://github.com/muflihun/residue/releases/download/v2.3.1/residue-2.3.1-darwin-x86_64.tar.gz
+tar -xf residue-2.3.1-darwin-x86_64.tar.gz
+cd residue-2.3.1-darwin-x86_64/
 ```
 
 ## Setup
@@ -170,7 +170,6 @@ You can change following options in CMake (using `-D<option>=ON`)
 | `production` | Compile for production use      | `ON`   |
 | `enable_extensions` | Enable extension support      | `ON`   |
 | `profiling`  | Turn on profiling information (for development only - must have `debug` option turned on) | `OFF` |
-| `use_boost` | Link against boost library instead of standalone asio (must have boost 1.54-static installed) | `OFF` |
 
 ## Run Tests
 Please consider running unit tests before you move on.
@@ -200,6 +199,13 @@ Make sure you have all the dependencies installed. You can use following script 
 sudo apt-get install -y cmake build-essential libcurl-dev libz-dev
     # sudo yum install -y cmake curl-devel zlib-devel # for rpm
     # sudo yum groupinstall -y 'Development Tools'
+
+## Static libCurl
+#wget http://curl.haxx.se/download/curl-7.56.0.tar.gz
+#tar xf curl-7.56.0.tar.gz
+#cd curl-7.56.0
+#./configure --enable-shared --enable-static --prefix=/tmp/curl --disable-ldap --disable-sspi --without-librtmp --disable-ftp --disable-file --disable-dict --disable-telnet --disable-tftp --disable-rtsp --disable-pop3 --disable-imap --disable-smtp --disable-gopher --disable-smb --without-libidn
+#make && make install
 
 ## Google Testing Library
 wget -O gtest.tar.gz https://github.com/google/googletest/archive/release-1.7.0.tar.gz
