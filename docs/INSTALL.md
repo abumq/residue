@@ -201,11 +201,11 @@ sudo apt-get install -y cmake build-essential libcurl-dev libz-dev
     # sudo yum groupinstall -y 'Development Tools'
 
 ## Static libCurl
-wget http://curl.haxx.se/download/curl-7.56.0.tar.gz
-tar xf curl-7.56.0.tar.gz
-cd curl-7.56.0
-./configure --enable-shared --enable-static --prefix=/tmp/curl --disable-ldap --disable-sspi --without-librtmp --disable-ftp --disable-file --disable-dict --disable-telnet --disable-tftp --disable-rtsp --disable-pop3 --disable-imap --disable-smtp --disable-gopher --disable-smb --without-libidn
-make && make install
+#wget http://curl.haxx.se/download/curl-7.56.0.tar.gz
+#tar xf curl-7.56.0.tar.gz
+#cd curl-7.56.0
+#./configure --enable-shared --enable-static --prefix=/tmp/curl --disable-ldap --disable-sspi --without-librtmp --disable-ftp --disable-file --disable-dict --disable-telnet --disable-tftp --disable-rtsp --disable-pop3 --disable-imap --disable-smtp --disable-gopher --disable-smb --without-libidn
+#make && make install
 
 ## Google Testing Library
 wget -O gtest.tar.gz https://github.com/google/googletest/archive/release-1.7.0.tar.gz
