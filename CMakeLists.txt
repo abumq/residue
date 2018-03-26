@@ -80,6 +80,9 @@ if (CMAKE_BUILD_TYPE EQUAL "DEBUG" OR CMAKE_BUILD_TYPE EQUAL "RELWITHDEBINFO")
     message ("==> EXPORTING DEBUG SYMBOLS")
 endif()
 
+## Prefer static linking
+SET(CMAKE_FIND_LIBRARY_SUFFIXES ".a")
+
 find_package (CURL REQUIRED)
 
 if (${CURL_FOUND})

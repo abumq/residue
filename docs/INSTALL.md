@@ -138,8 +138,8 @@ You can follow steps below to build and install residue server on your machine.
 ## Dependencies
   * C++11 compiler (or higher)
   * [Crypto++](https://www.cryptopp.com/) v5.6.5+ [with Pem Pack](https://raw.githubusercontent.com/muflihun/muflihun.github.io/master/downloads/pem_pack.zip)
-  * [zlib-devel](https://zlib.net/)
-  * [libcurl-devel](https://curl.haxx.se/libcurl/)
+  * Static [zlib-devel](https://zlib.net/)
+  * Static [libcurl-devel](https://curl.haxx.se/libcurl/)
   * [Google Testing Framework](https://github.com/google/googletest/blob/master/googletest/docs/Primer.md) (optional - for testing)
   
 ## Get The Code
@@ -170,7 +170,6 @@ You can change following options in CMake (using `-D<option>=ON`)
 | `production` | Compile for production use      | `ON`   |
 | `enable_extensions` | Enable extension support      | `ON`   |
 | `profiling`  | Turn on profiling information (for development only - must have `debug` option turned on) | `OFF` |
-| `use_boost` | Link against boost library instead of standalone asio (must have boost 1.54-static installed) | `OFF` |
 
 ## Run Tests
 Please consider running unit tests before you move on.
@@ -200,6 +199,13 @@ Make sure you have all the dependencies installed. You can use following script 
 sudo apt-get install -y cmake build-essential libcurl-dev libz-dev
     # sudo yum install -y cmake curl-devel zlib-devel # for rpm
     # sudo yum groupinstall -y 'Development Tools'
+
+## Static libCurl
+wget http://curl.haxx.se/download/curl-7.54.0.tar.lzma
+tar xf curl-7.54.0.tar.lzma
+cd curl-7.54.0
+./configure --enable-shared --enable-static --prefix=/tmp/curl --disable-ldap --disable-sspi --without-librtmp --disable-ftp --disable-file --disable-dict --disable-telnet --disable-tftp --disable-rtsp --disable-pop3 --disable-imap --disable-smtp --disable-gopher --disable-smb --without-libidn
+make && make install
 
 ## Google Testing Library
 wget -O gtest.tar.gz https://github.com/google/googletest/archive/release-1.7.0.tar.gz
