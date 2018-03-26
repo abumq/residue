@@ -85,7 +85,7 @@ SET(CMAKE_FIND_LIBRARY_SUFFIXES ".a")
 
 find_package (CURL REQUIRED)
 
-if (${CURL_FOUND})
+if (CURL_FOUND)
     add_definitions (-DRESIDUE_HAS_CURL)
     include_directories (${CURL_INCLUDE_DIRS})
     message ("-- libcurl: " ${CURL_LIBRARIES} " version: " ${CURL_VERSION_STRING})
