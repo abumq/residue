@@ -5,11 +5,7 @@ if [ "$CURR_DIR" != "build" ];then
     exit;
 fi
 
-DAR=`uname -a | grep 'Darwin' | wc -c | grep -o '[0-9]'`
-TYPE="darwin"
-if [ "$DAR" = "0" ];then
-    TYPE="linux"
-fi
+TYPE=`uname | tr '[:upper:]' '[:lower:]'`
 MAJOR=`grep 'RESIDUE_MAJOR' ../CMakeLists.txt | grep -o [0-9] | tr -d '\n'`
 MINOR=`grep 'RESIDUE_MINOR' ../CMakeLists.txt | grep -o [0-9] | tr -d '\n'`
 PATCH=`grep 'RESIDUE_PATCH' ../CMakeLists.txt | grep [0-9] | awk '{print $3}' | cut -d "\"" -f2`
