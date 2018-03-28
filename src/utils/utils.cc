@@ -213,7 +213,7 @@ std::string Utils::generateRandomFromArray(const char* list,
 
 std::string& Utils::resolveResidueHomeEnvVar(std::string& str, const std::string& overrideEnvVar)
 {
-    auto pos = str.find_first_of("$RESIDUE_HOME");
+    auto pos = str.find("$RESIDUE_HOME");
     if (pos != std::string::npos) {
         std::string val = overrideEnvVar.empty() ?
                     el::base::utils::OS::getEnvironmentVariable("RESIDUE_HOME", "", "echo $RESIDUE_HOME") :
