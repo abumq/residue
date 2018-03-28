@@ -1,5 +1,9 @@
 # Change Log
 
+## [2.3.2] - 28-03-2018
+### Fixes
+- Fix invalid resolution for `RESIDUE_HOME` when not available
+
 ## [2.3.1] - 24-03-2018
 ### Updates
 - `RESIDUE_HOME` env variable resolves to nothing if not set instead of leaving it in-place
