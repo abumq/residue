@@ -5,11 +5,7 @@ if [ "$CURR_DIR" != "npm" ];then
     exit;
 fi
 
-DAR=`uname -a | grep 'Darwin' | wc -c | grep -o '[0-9]'`
-TYPE="darwin"
-if [ "$DAR" = "0" ];then
-    TYPE="linux"
-fi
+TYPE=`uname | tr '[:upper:]' '[:lower:]'`
 if [ "$1" != "" ];then
     TYPE="$1"
 fi
