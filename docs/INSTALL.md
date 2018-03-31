@@ -200,13 +200,6 @@ sudo apt-get install -y cmake build-essential libcurl-dev libz-dev
     # sudo yum install -y cmake curl-devel zlib-devel # for rpm
     # sudo yum groupinstall -y 'Development Tools'
 
-## Static libCurl
-#wget http://curl.haxx.se/download/curl-7.56.0.tar.gz
-#tar xf curl-7.56.0.tar.gz
-#cd curl-7.56.0
-#./configure --enable-shared --enable-static --prefix=/tmp/curl --disable-ldap --disable-sspi --without-librtmp --disable-ftp --disable-file --disable-dict --disable-telnet --disable-tftp --disable-rtsp --disable-pop3 --disable-imap --disable-smtp --disable-gopher --disable-smb --without-libidn
-#make && make install
-
 ## Google Testing Library
 wget -O gtest.tar.gz https://github.com/google/googletest/archive/release-1.7.0.tar.gz
 tar xf gtest.tar.gz
@@ -223,6 +216,9 @@ tar xf cryptocpp.tar.gz
 cd cryptopp-CRYPTOPP_5_6_5
 wget https://raw.githubusercontent.com/muflihun/muflihun.github.io/master/downloads/pem_pack.zip
 unzip pem_pack.zip
+### IF ON MACOS ALSO DO
+### export CC=`which clang`
+### export CXX=`which clang++`
 cmake .
 make
 sudo make install
