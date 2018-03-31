@@ -35,6 +35,12 @@ fi
 PACK=residue-$VERSION-$TYPE-x86_64
 PACK_EXT=residue-extensions-$VERSION-$TYPE-x86_64
 
+if [ "$TYPE" = "darwin" ];then
+    echo "Setting clang as default compiler"
+    export CC=`which clang`
+    export CXX=`which clang++` 
+fi
+
 if [ -d "$PACK" ];then
     echo "Error: $PACK already exist. Remove $PACK first"
     exit;

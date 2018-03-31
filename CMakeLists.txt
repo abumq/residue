@@ -74,11 +74,12 @@ if (production)
     set (optimization_level 3)
 endif (production)
 
-list (APPEND CMAKE_CXX_FLAGS " -std=${cxx_standard} -O${optimization_level} -Wall -Wextra -pedantic -pedantic-errors -Wno-undefined-var-template -Wno-undef -Wno-unused-local-typedef -Wno-unused-variable -Wno-deprecated-declarations -Wno-unknown-warning-option -Wno-pessimizing-move ")
-
-if (darwin)
-    list (APPEND CMAKE_CXX_FLAGS "-mmacosx-version-min=10.6")
+set (extra_flags "")
+if (APPLE)
+    set (extra_flags "-mmacosx-version-min=10.10")
 endif()
+
+list (APPEND CMAKE_CXX_FLAGS " -std=${cxx_standard} -O${optimization_level} ${extra_flags} -Wall -Wextra -pedantic -pedantic-errors -Wno-undefined-var-template -Wno-undef -Wno-unused-local-typedef -Wno-unused-variable -Wno-deprecated-declarations -Wno-unknown-warning-option -Wno-pessimizing-move ")
 
 if (CMAKE_BUILD_TYPE EQUAL "DEBUG" OR CMAKE_BUILD_TYPE EQUAL "RELWITHDEBINFO")
     message ("==> EXPORTING DEBUG SYMBOLS")
