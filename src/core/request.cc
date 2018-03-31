@@ -44,6 +44,7 @@ bool Request::deserialize(std::string&& json)
 #else
         RVLOG(RV_ERROR) << "Malformed JSON request";
 #endif
+        m_errorText = m_jsonDoc.errorText();
         return false;
     }
     m_timestamp = m_jsonDoc.get<unsigned int>("_t", 0UL);

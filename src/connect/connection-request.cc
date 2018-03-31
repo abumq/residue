@@ -50,8 +50,15 @@ bool ConnectionRequest::deserialize(std::string&& json)
         }
     }
     bool validConnect = (m_type == ConnectionRequest::Type::CONNECT && (!m_rsaPublicKey.empty() || !m_clientId.empty()));
+    if (m_type == ConnectionRequest::Type::CONNECT && !validConnect) {
+        RLOG(ERROR) << "CONNECT request must have valid public key or client ID";
+    }
     bool validSubsequentRequests = (m_type == ConnectionRequest::Type::ACKNOWLEDGE
                                     || m_type == ConnectionRequest::Type::TOUCH) && !m_clientId.empty();
+    if ((m_type == ConnectionRequest::Type::ACKNOWLEDGE
+         || m_type == ConnectionRequest::Type::TOUCH) && m_clientId.empty()) {
+        RLOG(ERROR) << "Valid client ID must be provided with ACKNOWLEDGE or TOUCH requests";
+    }
     m_isValid &= validConnect || validSubsequentRequests;
     return m_isValid;
 }

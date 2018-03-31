@@ -1,5 +1,12 @@
 # Change Log
 
+## [2.3.3] - 31-03-2018
+### Updates
+- More logs on connect failure
+
+### Fixes
+- Fix for cross-mac issue
+
 ## [2.3.2] - 28-03-2018
 ### Fixes
 - Fix invalid resolution for `RESIDUE_HOME` when not available
