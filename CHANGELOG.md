@@ -1,5 +1,9 @@
 # Change Log
 
+## [Unreleased]
+### Updates
+- More logs on connect failure
+
 ## [2.3.2] - 28-03-2018
 ### Fixes
 - Fix invalid resolution for `RESIDUE_HOME` when not available

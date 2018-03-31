@@ -72,7 +72,7 @@ void ConnectionRequestHandler::handle(RawRequest&& rawRequest)
     };
 
     if (!request.isValid()) {
-        RVLOG(RV_ERROR) << "Invalid connection request received";
+        RVLOG(RV_ERROR) << "Invalid connection request. " << request.errorText();
         respondErr("Invalid connection request. Are you sending it to correct port?");
         return;
     }
