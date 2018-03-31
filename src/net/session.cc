@@ -177,7 +177,7 @@ void Session::write(const char* data,
     DRVLOG(RV_DEBUG_2) << "Sending " << data;
 #endif
     net::async_write(m_socket, net::buffer(data, length),
-                     [&, this, self](residue::error_code ec, std::size_t) {
+                     [&, self](residue::error_code ec, std::size_t) {
         // for 'self' - see https://www.youtube.com/watch?v=D-lTwGJRx0o?t=40m
         if (ec) {
 #ifdef RESIDUE_DEBUG
