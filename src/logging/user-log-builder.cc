@@ -26,6 +26,23 @@
 
 using namespace residue;
 
+// same as Easylogging++ base::consts::k....
+static const char* kAppNameFormatSpecifier               =      "%app";
+static const char* kLoggerIdFormatSpecifier              =      "%logger";
+static const char* kThreadIdFormatSpecifier              =      "%thread";
+static const char* kSeverityLevelFormatSpecifier         =      "%level";
+static const char* kSeverityLevelShortFormatSpecifier    =      "%levshort";
+static const char* kDateTimeFormatSpecifier              =      "%datetime";
+static const char* kLogFileFormatSpecifier                 =      "%file";
+static const char* kLogFileBaseFormatSpecifier             =      "%fbase";
+static const char* kLogLineFormatSpecifier                =      "%line";
+static const char* kLogLocationFormatSpecifier            =      "%loc";
+static const char* kLogFunctionFormatSpecifier      =      "%func";
+static const char* kCurrentUserFormatSpecifier      =      "%user";
+static const char* kCurrentHostFormatSpecifier      =      "%host";
+static const char* kMessageFormatSpecifier          =      "%msg";
+static const char* kVerboseLevelFormatSpecifier     =      "%vlevel";
+
 el::base::type::string_t UserLogBuilder::build(const el::LogMessage* msg,
                                                bool appendNewLine) const
 {
@@ -50,39 +67,39 @@ el::base::type::string_t UserLogBuilder::build(const el::LogMessage* msg,
     RESIDUE_HIGH_PROFILE_CHECKPOINT_NS(t_log_builder, m_timeTakenLogBuilder, 1, 1);
     if (logFormat->hasFlag(el::base::FormatFlags::AppName)) {
         // App name
-        el::base::utils::Str::replaceFirstWithEscape(logLine, el::base::consts::kAppNameFormatSpecifier,
+        el::base::utils::Str::replaceFirstWithEscape(logLine, kAppNameFormatSpecifier,
                                                  logMessage->request()->applicationName());
     }
     if (logFormat->hasFlag(el::base::FormatFlags::ThreadId)) {
         // Thread ID
-        el::base::utils::Str::replaceFirstWithEscape(logLine, el::base::consts::kThreadIdFormatSpecifier,
+        el::base::utils::Str::replaceFirstWithEscape(logLine, kThreadIdFormatSpecifier,
                                                      logMessage->request()->threadId());
     }
     if (logFormat->hasFlag(el::base::FormatFlags::DateTime)) {
         // DateTime
-        el::base::utils::Str::replaceFirstWithEscape(logLine, el::base::consts::kDateTimeFormatSpecifier, logMessage->request()->formattedDatetime(logFormat->dateTimeFormat().c_str(), &tc->millisecondsWidth(logMessage->request()->level())));
+        el::base::utils::Str::replaceFirstWithEscape(logLine, kDateTimeFormatSpecifier, logMessage->request()->formattedDatetime(logFormat->dateTimeFormat().c_str(), &tc->millisecondsWidth(logMessage->request()->level())));
     }
     if (logFormat->hasFlag(el::base::FormatFlags::Function)) {
         // Function
-        el::base::utils::Str::replaceFirstWithEscape(logLine, el::base::consts::kLogFunctionFormatSpecifier, logMessage->request()->function());
+        el::base::utils::Str::replaceFirstWithEscape(logLine, kLogFunctionFormatSpecifier, logMessage->request()->function());
     }
     if (logFormat->hasFlag(el::base::FormatFlags::File)) {
         // File
         el::base::utils::Str::clearBuff(buff, el::base::consts::kSourceFilenameMaxLength);
         el::base::utils::File::buildStrippedFilename(logMessage->request()->filename().c_str(), buff);
-        el::base::utils::Str::replaceFirstWithEscape(logLine, el::base::consts::kLogFileFormatSpecifier, std::string(buff));
+        el::base::utils::Str::replaceFirstWithEscape(logLine, kLogFileFormatSpecifier, std::string(buff));
     }
     if (logFormat->hasFlag(el::base::FormatFlags::FileBase)) {
         // FileBase
         el::base::utils::Str::clearBuff(buff, el::base::consts::kSourceFilenameMaxLength);
         el::base::utils::File::buildBaseFilename(logMessage->request()->filename(), buff);
-        el::base::utils::Str::replaceFirstWithEscape(logLine, el::base::consts::kLogFileBaseFormatSpecifier, std::string(buff));
+        el::base::utils::Str::replaceFirstWithEscape(logLine, kLogFileBaseFormatSpecifier, std::string(buff));
     }
     if (logFormat->hasFlag(el::base::FormatFlags::Line)) {
         // Line
         char* buf = el::base::utils::Str::clearBuff(buff, el::base::consts::kSourceLineMaxLength);
         buf = el::base::utils::Str::convertAndAddToBuff(logMessage->request()->lineNumber(), el::base::consts::kSourceLineMaxLength, buf, bufLim, false);
-        el::base::utils::Str::replaceFirstWithEscape(logLine, el::base::consts::kLogLineFormatSpecifier, std::string(buff));
+        el::base::utils::Str::replaceFirstWithEscape(logLine, kLogLineFormatSpecifier, std::string(buff));
     }
     if (logFormat->hasFlag(el::base::FormatFlags::Location)) {
         // Location
@@ -93,17 +110,17 @@ el::base::type::string_t UserLogBuilder::build(const el::LogMessage* msg,
         buf = el::base::utils::Str::addToBuff(":", buf, bufLim);
         buf = el::base::utils::Str::convertAndAddToBuff(logMessage->request()->lineNumber(),  el::base::consts::kSourceLineMaxLength, buf, bufLim,
                                                     false);
-        el::base::utils::Str::replaceFirstWithEscape(logLine, el::base::consts::kLogLocationFormatSpecifier, std::string(buff));
+        el::base::utils::Str::replaceFirstWithEscape(logLine, kLogLocationFormatSpecifier, std::string(buff));
     }
     if (logMessage->request()->level() == el::Level::Verbose && logFormat->hasFlag(el::base::FormatFlags::VerboseLevel)) {
         // Verbose level
         char* buf = el::base::utils::Str::clearBuff(buff, 1);
         buf = el::base::utils::Str::convertAndAddToBuff(logMessage->request()->verboseLevel(), 1, buf, bufLim, false);
-        el::base::utils::Str::replaceFirstWithEscape(logLine, el::base::consts::kVerboseLevelFormatSpecifier, std::string(buff));
+        el::base::utils::Str::replaceFirstWithEscape(logLine, kVerboseLevelFormatSpecifier, std::string(buff));
     }
     if (logFormat->hasFlag(el::base::FormatFlags::LogMessage)) {
         // Log message
-        el::base::utils::Str::replaceFirstWithEscape(logLine, el::base::consts::kMessageFormatSpecifier, logMessage->request()->msg());
+        el::base::utils::Str::replaceFirstWithEscape(logLine, kMessageFormatSpecifier, logMessage->request()->msg());
     }
 
     RESIDUE_HIGH_PROFILE_CHECKPOINT_NS(t_log_builder, m_timeTakenLogBuilder, 2, 1);

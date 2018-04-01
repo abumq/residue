@@ -38,6 +38,10 @@
 
 using namespace residue;
 
+static const char* kDaysAbbrev[7]                   =      { "Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat" };
+static const char* kMonthsAbbrev[12]                =      { "Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec" };
+
+
 LogRotator::LogRotator(const std::string& name,
                        Registry* registry,
                        Configuration::RotationFrequency freq) :
@@ -92,8 +96,8 @@ LogRotator::RotateTarget LogRotator::createRotateTarget(const std::string& logge
     int currentMin = local_tm.tm_min;
     int currentHour = local_tm.tm_hour;
     int currentDay = local_tm.tm_mday;
-    std::string currentWDay = el::base::consts::kDaysAbbrev[local_tm.tm_wday];
-    std::string currentMonth = el::base::consts::kMonthsAbbrev[local_tm.tm_mon];
+    std::string currentWDay = kDaysAbbrev[local_tm.tm_wday];
+    std::string currentMonth = kMonthsAbbrev[local_tm.tm_mon];
     std::string currentQuarter = "Q" + std::to_string(std::ceil((local_tm.tm_mon + 1) / 3));
     std::string currentYear = std::to_string(local_tm.tm_year + 1900);
 
