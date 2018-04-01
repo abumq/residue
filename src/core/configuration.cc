@@ -48,6 +48,9 @@ using namespace residue;
 const std::string Configuration::UNMANAGED_CLIENT_ID = "unmanaged";
 const int Configuration::MAX_BLACKLIST_LOGGERS = 10000;
 
+// taken from Easylogging++ cc file
+static const char* kConfigurationLoggerId                  =      "--";
+
 struct ExtensionMap
 {
     Extension::Type type;
@@ -634,7 +637,7 @@ bool Configuration::validateConfigFile(const std::string& filename) const
     bool result = true;
     std::string line;
     static const std::vector<std::string> ILLEGAL_CONFIGS {
-        el::base::consts::kConfigurationLoggerId,
+        kConfigurationLoggerId,
         el::ConfigurationTypeHelper::convertToString(el::ConfigurationType::MaxLogFileSize),
         el::ConfigurationTypeHelper::convertToString(el::ConfigurationType::LogFlushThreshold)
     };

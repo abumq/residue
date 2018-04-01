@@ -32,6 +32,7 @@ namespace residue {
 ///
 class UserLogBuilder final : public el::LogBuilder, NonCopyable
 {
+
 public:
     virtual el::base::type::string_t build(const el::LogMessage* logMessage,
                                    bool appendNewLine) const override;
