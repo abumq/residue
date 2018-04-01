@@ -1,6 +1,6 @@
 {
   "name": "residue-darwin",
-  "version": "2.3.2",
+  "version": "2.3.3",
   "description": "Residue server daemon (Darwin)",
   "homepage": "https://github.com/muflihun/residue",
   "author": "Muflihun Labs <info@muflihun.com>",
@@ -13,7 +13,7 @@
   "files": [
      "residued",
      "config",
-     "libresidue-extension.2.3.2.dylib"
+     "libresidue-extension.2.3.3.dylib"
   ],
   "keywords": [
     "residue",

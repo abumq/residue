@@ -1,5 +1,8 @@
 # Change Log
 
+## [2.3.4] - 01-04-2018
+- Updated easylogging++ to 9.96.3 for changelog item 2
+
 ## [2.3.3] - 31-03-2018
 ### Updates
 - More logs on connect failure
