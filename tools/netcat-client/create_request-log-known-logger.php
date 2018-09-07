@@ -12,7 +12,7 @@ $req = array(
 	"file" => "index.html",
 	"line" => 857,
 	"app" => "Residue Netcat Sample",
-	"level" => 128,
+	"level" => 4
 );
 $req = addslashes(json_encode($req));
 echo shell_exec("echo $req | ripe -e --key $connection->key --client-id $connection->client_id");
