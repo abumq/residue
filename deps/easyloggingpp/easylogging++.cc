@@ -1,7 +1,7 @@
 //
 //  Bismillah ar-Rahmaan ar-Raheem
 //
-//  Easylogging++ v9.96.4
+//  Easylogging++ v9.96.5
 //  Cross-platform logging library for C++ applications
 //
 //  Copyright (c) 2012-2018 Muflihun Labs
@@ -2855,6 +2855,9 @@ static std::string crashReason(int sig) {
 }
 /// @brief Logs reason of crash from sig
 static void logCrashReason(int sig, bool stackTraceIfAvailable, Level level, const char* logger) {
+  if (sig == SIGINT && ELPP->hasFlag(el::LoggingFlag::IgnoreSigInt)) {
+    return;
+  }
   std::stringstream ss;
   ss << "CRASH HANDLED; ";
   ss << crashReason(sig);
@@ -3094,11 +3097,11 @@ void Loggers::clearVModules(void) {
 // VersionInfo
 
 const std::string VersionInfo::version(void) {
-  return std::string("9.96.4");
+  return std::string("9.96.5");
 }
 /// @brief Release date of current version
 const std::string VersionInfo::releaseDate(void) {
-  return std::string("03-04-2018 1019hrs");
+  return std::string("07-09-2018 0950hrs");
 }
 
 } // namespace el

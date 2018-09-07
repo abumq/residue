@@ -1,5 +1,8 @@
 # Change Log
 
+## [2.3.5] - 07-09-2018
+- Updated easylogging++ 9.96.5 to fix enabled bug
+
 ## [2.3.4] - 01-04-2018
 - Updated easylogging++ to 9.96.3 for changelog item 2
 
