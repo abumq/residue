@@ -1,7 +1,7 @@
 //
 //  Bismillah ar-Rahmaan ar-Raheem
 //
-//  Easylogging++ v9.96.3
+//  Easylogging++ v9.96.5
 //  Single-header only, cross-platform logging library for C++ applications
 //
 //  Copyright (c) 2012-2018 Muflihun Labs
@@ -717,7 +717,9 @@ enum class LoggingFlag : base::type::EnumType {
   /// @brief Adds spaces b/w logs that separated by left-shift operator
   AutoSpacing = 8192,
   /// @brief Preserves time format and does not convert it to sec, hour etc (performance tracking only)
-  FixedTimeFormat = 16384
+  FixedTimeFormat = 16384,
+  // @brief Ignore SIGINT or crash
+  IgnoreSigInt = 32768,
 };
 namespace base {
 /// @brief Namespace containing constants used internally.
@@ -2538,7 +2540,7 @@ class IWorker {
 };
 #endif // ELPP_ASYNC_LOGGING
 /// @brief Easylogging++ management storage
-class Storage : base::NoCopy {
+class Storage : base::NoCopy, public base::threading::ThreadSafe {
  public:
 #if ELPP_ASYNC_LOGGING
   Storage(const LogBuilderPtr& defaultLogBuilder, base::IWorker* asyncDispatchWorker);
@@ -3187,7 +3189,8 @@ class Writer : base::NoCopy {
   }
 
   Writer(LogMessage* msg, base::DispatchAction dispatchAction = base::DispatchAction::NormalLog) :
-    m_msg(msg), m_line(0), m_logger(nullptr), m_proceed(false), m_dispatchAction(dispatchAction) {
+    m_msg(msg), m_level(msg != nullptr ? msg->level() : Level::Unknown),
+    m_line(0), m_logger(nullptr), m_proceed(false), m_dispatchAction(dispatchAction) {
   }
 
   virtual ~Writer(void) {
@@ -3558,7 +3561,8 @@ class StackTrace : base::NoCopy {
   static const unsigned int kStackStart = 2;  // We want to skip c'tor and StackTrace::generateNew()
   class StackTraceEntry {
    public:
-    StackTraceEntry(std::size_t index, const std::string& loc, const std::string& demang, const std::string& hex, const std::string& addr);
+    StackTraceEntry(std::size_t index, const std::string& loc, const std::string& demang, const std::string& hex,
+                    const std::string& addr);
     StackTraceEntry(std::size_t index, const std::string& loc) :
       m_index(index),
       m_location(loc) {

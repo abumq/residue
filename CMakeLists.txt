@@ -228,6 +228,7 @@ target_link_libraries (residue-core ${SHARED_REQUIRED_LIBS})
 target_compile_definitions (residue-core PUBLIC
     ELPP_FORCE_USE_STD_THREAD
     ELPP_THREAD_SAFE
+    ELPP_NO_GLOBAL_LOCK
 )
 
 # Set RPATH to library install path.
