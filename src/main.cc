@@ -2,7 +2,8 @@
 //  main.cc
 //  Residue
 //
-//  Copyright 2017-present Muflihun Labs
+//  Copyright 2017-present Zuhd Web Services
+//  https://zuhd.org
 //
 //  Author: @abumusamq
 //
@@ -180,7 +181,7 @@ int main(int argc, char* argv[])
     }
 
 #ifndef ELPP_THREAD_SAFE
-    RLOG(WARNING) << "Your residue server is not thread-safe. Please visit https://github.com/muflihun/residue for details.";
+    RLOG(WARNING) << "Your residue server is not thread-safe. Please visit https://github.com/zuhd-org/residue for details.";
 #endif
 
     if (strcmp(argv[1], "--version") == 0 || (strcmp(argv[1], "-v") == 0 && argc == 2)) {
@@ -189,14 +190,14 @@ int main(int argc, char* argv[])
     } else if (strcmp(argv[1], "--help") == 0) {
         printVersion();
         std::cout << std::endl;
-        std::cout << "Please go to https://github.com/muflihun/residue/blob/master/docs/ for help" << std::endl;
+        std::cout << "Please go to https://github.com/zuhd-org/residue/blob/master/docs/ for help" << std::endl;
         return 0;
     } else if (strcmp(argv[1], "--setup") == 0) {
         return Setup::setup();
     }
 
     if (!el::Helpers::commandLineArgs()->hasParam("--force-without-root") && el::base::utils::OS::getBashOutput("whoami") != "root") {
-        std::cerr << "Please run as 'root'. See https://github.com/muflihun/residue/blob/master/docs/INSTALL.md#run-as-root for more details" << std::endl;
+        std::cerr << "Please run as 'root'. See https://github.com/zuhd-org/residue/blob/master/docs/INSTALL.md#run-as-root for more details" << std::endl;
         return 1;
     }
 
@@ -302,7 +303,7 @@ int main(int argc, char* argv[])
             std::string newVer;
             if (task.hasNewVersion(&newVer)) {
                 std::cout << "A newer version " << newVer << " is available for download."
-                          << " Please visit https://github.com/muflihun/residue/releases/tag/" << newVer
+                          << " Please visit https://github.com/zuhd-org/residue/releases/tag/" << newVer
                           << std::endl;
             }
             task.start();

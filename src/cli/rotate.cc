@@ -2,7 +2,8 @@
 //  rotate.cc
 //  Residue
 //
-//  Copyright 2017-present Muflihun Labs
+//  Copyright 2017-present Zuhd Web Services
+//  https://zuhd.org
 //
 //  Author: @abumusamq
 //
@@ -35,7 +36,7 @@ Rotate::Rotate(Registry* registry) :
 }
 
 void Rotate::execute(std::vector<std::string>&& params, std::ostringstream& result, bool ignoreConfirmation) const
-{    
+{
     const std::string loggerId = getParamValue(params, "--logger-id");
     if (loggerId.empty()) {
         result << "No logger ID provided\n";

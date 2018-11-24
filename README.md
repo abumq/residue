@@ -4,12 +4,13 @@
 
 ![banner]
 
-[![Build Status](https://img.shields.io/travis/muflihun/residue/master.svg)](#build-matrix)
-[![Build Status](https://img.shields.io/travis/muflihun/residue/develop.svg)](#build-matrix)
-[![Version](https://img.shields.io/github/release/muflihun/residue.svg)](https://github.com/muflihun/residue/releases/latest)
-[![Donate](https://img.shields.io/badge/Donate-PayPal-green.svg)](https://www.paypal.me/MuflihunDotCom/25)
+[![Build Status](https://img.shields.io/travis/zuhd-org/residue/master.svg)](#build-matrix)
+[![Build Status](https://img.shields.io/travis/zuhd-org/residue/develop.svg)](#build-matrix)
+[![Version](https://img.shields.io/github/release/zuhd-org/residue.svg)](https://github.com/zuhd-org/residue/releases/latest)
 
-# Overview 
+[![Donate](https://muflihun.github.io/donate.png?v2)](https://www.paypal.me/zuhd/25)
+
+# Overview
 Residue is an effort to standardize application logging by implementing simple logging API, making it easily configurable, build-in configurable log rotators, simple way to format your log messages according to need of your application and most of all language-independent.
 
 [![overview]](/docs/OVERVIEW.md)
@@ -21,14 +22,14 @@ Currently, there are two ways to do this:
 
  1. Collect log messages locally and have a scheduled task to synchronize all the log files to a remote system.
  2. Using real-time message forwarding protocols.
- 
+
 First one has many drawbacks especially when you need to debug a remote application in real-time. Also, transferring files in bulk can be heavy on network and possibly slow.
 
-Second one is what residue client does. It delievers log messages in real-time to the (residue) server. 
+Second one is what residue client does. It delievers log messages in real-time to the (residue) server.
 
 Residue is fully configurable and supports high-level security, compression and asyncronous operations. It uses [Easylogging++](https://github.com/muflihun/easyloggingpp) under the hood, that itself is a feature-rich library.
 
-You can choose to integrate similar solutions like [`rsyslog`](https://github.com/rsyslog/rsyslog) however residue has a lot of other built-in features that other solutions may lack, like built-in log rotation, bulk message forwarding etc. See [Features](#features) section for details. 
+You can choose to integrate similar solutions like [`rsyslog`](https://github.com/rsyslog/rsyslog) however residue has a lot of other built-in features that other solutions may lack, like built-in log rotation, bulk message forwarding etc. See [Features](#features) section for details.
 
 # Features
 Some of the notable features are listed below
@@ -58,19 +59,19 @@ We're also actively working on client libraries for residue in other languages. 
 
 | Branch | Platform | Build Status |
 | -------- |:------------:|:------------:|
-| `develop` | GNU/Linux 4.4 / Ubuntu 4.8.4 64-bit / `clang++` | [![Build Status](https://travis-matrix-badges.herokuapp.com/repos/muflihun/residue/branches/develop/1)](https://travis-ci.org/muflihun/residue) |
-| `develop` | GNU/Linux 4.4 / Ubuntu 4.8.4 64-bit / `g++-4.9` | [![Build Status](https://travis-matrix-badges.herokuapp.com/repos/muflihun/residue/branches/develop/2)](https://travis-ci.org/muflihun/residue) |
-| `develop` | GNU/Linux 4.4 / Ubuntu 4.8.4 64-bit / `g++-5` | [![Build Status](https://travis-matrix-badges.herokuapp.com/repos/muflihun/residue/branches/develop/3)](https://travis-ci.org/muflihun/residue) |
-| `develop` | GNU/Linux 4.4 / Ubuntu 4.8.4 64-bit / `g++-6` | [![Build Status](https://travis-matrix-badges.herokuapp.com/repos/muflihun/residue/branches/develop/4)](https://travis-ci.org/muflihun/residue) |
-| `develop` | GNU/Linux 4.4 / Ubuntu 4.8.4 64-bit / `g++-7` | [![Build Status](https://travis-matrix-badges.herokuapp.com/repos/muflihun/residue/branches/develop/5)](https://travis-ci.org/muflihun/residue) |
-| `master` | GNU/Linux 4.4 / Ubuntu 4.8.4 64-bit / `clang++` | [![Build Status](https://travis-matrix-badges.herokuapp.com/repos/muflihun/residue/branches/master/1)](https://travis-ci.org/muflihun/residue) |
-| `master` | GNU/Linux 4.4 / Ubuntu 4.8.4 64-bit / `g++-4.9` | [![Build Status](https://travis-matrix-badges.herokuapp.com/repos/muflihun/residue/branches/master/2)](https://travis-ci.org/muflihun/residue) |
-| `master` | GNU/Linux 4.4 / Ubuntu 4.8.4 64-bit / `g++-5` | [![Build Status](https://travis-matrix-badges.herokuapp.com/repos/muflihun/residue/branches/master/3)](https://travis-ci.org/muflihun/residue) |
-| `master` | GNU/Linux 4.4 / Ubuntu 4.8.4 64-bit / `g++-6` | [![Build Status](https://travis-matrix-badges.herokuapp.com/repos/muflihun/residue/branches/master/4)](https://travis-ci.org/muflihun/residue) |
-| `master` | GNU/Linux 4.4 / Ubuntu 4.8.4 64-bit / `g++-7` | [![Build Status](https://travis-matrix-badges.herokuapp.com/repos/muflihun/residue/branches/master/5)](https://travis-ci.org/muflihun/residue) |
+| `develop` | GNU/Linux 4.4 / Ubuntu 4.8.4 64-bit / `clang++` | [![Build Status](https://travis-matrix-badges.herokuapp.com/repos/zuhd-org/residue/branches/develop/1)](https://travis-ci.org/zuhd-org/residue) |
+| `develop` | GNU/Linux 4.4 / Ubuntu 4.8.4 64-bit / `g++-4.9` | [![Build Status](https://travis-matrix-badges.herokuapp.com/repos/zuhd-org/residue/branches/develop/2)](https://travis-ci.org/zuhd-org/residue) |
+| `develop` | GNU/Linux 4.4 / Ubuntu 4.8.4 64-bit / `g++-5` | [![Build Status](https://travis-matrix-badges.herokuapp.com/repos/zuhd-org/residue/branches/develop/3)](https://travis-ci.org/zuhd-org/residue) |
+| `develop` | GNU/Linux 4.4 / Ubuntu 4.8.4 64-bit / `g++-6` | [![Build Status](https://travis-matrix-badges.herokuapp.com/repos/zuhd-org/residue/branches/develop/4)](https://travis-ci.org/zuhd-org/residue) |
+| `develop` | GNU/Linux 4.4 / Ubuntu 4.8.4 64-bit / `g++-7` | [![Build Status](https://travis-matrix-badges.herokuapp.com/repos/zuhd-org/residue/branches/develop/5)](https://travis-ci.org/zuhd-org/residue) |
+| `master` | GNU/Linux 4.4 / Ubuntu 4.8.4 64-bit / `clang++` | [![Build Status](https://travis-matrix-badges.herokuapp.com/repos/zuhd-org/residue/branches/master/1)](https://travis-ci.org/zuhd-org/residue) |
+| `master` | GNU/Linux 4.4 / Ubuntu 4.8.4 64-bit / `g++-4.9` | [![Build Status](https://travis-matrix-badges.herokuapp.com/repos/zuhd-org/residue/branches/master/2)](https://travis-ci.org/zuhd-org/residue) |
+| `master` | GNU/Linux 4.4 / Ubuntu 4.8.4 64-bit / `g++-5` | [![Build Status](https://travis-matrix-badges.herokuapp.com/repos/zuhd-org/residue/branches/master/3)](https://travis-ci.org/zuhd-org/residue) |
+| `master` | GNU/Linux 4.4 / Ubuntu 4.8.4 64-bit / `g++-6` | [![Build Status](https://travis-matrix-badges.herokuapp.com/repos/zuhd-org/residue/branches/master/4)](https://travis-ci.org/zuhd-org/residue) |
+| `master` | GNU/Linux 4.4 / Ubuntu 4.8.4 64-bit / `g++-7` | [![Build Status](https://travis-matrix-badges.herokuapp.com/repos/zuhd-org/residue/branches/master/5)](https://travis-ci.org/zuhd-org/residue) |
 
 # License
 Please see [LICENSE](/LICENSE) for licensing information.
 
-  [banner]: https://raw.githubusercontent.com/muflihun/residue/master/docs/Residue.png
-  [overview]: https://raw.githubusercontent.com/muflihun/residue/develop/docs/residue-overview.png?v2
+  [banner]: https://raw.githubusercontent.com/zuhd-org/residue/master/docs/Residue.png
+  [overview]: https://raw.githubusercontent.com/zuhd-org/residue/develop/docs/residue-overview.png?v2

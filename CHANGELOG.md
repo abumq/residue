@@ -1,5 +1,9 @@
 # Change Log
 
+## [2.3.6] - 24-11-2018
+- Updated license
+- Updated easylogging++ to 9.96.7
+
 ## [2.3.5] - 07-09-2018
 - Updated easylogging++ 9.96.5 to fix enabled bug
 
@@ -134,7 +138,7 @@
 
 ### Fixes
 - Crash detected when writing to session #79
-- Fixed undefined behaviour with destroyed sessions 
+- Fixed undefined behaviour with destroyed sessions
 
 ## [1.4.2] - 14-02-2018
 ### Fixes
