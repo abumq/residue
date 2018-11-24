@@ -2,7 +2,8 @@
 //  utils-test.h
 //  Residue
 //
-//  Copyright 2017-present Muflihun Labs
+//  Copyright 2017-present Zuhd Web Services
+//  https://zuhd.org
 //
 //  Author: @abumusamq
 //
@@ -86,7 +87,7 @@ TEST(UtilsTest, IsJSON)
         { "{'json':true}", true },
         { "   { ' json':true}", true },
     };
-    
+
     for (const auto& item : Data) {
         auto first = PARAM(0);
         auto second = PARAM(1);

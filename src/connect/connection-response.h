@@ -2,7 +2,8 @@
 //  connection-response.h
 //  Residue
 //
-//  Copyright 2017-present Muflihun Labs
+//  Copyright 2017-present Zuhd Web Services
+//  https://zuhd.org
 //
 //  Author: @abumusamq
 //
