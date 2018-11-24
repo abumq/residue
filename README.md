@@ -73,5 +73,5 @@ We're also actively working on client libraries for residue in other languages. 
 # License
 Please see [LICENSE](/LICENSE) for licensing information.
 
-  [banner]: https://raw.githubusercontent.com/zuhd-org/residue/master/docs/Residue.png
-  [overview]: https://raw.githubusercontent.com/zuhd-org/residue/develop/docs/residue-overview.png?v2
+  [banner]: https://raw.githubusercontent.com/zuhd-org/residue/master/docs/Residue.png?v3
+  [overview]: https://raw.githubusercontent.com/zuhd-org/residue/develop/docs/residue-overview.png?v4

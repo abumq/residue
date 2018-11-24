@@ -43,7 +43,7 @@ matrix:
     - sudo apt-get -qq update
     - sudo apt-get install -y libgtest-dev ## libboost-system-dev
     - sudo apt-get install --only-upgrade cmake
-    
+
   - os: linux
     dist: trusty
     compiler: gcc
@@ -75,7 +75,7 @@ matrix:
     - sudo apt-get -qq update
     - sudo apt-get install -y libgtest-dev ## libboost-system-dev
     - sudo apt-get install --only-upgrade cmake
-    
+
   - os: linux
     dist: trusty
     compiler: gcc
@@ -91,7 +91,7 @@ matrix:
     - sudo apt-get -qq update
     - sudo apt-get install -y libgtest-dev ## libboost-system-dev
     - sudo apt-get install --only-upgrade cmake
-    
+
   - os: linux
     dist: trusty
     compiler: gcc
@@ -107,14 +107,14 @@ matrix:
     - sudo apt-get -qq update
     - sudo apt-get install -y libgtest-dev ## libboost-system-dev
     - sudo apt-get install --only-upgrade cmake
-    
+
 #  - os: osx
 #    compiler: clang
 #    osx_image: xcode8
 #     - sudo port install cmake
-    
+
 install:
- - cmake --version 
+ - cmake --version
  - uname -a
 
 ## GTest
@@ -129,7 +129,7 @@ install:
  - cd ..
 
 ## Easylogging++
- - wget https://github.com/muflihun/easyloggingpp/archive/develop.zip
+ - wget https://github.com/zuhd-org/easyloggingpp/archive/develop.zip
  - unzip develop.zip
  - cd easyloggingpp-develop
  - cmake .
@@ -137,10 +137,10 @@ install:
  - sudo make install
 
 ## Crypto++ (We dont need this for residue, we need it for ripe and mine)
- - wget https://raw.githubusercontent.com/muflihun/muflihun.github.io/master/downloads/cryptocpp.tar.gz
+ - wget https://muflihun.github.io/downloads/cryptocpp.tar.gz
  - tar xf cryptocpp.tar.gz
  - cd cryptopp-CRYPTOPP_5_6_5
- - wget https://raw.githubusercontent.com/muflihun/muflihun.github.io/master/downloads/pem_pack.zip
+ - wget https://muflihun.github.io/downloads/pem_pack.zip
  - unzip pem_pack.zip
  - cmake .
  - make -j4
