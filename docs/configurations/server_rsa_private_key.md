@@ -20,7 +20,7 @@ If you wish to generated an encrypted key, we recommend AES-256
 openssl genrsa -aes256 -out server-priv.pem 8192
 ```
 
-Alternatively, you can use following [Ripe](https://github.com/muflihun/ripe#readme) command
+Alternatively, you can use following [Ripe](https://github.com/amrayn/ripe#readme) command
 
 ```
 ripe -g --rsa --length 8192 --out-public server-priv.pem --out-private server-priv.pem
@@ -32,7 +32,7 @@ You should have big enough key to cover for unknown clients. Remember, unknown c
 ## See Also
  * [`server_rsa_public_key`](/docs/CONFIGURATION.md#server_rsa_public_key)
  * [`server_rsa_secret`](/docs/CONFIGURATION.md#server_rsa_secret)
- * [`RESIDUE_HOME`](https://github.com/muflihun/residue/blob/develop/docs/INSTALL.md#residue_home)
+ * [`RESIDUE_HOME`](https://github.com/amrayn/residue/blob/develop/docs/INSTALL.md#residue_home)
 
 [← Configurations](/docs/CONFIGURATION.md)
 

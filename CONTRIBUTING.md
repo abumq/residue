@@ -30,7 +30,7 @@ Please let us know if you successfully compile it on other operating systems.
 Please feel free to submit your pull requests. Please read [development](#development) section before you start.
 
 ## Reporting Bugs
-Please submit bug reports via [issue tracker](https://github.com/muflihun/residue/issues). We strongly recommend you to test this project in as many platforms as possible that can be turned in to logging server.
+Please submit bug reports via [issue tracker](https://github.com/amrayn/residue/issues). We strongly recommend you to test this project in as many platforms as possible that can be turned in to logging server.
 
 Please provide as much information as possible including steps to reproduce. This will help contributors to fix issue as soon as possible.
 

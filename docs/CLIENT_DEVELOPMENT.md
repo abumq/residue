@@ -41,10 +41,10 @@ We highly recommend you understand how the server and client interact and what's
 ## Official Libraries
 Residue comes with following official client libraries. You can look at their source code for references and guidelines.
 
- * [C++ (C++11 or higher)](https://github.com/muflihun/residue-cpp)
- * [Node.js](https://github.com/muflihun/residue-node)
- * [Java (Incl. Android, API level 26 or higher)](https://github.com/muflihun/residue-java)
- * [PHP](https://github.com/muflihun/residue-php)
+ * [C++ (C++11 or higher)](https://github.com/amrayn/residue-cpp)
+ * [Node.js](https://github.com/amrayn/residue-node)
+ * [Java (Incl. Android, API level 26 or higher)](https://github.com/amrayn/residue-java)
+ * [PHP](https://github.com/amrayn/residue-php)
  
 ## What is Client Library?
 Server is useless without a client. In _residue_'s world, client is what sends log request payload to the server. Client library is an abstract layer between end-developer and the server (residue). 
@@ -62,9 +62,9 @@ You will need following functions:
  * `send()`: which sends the data to the server. This sending can be syncronous or asyncronous. In either case it should have ability to expect a response and trigger a callback on successfully receiving data. (this callback will be `read` in most cases)
  
 See also
- * `ResidueClient` in [C++](https://github.com/muflihun/residue-cpp/blob/master/src/Residue.cc)
- * `ResidueClient` in [Java](https://github.com/muflihun/residue-java/blob/master/src/com/muflihun/residue/Residue.java)
- * `Utils.sendRequest`, `Params.*_socket.on('data', ...)` in [Node.js](https://github.com/muflihun/residue-node/blob/master/src/residue.js)
+ * `ResidueClient` in [C++](https://github.com/amrayn/residue-cpp/blob/master/src/Residue.cc)
+ * `ResidueClient` in [Java](https://github.com/amrayn/residue-java/blob/master/src/com/amrayn/residue/Residue.java)
+ * `Utils.sendRequest`, `Params.*_socket.on('data', ...)` in [Node.js](https://github.com/amrayn/residue-node/blob/master/src/residue.js)
  
 #### RSA Encryption/Decryption with PKCS#1 padding
 You can put this class in single utility class.
@@ -77,9 +77,9 @@ You will need following functions:
  * `decryptRSA`: which will decrypt raw bytes using private key
  
 See also
- * `Ripe::Ripe::generateRSAKeyPair`, `Ripe::decryptRSA`, `Ripe::encryptRSA` in [C++](https://github.com/muflihun/residue-cpp/blob/master/src/Residue.cc) (C++ library uses [Ripe](https://github.com/muflihun/ripe))
- * `getPemPublicKey`, `getPemPrivateKey`, `createNewKeyPair`, `encryptRSA`, `decryptRSA` in [Java](https://github.com/muflihun/residue-java/blob/master/src/com/muflihun/residue/Residue.java)
- * `Utils.extractPublicKey`, `Utils.generateKeypair`, `Utils.encryptRSA`, `Utils.decryptRSA` in [Node.js](https://github.com/muflihun/residue-node/blob/master/src/residue.js)
+ * `Ripe::Ripe::generateRSAKeyPair`, `Ripe::decryptRSA`, `Ripe::encryptRSA` in [C++](https://github.com/amrayn/residue-cpp/blob/master/src/Residue.cc) (C++ library uses [Ripe](https://github.com/amrayn/ripe))
+ * `getPemPublicKey`, `getPemPrivateKey`, `createNewKeyPair`, `encryptRSA`, `decryptRSA` in [Java](https://github.com/amrayn/residue-java/blob/master/src/com/amrayn/residue/Residue.java)
+ * `Utils.extractPublicKey`, `Utils.generateKeypair`, `Utils.encryptRSA`, `Utils.decryptRSA` in [Node.js](https://github.com/amrayn/residue-node/blob/master/src/residue.js)
  
 #### AES-CBC Encryption/Decryption
 You can put this class in single utility class.
@@ -89,9 +89,9 @@ You will need following functions:
  * `decrypt`: which takes string in form `<initialization_vector>:<client_id>:<base64_encoded_encryption>` and hex key and decrypts the `base64_encoded_encryption` to string
  
  See also
- * `Ripe::decryptAES`, `Ripe::encryptAES` in [C++](https://github.com/muflihun/residue-cpp/blob/master/src/Residue.cc) (C++ library uses [Ripe](https://github.com/muflihun/ripe))
- * `ResidueUtils.encrypt`, `ResidueUtils.decrypt` in [Java](https://github.com/muflihun/residue-java/blob/master/src/com/muflihun/residue/Residue.java)
- * `Utils.encrypt`, `Utils.decrypt` in [Node.js](https://github.com/muflihun/residue-node/blob/master/src/residue.js)
+ * `Ripe::decryptAES`, `Ripe::encryptAES` in [C++](https://github.com/amrayn/residue-cpp/blob/master/src/Residue.cc) (C++ library uses [Ripe](https://github.com/amrayn/ripe))
+ * `ResidueUtils.encrypt`, `ResidueUtils.decrypt` in [Java](https://github.com/amrayn/residue-java/blob/master/src/com/amrayn/residue/Residue.java)
+ * `Utils.encrypt`, `Utils.decrypt` in [Node.js](https://github.com/amrayn/residue-node/blob/master/src/residue.js)
  
 #### Base64 Encoding/Decoding
 All the data from and to the server are encoded using base64 encoding.
@@ -103,9 +103,9 @@ You will need following functions:
  * `decodeBase64`: which takes base-64 encoding and returns raw bytes
  
  See also
- * `Ripe::base64Encode`, `Ripe::base64Decode` in [C++](https://github.com/muflihun/residue-cpp/blob/master/src/Residue.cc) (C++ library uses [Ripe](https://github.com/muflihun/ripe))
- * `ResidueUtils.base64Encode`, `ResidueUtils.base64Decode` in [Java](https://github.com/muflihun/residue-java/blob/master/src/com/muflihun/residue/Residue.java)
- * `Utils.base64Encode`, `Utils.base64Decode` in [Node.js](https://github.com/muflihun/residue-node/blob/master/src/residue.js)
+ * `Ripe::base64Encode`, `Ripe::base64Decode` in [C++](https://github.com/amrayn/residue-cpp/blob/master/src/Residue.cc) (C++ library uses [Ripe](https://github.com/amrayn/ripe))
+ * `ResidueUtils.base64Encode`, `ResidueUtils.base64Decode` in [Java](https://github.com/amrayn/residue-java/blob/master/src/com/amrayn/residue/Residue.java)
+ * `Utils.base64Encode`, `Utils.base64Decode` in [Node.js](https://github.com/amrayn/residue-node/blob/master/src/residue.js)
 
 #### Base16 Encoding/Decoding (optional)
 You may need this function or may not, depending on your implementation.
@@ -117,9 +117,9 @@ You will need following functions:
  * `decodeBase16`: which takes base-16 encoding and returns raw bytes
  
  See also
- * Not used in [C++](https://github.com/muflihun/residue-cpp/blob/master/src/Residue.cc) library
- * `ResidueUtils.hexEncode`, `ResidueUtils.hexDecode` in [Java](https://github.com/muflihun/residue-java/blob/master/src/com/muflihun/residue/Residue.java)
- * [Node.js](https://github.com/muflihun/residue-node/blob/master/src/residue.js) library uses javascript's `toString('hex')` and `new Buffer(..., 'hex')`
+ * Not used in [C++](https://github.com/amrayn/residue-cpp/blob/master/src/Residue.cc) library
+ * `ResidueUtils.hexEncode`, `ResidueUtils.hexDecode` in [Java](https://github.com/amrayn/residue-java/blob/master/src/com/amrayn/residue/Residue.java)
+ * [Node.js](https://github.com/amrayn/residue-node/blob/master/src/residue.js) library uses javascript's `toString('hex')` and `new Buffer(..., 'hex')`
 
 #### GZip Compression (optional)
 You may want to compress the packets before sending to the server that support [`Compression`](/docs/CONFIGURATION.md#compression)
@@ -128,9 +128,9 @@ You will need following functions:
  * `compress`: which takes raw bytes and compress them using zlib algorithm
  
  See also
- * `Ripe::compressString` in [C++](https://github.com/muflihun/residue-cpp/blob/master/src/Residue.cc) (C++ library uses [Ripe](https://github.com/muflihun/ripe))
- * [Java](https://github.com/muflihun/residue-java/blob/master/src/com/muflihun/residue/Residue.java) library uses `DeflaterOutputStream`. See `dispatcher` thread
- * [Node.js](https://github.com/muflihun/residue-node/blob/master/src/residue.js) uses `zlib.deflateSync` from
+ * `Ripe::compressString` in [C++](https://github.com/amrayn/residue-cpp/blob/master/src/Residue.cc) (C++ library uses [Ripe](https://github.com/amrayn/ripe))
+ * [Java](https://github.com/amrayn/residue-java/blob/master/src/com/amrayn/residue/Residue.java) library uses `DeflaterOutputStream`. See `dispatcher` thread
+ * [Node.js](https://github.com/amrayn/residue-node/blob/master/src/residue.js) uses `zlib.deflateSync` from
  
 ### Public API
 Once you have created helper classes you should be good to write public API that will be used by the user of your library (developer)
@@ -160,12 +160,12 @@ This function will allow user to pass in JSON file or JSON data and load all the
 
 On calling this function the data will be loaded to the memory and will be used thereof.
 
-See `loadConfigurations` from [Java](https://github.com/muflihun/residue-java/blob/master/src/com/muflihun/residue/Residue.java) library for example
+See `loadConfigurations` from [Java](https://github.com/amrayn/residue-java/blob/master/src/com/amrayn/residue/Residue.java) library for example
 
 #### `connect`
 This function connects user to specified host and port running residue server.
 
-The connection is estabilished syncronously with short timeout. This function can be overloaded with various parameters, i.e., host or port (like we have for [C++](https://muflihun.github.io/residue/docs/class_residue.html) library
+The connection is estabilished syncronously with short timeout. This function can be overloaded with various parameters, i.e., host or port (like we have for [C++](https://amrayn.github.io/residue/docs/class_residue.html) library
 
 This function will notify user if there was failure in estabilishing the connection and clear reasoning:
  * If host is unavailable or not connected to the network
@@ -173,7 +173,7 @@ This function will notify user if there was failure in estabilishing the connect
  
 Once connected, the connection response is most important thing, it contains what has been mentioned in [`CONNECTIVITY`](/docs/CONNECTIVITY.md#connection-establishment) specification. You will need it throughout.
  
-See `Residue.connect` in [Java](https://github.com/muflihun/residue-java/blob/master/src/com/muflihun/residue/Residue.java) library for example
+See `Residue.connect` in [Java](https://github.com/amrayn/residue-java/blob/master/src/com/amrayn/residue/Residue.java) library for example
 
 #### `log`
 These are set of functions that take user's input (log message) and puts them in a list, a.k.a, _log backlog_
@@ -185,19 +185,19 @@ This thread is responsible of looking at the _log backlog_ and dispatch the item
 
 What do we mean by that? this is where "seamless" comes in, it will check for:
 
- * Whether still connecting - if connecting then come back and try in few moment (Find `Still connecting...` on [C++](https://github.com/muflihun/residue-cpp/blob/master/src/Residue.cc) for example)
- * Whether client is still valid or not - if not it will reconnect and then call do it again (See `isClientValid()` on [Java](https://github.com/muflihun/residue-java/blob/master/src/com/muflihun/residue/Residue.java) and see the usages)
- * Whether client is about to die and can be _retouched_ (See `shouldTouch()` and `touch()` on [Java](https://github.com/muflihun/residue-java/blob/master/src/com/muflihun/residue/Residue.java) and see the usages)
+ * Whether still connecting - if connecting then come back and try in few moment (Find `Still connecting...` on [C++](https://github.com/amrayn/residue-cpp/blob/master/src/Residue.cc) for example)
+ * Whether client is still valid or not - if not it will reconnect and then call do it again (See `isClientValid()` on [Java](https://github.com/amrayn/residue-java/blob/master/src/com/amrayn/residue/Residue.java) and see the usages)
+ * Whether client is about to die and can be _retouched_ (See `shouldTouch()` and `touch()` on [Java](https://github.com/amrayn/residue-java/blob/master/src/com/amrayn/residue/Residue.java) and see the usages)
  * Create bulk request if your library and server supports it (see [`allow_bulk_log_request`](/docs/CONFIGURATION.md#allow_bulk_log_request))
- * Compress the data if your library and server supports it (see [`compression`](/docs/CONFIGURATION.md#compression) and search for `Flag.COMPRESSION.isSet()` in [Java](https://github.com/muflihun/residue-java/blob/master/src/com/muflihun/residue/Residue.java) library for example)
+ * Compress the data if your library and server supports it (see [`compression`](/docs/CONFIGURATION.md#compression) and search for `Flag.COMPRESSION.isSet()` in [Java](https://github.com/amrayn/residue-java/blob/master/src/com/amrayn/residue/Residue.java) library for example)
  * Encrypt the JSON object if needed.
 
 Remember, all of this happens behind the scenes and developer does not have to know these details.
 
 See also
- * `Residue::dispatch` in [C++](https://github.com/muflihun/residue-cpp/blob/master/src/Residue.cc)
- * `dispatcher` thread in [Java](https://github.com/muflihun/residue-java/blob/master/src/com/muflihun/residue/Residue.java) library
- * `sendLogRequest` in [Node.js](https://github.com/muflihun/residue-node/blob/master/src/residue.js) library does not have multi-threading so it's dispatched as is (but it does check for all the above items)
+ * `Residue::dispatch` in [C++](https://github.com/amrayn/residue-cpp/blob/master/src/Residue.cc)
+ * `dispatcher` thread in [Java](https://github.com/amrayn/residue-java/blob/master/src/com/amrayn/residue/Residue.java) library
+ * `sendLogRequest` in [Node.js](https://github.com/amrayn/residue-node/blob/master/src/residue.js) library does not have multi-threading so it's dispatched as is (but it does check for all the above items)
 
 ### JSON Payload
 All the requests are JSON based and each type of connection is sent to specific port as specified in [`CONNECTIVITY.md`](/docs/CONNECTIVITY.md) specification

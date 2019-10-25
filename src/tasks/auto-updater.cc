@@ -2,8 +2,8 @@
 //  auto-updater.cc
 //  Residue
 //
-//  Copyright 2017-present Zuhd Web Services
-//  https://zuhd.org
+//  Copyright 2017-present Amrayn Web Services
+//  https://amrayn.com
 //
 //  Author: @abumusamq
 //
@@ -32,7 +32,7 @@
 
 using namespace residue;
 
-const std::string AutoUpdater::LATEST_RELEASE_API_URL = "https://api.github.com/repos/muflihun/residue/releases/latest";
+const std::string AutoUpdater::LATEST_RELEASE_API_URL = "https://api.github.com/repos/amrayn/residue/releases/latest";
 
 AutoUpdater::AutoUpdater(Registry* registry,
                        unsigned int interval) :
@@ -47,7 +47,7 @@ void AutoUpdater::execute()
     if (hasNewVersion(&newVer)) {
         RVLOG(RV_NOTICE) << "You are running Residue v" << RESIDUE_VERSION
                          << ", a newer version is available: " << newVer
-                         << ". Please visit https://github.com/muflihun/residue/releases/tag/" << newVer;
+                         << ". Please visit https://github.com/amrayn/residue/releases/tag/" << newVer;
     }
 }
 

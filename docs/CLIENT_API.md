@@ -3,7 +3,7 @@
 </p>
 
 # Client API
-Residue comes with [official C++ client library](https://github.com/muflihun/residue-cpp) for users to use in their C++ applications. You can easily integrate residue in to your existing C++ application with literally 3 changes.
+Residue comes with [official C++ client library](https://github.com/amrayn/residue-cpp) for users to use in their C++ applications. You can easily integrate residue in to your existing C++ application with literally 3 changes.
 
 For other client libraries please refer to corresponding repository.
 
@@ -35,7 +35,7 @@ int main() {
     /// Start logging using Easylogging++ macros i.e, LOG(INFO) etc
     ///
     /// If you wish to log using specific logger you will have to use CLOG(INFO, "<logger-id>")
-    /// See https://github.com/muflihun/easyloggingpp#logging for details
+    /// See https://github.com/amrayn/easyloggingpp#logging for details
     ///
     
     // It's always best to safely disconnect before your application ends, this ensures 
@@ -47,7 +47,7 @@ int main() {
 ```
 
 ### Documentation
-Please refer to [this link](https://muflihun.github.io/residue/docs/) for documentation for API
+Please refer to [this link](https://amrayn.github.io/residue/docs/) for documentation for API
 
 
 

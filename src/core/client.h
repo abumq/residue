@@ -2,8 +2,8 @@
 //  client.h
 //  Residue
 //
-//  Copyright 2017-present Zuhd Web Services
-//  https://zuhd.org
+//  Copyright 2017-present Amrayn Web Services
+//  https://amrayn.com
 //
 //  Author: @abumusamq
 //
@@ -169,7 +169,7 @@ private:
     bool m_isManaged;
 
     // a backup key is previously set key with potentially different key size
-    // see https://github.com/muflihun/residue/issues/75
+    // see https://github.com/amrayn/residue/issues/75
     std::string m_backupKey;
 };
 }

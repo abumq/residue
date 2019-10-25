@@ -3,8 +3,8 @@
 //  Configuration validator
 //  Residue
 //
-//  Copyright 2017-present Zuhd Web Services
-//  https://zuhd.org
+//  Copyright 2017-present Amrayn Web Services
+//  https://amrayn.com
 //
 //  Author: @abumusamq
 //
@@ -34,7 +34,7 @@ void displayUsage() {
 }
 
 void displayVersion() {
-    std::cout << "Config Validator v" << RESIDUE_VERSION << std::endl << std::endl << "Configuration file validator for residue logging server (https://github.com/muflihun/residue)" << std::endl;
+    std::cout << "Config Validator v" << RESIDUE_VERSION << std::endl << std::endl << "Configuration file validator for residue logging server (https://github.com/amrayn/residue)" << std::endl;
 }
 
 int main(int argc, char* argv[])

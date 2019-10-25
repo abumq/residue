@@ -2,8 +2,8 @@
 //  session.cc
 //  Residue
 //
-//  Copyright 2017-present Zuhd Web Services
-//  https://zuhd.org
+//  Copyright 2017-present Amrayn Web Services
+//  https://amrayn.com
 //
 //  Author: @abumusamq
 //
@@ -187,7 +187,7 @@ void Session::write(const char* data,
 
             // auto destroy socket if needed
             // do not close here
-            // https://github.com/muflihun/residue/issues/79
+            // https://github.com/amrayn/residue/issues/79
         }
     });
     read();

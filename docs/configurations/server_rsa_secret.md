@@ -25,7 +25,7 @@ You can either use ripe to get this HEX encoded string
 echo abc123 | ripe -e --hex
 ```
 
-or [mine](https://github.com/muflihun/mine#installation-cli-tool)
+or [mine](https://github.com/amrayn/mine#installation-cli-tool)
 
 ```
 echo abc123 | mine -e --hex

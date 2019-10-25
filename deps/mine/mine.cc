@@ -4,14 +4,14 @@
 //  Mine (1.1.4)
 //  Single header minimal cryptography library
 //
-//  Copyright (c) 2017-present Muflihun Labs
+//  Copyright (c) 2017-present Amrayn Web Services
 //  Copyright (c) 2017-present @abumusamq
 //
 //  This library is released under the Apache 2.0 license
-//  https://github.com/muflihun/mine/blob/master/LICENSE
+//  https://github.com/amrayn/mine/blob/master/LICENSE
 //
-//  https://github.com/muflihun/mine
-//  https://muflihun.github.io/mine
+//  https://github.com/amrayn/mine
+//  https://amrayn.github.io/mine
 //  https://muflihun.com
 //
 #include <algorithm>

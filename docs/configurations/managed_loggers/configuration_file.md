@@ -6,9 +6,9 @@
 
 # known_loggers ↴
 ## configuration_file
-[String] Path to [Easylogging++ configuration file](https://github.com/muflihun/easyloggingpp#using-configuration-file). You can use `$RESIDUE_HOME` environment variable in this file path. When the new logger is registered, it's configured using this configuration.
+[String] Path to [Easylogging++ configuration file](https://github.com/amrayn/easyloggingpp#using-configuration-file). You can use `$RESIDUE_HOME` environment variable in this file path. When the new logger is registered, it's configured using this configuration.
 
-Residue supports following [custom format specifiers](https://github.com/muflihun/easyloggingpp#custom-format-specifiers):
+Residue supports following [custom format specifiers](https://github.com/amrayn/easyloggingpp#custom-format-specifiers):
 
 | Format Specifier | Description |
 | ---------------- | ----------- |
@@ -53,4 +53,4 @@ You're not allowed to use following configurations in your configuration file as
  ```
  
  ## See Also
- * [`RESIDUE_HOME`](https://github.com/muflihun/residue/blob/develop/docs/INSTALL.md#residue_home)
+ * [`RESIDUE_HOME`](https://github.com/amrayn/residue/blob/develop/docs/INSTALL.md#residue_home)

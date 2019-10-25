@@ -2,13 +2,13 @@
   "name": "residue-linux",
   "version": "2.3.5",
   "description": "Residue server daemon (Linux)",
-  "homepage": "https://github.com/zuhd-org/residue",
-  "author": "Zuhd Web Services <opensource@zuhd.org>",
+  "homepage": "https://github.com/amrayn/residue",
+  "author": "Amrayn Web Services <opensource@amrayn.com>",
   "license": "Apache-2.0",
   "bin": "./residued",
   "repository": {
     "type": "git",
-    "url": "http://github.com/zuhd-org/residue.git"
+    "url": "http://github.com/amrayn/residue.git"
   },
   "files": [
      "residued",

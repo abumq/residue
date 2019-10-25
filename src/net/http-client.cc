@@ -2,8 +2,8 @@
 //  http-client.cc
 //  Residue
 //
-//  Copyright 2017-present Zuhd Web Services
-//  https://zuhd.org
+//  Copyright 2017-present Amrayn Web Services
+//  https://amrayn.com
 //
 //  Author: @abumusamq
 //
@@ -64,7 +64,7 @@ std::string HttpClient::fetchUrlContents(const std::string& url)
         curl_easy_setopt(curl, CURLOPT_URL, url.data());
         curl_easy_setopt(curl, CURLOPT_SSL_VERIFYPEER, 0L);
         curl_easy_setopt(curl, CURLOPT_SSL_VERIFYHOST, 0L);
-        curl_easy_setopt(curl, CURLOPT_USERAGENT, std::string("muflihun/residue/" +
+        curl_easy_setopt(curl, CURLOPT_USERAGENT, std::string("amrayn/residue/" +
                                                               std::string(RESIDUE_VERSION_MAJOR) + "." +
                                                               std::string(RESIDUE_VERSION_MINOR) + "." +
                                                               std::string(RESIDUE_VERSION_PATCH)).data());

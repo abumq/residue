@@ -2,8 +2,8 @@
 //  configuration.cc
 //  Residue
 //
-//  Copyright 2017-present Zuhd Web Services
-//  https://zuhd.org
+//  Copyright 2017-present Amrayn Web Services
+//  https://amrayn.com
 //
 //  Author: @abumusamq
 //
@@ -587,7 +587,7 @@ void Configuration::loadManagedClients(const JsonDoc& json, std::stringstream& e
             // no loggers array
             std::string defaultLogger = j.get<std::string>("default_logger", "");
             if (!defaultLogger.empty()) {
-                errorStream << "  Default logger ["  << defaultLogger << "] for client [" << clientId << "] is not part of [loggers] array. Please see https://github.com/muflihun/residue/blob/master/docs/CONFIGURATION.md#managed_clientsloggers";
+                errorStream << "  Default logger ["  << defaultLogger << "] for client [" << clientId << "] is not part of [loggers] array. Please see https://github.com/amrayn/residue/blob/master/docs/CONFIGURATION.md#managed_clientsloggers";
             }
         }
     }

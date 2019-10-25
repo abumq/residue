@@ -15,7 +15,7 @@ You should note few points:
  * Only log requests should be compressed, other requests (connection, touch etc) are sent normally.
  * Outgoing data (from server) is never compressed.
 
-Compression has great affect and can save big data. We recommend you to enable compression in your server. Just to give you little bit of idea, when we run [simple example project](https://github.com/muflihun/residue-cpp/tree/master/samples/detailed-cmake) to log 1246 requests, without compression data transferred was `488669 bytes` and with compression it was `44509 bytes`. Same data transferred has same performance with high reliability.
+Compression has great affect and can save big data. We recommend you to enable compression in your server. Just to give you little bit of idea, when we run [simple example project](https://github.com/amrayn/residue-cpp/tree/master/samples/detailed-cmake) to log 1246 requests, without compression data transferred was `488669 bytes` and with compression it was `44509 bytes`. Same data transferred has same performance with high reliability.
 
 It always has very good performance when you have `compression` and [`allow_bulk_log_request`](/docs/CONFIGURATION.md#allow_bulk_log_request) both active. In one of our big test we had following result:
 

@@ -8,7 +8,7 @@ This document gives you details on configuring residue
 
 Residue is fully configurable to support various features and for security. Configuration is always in [JSON](http://json.org/) format.
 
-You can use [Server Config Tool](https://muflihun.github.io/residue/create-server-config) to generate configurations for your server
+You can use [Server Config Tool](https://amrayn.github.io/residue/create-server-config) to generate configurations for your server
 
 ## Table of Contents
 
@@ -323,7 +323,7 @@ You need to make sure that [`configuration_file`](#configuration_file) exists on
 [String] The logger ID
 
 #### `managed_loggers`::`configuration_file`
-[String] Path to [Easylogging++ configuration file](https://github.com/muflihun/easyloggingpp#using-configuration-file). You can use `$RESIDUE_HOME` environment variable in this file path. When the new logger is registered, it's configured using this configuration.
+[String] Path to [Easylogging++ configuration file](https://github.com/amrayn/easyloggingpp#using-configuration-file). You can use `$RESIDUE_HOME` environment variable in this file path. When the new logger is registered, it's configured using this configuration.
  
 [Learn more...](/docs/configurations/managed_loggers/configuration_file.md)
 
@@ -362,7 +362,7 @@ See [archived_log_directory](#archived_log_directory)
 ### `extensions`
 [Array] Contains various types of extensions. You can specify each type of extension's array shared library modules.
 
-Extensions API documentation is available [here](https://muflihun.github.io/residue/extensions/)
+Extensions API documentation is available [here](https://amrayn.github.io/residue/extensions/)
 
 **NOTE You will need `libresidue-extension` in your `LD_LIBRARY_PATH`**
 

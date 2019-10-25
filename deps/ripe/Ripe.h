@@ -1,11 +1,11 @@
 //
 //  Ripe
 //
-//  Copyright 2017-present Muflihun Labs
+//  Copyright 2017-present Amrayn Web Services
 //
 //  https://muflihun.com/
-//  https://muflihun.github.io/ripe/
-//  https://github.com/muflihun/ripe
+//  https://amrayn.github.io/ripe/
+//  https://github.com/amrayn/ripe
 //
 //  Author: @abumusamq
 //
