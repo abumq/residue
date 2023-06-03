@@ -8,8 +8,6 @@
 [![Build Status](https://img.shields.io/travis/amrayn/residue/develop.svg)](#build-matrix)
 [![Version](https://img.shields.io/github/release/amrayn/residue.svg)](https://github.com/amrayn/residue/releases/latest)
 
-[![Donate](https://amrayn.github.io/donate.png?v2)](https://amrayn.com/donate)
-
 # Overview
 Residue is an effort to standardize application logging by implementing simple logging API, making it easily configurable, build-in configurable log rotators, simple way to format your log messages according to need of your application and most of all language-independent.
 
