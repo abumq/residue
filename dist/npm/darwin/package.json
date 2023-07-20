@@ -2,13 +2,13 @@
   "name": "residue-darwin",
   "version": "2.3.5",
   "description": "Residue server daemon (Darwin)",
-  "homepage": "https://github.com/amrayn/residue",
-  "author": "Amrayn Web Services <opensource@amrayn.com>",
+  "homepage": "https://github.com/abumq/residue",
+  "author": "Majid Q. <opensource@amrayn.com>",
   "license": "Apache-2.0",
   "bin": "./residued",
   "repository": {
     "type": "git",
-    "url": "http://github.com/amrayn/residue.git"
+    "url": "http://github.com/abumq/residue.git"
   },
   "files": [
      "residued",

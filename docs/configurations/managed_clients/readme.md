@@ -31,7 +31,7 @@ This is a complete managed client (i.e, all the necessary as well as optional fi
 3. Server will then [make connection](/docs/configurations/connect_port.md#responsibilities) and encrypt this connection using previously provided `public_key` i.e, `muflihun.com-web-client.pem`
 4. Server will generate 128-bit key
 5. Any logs associated to this client will automatically have ownership assigned to `abumusamq` with `RW-R-----` permissions (subject to `file_mode` config)
-6. Listed loggers are expected loggers (more loggers may be allowed but if you use more loggers we recommend you to add it to this list) - if you use [resitail](https://github.com/amrayn/resitail) it will pick up loggers from this list
+6. Listed loggers are expected loggers (more loggers may be allowed but if you use more loggers we recommend you to add it to this list) - if you use [resitail](https://github.com/abumq/resitail) it will pick up loggers from this list
 7. Any unmanaged loggers associated to this client will have configurations from `default_logger`'s configuration
 
 ## See Also

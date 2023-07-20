@@ -29,7 +29,7 @@
 
 using namespace residue;
 
-const std::string AutoUpdater::LATEST_RELEASE_API_URL = "https://api.github.com/repos/amrayn/residue/releases/latest";
+const std::string AutoUpdater::LATEST_RELEASE_API_URL = "https://api.github.com/repos/abumq/residue/releases/latest";
 
 AutoUpdater::AutoUpdater(Registry* registry,
                        unsigned int interval) :
@@ -44,7 +44,7 @@ void AutoUpdater::execute()
     if (hasNewVersion(&newVer)) {
         RVLOG(RV_NOTICE) << "You are running Residue v" << RESIDUE_VERSION
                          << ", a newer version is available: " << newVer
-                         << ". Please visit https://github.com/amrayn/residue/releases/tag/" << newVer;
+                         << ". Please visit https://github.com/abumq/residue/releases/tag/" << newVer;
     }
 }
 

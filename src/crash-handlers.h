@@ -42,7 +42,7 @@ void generalTerminateHandler(int sig, bool showMsg)
     if (showMsg) {
         std::cerr << Utils::formatTime(Utils::now(), "%d/%M/%Y %h:%m:%s") << " ";
         std::cerr << "Application abnormally terminated." << std::endl;
-        std::cerr << "Please report it to us on https://github.com/amrayn/residue/issues/ " << std::endl;
+        std::cerr << "Please report it to us on https://github.com/abumq/residue/issues/ " << std::endl;
     }
     el::Helpers::logCrashReason(sig, true, el::Level::Fatal, RESIDUE_LOGGER_ID);
     el::Helpers::crashAbort(sig);

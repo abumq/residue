@@ -6,13 +6,13 @@
 This doc contain residue extensions API that you can use to extend the features for residue server.
 
 # Licence
-Following licence applies strictly to extension API. For Residue server licence please refer to [LICENCE](https://github.com/amrayn/residue/blob/master/LICENCE) on github.
+Following licence applies strictly to extension API. For Residue server licence please refer to [LICENCE](https://github.com/abumq/residue/blob/master/LICENCE) on github.
 
 ```
 Copyright 2017-present Amrayn Web Services
 Copyright 2017-present @abumusamq
 
-https://github.com/amrayn/
+https://github.com/abumq/
 https://muflihun.com/
 
 Licensed under the Apache License, Version 2.0 (the "License");
@@ -28,4 +28,4 @@ See the License for the specific language governing permissions and
 limitations under the License.
 ```
 
-  [banner]: https://raw.githubusercontent.com/amrayn/residue/master/docs/Residue.png
+  [banner]: https://raw.githubusercontent.com/abumq/residue/master/docs/Residue.png

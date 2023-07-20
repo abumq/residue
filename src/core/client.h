@@ -166,7 +166,7 @@ private:
     bool m_isManaged;
 
     // a backup key is previously set key with potentially different key size
-    // see https://github.com/amrayn/residue/issues/75
+    // see https://github.com/abumq/residue/issues/75
     std::string m_backupKey;
 };
 }

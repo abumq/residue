@@ -174,7 +174,7 @@
 - Upgraded ripe library to 4.1.1
 
 ### Updates
-- User agent for HTTP client changed from `Residue/x.x` to `amrayn/residue/x.x.x`
+- User agent for HTTP client changed from `Residue/x.x` to `abumq/residue/x.x.x`
 
 ## [1.3.1] - 08-02-2018
 ### Fixes

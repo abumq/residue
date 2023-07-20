@@ -17,7 +17,7 @@ It may be compilable on other operating systems but we have not tested it yet. P
 ## Client
 Clients are essentially libraries that help other developers to send requests to the residue server without exposing too much details to them. For details, please refer to [CLIENT_DEVELOPMENT.md](/docs/CLIENT_DEVELOPMENT.md).
 
-If you wish to use residue for your C++ application, please take a look at [this sample](/samples/clients/c++) and [CLIENT_API.md](/docs/CLIENT_API.md) for details. This uses official client library for residue that is asyncronous, thread-safe and fast!
+If you wish to use residue for your C++ application, please take a look at [this sample](https://github.com/abumq/residue-cpp) and [CLIENT_API.md](/docs/CLIENT_API.md) for details. This uses official client library for residue that is asyncronous, thread-safe and fast!
 
 Similar to the server, we have tested official client libraries on the following OS:
 
@@ -30,7 +30,7 @@ Please let us know if you successfully compile it on other operating systems.
 Please feel free to submit your pull requests. Please read [development](#development) section before you start.
 
 ## Reporting Bugs
-Please submit bug reports via [issue tracker](https://github.com/amrayn/residue/issues). We strongly recommend you to test this project in as many platforms as possible that can be turned in to logging server.
+Please submit bug reports via [issue tracker](https://github.com/abumq/residue/issues). We strongly recommend you to test this project in as many platforms as possible that can be turned in to logging server.
 
 Please provide as much information as possible including steps to reproduce. This will help contributors to fix issue as soon as possible.
 

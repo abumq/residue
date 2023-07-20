@@ -28,7 +28,7 @@ Other distributions that _should_ work (but have not yet been tested) - you may 
  * macOS 10.12 (Sierra) (64-bit)
 
 # Download Binary
-You can download binary from [releases](https://github.com/amrayn/residue/releases) page for your platform. They are standalone binaries but they require some external libraries installed that are mentioned with each release notes. Most of these external libraries come with respective operating system distributions.
+You can download binary from [releases](https://github.com/abumq/residue/releases) page for your platform. They are standalone binaries but they require some external libraries installed that are mentioned with each release notes. Most of these external libraries come with respective operating system distributions.
 
 ## Via NPM
 
@@ -47,14 +47,14 @@ sudo ln -s `which residue-darwin` /usr/local/bin/residue
 ## Direct
 ### Linux
 ```
-wget https://github.com/amrayn/residue/releases/download/v2.3.2/residue-2.3.2-linux-x86_64.tar.gz
+wget https://github.com/abumq/residue/releases/download/v2.3.2/residue-2.3.2-linux-x86_64.tar.gz
 tar -xf residue-2.3.2-linux-x86_64.tar.gz
 cd residue-2.3.2-linux-x86_64/
 ```
 
 ### macOS
 ```
-wget https://github.com/amrayn/residue/releases/download/v2.3.2/residue-2.3.2-darwin-x86_64.tar.gz
+wget https://github.com/abumq/residue/releases/download/v2.3.2/residue-2.3.2-darwin-x86_64.tar.gz
 tar -xf residue-2.3.2-darwin-x86_64.tar.gz
 cd residue-2.3.2-darwin-x86_64/
 ```
@@ -107,7 +107,7 @@ sudo ./residue config/server.conf
 Open another terminal and start sending log requests using sample client logger
 
 ```
-wget https://github.com/amrayn/amrayn.github.io/raw/master/downloads/sample-logger.tar.gz
+wget https://github.com/abumq/abumq.github.io/raw/master/downloads/sample-logger.tar.gz
 tar -xf sample-logger.tar.gz
 ```
 
@@ -123,7 +123,7 @@ tar -xf sample-logger.tar.gz
 ./sample-logger/darwin/residue-logger --conf=sample-logger/conf.json
 ```
 
-This sample sends using `default` logger. Source code for this sample client logger can be found @ [Residue C++ samples](https://github.com/amrayn/residue-cpp/blob/master/samples/minimal/main.cc)
+This sample sends using `default` logger. Source code for this sample client logger can be found @ [Residue C++ samples](https://github.com/abumq/residue-cpp/blob/master/samples/minimal/main.cc)
 
 ## View Logs
 You can tail your logs using
@@ -137,13 +137,13 @@ You can follow steps below to build and install residue server on your machine.
 
 ## Dependencies
   * C++11 compiler (or higher)
-  * [Crypto++](https://www.cryptopp.com/) v5.6.5+ [with Pem Pack](https://raw.githubusercontent.com/amrayn/amrayn.github.io/master/downloads/pem_pack.zip)
+  * [Crypto++](https://www.cryptopp.com/) v5.6.5+ [with Pem Pack](https://abumq.github.io/downloads/pem_pack.zip)
   * [zlib-devel](https://zlib.net/)
   * [libcurl-devel](https://curl.haxx.se/libcurl/)
   * [Google Testing Framework](https://github.com/google/googletest/blob/master/googletest/docs/Primer.md) (optional - for testing)
   
 ## Get The Code
-You can either [download code from master branch](https://github.com/amrayn/residue/archive/master.zip) or clone it using `git`:
+You can either [download code from master branch](https://github.com/abumq/residue/archive/master.zip) or clone it using `git`:
 
 ```
 git clone git@github.com:amrayn/residue.git
@@ -211,10 +211,10 @@ cp -a libgtest_main.* libgtest.* /usr/local/lib/
 cd ..
 
 ## Crypto++
-wget https://raw.githubusercontent.com/amrayn/amrayn.github.io/master/downloads/cryptocpp.tar.gz
+wget https://abumq.github.io/downloads/cryptocpp.tar.gz
 tar xf cryptocpp.tar.gz
 cd cryptopp-CRYPTOPP_5_6_5
-wget https://raw.githubusercontent.com/amrayn/amrayn.github.io/master/downloads/pem_pack.zip
+wget https://abumq.github.io/downloads/pem_pack.zip
 unzip pem_pack.zip
 ### IF ON MACOS ALSO DO
 ### export CC=`which clang`
@@ -251,4 +251,4 @@ You can turn on verbose logging using `--v=<level>`. `-v` is equivalent to `--v=
 | 8         | TRACE           | Trace function calls                                                  |
 | 9         | CRAZY           | A lot of information - very useful for development purposes           |
 
-You can also specify verbose logging by modules. Please see [Application Arguments](https://github.com/amrayn/easyloggingpp#application-arguments) section on Easylogging++
+You can also specify verbose logging by modules. Please see [Application Arguments](https://github.com/abumq/easyloggingpp#application-arguments) section on Easylogging++

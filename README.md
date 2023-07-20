@@ -4,9 +4,9 @@
 
 ![banner]
 
-[![Build Status](https://img.shields.io/travis/amrayn/residue/master.svg)](#build-matrix)
-[![Build Status](https://img.shields.io/travis/amrayn/residue/develop.svg)](#build-matrix)
-[![Version](https://img.shields.io/github/release/amrayn/residue.svg)](https://github.com/amrayn/residue/releases/latest)
+[![Build Status](https://img.shields.io/travis/abumq/residue/master.svg)](#build-matrix)
+[![Build Status](https://img.shields.io/travis/abumq/residue/develop.svg)](#build-matrix)
+[![Version](https://img.shields.io/github/release/abumq/residue.svg)](https://github.com/abumq/residue/releases/latest)
 
 # Overview
 Residue is an effort to standardize application logging by implementing simple logging API, making it easily configurable, build-in configurable log rotators, simple way to format your log messages according to need of your application and most of all language-independent.
@@ -25,7 +25,7 @@ First one has many drawbacks especially when you need to debug a remote applicat
 
 Second one is what residue client does. It delievers log messages in real-time to the (residue) server.
 
-Residue is fully configurable and supports high-level security, compression and asyncronous operations. It uses [Easylogging++](https://github.com/amrayn/easyloggingpp) under the hood, that itself is a feature-rich library.
+Residue is fully configurable and supports high-level security, compression and asyncronous operations. It uses [Easylogging++](https://github.com/abumq/easyloggingpp) under the hood, that itself is a feature-rich library.
 
 You can choose to integrate similar solutions like [`rsyslog`](https://github.com/rsyslog/rsyslog) however residue has a lot of other built-in features that other solutions may lack, like built-in log rotation, bulk message forwarding etc. See [Features](#features) section for details.
 
@@ -57,19 +57,19 @@ We're also actively working on client libraries for residue in other languages. 
 
 | Branch | Platform | Build Status |
 | -------- |:------------:|:------------:|
-| `develop` | GNU/Linux 4.4 / Ubuntu 4.8.4 64-bit / `clang++` | [![Build Status](https://travis-matrix-badges.herokuapp.com/repos/amrayn/residue/branches/develop/1)](https://travis-ci.org/amrayn/residue) |
-| `develop` | GNU/Linux 4.4 / Ubuntu 4.8.4 64-bit / `g++-4.9` | [![Build Status](https://travis-matrix-badges.herokuapp.com/repos/amrayn/residue/branches/develop/2)](https://travis-ci.org/amrayn/residue) |
-| `develop` | GNU/Linux 4.4 / Ubuntu 4.8.4 64-bit / `g++-5` | [![Build Status](https://travis-matrix-badges.herokuapp.com/repos/amrayn/residue/branches/develop/3)](https://travis-ci.org/amrayn/residue) |
-| `develop` | GNU/Linux 4.4 / Ubuntu 4.8.4 64-bit / `g++-6` | [![Build Status](https://travis-matrix-badges.herokuapp.com/repos/amrayn/residue/branches/develop/4)](https://travis-ci.org/amrayn/residue) |
-| `develop` | GNU/Linux 4.4 / Ubuntu 4.8.4 64-bit / `g++-7` | [![Build Status](https://travis-matrix-badges.herokuapp.com/repos/amrayn/residue/branches/develop/5)](https://travis-ci.org/amrayn/residue) |
-| `master` | GNU/Linux 4.4 / Ubuntu 4.8.4 64-bit / `clang++` | [![Build Status](https://travis-matrix-badges.herokuapp.com/repos/amrayn/residue/branches/master/1)](https://travis-ci.org/amrayn/residue) |
-| `master` | GNU/Linux 4.4 / Ubuntu 4.8.4 64-bit / `g++-4.9` | [![Build Status](https://travis-matrix-badges.herokuapp.com/repos/amrayn/residue/branches/master/2)](https://travis-ci.org/amrayn/residue) |
-| `master` | GNU/Linux 4.4 / Ubuntu 4.8.4 64-bit / `g++-5` | [![Build Status](https://travis-matrix-badges.herokuapp.com/repos/amrayn/residue/branches/master/3)](https://travis-ci.org/amrayn/residue) |
-| `master` | GNU/Linux 4.4 / Ubuntu 4.8.4 64-bit / `g++-6` | [![Build Status](https://travis-matrix-badges.herokuapp.com/repos/amrayn/residue/branches/master/4)](https://travis-ci.org/amrayn/residue) |
-| `master` | GNU/Linux 4.4 / Ubuntu 4.8.4 64-bit / `g++-7` | [![Build Status](https://travis-matrix-badges.herokuapp.com/repos/amrayn/residue/branches/master/5)](https://travis-ci.org/amrayn/residue) |
+| `develop` | GNU/Linux 4.4 / Ubuntu 4.8.4 64-bit / `clang++` | [![Build Status](https://travis-matrix-badges.herokuapp.com/repos/abumq/residue/branches/develop/1)](https://travis-ci.org/abumq/residue) |
+| `develop` | GNU/Linux 4.4 / Ubuntu 4.8.4 64-bit / `g++-4.9` | [![Build Status](https://travis-matrix-badges.herokuapp.com/repos/abumq/residue/branches/develop/2)](https://travis-ci.org/abumq/residue) |
+| `develop` | GNU/Linux 4.4 / Ubuntu 4.8.4 64-bit / `g++-5` | [![Build Status](https://travis-matrix-badges.herokuapp.com/repos/abumq/residue/branches/develop/3)](https://travis-ci.org/abumq/residue) |
+| `develop` | GNU/Linux 4.4 / Ubuntu 4.8.4 64-bit / `g++-6` | [![Build Status](https://travis-matrix-badges.herokuapp.com/repos/abumq/residue/branches/develop/4)](https://travis-ci.org/abumq/residue) |
+| `develop` | GNU/Linux 4.4 / Ubuntu 4.8.4 64-bit / `g++-7` | [![Build Status](https://travis-matrix-badges.herokuapp.com/repos/abumq/residue/branches/develop/5)](https://travis-ci.org/abumq/residue) |
+| `master` | GNU/Linux 4.4 / Ubuntu 4.8.4 64-bit / `clang++` | [![Build Status](https://travis-matrix-badges.herokuapp.com/repos/abumq/residue/branches/master/1)](https://travis-ci.org/abumq/residue) |
+| `master` | GNU/Linux 4.4 / Ubuntu 4.8.4 64-bit / `g++-4.9` | [![Build Status](https://travis-matrix-badges.herokuapp.com/repos/abumq/residue/branches/master/2)](https://travis-ci.org/abumq/residue) |
+| `master` | GNU/Linux 4.4 / Ubuntu 4.8.4 64-bit / `g++-5` | [![Build Status](https://travis-matrix-badges.herokuapp.com/repos/abumq/residue/branches/master/3)](https://travis-ci.org/abumq/residue) |
+| `master` | GNU/Linux 4.4 / Ubuntu 4.8.4 64-bit / `g++-6` | [![Build Status](https://travis-matrix-badges.herokuapp.com/repos/abumq/residue/branches/master/4)](https://travis-ci.org/abumq/residue) |
+| `master` | GNU/Linux 4.4 / Ubuntu 4.8.4 64-bit / `g++-7` | [![Build Status](https://travis-matrix-badges.herokuapp.com/repos/abumq/residue/branches/master/5)](https://travis-ci.org/abumq/residue) |
 
 # License
 Please see [LICENSE](/LICENSE) for licensing information.
 
-  [banner]: https://raw.githubusercontent.com/amrayn/residue/master/docs/Residue.png?v3
-  [overview]: https://raw.githubusercontent.com/amrayn/residue/develop/docs/residue-overview.png?v4
+  [banner]: https://raw.githubusercontent.com/abumq/residue/master/docs/Residue.png?v3
+  [overview]: https://raw.githubusercontent.com/abumq/residue/develop/docs/residue-overview.png?v4

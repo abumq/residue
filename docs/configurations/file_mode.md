@@ -9,7 +9,7 @@
 
 Default: 416 (i.e, `RW-R----`)
 
-In order to build a correct value, you can either use [Create Config](https://amrayn.github.io/residue/create-server-config?) tool or just a simple calculation
+In order to build a correct value, you can either use [Create Config](https://abumq.github.io/residue/create-server-config?) tool or just a simple calculation
 
 | **Mode** | **Value** |
 |----------|-----------|

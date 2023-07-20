@@ -184,7 +184,7 @@ void Session::write(const char* data,
 
             // auto destroy socket if needed
             // do not close here
-            // https://github.com/amrayn/residue/issues/79
+            // https://github.com/abumq/residue/issues/79
         }
     });
     read();

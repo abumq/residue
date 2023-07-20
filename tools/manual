@@ -16,7 +16,7 @@ residue \- Real-time centralized logging server
 \fBresidue\fR [config file path] [--attach-crash-handler]
 
 .SH DESCRIPTION
-Residue is a real-time remote logging server that is secure, efficient with memory and CPU. It allows application to send log messages in real-time. See https://amrayn.github.io/residue for more details.
+Residue is a real-time remote logging server that is secure, efficient with memory and CPU. It allows application to send log messages in real-time. See https://abumq.github.io/residue for more details.
 
 .SH OPTIONS
 .TP
@@ -34,18 +34,18 @@ The reason of this requirement is because residue needs to change file permissio
 Attaches crash handler to the server. If it crashes, it will log it (with stack trace) to the internal logging file (as specified in your config) before shutting down.
 
 .SH BUGS
-Bugs are tracked in GitHub Issues: https://github.com/amrayn/residue/issues
+Bugs are tracked in GitHub Issues: https://github.com/abumq/residue/issues
 
 .SH AUTHOR
-Amrayn Web Services (https://amrayn.github.io/)
+Amrayn Web Services (https://abumq.github.io/)
 
 .SH COPYRIGHT
-Copyright Amrayn Web Services. Residue is available under the Apache 2.0 license.
+Copyright @abumq. Residue is available under the Apache 2.0 license.
 .TP
-Please visit https://github.com/amrayn/residue/tree/master#license for more details
+Please visit https://github.com/abumq/residue/tree/master#license for more details
 
 .SH RESOURCES AND DOCUMENTATION
-Website: https://amrayn.github.io/residue
+Website: https://abumq.github.io/residue
 
-Documentation: https://github.com/amrayn/residue/blob/master/docs/
+Documentation: https://github.com/abumq/residue/blob/master/docs/
 
