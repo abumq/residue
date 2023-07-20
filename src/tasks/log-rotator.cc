@@ -129,12 +129,12 @@ LogRotator::RotateTarget LogRotator::createRotateTarget(const std::string& logge
     resolveFormatSpecifiers(archiveFilename);
     resolveFormatSpecifiers(archiveFilename);
 
-    initDestinationDir.append(el::base::consts::kFilePathSeperator);
+    initDestinationDir.append(el::base::consts::kFilePathSeparator);
     // Remove duplicate file separators
     Utils::replaceAll(initDestinationDir,
-                      std::string(el::base::consts::kFilePathSeperator) +
-                      std::string(el::base::consts::kFilePathSeperator),
-                      el::base::consts::kFilePathSeperator);
+                      std::string(el::base::consts::kFilePathSeparator) +
+                      std::string(el::base::consts::kFilePathSeparator),
+                      el::base::consts::kFilePathSeparator);
 
     Utils::replaceAll(initDestinationDir, "%original/", "%original"); // just a clean up
 
@@ -321,7 +321,7 @@ void LogRotator::rotate(const std::string& loggerId)
     float timeTakenInSec = static_cast<float>(m_timeTaken / 1000.0f);
     DRVLOG_IF(loggerId != RESIDUE_LOGGER_ID, RV_DEBUG) << "Took " << timeTakenInSec << " s rotate logs for logger [" << loggerId << "] (" << files.size() << " files)";
 #endif
-    m_archiveItems.push_back({loggerId, rotateTarget.destinationDir + el::base::consts::kFilePathSeperator + rotateTarget.archiveFilename, files});
+    m_archiveItems.push_back({loggerId, rotateTarget.destinationDir + el::base::consts::kFilePathSeparator + rotateTarget.archiveFilename, files});
 }
 
 void LogRotator::archiveAndCompress(const std::string& loggerId, const std::string& archiveFilename, const std::unordered_map<std::string, std::string>& files) {

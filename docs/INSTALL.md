@@ -146,7 +146,7 @@ You can follow steps below to build and install residue server on your machine.
 You can either [download code from master branch](https://github.com/abumq/residue/archive/master.zip) or clone it using `git`:
 
 ```
-git clone git@github.com:amrayn/residue.git
+git clone git@github.com:abumq/residue.git
 ```
 
 ## Build
