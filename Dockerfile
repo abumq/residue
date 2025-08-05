@@ -64,9 +64,19 @@ RUN apt-get update && \
 
 # Copy the binary from the builder stage
 COPY --from=builder /residue/build/residue /usr/local/bin/residue
+COPY --from=builder /residue/dist/pkg/config /config
 
 # Set the user
 USER residue
 
+ENV RESIDUE_HOME=/config
+
+# Admin port
+EXPOSE 8776
+# config port
+EXPOSE 8777
+# logging port
+EXPOSE 8779
+
 # Set the entrypoint
-ENTRYPOINT ["/usr/local/bin/residue"]
+CMD ["/usr/local/bin/residue", "/config/server.conf",  "--force-without-root"]
